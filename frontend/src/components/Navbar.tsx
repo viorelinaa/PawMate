@@ -11,7 +11,11 @@ export default function Navbar() {
 
             <nav className="links">
                 <NavLink to="/" end>
-                    Home
+                    Acasă
+                </NavLink>
+
+                <NavLink to="/adoptie">
+                    Adopție
                 </NavLink>
 
                 <NavLink to="/sitters">
