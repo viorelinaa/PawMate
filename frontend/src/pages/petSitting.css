@@ -1,0 +1,113 @@
+/* PAGE */
+.pet-sitting-page {
+    padding: 60px 80px;
+    background: linear-gradient(180deg, #faf7ff, #ffffff);
+    min-height: 100vh;
+}
+
+.pet-sitting-page h1 {
+    text-align: center;
+    color: #6b4fa1;
+    font-size: 42px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #777;
+    margin-bottom: 32px;
+}
+
+/* FILTER BAR */
+.filters {
+    max-width: 1000px;
+    margin: 0 auto 48px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 22px 28px;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.filters input {
+    width: 320px;
+    padding: 14px 18px;
+    border-radius: 14px;
+    border: 1px solid #e5ddf3;
+    font-size: 16px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.filters input:focus {
+    border-color: #7b5fc4;
+    box-shadow: 0 0 0 3px rgba(123, 95, 196, 0.15);
+}
+
+.filter-reset,
+.filter-rating,
+.filter-price {
+    font-weight: 600;
+    color: #7b5fc4;
+    cursor: pointer;
+}
+
+/* GRID */
+.sitters-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 28px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+/* CARD */
+.sitter-card {
+    background: white;
+    padding: 24px;
+    border-radius: 22px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.rating {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    background: #f3eefc;
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-weight: 600;
+}
+
+.sitter-card h3 {
+    margin-top: 0;
+    color: #5b3f92;
+}
+
+.city {
+    color: #888;
+    margin-bottom: 8px;
+}
+
+.card-footer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-footer button {
+    background: #7b5fc4;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 14px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.card-footer button:hover {
+    background: #684bb1;
+}
