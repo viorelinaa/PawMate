@@ -117,6 +117,36 @@ export default function Adoption() {
                     </label>
                 </div>
             </div>
+
+            {filtered.length > 0 ? (
+                <div className="petCards">
+                    {filtered.map((p) => (
+                        <div className="petCard" key={p.id}>
+                            <div className="petCardHeader">
+                                <div>
+                                    <h3 className="petName">{p.name}</h3>
+                                    <span className="petCity">{p.city}</span>
+                                </div>
+                                <span className="badge">{p.species}</span>
+                            </div>
+
+                            <div className="badges">
+                                <span className="badge">{p.age}</span>
+                                <span className="badge">{p.size}</span>
+                                <span className="badge">{p.vaccinated ? "Vaccinat" : "Nevaccinat"}</span>
+                                <span className="badge">{p.sterilized ? "Sterilizat" : "Nesterilizat"}</span>
+                            </div>
+
+                            <p className="petDesc">{p.description}</p>
+                            <button className="btnDetails" onClick={() => alert("Cerere trimisă (mock)!")}>
+                                Cere detalii
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="emptyNotice">Nu există rezultate pentru filtrele selectate.</div>
+            )}
         </div>
     );
 }
