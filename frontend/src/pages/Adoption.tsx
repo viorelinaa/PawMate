@@ -68,9 +68,19 @@ export default function Adoption() {
 
     return (
         <div>
-            <h1>Adopție</h1>
-            <p>Filtrează și găsește animalul potrivit.</p>
+            <section className="adoptionHero">
+                <div className="adoptionCloud ac1" />
+                <div className="adoptionCloud ac2" />
+                <span className="adoptionPaw ap1">🐾</span>
+                <span className="adoptionPaw ap2">🐾</span>
+                <span className="adoptionPaw ap3">🐾</span>
+                <div className="adoptionHeroInner">
+                    <h1 className="adoptionTitle">Adopție</h1>
+                    <p className="adoptionSub">Filtrează și găsește animalul potrivit.</p>
+                </div>
+            </section>
 
+            <div className="adoptionContent">
             <div className="filters">
                 <div className="filtersGrid">
                     <input
@@ -147,6 +157,7 @@ export default function Adoption() {
             ) : (
                 <div className="emptyNotice">Nu există rezultate pentru filtrele selectate.</div>
             )}
+            </div>
         </div>
     );
 }
