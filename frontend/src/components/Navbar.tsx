@@ -4,14 +4,17 @@ import "./Navbar.css";
 export default function Navbar() {
     return (
         <header className="navbar">
-            <div className="logo">🐾 PawMate</div>
+            {/* LOGO CLICKABIL */}
+            <NavLink to="/" className="logo" end>
+                🐾 PawMate
+            </NavLink>
 
             <nav className="links">
                 <NavLink to="/" end>
                     Home
                 </NavLink>
 
-                <NavLink to="/sitters">
+                <NavLink to="/pet-sitting">
                     Sitters
                 </NavLink>
 
