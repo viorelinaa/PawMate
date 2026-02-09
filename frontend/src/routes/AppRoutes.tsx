@@ -4,7 +4,7 @@ import Home from "../pages/Home";
 import Adoption from "../pages/Adoption";
 import SittersList from "../pages/SittersList";
 import Login from "../pages/Login";
-
+import Signup from "../pages/SignUp";
 export default function AppRoutes() {
     return (
         <>
@@ -14,6 +14,7 @@ export default function AppRoutes() {
                 <Route path="/adoptie" element={<Adoption />} />
                 <Route path="/sitters" element={<SittersList />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
             </Routes>
         </>
     );
