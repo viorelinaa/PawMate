@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./Adoption.css";
 
 interface Pet {
     id: string;
