@@ -14,7 +14,7 @@ export default function Navbar() {
                     Home
                 </NavLink>
 
-                <NavLink to="/pet-sitting">
+                <NavLink to="/sitters">
                     Sitters
                 </NavLink>
 
