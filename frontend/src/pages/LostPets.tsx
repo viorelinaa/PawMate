@@ -49,6 +49,32 @@ export default function LostPets() {
         <div>
             <h1>Animale pierdute</h1>
             <p>Caută în anunțuri și ajută la găsirea lor.</p>
+
+            <div className="lostFilters">
+                <div className="lostFiltersGrid">
+                    <input
+                        className="lostInput"
+                        placeholder="Caută în descriere..."
+                        value={query}
+                        onChange={(e) => setQuery(e.target.value)}
+                    />
+                    <select className="lostSelect" value={species} onChange={(e) => setSpecies(e.target.value)}>
+                        <option value="ALL">Toate speciile</option>
+                        <option value="Câine">Câine</option>
+                        <option value="Pisică">Pisică</option>
+                        <option value="Pasăre">Pasăre</option>
+                        <option value="Rozător">Rozător</option>
+                        <option value="Altul">Altul</option>
+                    </select>
+                    <select className="lostSelect" value={city} onChange={(e) => setCity(e.target.value)}>
+                        <option value="ALL">Toate orașele</option>
+                        {allCities.map((c) => (
+                            <option key={c} value={c}>{c}</option>
+                        ))}
+                    </select>
+                    <button className="lostBtnReset" onClick={resetFilters}>Reset</button>
+                </div>
+            </div>
         </div>
     );
 }
