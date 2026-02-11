@@ -21,6 +21,11 @@ const lostAds: LostAd[] = [
         contact: "+373 7xx xxx xxx",
         description: "Pisică tigrată, foarte sperioasă, răspunde la Mura.",
     },
+    {
+        id: "l3", species: "Câine", city: "Chișinău", date: "2026-02-05",
+        contact: "+373 6xx xxx xxx",
+        description: "Câine negru de talie mare, foarte prietenos, pierdut lângă parcul central.",
+    },
 ];
 
 export default function LostPets() {
