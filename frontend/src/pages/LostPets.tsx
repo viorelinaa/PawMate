@@ -75,6 +75,25 @@ export default function LostPets() {
                     <button className="lostBtnReset" onClick={resetFilters}>Reset</button>
                 </div>
             </div>
+
+            {filtered.length > 0 ? (
+                <div className="lostCards">
+                    {filtered.map((a) => (
+                        <div className="lostCard" key={a.id}>
+                            <div className="lostCardHeader">
+                                <span className="lostBadge">{a.species}</span>
+                                <span className="lostSmall">{a.city} • {a.date}</span>
+                            </div>
+                            <p className="lostDesc">{a.description}</p>
+                            <div className="lostBadges">
+                                <span className="lostBadge">Contact: {a.contact}</span>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            ) : (
+                <div className="lostEmpty">Nu există rezultate pentru filtrele selectate.</div>
+            )}
         </div>
     );
 }
