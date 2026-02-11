@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 interface LostAd {
     id: string;
     species: string;
@@ -21,6 +23,28 @@ const lostAds: LostAd[] = [
 ];
 
 export default function LostPets() {
+    const [query, setQuery] = useState("");
+    const [species, setSpecies] = useState("ALL");
+    const [city, setCity] = useState("ALL");
+
+    const allCities = [...new Set(lostAds.map((a) => a.city))];
+
+    const filtered = lostAds.filter((a) => {
+        if (species !== "ALL" && a.species !== species) return false;
+        if (city !== "ALL" && a.city !== city) return false;
+        if (query) {
+            const q = query.toLowerCase();
+            if (!a.description.toLowerCase().includes(q)) return false;
+        }
+        return true;
+    });
+
+    function resetFilters() {
+        setQuery("");
+        setSpecies("ALL");
+        setCity("ALL");
+    }
+
     return (
         <div>
             <h1>Animale pierdute</h1>
