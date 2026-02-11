@@ -18,6 +18,10 @@ export default function Navbar() {
                     Adopție
                 </NavLink>
 
+                <NavLink to="/pierdute">
+                    Pierdute
+                </NavLink>
+
                 <NavLink to="/sitters">
                     Sitters
                 </NavLink>
