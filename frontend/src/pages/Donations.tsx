@@ -30,6 +30,26 @@ export default function Donations() {
         <div>
             <h1>Donații</h1>
             <p>ONG-uri și adăposturi care au nevoie de ajutor.</p>
+
+            <div className="donCards">
+                {donationOrgs.map((o) => (
+                    <div className="donCard" key={o.id}>
+                        <div className="donCardHeader">
+                            <div>
+                                <h3 className="donName">{o.name}</h3>
+                                <span className="donSmall">{o.city}</span>
+                            </div>
+                            <span className="donBadge">{o.type}</span>
+                        </div>
+                        <p className="donDesc">{o.description}</p>
+                        <div style={{ marginTop: "auto", paddingTop: "14px" }}>
+                            <button className="donBtn" onClick={() => alert("Donație (mock)!")}>
+                                Donează
+                            </button>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 }
