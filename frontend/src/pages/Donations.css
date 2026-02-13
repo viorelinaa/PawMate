@@ -1,0 +1,106 @@
+/* src/pages/Donations.css */
+
+/* Hero banner */
+.donHero {
+    position: relative;
+    padding: 80px 24px 60px;
+    background: linear-gradient(
+        180deg,
+        #d8c6ea 0%,
+        #e5dbf2 45%,
+        #f5f1fa 100%
+    );
+    overflow: hidden;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    text-align: center;
+}
+
+.donHero::before {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    left: 50%;
+    top: 40px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.0) 70%);
+    border-radius: 999px;
+    pointer-events: none;
+}
+
+.donCloud {
+    position: absolute;
+    background: rgba(255,255,255,0.95);
+    border-radius: 999px;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08));
+    pointer-events: none;
+}
+
+.donCloud::before,
+.donCloud::after {
+    content: "";
+    position: absolute;
+    background: rgba(255,255,255,0.95);
+    border-radius: 999px;
+}
+
+.donCloud::before {
+    width: 80px;
+    height: 80px;
+    left: 25px;
+    top: -35px;
+}
+
+.donCloud::after {
+    width: 100px;
+    height: 100px;
+    left: 90px;
+    top: -45px;
+}
+
+.donCloud.dc1 {
+    width: 200px;
+    height: 70px;
+    left: 30px;
+    top: 40px;
+    transform: scale(0.9);
+}
+
+.donCloud.dc2 {
+    width: 220px;
+    height: 75px;
+    right: 30px;
+    top: 50px;
+    transform: scale(1);
+}
+
+.donPaw {
+    position: absolute;
+    font-size: 24px;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.donPaw.dp1 { left: 20px; bottom: 30px; transform: rotate(-14deg); }
+.donPaw.dp2 { right: 24px; bottom: 34px; transform: rotate(12deg); }
+.donPaw.dp3 { left: 50%; top: 20px; transform: translateX(-50%) rotate(8deg); font-size: 20px; }
+
+.donHeroInner {
+    position: relative;
+}
+
+.donTitle {
+    text-align: center;
+    margin: 0;
+    font-size: clamp(32px, 4vw, 52px);
+    color: #6a4a83;
+    font-weight: 800;
+}
+
+.donSub {
+    text-align: center;
+    margin: 10px 0 0;
+    color: rgba(43,34,54,0.7);
+    font-weight: 600;
+}
