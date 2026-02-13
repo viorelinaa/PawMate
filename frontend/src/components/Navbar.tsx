@@ -22,6 +22,10 @@ export default function Navbar() {
                     Pierdute
                 </NavLink>
 
+                <NavLink to="/donatii">
+                    Donații
+                </NavLink>
+
                 <NavLink to="/sitters">
                     Sitters
                 </NavLink>
