@@ -1,3 +1,5 @@
+import "./Donations.css";
+
 interface DonationOrg {
     id: string;
     name: string;
