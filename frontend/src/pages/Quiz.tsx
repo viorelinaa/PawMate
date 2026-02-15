@@ -2,191 +2,180 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "./quiz.css";
 
-type Animal = "dog" | "cat" | "both";
+type AnimalKey =
+    | "dog"
+    | "cat"
+    | "rabbit"
+    | "hamster"
+    | "parrot"
+    | "turtle"
+    | "snake"
+    | "lizard";
 
 type Answer = {
     text: string;
-    value: Animal;
+    value: AnimalKey;
 };
 
 type Question = {
-    id: string;
-    title: string;
+    question: string;
     answers: Answer[];
+};
+
+const ANIMALS: Record<
+    AnimalKey,
+    { name: string; emoji: string; adoptPath: string }
+> = {
+    dog: { name: "Câine", emoji: "🐶", adoptPath: "/adoptie?animal=dog" },
+    cat: { name: "Pisică", emoji: "🐱", adoptPath: "/adoptie?animal=cat" },
+    rabbit: { name: "Iepure", emoji: "🐰", adoptPath: "/adoptie?animal=rabbit" },
+    hamster: { name: "Hamster", emoji: "🐹", adoptPath: "/adoptie?animal=hamster" },
+    parrot: { name: "Papagal", emoji: "🦜", adoptPath: "/adoptie?animal=parrot" },
+    turtle: { name: "Broască țestoasă", emoji: "🐢", adoptPath: "/adoptie?animal=turtle" },
+    snake: { name: "Șarpe", emoji: "🐍", adoptPath: "/adoptie?animal=snake" },
+    lizard: { name: "Șopârlă", emoji: "🦎", adoptPath: "/adoptie?animal=lizard" },
 };
 
 const QUESTIONS: Question[] = [
     {
-        id: "q1",
-        title: "Cum îți petreci cel mai des timpul liber?",
+        question: "Cum îți place să îți petreci timpul liber?",
         answers: [
-            { text: "Afară, activ(ă), plimbări", value: "dog" },
-            { text: "Acasă, liniște, relaxare", value: "cat" },
-            { text: "Depinde, îmi place și-și", value: "both" },
+            { text: "Plimbări și activitate", value: "dog" },
+            { text: "Relaxare acasă", value: "cat" },
+            { text: "Calm și liniște", value: "rabbit" },
+            { text: "Observare și curiozitate", value: "turtle" },
         ],
     },
     {
-        id: "q2",
-        title: "Cât de multă energie ai zilnic?",
+        question: "Cât de mult timp poți acorda zilnic?",
         answers: [
-            { text: "Multă, îmi place mișcarea", value: "dog" },
-            { text: "Mai calm(ă), prefer ritm lent", value: "cat" },
-            { text: "Uneori mult, uneori calm", value: "both" },
+            { text: "Mult timp", value: "dog" },
+            { text: "Mediu", value: "cat" },
+            { text: "Puțin", value: "hamster" },
+            { text: "Foarte puțin", value: "snake" },
         ],
     },
     {
-        id: "q3",
-        title: "Ce te descrie mai bine?",
+        question: "Ce tip de personalitate ai?",
         answers: [
-            { text: "Sociabil(ă), îmi place compania", value: "dog" },
-            { text: "Independent(ă), îmi place spațiul meu", value: "cat" },
-            { text: "Un mix între cele două", value: "both" },
+            { text: "Energic", value: "dog" },
+            { text: "Independent", value: "cat" },
+            { text: "Blând", value: "rabbit" },
+            { text: "Exotic", value: "lizard" },
         ],
     },
     {
-        id: "q4",
-        title: "Cât timp poți dedica zilnic unui animal?",
+        question: "Ce spațiu ai?",
         answers: [
-            { text: "Destul, pot ieși la plimbări", value: "dog" },
-            { text: "Mai puțin, dar constant", value: "cat" },
-            { text: "Pot adapta programul", value: "both" },
+            { text: "Casă cu curte", value: "dog" },
+            { text: "Apartament", value: "cat" },
+            { text: "Spațiu mic", value: "hamster" },
+            { text: "Terariu", value: "snake" },
         ],
     },
     {
-        id: "q5",
-        title: "Ce fel de interacțiune îți place?",
+        question: "Ce animal te atrage cel mai mult?",
         answers: [
-            { text: "Joacă multă și activitate", value: "dog" },
-            { text: "Afecțiune calmă, în ritmul meu", value: "cat" },
-            { text: "Ambele", value: "both" },
+            { text: "Câine", value: "dog" },
+            { text: "Pisică", value: "cat" },
+            { text: "Papagal", value: "parrot" },
+            { text: "Țestoasă", value: "turtle" },
         ],
     },
 ];
 
-function getResult(counts: Record<Animal, number>) {
-    const { dog, cat, both } = counts;
-
-    if (dog >= cat && dog >= both) {
-        return {
-            title: "🐶 Ți se potrivește un câine!",
-            text:
-                "Îți place energia, plimbările și compania activă. Un câine ar fi un prieten super pentru tine.",
-            key: "dog" as const,
-        };
-    }
-
-    if (cat >= dog && cat >= both) {
-        return {
-            title: "🐱 Ți se potrivește o pisică!",
-            text:
-                "Îți place liniștea, independența și momentele cozy. O pisică s-ar potrivi perfect cu stilul tău.",
-            key: "cat" as const,
-        };
-    }
-
-    return {
-        title: "🐾 Ți se potrivește un mix!",
-        text:
-            "Ești echilibrat(ă): îți plac și momentele active, și cele relaxante. Te-ai înțelege bine cu ambele.",
-        key: "both" as const,
-    };
-}
-
 export default function Quiz() {
     const [index, setIndex] = useState(0);
-    const [counts, setCounts] = useState<Record<Animal, number>>({
-        dog: 0,
-        cat: 0,
-        both: 0,
-    });
+    const [answers, setAnswers] = useState<AnimalKey[]>([]);
 
-    const done = index >= QUESTIONS.length;
+    const finished = index >= QUESTIONS.length;
 
-    const result = useMemo(() => getResult(counts), [counts]);
+    const scores = useMemo(() => {
+        const base: Record<AnimalKey, number> = {
+            dog: 0,
+            cat: 0,
+            rabbit: 0,
+            hamster: 0,
+            parrot: 0,
+            turtle: 0,
+            snake: 0,
+            lizard: 0,
+        };
+        answers.forEach((a) => base[a]++);
+        return base;
+    }, [answers]);
 
-    function pick(value: Animal) {
-        setCounts((prev) => ({ ...prev, [value]: prev[value] + 1 }));
-        setIndex((i) => i + 1);
-    }
+    const bestAnimal = useMemo(() => {
+        return (Object.keys(scores) as AnimalKey[]).sort(
+            (a, b) => scores[b] - scores[a]
+        )[0];
+    }, [scores]);
 
-    function restart() {
-        setIndex(0);
-        setCounts({ dog: 0, cat: 0, both: 0 });
-    }
+    const progress = Math.round((index / QUESTIONS.length) * 100);
 
     return (
         <div className="quizPage">
-            <div className="quizHero">
-                <div className="chip">Quiz</div>
-                <h1>Ce animal ți se potrivește?</h1>
-                <p>Răspunde la câteva întrebări și vezi recomandarea.</p>
+            {/* PROGRESS */}
+            <div className="quizProgress">
+        <span>
+          Întrebarea {Math.min(index + 1, QUESTIONS.length)} /{" "}
+            {QUESTIONS.length}
+        </span>
+                <span>{progress}%</span>
+                <div className="bar">
+                    <div className="fill" style={{ width: `${progress}%` }} />
+                </div>
             </div>
 
-            <div className="quizCard">
-                {!done ? (
-                    <>
-                        <div className="quizTop">
-                            <div className="quizStep">
-                                Întrebarea <b>{index + 1}</b> / {QUESTIONS.length}
-                            </div>
-                            <button className="linkBtn" onClick={restart} type="button">
-                                Reset
+            {!finished ? (
+                <div className="quizCard">
+                    <h2>{QUESTIONS[index].question}</h2>
+                    <div className="answers">
+                        {QUESTIONS[index].answers.map((a) => (
+                            <button
+                                key={a.text}
+                                onClick={() => {
+                                    setAnswers([...answers, a.value]);
+                                    setIndex(index + 1);
+                                }}
+                            >
+                                {a.text}
                             </button>
-                        </div>
+                        ))}
+                    </div>
+                </div>
+            ) : (
+                <div className="quizResult">
+                    <h2>Rezultat</h2>
+                    <h3>
+                        {ANIMALS[bestAnimal].emoji} Ți se potrivește{" "}
+                        {ANIMALS[bestAnimal].name}!
+                    </h3>
 
-                        <h2 className="qTitle">{QUESTIONS[index].title}</h2>
-
-                        <div className="answers">
-                            {QUESTIONS[index].answers.map((a) => (
-                                <button
-                                    key={a.text}
-                                    className="answerBtn"
-                                    onClick={() => pick(a.value)}
-                                    type="button"
-                                >
-                                    {a.text}
-                                </button>
+                    <div className="quizStats">
+                        {(Object.keys(ANIMALS) as AnimalKey[])
+                            .sort((a, b) => scores[b] - scores[a])
+                            .map((k) => (
+                                <div className="quizStat" key={k}>
+                                    <div>
+                                        {ANIMALS[k].emoji} {ANIMALS[k].name}
+                                    </div>
+                                    <strong>{scores[k]}</strong>
+                                </div>
                             ))}
-                        </div>
-                    </>
-                ) : (
-                    <>
-                        <h2 className="resultTitle">Rezultat</h2>
-                        <div className="resultHeadline">{result.title}</div>
-                        <p className="resultText">{result.text}</p>
+                    </div>
 
-                        <div className="stats">
-                            <div className="stat">
-                                <div className="statLabel">Câine</div>
-                                <div className="statValue">{counts.dog}</div>
-                            </div>
-                            <div className="stat">
-                                <div className="statLabel">Pisică</div>
-                                <div className="statValue">{counts.cat}</div>
-                            </div>
-                            <div className="stat">
-                                <div className="statLabel">Mix</div>
-                                <div className="statValue">{counts.both}</div>
-                            </div>
-                        </div>
-
-                        <div className="actions">
-                            <button className="primaryBtn" onClick={restart} type="button">
-                                Reîncepe quiz-ul
-                            </button>
-
-                            <Link className="secondaryBtn" to="/">
-                                Înapoi acasă
-                            </Link>
-
-                            {/* BUTONUL CERUT */}
-                            <Link className="secondaryBtn" to="/adoptie">
-                                Mergi la adopție
-                            </Link>
-                        </div>
-                    </>
-                )}
-            </div>
+                    <div className="resultActions">
+                        <button onClick={() => window.location.reload()}>
+                            Reîncepe quiz-ul
+                        </button>
+                        <Link to="/">Înapoi acasă</Link>
+                        <Link className="primary" to={ANIMALS[bestAnimal].adoptPath}>
+                            Vezi {ANIMALS[bestAnimal].name.toLowerCase()} pentru adopție
+                        </Link>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
