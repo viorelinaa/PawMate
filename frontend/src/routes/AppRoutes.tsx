@@ -8,6 +8,7 @@ import Quiz from "../pages/Quiz";
 import SittersList from "../pages/SittersList";
 import Login from "../pages/Login";
 import Signup from "../pages/SignUp";
+import NotFound from "../pages/NotFound";
 export default function AppRoutes() {
     return (
         <>
@@ -21,6 +22,7 @@ export default function AppRoutes() {
                 <Route path="/login" element={<Login />} />
                 <Route path="/quiz" element={<Quiz />} />
                 <Route path="/signup" element={<Signup />} />
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </>
     );
