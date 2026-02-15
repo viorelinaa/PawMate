@@ -7,7 +7,7 @@
 /* PROGRESS */
 .quizProgress {
     background: #f7f4ff;
-    padding: 18px 18px;
+    padding: 18px;
     border-radius: 18px;
     box-shadow: 0 10px 30px rgba(120, 80, 200, 0.14);
     margin-bottom: 24px;
@@ -19,6 +19,7 @@
     justify-content: space-between;
     align-items: center;
     gap: 12px;
+    margin-bottom: 8px;
 }
 
 .quizProgress span {
@@ -31,7 +32,6 @@
     background: #e6defa;
     border-radius: 999px;
     overflow: hidden;
-    margin-top: 10px;
     border: 1px solid rgba(106, 74, 131, 0.12);
 }
 
@@ -45,7 +45,7 @@
 /* CARD */
 .quizCard,
 .quizResult {
-    background: white;
+    background: #ffffff;
     border-radius: 26px;
     padding: 28px;
     box-shadow: 0 20px 50px rgba(120, 80, 200, 0.14);
@@ -124,58 +124,56 @@
     box-shadow: 0 10px 22px rgba(120, 80, 200, 0.14);
 }
 
-/* RESULT */
-.resultTitle {
-    margin: 0;
-    font-size: 24px;
-    color: #3c2d55;
+/* RESULT BIG */
+.winner {
+    text-align: center;
+    margin: 10px 0 24px;
 }
 
-.resultMain {
-    margin-top: 10px;
-    font-size: 22px;
+.winnerEmoji {
+    font-size: 64px;
+    margin-bottom: 8px;
+}
+
+.winnerName {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
     color: #6a4a83;
 }
 
-.resultDesc {
-    margin: 10px 0 0 0;
+.winnerDesc {
+    margin: 10px 0 0;
     color: #6b5b7a;
     font-weight: 500;
 }
 
-/* STATS */
-.quizStats {
+/* OTHER SMALL */
+.otherResults {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 12px;
-    margin-top: 18px;
+    margin-bottom: 22px;
 }
 
-.quizStat {
+.otherAnimal {
     background: #faf8ff;
     border: 1px solid #e6defa;
-    border-radius: 16px;
-    padding: 14px;
-    text-align: center;
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #7a6a95;
 }
 
-.quizStat.best {
-    border-color: rgba(155, 135, 255, 0.5);
-    box-shadow: 0 12px 26px rgba(120, 80, 200, 0.18);
-}
-
-.statLabel {
+.otherAnimal strong {
     font-weight: 700;
-    color: #4b3a66;
-    margin-bottom: 6px;
+    color: #6a4a83;
 }
 
-.statValue {
-    font-size: 26px;
-    color: #2e2440;
-}
-
-/* ACTIONS / BUTTONS */
+/* ACTIONS / BUTTONS (smaller + centered) */
 .resultActions {
     display: flex;
     justify-content: center;
@@ -185,10 +183,10 @@
     margin-top: 24px;
 }
 
-/* all buttons same size */
+/* all buttons same size, smaller */
 .resultActions .btn {
-    width: 240px;            /* SAME SIZE */
-    height: 46px;            /* SAME SIZE */
+    width: 220px;
+    height: 46px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -198,7 +196,6 @@
     text-decoration: none;
     cursor: pointer;
     transition: all 0.25s ease;
-    box-shadow: 0 10px 22px rgba(120, 80, 200, 0.18);
     border: none;
     padding: 0 18px;
     text-align: center;
@@ -208,12 +205,14 @@
 .resultActions .btn.primary {
     background: linear-gradient(135deg, #6a4a83, #8f6bff);
     color: #fff;
+    box-shadow: 0 10px 22px rgba(120, 80, 200, 0.18);
 }
 
 /* adopt / secondary */
 .resultActions .btn.secondary {
     background: #6a4a83;
     color: #fff;
+    box-shadow: 0 10px 22px rgba(120, 80, 200, 0.18);
 }
 
 /* back / ghost */
@@ -224,9 +223,12 @@
     box-shadow: none;
 }
 
-/* hover */
 .resultActions .btn:hover {
     transform: translateY(-2px);
+}
+
+.resultActions .btn.primary:hover,
+.resultActions .btn.secondary:hover {
     box-shadow: 0 14px 30px rgba(120, 80, 200, 0.25);
 }
 

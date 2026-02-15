@@ -26,21 +26,83 @@ type Question = {
     answers: Answer[];
 };
 
-const ANIMALS: Record<AnimalKey, { name: string; emoji: string; adoptPath: string; desc: string }> =
-    {
-        dog: { name: "Câine", emoji: "🐶", adoptPath: "/adoptie?animal=dog", desc: "Îți place energia, plimbările și compania activă." },
-        cat: { name: "Pisică", emoji: "🐱", adoptPath: "/adoptie?animal=cat", desc: "Apreciezi confortul, liniștea și vibe-ul cozy." },
-        rabbit: { name: "Iepure", emoji: "🐰", adoptPath: "/adoptie?animal=rabbit", desc: "Ești blând(ă), calm(ă) și ai grijă la detalii." },
-        hamster: { name: "Hamster", emoji: "🐹", adoptPath: "/adoptie?animal=hamster", desc: "Îți plac lucrurile mici, simpatice și ușor de îngrijit." },
-        parrot: { name: "Papagal", emoji: "🦜", adoptPath: "/adoptie?animal=parrot", desc: "Ești sociabil(ă), comunicativ(ă) și îți place interacțiunea." },
-        turtle: { name: "Broască țestoasă", emoji: "🐢", adoptPath: "/adoptie?animal=turtle", desc: "Răbdător(oare), calm(ă), îți plac ritmurile lente." },
-        snake: { name: "Șarpe", emoji: "🐍", adoptPath: "/adoptie?animal=snake", desc: "Ai o latură exotică și ești super independent(ă)." },
-        lizard: { name: "Șopârlă", emoji: "🦎", adoptPath: "/adoptie?animal=lizard", desc: "Îți plac animalele neobișnuite și ai spirit explorator." },
-        ferret: { name: "Dihor", emoji: "🦦", adoptPath: "/adoptie?animal=ferret", desc: "Jucăuș(ă), curios(oasă), mereu în mișcare." },
-        hedgehog: { name: "Arici", emoji: "🦔", adoptPath: "/adoptie?animal=hedgehog", desc: "Timid(ă) la început, dar super drăguț(ă) când te deschizi." },
-        gecko: { name: "Gecko", emoji: "🦎", adoptPath: "/adoptie?animal=gecko", desc: "Minimalist(ă), chill, dar cu gust pentru exotic." },
-        axolotl: { name: "Axolotl", emoji: "🦎", adoptPath: "/adoptie?animal=axolotl", desc: "Unic(ă), special(ă), îți place să ieși din tipare." },
-    };
+const ANIMALS: Record<
+    AnimalKey,
+    { name: string; emoji: string; adoptPath: string; desc: string }
+> = {
+    dog: {
+        name: "Câine",
+        emoji: "🐶",
+        adoptPath: "/adoptie?animal=dog",
+        desc: "Îți place energia, plimbările și compania activă.",
+    },
+    cat: {
+        name: "Pisică",
+        emoji: "🐱",
+        adoptPath: "/adoptie?animal=cat",
+        desc: "Apreciezi confortul, liniștea și vibe-ul cozy.",
+    },
+    rabbit: {
+        name: "Iepure",
+        emoji: "🐰",
+        adoptPath: "/adoptie?animal=rabbit",
+        desc: "Ești blând(ă), calm(ă) și atent(ă) la detalii.",
+    },
+    hamster: {
+        name: "Hamster",
+        emoji: "🐹",
+        adoptPath: "/adoptie?animal=hamster",
+        desc: "Îți plac lucrurile mici, simpatice și ușor de îngrijit.",
+    },
+    parrot: {
+        name: "Papagal",
+        emoji: "🦜",
+        adoptPath: "/adoptie?animal=parrot",
+        desc: "Ești sociabil(ă) și îți place interacțiunea.",
+    },
+    turtle: {
+        name: "Broască țestoasă",
+        emoji: "🐢",
+        adoptPath: "/adoptie?animal=turtle",
+        desc: "Calm(ă), răbdător(oare), îți place ritmul lent.",
+    },
+    snake: {
+        name: "Șarpe",
+        emoji: "🐍",
+        adoptPath: "/adoptie?animal=snake",
+        desc: "Ai o latură exotică și ești foarte independent(ă).",
+    },
+    lizard: {
+        name: "Șopârlă",
+        emoji: "🦎",
+        adoptPath: "/adoptie?animal=lizard",
+        desc: "Îți plac animalele neobișnuite și explorarea.",
+    },
+    ferret: {
+        name: "Dihor",
+        emoji: "🦦",
+        adoptPath: "/adoptie?animal=ferret",
+        desc: "Jucăuș(ă), curios(oasă), mereu în mișcare.",
+    },
+    hedgehog: {
+        name: "Arici",
+        emoji: "🦔",
+        adoptPath: "/adoptie?animal=hedgehog",
+        desc: "Timid(ă) la început, dar super sweet când te cunoaște.",
+    },
+    gecko: {
+        name: "Gecko",
+        emoji: "🦎",
+        adoptPath: "/adoptie?animal=gecko",
+        desc: "Exotic, dar chill. Îți place ceva diferit și simplu.",
+    },
+    axolotl: {
+        name: "Axolotl",
+        emoji: "🦎",
+        adoptPath: "/adoptie?animal=axolotl",
+        desc: "Unic(ă) și special(ă). Îți place să ieși din tipare.",
+    },
+};
 
 const QUESTIONS: Question[] = [
     {
@@ -88,51 +150,22 @@ const QUESTIONS: Question[] = [
             { text: "Ceva rar / wow", value: "axolotl" },
         ],
     },
-
-    /* ✅ întrebări dedicate pentru animalele “mai greu de nimerit” */
     {
-        question: "Ce fel de sunete/atmosferă preferi?",
+        question: "Ce fel de atmosferă preferi acasă?",
         answers: [
-            { text: "Îmi place să fie viață și comunicare", value: "parrot" },
+            { text: "Îmi place comunicarea / sunetele", value: "parrot" },
             { text: "Mai bine liniște", value: "cat" },
-            { text: "Puțin sunet e ok", value: "dog" },
-            { text: "Nu contează", value: "turtle" },
+            { text: "Nu contează, mă adaptez", value: "rabbit" },
+            { text: "Chill total", value: "turtle" },
         ],
     },
     {
-        question: "Ce îți place să faci când te relaxezi?",
+        question: "Cât de exotic vrei să fie animalul?",
         answers: [
-            { text: "Să observ lucruri, calm", value: "turtle" },
-            { text: "Să stau cozy în pat", value: "cat" },
-            { text: "Să mă joc / să fac ceva activ", value: "dog" },
-            { text: "Să meșteresc / să explorez ceva nou", value: "lizard" },
-        ],
-    },
-    {
-        question: "Cât de 'exotic' vrei să fie animalul tău?",
-        answers: [
-            { text: "Deloc, clasic", value: "dog" },
-            { text: "Puțin (dar tot friendly)", value: "rabbit" },
-            { text: "Exotic, dar ușor", value: "gecko" },
+            { text: "Clasic", value: "dog" },
+            { text: "Ușor diferit", value: "rabbit" },
+            { text: "Exotic, dar ușor", value: "lizard" },
             { text: "Foarte exotic", value: "snake" },
-        ],
-    },
-    {
-        question: "Cum ești tu cu rutina?",
-        answers: [
-            { text: "Îmi place rutina și disciplina", value: "dog" },
-            { text: "Îmi place libertatea", value: "cat" },
-            { text: "Prefer lucruri simple", value: "hamster" },
-            { text: "Îmi place să fie diferit mereu", value: "ferret" },
-        ],
-    },
-    {
-        question: "Ce animal te atrage cel mai mult, chiar din instinct?",
-        answers: [
-            { text: "🐰 Iepure", value: "rabbit" },
-            { text: "🦜 Papagal", value: "parrot" },
-            { text: "🦔 Arici", value: "hedgehog" },
-            { text: "🦎 Axolotl (super rar!)", value: "axolotl" },
         ],
     },
 ];
@@ -162,18 +195,17 @@ export default function Quiz() {
         return base;
     }, [picked]);
 
+    // tie-breaker random: ca să poată ieși oricine la egalitate
     const bestAnimal = useMemo(() => {
         const keys = Object.keys(scores) as AnimalKey[];
-
         const max = Math.max(...keys.map((k) => scores[k]));
-
         const top = keys.filter((k) => scores[k] === max);
-
         return top[Math.floor(Math.random() * top.length)] ?? "cat";
     }, [scores]);
 
-
-    const progress = Math.round((Math.min(index, QUESTIONS.length) / QUESTIONS.length) * 100);
+    const progress = Math.round(
+        (Math.min(index, QUESTIONS.length) / QUESTIONS.length) * 100
+    );
 
     const handlePick = (v: AnimalKey) => {
         setPicked((prev) => [...prev, v]);
@@ -185,7 +217,9 @@ export default function Quiz() {
         setPicked([]);
     };
 
-    const sortedAnimals = (Object.keys(ANIMALS) as AnimalKey[]).sort((a, b) => scores[b] - scores[a]);
+    const otherAnimalsSorted = (Object.keys(ANIMALS) as AnimalKey[])
+        .filter((k) => k !== bestAnimal)
+        .sort((a, b) => scores[b] - scores[a]);
 
     return (
         <div className="quizPage">
@@ -193,10 +227,12 @@ export default function Quiz() {
             <div className="quizProgress">
                 <div className="quizProgressHeader">
           <span>
-            Întrebarea {Math.min(index + 1, QUESTIONS.length)} / {QUESTIONS.length}
+            Întrebarea {Math.min(index + 1, QUESTIONS.length)} /{" "}
+              {QUESTIONS.length}
           </span>
                     <span>{progress}%</span>
                 </div>
+
                 <div className="bar">
                     <div className="fill" style={{ width: `${progress}%` }} />
                 </div>
@@ -218,20 +254,24 @@ export default function Quiz() {
             ) : (
                 <div className="quizResult">
                     <div className="quizBadge">Rezultat</div>
-                    <h2 className="resultTitle">Rezultat</h2>
 
-                    <h3 className="resultMain">
-                        {ANIMALS[bestAnimal].emoji} Ți se potrivește {ANIMALS[bestAnimal].name}!
-                    </h3>
-                    <p className="resultDesc">{ANIMALS[bestAnimal].desc}</p>
+                    {/* WINNER BIG */}
+                    <div className="winner">
+                        <div className="winnerEmoji">{ANIMALS[bestAnimal].emoji}</div>
+                        <h3 className="winnerName">
+                            Ți se potrivește {ANIMALS[bestAnimal].name}!
+                        </h3>
+                        <p className="winnerDesc">{ANIMALS[bestAnimal].desc}</p>
+                    </div>
 
-                    <div className="quizStats">
-                        {sortedAnimals.map((k) => (
-                            <div className={`quizStat ${k === bestAnimal ? "best" : ""}`} key={k}>
-                                <div className="statLabel">
-                                    {ANIMALS[k].emoji} {ANIMALS[k].name}
-                                </div>
-                                <strong className="statValue">{scores[k]}</strong>
+                    {/* OTHERS SMALL */}
+                    <div className="otherResults">
+                        {otherAnimalsSorted.map((k) => (
+                            <div className="otherAnimal" key={k}>
+                <span>
+                  {ANIMALS[k].emoji} {ANIMALS[k].name}
+                </span>
+                                <strong>{scores[k]}</strong>
                             </div>
                         ))}
                     </div>
