@@ -1,203 +1,190 @@
 import { useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import "./quiz.css";
-import { useNavigate } from "react-router-dom";
+
+type Animal = "dog" | "cat" | "both";
 
 type Answer = {
     text: string;
-    value: "dog" | "cat" | "both";
+    value: Animal;
 };
 
 type Question = {
     id: string;
     title: string;
-    subtitle?: string;
     answers: Answer[];
 };
 
-export default function Quiz() {
-    const questions: Question[] = useMemo(
-        () => [
-            {
-                id: "q1",
-                title: "Cum îți place să-ți petreci timpul liber?",
-                subtitle: "Alege varianta care te descrie cel mai bine.",
-                answers: [
-                    { text: "Afară, plimbări, mișcare", value: "dog" },
-                    { text: "Acasă, liniște, confort", value: "cat" },
-                    { text: "Depinde de zi, îmi plac ambele", value: "both" },
-                ],
-            },
-            {
-                id: "q2",
-                title: "Cât timp ai zilnic pentru un animal?",
-                answers: [
-                    { text: "Mult – pot să ies des cu el", value: "dog" },
-                    { text: "Mai puțin – prefer ceva mai independent", value: "cat" },
-                    { text: "Mediu – pot și una și alta", value: "both" },
-                ],
-            },
-            {
-                id: "q3",
-                title: "Ce fel de energie îți place în casă?",
-                answers: [
-                    { text: "Super energic și jucăuș", value: "dog" },
-                    { text: "Calm și cozy", value: "cat" },
-                    { text: "Un mix echilibrat", value: "both" },
-                ],
-            },
-            {
-                id: "q4",
-                title: "Cum reacționezi la vizitatori?",
-                answers: [
-                    { text: "Îmi place să socializez", value: "dog" },
-                    { text: "Prefer să stau mai retras(ă)", value: "cat" },
-                    { text: "Depinde de context", value: "both" },
-                ],
-            },
-            {
-                id: "q5",
-                title: "Ce ți se pare mai important?",
-                answers: [
-                    { text: "Companie activă & aventuri", value: "dog" },
-                    { text: "Relaxare & afecțiune liniștită", value: "cat" },
-                    { text: "Vreau un prieten echilibrat", value: "both" },
-                ],
-            },
+const QUESTIONS: Question[] = [
+    {
+        id: "q1",
+        title: "Cum îți petreci cel mai des timpul liber?",
+        answers: [
+            { text: "Afară, activ(ă), plimbări", value: "dog" },
+            { text: "Acasă, liniște, relaxare", value: "cat" },
+            { text: "Depinde, îmi place și-și", value: "both" },
         ],
-        []
-    );
+    },
+    {
+        id: "q2",
+        title: "Cât de multă energie ai zilnic?",
+        answers: [
+            { text: "Multă, îmi place mișcarea", value: "dog" },
+            { text: "Mai calm(ă), prefer ritm lent", value: "cat" },
+            { text: "Uneori mult, uneori calm", value: "both" },
+        ],
+    },
+    {
+        id: "q3",
+        title: "Ce te descrie mai bine?",
+        answers: [
+            { text: "Sociabil(ă), îmi place compania", value: "dog" },
+            { text: "Independent(ă), îmi place spațiul meu", value: "cat" },
+            { text: "Un mix între cele două", value: "both" },
+        ],
+    },
+    {
+        id: "q4",
+        title: "Cât timp poți dedica zilnic unui animal?",
+        answers: [
+            { text: "Destul, pot ieși la plimbări", value: "dog" },
+            { text: "Mai puțin, dar constant", value: "cat" },
+            { text: "Pot adapta programul", value: "both" },
+        ],
+    },
+    {
+        id: "q5",
+        title: "Ce fel de interacțiune îți place?",
+        answers: [
+            { text: "Joacă multă și activitate", value: "dog" },
+            { text: "Afecțiune calmă, în ritmul meu", value: "cat" },
+            { text: "Ambele", value: "both" },
+        ],
+    },
+];
 
-    const [step, setStep] = useState(0);
-    const [score, setScore] = useState({ dog: 0, cat: 0, both: 0 });
+function getResult(counts: Record<Animal, number>) {
+    const { dog, cat, both } = counts;
 
-    const current = questions[step];
-    const isDone = step >= questions.length;
+    if (dog >= cat && dog >= both) {
+        return {
+            title: "🐶 Ți se potrivește un câine!",
+            text:
+                "Îți place energia, plimbările și compania activă. Un câine ar fi un prieten super pentru tine.",
+            key: "dog" as const,
+        };
+    }
 
-    function pick(value: Answer["value"]) {
-        setScore((s) => ({ ...s, [value]: s[value] + 1 }));
-        setStep((x) => x + 1);
+    if (cat >= dog && cat >= both) {
+        return {
+            title: "🐱 Ți se potrivește o pisică!",
+            text:
+                "Îți place liniștea, independența și momentele cozy. O pisică s-ar potrivi perfect cu stilul tău.",
+            key: "cat" as const,
+        };
+    }
+
+    return {
+        title: "🐾 Ți se potrivește un mix!",
+        text:
+            "Ești echilibrat(ă): îți plac și momentele active, și cele relaxante. Te-ai înțelege bine cu ambele.",
+        key: "both" as const,
+    };
+}
+
+export default function Quiz() {
+    const [index, setIndex] = useState(0);
+    const [counts, setCounts] = useState<Record<Animal, number>>({
+        dog: 0,
+        cat: 0,
+        both: 0,
+    });
+
+    const done = index >= QUESTIONS.length;
+
+    const result = useMemo(() => getResult(counts), [counts]);
+
+    function pick(value: Animal) {
+        setCounts((prev) => ({ ...prev, [value]: prev[value] + 1 }));
+        setIndex((i) => i + 1);
     }
 
     function restart() {
-        setStep(0);
-        setScore({ dog: 0, cat: 0, both: 0 });
+        setIndex(0);
+        setCounts({ dog: 0, cat: 0, both: 0 });
     }
-
-    const result = useMemo(() => {
-        // Transformăm "both" în puncte către ambele, ca să nu iasă ciudat
-        const dog = score.dog + Math.floor(score.both / 2);
-        const cat = score.cat + Math.ceil(score.both / 2);
-
-        if (dog > cat + 1) return "dog";
-        if (cat > dog + 1) return "cat";
-        return "both";
-    }, [score]);
 
     return (
         <div className="quizPage">
-            <div className="quizShell">
-                <header className="quizHeader">
-                    <div className="quizBadge">Quiz</div>
-                    <h1>Ce animal ți se potrivește?</h1>
-                    <p>Răspunde la câteva întrebări și vezi recomandarea.</p>
-                </header>
+            <div className="quizHero">
+                <div className="chip">Quiz</div>
+                <h1>Ce animal ți se potrivește?</h1>
+                <p>Răspunde la câteva întrebări și vezi recomandarea.</p>
+            </div>
 
-                {!isDone ? (
-                    <section className="quizCard">
-                        <div className="quizProgress">
-                            <div className="quizProgressTop">
-                <span>
-                  Întrebarea <b>{step + 1}</b> din <b>{questions.length}</b>
-                </span>
-                                <span className="quizProgressPct">
-                  {Math.round(((step + 1) / questions.length) * 100)}%
-                </span>
+            <div className="quizCard">
+                {!done ? (
+                    <>
+                        <div className="quizTop">
+                            <div className="quizStep">
+                                Întrebarea <b>{index + 1}</b> / {QUESTIONS.length}
                             </div>
-                            <div className="quizProgressBar">
-                                <div
-                                    className="quizProgressFill"
-                                    style={{ width: `${((step + 1) / questions.length) * 100}%` }}
-                                />
-                            </div>
+                            <button className="linkBtn" onClick={restart} type="button">
+                                Reset
+                            </button>
                         </div>
 
-                        <div className="quizQ">
-                            <h2>{current.title}</h2>
-                            {current.subtitle ? <p>{current.subtitle}</p> : null}
-                        </div>
+                        <h2 className="qTitle">{QUESTIONS[index].title}</h2>
 
-                        <div className="quizAnswers">
-                            {current.answers.map((a) => (
-                                <button key={a.text} className="quizAnswer" onClick={() => pick(a.value)}>
+                        <div className="answers">
+                            {QUESTIONS[index].answers.map((a) => (
+                                <button
+                                    key={a.text}
+                                    className="answerBtn"
+                                    onClick={() => pick(a.value)}
+                                    type="button"
+                                >
                                     {a.text}
                                 </button>
                             ))}
                         </div>
-
-                        <div className="quizHint">
-                            Tip: răspunde instinctiv — nu există răspuns greșit 😊
-                        </div>
-                    </section>
+                    </>
                 ) : (
-                    <section className="quizResult">
-                        <div className="quizCard quizResultCard">
-                            <h2>Rezultat</h2>
+                    <>
+                        <h2 className="resultTitle">Rezultat</h2>
+                        <div className="resultHeadline">{result.title}</div>
+                        <p className="resultText">{result.text}</p>
 
-                            {result === "dog" && (
-                                <>
-                                    <div className="quizResultTitle">🐶 Ți se potrivește un câine!</div>
-                                    <p className="quizResultText">
-                                        Îți place energia, plimbările și compania activă. Un câine ar fi un
-                                        prieten super pentru tine.
-                                    </p>
-                                </>
-                            )}
-
-                            {result === "cat" && (
-                                <>
-                                    <div className="quizResultTitle">🐱 Ți se potrivește o pisică!</div>
-                                    <p className="quizResultText">
-                                        Îți place liniștea, confortul și o companie mai independentă. O pisică
-                                        ar fi perfectă.
-                                    </p>
-                                </>
-                            )}
-
-                            {result === "both" && (
-                                <>
-                                    <div className="quizResultTitle">🐾 Ți se potrivește un mix!</div>
-                                    <p className="quizResultText">
-                                        Ești echilibrat(ă): îți plac și momentele active, și cele relaxante.
-                                        Te-ai înțelege bine cu ambele.
-                                    </p>
-                                </>
-                            )}
-
-                            <div className="quizStats">
-                                <div className="quizStat">
-                                    <span>Câine</span>
-                                    <b>{score.dog}</b>
-                                </div>
-                                <div className="quizStat">
-                                    <span>Pisică</span>
-                                    <b>{score.cat}</b>
-                                </div>
-                                <div className="quizStat">
-                                    <span>Mix</span>
-                                    <b>{score.both}</b>
-                                </div>
+                        <div className="stats">
+                            <div className="stat">
+                                <div className="statLabel">Câine</div>
+                                <div className="statValue">{counts.dog}</div>
                             </div>
-
-                            <div className="quizActions">
-                                <button className="btnPrimary" onClick={restart}>
-                                    Reîncepe quiz-ul
-                                </button>
-                                <a className="btnGhost" href="/">
-                                    Înapoi acasă
-                                </a>
+                            <div className="stat">
+                                <div className="statLabel">Pisică</div>
+                                <div className="statValue">{counts.cat}</div>
+                            </div>
+                            <div className="stat">
+                                <div className="statLabel">Mix</div>
+                                <div className="statValue">{counts.both}</div>
                             </div>
                         </div>
-                    </section>
+
+                        <div className="actions">
+                            <button className="primaryBtn" onClick={restart} type="button">
+                                Reîncepe quiz-ul
+                            </button>
+
+                            <Link className="secondaryBtn" to="/">
+                                Înapoi acasă
+                            </Link>
+
+                            {/* BUTONUL CERUT */}
+                            <Link className="secondaryBtn" to="/adoptie">
+                                Mergi la adopție
+                            </Link>
+                        </div>
+                    </>
                 )}
             </div>
         </div>
