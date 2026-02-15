@@ -44,48 +44,95 @@ const ANIMALS: Record<AnimalKey, { name: string; emoji: string; adoptPath: strin
 
 const QUESTIONS: Question[] = [
     {
-        question: "Cum îți place să îți petreci timpul liber?",
+        question: "Cum îți place energia în viața de zi cu zi?",
         answers: [
-            { text: "Plimbări și activitate", value: "dog" },
-            { text: "Relaxare acasă", value: "cat" },
-            { text: "Calm și liniște", value: "rabbit" },
-            { text: "Observare și curiozitate", value: "turtle" },
+            { text: "Multă energie, mereu în mișcare", value: "dog" },
+            { text: "Echilibrat(ă), depinde de zi", value: "ferret" },
+            { text: "Liniște și calm", value: "cat" },
+            { text: "Foarte calm, fără grabă", value: "turtle" },
         ],
     },
     {
-        question: "Cât de mult timp poți acorda zilnic?",
+        question: "Cât timp poți dedica îngrijirii zilnice?",
         answers: [
-            { text: "Mult timp", value: "dog" },
-            { text: "Mediu", value: "cat" },
-            { text: "Puțin", value: "hamster" },
-            { text: "Foarte puțin", value: "snake" },
+            { text: "Mult (60+ min)", value: "dog" },
+            { text: "Mediu (30–60 min)", value: "cat" },
+            { text: "Puțin (10–30 min)", value: "hamster" },
+            { text: "Minim (5–10 min)", value: "snake" },
         ],
     },
     {
-        question: "Ce tip de personalitate ai?",
+        question: "Ce tip de personalitate te descrie cel mai bine?",
         answers: [
-            { text: "Energic(ă)", value: "dog" },
-            { text: "Independent(ă)", value: "cat" },
-            { text: "Blând(ă)", value: "rabbit" },
-            { text: "Exotic(ă)", value: "lizard" },
+            { text: "Sociabil(ă) și loial(ă)", value: "dog" },
+            { text: "Independent(ă) și cool", value: "cat" },
+            { text: "Blând(ă) și sensibil(ă)", value: "rabbit" },
+            { text: "Curios(oasă) și jucăuș(ă)", value: "ferret" },
         ],
     },
     {
         question: "Ce spațiu ai acasă?",
         answers: [
             { text: "Casă cu curte", value: "dog" },
-            { text: "Apartament", value: "cat" },
-            { text: "Spațiu mic", value: "hamster" },
-            { text: "Terariu / habitat", value: "gecko" },
+            { text: "Apartament normal", value: "cat" },
+            { text: "Spațiu mic / cameră", value: "hamster" },
+            { text: "Terariu / habitat special", value: "gecko" },
         ],
     },
     {
-        question: "Ce te atrage cel mai mult?",
+        question: "Ce te atrage mai mult la un animal?",
         answers: [
-            { text: "Prieten loial", value: "dog" },
-            { text: "Companie cozy", value: "cat" },
-            { text: "Jucăuș și neastâmpărat", value: "ferret" },
-            { text: "Ceva rar și special", value: "axolotl" },
+            { text: "Companie și afecțiune", value: "dog" },
+            { text: "Vibe cozy și liniște", value: "cat" },
+            { text: "Drăgălășenie discretă", value: "hedgehog" },
+            { text: "Ceva rar / wow", value: "axolotl" },
+        ],
+    },
+
+    /* ✅ întrebări dedicate pentru animalele “mai greu de nimerit” */
+    {
+        question: "Ce fel de sunete/atmosferă preferi?",
+        answers: [
+            { text: "Îmi place să fie viață și comunicare", value: "parrot" },
+            { text: "Mai bine liniște", value: "cat" },
+            { text: "Puțin sunet e ok", value: "dog" },
+            { text: "Nu contează", value: "turtle" },
+        ],
+    },
+    {
+        question: "Ce îți place să faci când te relaxezi?",
+        answers: [
+            { text: "Să observ lucruri, calm", value: "turtle" },
+            { text: "Să stau cozy în pat", value: "cat" },
+            { text: "Să mă joc / să fac ceva activ", value: "dog" },
+            { text: "Să meșteresc / să explorez ceva nou", value: "lizard" },
+        ],
+    },
+    {
+        question: "Cât de 'exotic' vrei să fie animalul tău?",
+        answers: [
+            { text: "Deloc, clasic", value: "dog" },
+            { text: "Puțin (dar tot friendly)", value: "rabbit" },
+            { text: "Exotic, dar ușor", value: "gecko" },
+            { text: "Foarte exotic", value: "snake" },
+        ],
+    },
+    {
+        question: "Cum ești tu cu rutina?",
+        answers: [
+            { text: "Îmi place rutina și disciplina", value: "dog" },
+            { text: "Îmi place libertatea", value: "cat" },
+            { text: "Prefer lucruri simple", value: "hamster" },
+            { text: "Îmi place să fie diferit mereu", value: "ferret" },
+        ],
+    },
+    {
+        question: "Ce animal te atrage cel mai mult, chiar din instinct?",
+        answers: [
+            { text: "🐰 Iepure", value: "rabbit" },
+            { text: "🦜 Papagal", value: "parrot" },
+            { text: "🦔 Arici", value: "hedgehog" },
+            { text: "🦎 Axolotl (super rar!)", value: "axolotl" },
         ],
     },
 ];
@@ -117,11 +164,15 @@ export default function Quiz() {
 
     const bestAnimal = useMemo(() => {
         const keys = Object.keys(scores) as AnimalKey[];
-        keys.sort((a, b) => scores[b] - scores[a]);
-        return keys[0] ?? "cat";
+
+        const max = Math.max(...keys.map((k) => scores[k]));
+
+        const top = keys.filter((k) => scores[k] === max);
+
+        return top[Math.floor(Math.random() * top.length)] ?? "cat";
     }, [scores]);
 
-    // progress: 0..100
+
     const progress = Math.round((Math.min(index, QUESTIONS.length) / QUESTIONS.length) * 100);
 
     const handlePick = (v: AnimalKey) => {
