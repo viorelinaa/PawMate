@@ -14,6 +14,10 @@ export default function Navbar() {
                     Acasă
                 </NavLink>
 
+                <NavLink to="/quiz">
+                    Quiz
+                </NavLink>
+
                 <NavLink to="/adoptie">
                     Adopție
                 </NavLink>
