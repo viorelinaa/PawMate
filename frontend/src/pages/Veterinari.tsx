@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 interface Veterinar {
     id: string;
     name: string;
@@ -52,7 +54,34 @@ const veterinariList: Veterinar[] = [
     },
 ];
 
+const allCities = [...new Set(veterinariList.map((v) => v.city))];
+
 export default function Veterinari() {
+    const [query, setQuery] = useState("");
+    const [city, setCity] = useState("ALL");
+    const [onlyEmergency, setOnlyEmergency] = useState(false);
+
+    const filtered = veterinariList.filter((v) => {
+        if (city !== "ALL" && v.city !== city) return false;
+        if (onlyEmergency && !v.emergency) return false;
+        if (query) {
+            const q = query.toLowerCase();
+            if (
+                !v.name.toLowerCase().includes(q) &&
+                !v.description.toLowerCase().includes(q) &&
+                !v.address.toLowerCase().includes(q)
+            )
+                return false;
+        }
+        return true;
+    });
+
+    function resetFilters() {
+        setQuery("");
+        setCity("ALL");
+        setOnlyEmergency(false);
+    }
+
     return (
         <div>
             <h1>Veterinari</h1>
