@@ -1,0 +1,261 @@
+/* ===============================
+   MOBILE FIRST – max-width 768px
+================================ */
+
+@media (max-width: 768px) {
+
+    /* ===============================
+       GLOBAL
+    ================================ */
+    body {
+        font-size: 14px;
+    }
+
+    h1 {
+        font-size: 26px;
+    }
+
+    h2 {
+        font-size: 22px;
+    }
+
+    p {
+        font-size: 14px;
+    }
+
+    /* ===============================
+       NAVBAR
+    ================================ */
+
+    .navbar,
+    .topNav,
+    .navBar {
+        padding: 10px 12px !important;
+    }
+
+    /* logo */
+    .navbar .logo,
+    .navBar .logo,
+    .topNav .logo,
+    .brand {
+        font-size: 22px !important;
+    }
+
+    /* link-uri scrollabile */
+    .navbarLinks,
+    .navLinks,
+    .menuLinks,
+    nav ul {
+        display: flex !important;
+        gap: 10px;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        padding: 6px 2px;
+        scrollbar-width: none;
+    }
+
+    nav ul::-webkit-scrollbar {
+        display: none;
+    }
+
+    nav ul a,
+    .navbarLinks a {
+        font-size: 14px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        flex: 0 0 auto;
+    }
+
+    nav ul a.active {
+        background: #6a4a83;
+        color: #fff;
+    }
+
+    /* ===============================
+       HERO (Adopție / Pierdute / Quiz)
+    ================================ */
+
+    .hero,
+    .adoptHero,
+    .lostHero,
+    .donateHero,
+    .quizHero,
+    .sittersHero {
+        padding: 36px 14px 24px !important;
+        border-radius: 0 0 28px 28px;
+    }
+
+    .hero h1,
+    .adoptHero h1,
+    .lostHero h1 {
+        font-size: 26px;
+    }
+
+    .hero p,
+    .adoptHero p,
+    .lostHero p {
+        font-size: 14px;
+    }
+
+    /* nori mai mici */
+    .lostCloud,
+    .heroCloud {
+        transform: scale(0.75);
+    }
+
+    /* ===============================
+       CONTENT WRAPPER
+    ================================ */
+
+    .container,
+    .lostContent,
+    .adoptContent {
+        padding: 16px 12px 50px;
+    }
+
+    /* ===============================
+       FILTERE
+    ================================ */
+
+    .filters,
+    .lostFilters {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .filtersGrid,
+    .lostFiltersGrid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    input,
+    select {
+        font-size: 14px;
+        padding: 12px 14px;
+        border-radius: 14px;
+    }
+
+    .resetBtn,
+    .lostBtnReset {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+    }
+
+    /* ===============================
+       CARDURI (Adopție / Pierdute)
+    ================================ */
+
+    .cards,
+    .lostCards {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .card,
+    .lostCard {
+        padding: 16px;
+        border-radius: 18px;
+    }
+
+    .card h3,
+    .lostCard h3 {
+        font-size: 16px;
+    }
+
+    .card p,
+    .lostDesc {
+        font-size: 14px;
+    }
+
+    /* badge-uri */
+    .badge,
+    .lostBadge {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+
+    /* ===============================
+       QUIZ
+    ================================ */
+
+    .quizPage {
+        padding: 0 10px;
+    }
+
+    .quizProgress {
+        padding: 14px;
+        border-radius: 16px;
+    }
+
+    .quizProgress span {
+        font-size: 13px;
+    }
+
+    .quizCard,
+    .quizResult {
+        padding: 18px;
+        border-radius: 20px;
+    }
+
+    .answers button {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    .quizStats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    /* ===============================
+       BUTOANE (quiz / rezultate)
+    ================================ */
+
+    .resultActions {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .resultActions button,
+    .resultActions a {
+        width: 100%;
+        height: 46px;
+        font-size: 14px;
+    }
+
+    /* ===============================
+       404 PAGE
+    ================================ */
+
+    .notFoundCard {
+        padding: 24px 16px;
+    }
+
+    .notFoundCard h1 {
+        font-size: 42px;
+    }
+
+    /* ===============================
+       FOOTER (dacă ai)
+    ================================ */
+
+    footer {
+        padding: 20px 12px;
+        font-size: 13px;
+    }
+}
+
+/* ===============================
+   TABLET – între 769px și 1024px
+================================ */
+
+@media (max-width: 1024px) {
+    .cards,
+    .lostCards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
