@@ -1,3 +1,4 @@
+import "./Voluntariat.css";
 export default function Voluntariat() {
     return (
         <div>
