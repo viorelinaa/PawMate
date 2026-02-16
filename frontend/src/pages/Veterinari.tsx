@@ -1,4 +1,5 @@
 import { useState } from "react";
+import "./Veterinari.css";
 
 interface Veterinar {
     id: string;
@@ -83,8 +84,84 @@ export default function Veterinari() {
     }
 
     return (
-        <div>
-            <h1>Veterinari</h1>
+        <div className="veterinariPage">
+            <section className="veterinariHero">
+                <div className="veterinariCloud vc1" />
+                <div className="veterinariCloud vc2" />
+                <span className="veterinariPaw vp1">🐾</span>
+                <span className="veterinariPaw vp2">🐾</span>
+                <span className="veterinariPaw vp3">🐾</span>
+                <div className="veterinariHeroInner">
+                    <h1 className="veterinariTitle">Veterinari</h1>
+                    <p className="veterinariSub">Găsește clinici veterinare din apropiere.</p>
+                </div>
+            </section>
+
+            <div className="veterinariContent">
+                <div className="filters">
+                    <div className="filtersGrid">
+                        <input
+                            className="filterInput"
+                            placeholder="Caută după nume/adresă..."
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                        />
+                        <select className="filterSelect" value={city} onChange={(e) => setCity(e.target.value)}>
+                            <option value="ALL">Toate orașele</option>
+                            {allCities.map((c) => (
+                                <option key={c} value={c}>
+                                    {c}
+                                </option>
+                            ))}
+                        </select>
+                        <label className="filterCheck">
+                            <input
+                                type="checkbox"
+                                checked={onlyEmergency}
+                                onChange={(e) => setOnlyEmergency(e.target.checked)}
+                            />
+                            Doar urgențe 24/7
+                        </label>
+                        <button className="btnReset" onClick={resetFilters}>
+                            Reset filtre
+                        </button>
+                    </div>
+                </div>
+
+                {filtered.length > 0 ? (
+                    <div className="vetCards">
+                        {filtered.map((v) => (
+                            <div className="vetCard" key={v.id}>
+                                <div className="vetCardHeader">
+                                    <div>
+                                        <h3 className="vetName">{v.name}</h3>
+                                        <span className="vetCity">{v.city}</span>
+                                    </div>
+                                    {v.emergency && <span className="emergencyBadge">Urgențe 24/7</span>}
+                                </div>
+
+                                <p className="vetAddress">📍 {v.address}</p>
+                                <p className="vetPhone">📞 {v.phone}</p>
+
+                                <div className="services">
+                                    {v.services.map((service) => (
+                                        <span key={service} className="serviceBadge">
+                                            {service}
+                                        </span>
+                                    ))}
+                                </div>
+
+                                <p className="vetDesc">{v.description}</p>
+                                <button className="btnContact" onClick={() => alert(`Sună la ${v.phone}`)}>
+                                    Contactează
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <div className="emptyNotice">Nu există rezultate pentru filtrele selectate.</div>
+                )}
+            </div>
         </div>
     );
 }
