@@ -1,51 +1,101 @@
-/* ===============================
-   MOBILE FIRST – max-width 768px
-================================ */
+/* =========================================================
+   PawMate - responsive.css (FULL)
+   Pune-l ULTIMUL importat ca să aibă prioritate.
+   ========================================================= */
 
+
+/* ===== GLOBAL ANTI-OVERFLOW FIX ===== */
+html, body {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Media elements never overflow */
+img, video, canvas, svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Prevent flex/grid children from forcing overflow */
+* {
+    min-width: 0;
+}
+
+/* Optional: smoother font */
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+
+/* ===============================
+   TABLET – max-width 1024px
+================================ */
+@media (max-width: 1024px) {
+    .cards,
+    .lostCards,
+    .sitters-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .filters,
+    .lostFilters {
+        max-width: 100%;
+    }
+}
+
+
+/* ===============================
+   MOBILE – max-width 768px
+================================ */
 @media (max-width: 768px) {
 
     /* ===============================
-       GLOBAL
+       GLOBAL TYPO
     ================================ */
-    body {
-        font-size: 14px;
-    }
+    body { font-size: 14px; }
+    h1 { font-size: 26px; }
+    h2 { font-size: 22px; }
+    p  { font-size: 14px; }
 
-    h1 {
-        font-size: 26px;
-    }
-
-    h2 {
-        font-size: 22px;
-    }
-
-    p {
-        font-size: 14px;
+    /* Any common wrappers should not exceed the screen */
+    .container,
+    .page,
+    .content,
+    main,
+    section {
+        max-width: 100%;
     }
 
     /* ===============================
        NAVBAR
     ================================ */
-
     .navbar,
     .topNav,
     .navBar {
         padding: 10px 12px !important;
+        max-width: 100%;
     }
 
-    /* logo */
     .navbar .logo,
     .navBar .logo,
     .topNav .logo,
     .brand {
-        font-size: 22px !important;
+        font-size: 20px !important;
+        white-space: nowrap;
     }
 
-    /* link-uri scrollabile */
+    /* If your links are scrollable on mobile */
     .navbarLinks,
     .navLinks,
     .menuLinks,
-    nav ul {
+    nav ul,
+    .links {
         display: flex !important;
         gap: 10px;
         overflow-x: auto;
@@ -53,152 +103,211 @@
         -webkit-overflow-scrolling: touch;
         padding: 6px 2px;
         scrollbar-width: none;
+        max-width: 100%;
     }
 
-    nav ul::-webkit-scrollbar {
+    nav ul::-webkit-scrollbar,
+    .navbarLinks::-webkit-scrollbar,
+    .links::-webkit-scrollbar {
         display: none;
     }
 
     nav ul a,
-    .navbarLinks a {
+    .navbarLinks a,
+    .links a {
         font-size: 14px;
         padding: 10px 14px;
         border-radius: 999px;
         flex: 0 0 auto;
     }
 
-    nav ul a.active {
+    nav ul a.active,
+    .navbarLinks a.active,
+    .links a.active {
         background: #6a4a83;
         color: #fff;
     }
 
     /* ===============================
-       HERO (Adopție / Pierdute / Quiz)
+       HERO (Adopție / Pierdute / Quiz / Sitters / Donații)
     ================================ */
-
     .hero,
     .adoptHero,
     .lostHero,
     .donateHero,
     .quizHero,
     .sittersHero {
-        padding: 36px 14px 24px !important;
+        padding: 28px 14px 22px !important;
         border-radius: 0 0 28px 28px;
+        max-width: 100%;
+        overflow: hidden; /* IMPORTANT for absolute clouds/paws */
     }
 
     .hero h1,
     .adoptHero h1,
-    .lostHero h1 {
+    .lostHero h1,
+    .donateHero h1,
+    .quizHero h1,
+    .sittersHero h1 {
         font-size: 26px;
     }
 
     .hero p,
     .adoptHero p,
-    .lostHero p {
+    .lostHero p,
+    .donateHero p,
+    .quizHero p,
+    .sittersHero p {
         font-size: 14px;
     }
 
-    /* nori mai mici */
+    /* Hide decorative absolute items on mobile (safe) */
     .lostCloud,
-    .heroCloud {
-        transform: scale(0.75);
+    .heroCloud,
+    .cloud,
+    .paw,
+    .paw-print,
+    .lostPaw,
+    .heroPaw,
+    .lp1, .lp2, .lp3,
+    .lc1, .lc2 {
+        display: none !important;
     }
 
     /* ===============================
-       CONTENT WRAPPER
+       CONTENT WRAPPERS
     ================================ */
-
     .container,
     .lostContent,
-    .adoptContent {
-        padding: 16px 12px 50px;
+    .adoptContent,
+    .main-content,
+    .quizPage,
+    .pet-sitting-page {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        max-width: 100%;
+    }
+
+    /* Pet-sitting had huge padding on desktop */
+    .pet-sitting-page {
+        padding-top: 24px !important;
+        padding-bottom: 40px !important;
     }
 
     /* ===============================
-       FILTERE
+       FILTERS (Adopție / Pierdute / Sitters)
     ================================ */
-
     .filters,
     .lostFilters {
-        padding: 14px;
+        padding: 14px !important;
         border-radius: 18px;
+        max-width: 100%;
+    }
+
+    /* If .filters is flex on desktop -> column on mobile */
+    .filters {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+
+    /* Avoid fixed width input on mobile */
+    .filters input {
+        width: 100% !important;
     }
 
     .filtersGrid,
     .lostFiltersGrid {
-        display: grid;
-        grid-template-columns: 1fr;
-        gap: 10px;
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+        max-width: 100%;
     }
 
     input,
     select {
+        width: 100%;
         font-size: 14px;
         padding: 12px 14px;
         border-radius: 14px;
     }
 
     .resetBtn,
-    .lostBtnReset {
+    .lostBtnReset,
+    .filter-reset {
         width: 100%;
         padding: 12px;
         font-size: 14px;
+        text-align: center;
+    }
+
+    /* If you have tiny filter actions like "Reset rating inclus" */
+    .filter-reset,
+    .filter-rating,
+    .filter-price {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        padding: 10px 12px;
+        border-radius: 999px;
+        background: rgba(255,255,255,0.9);
+        box-shadow: 0 10px 18px rgba(0,0,0,0.06);
     }
 
     /* ===============================
-       CARDURI (Adopție / Pierdute)
+       CARDS (Adopție / Pierdute / Sitters)
     ================================ */
-
     .cards,
-    .lostCards {
-        grid-template-columns: 1fr;
-        gap: 14px;
+    .lostCards,
+    .sitters-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px !important;
+        max-width: 100%;
     }
 
     .card,
-    .lostCard {
-        padding: 16px;
-        border-radius: 18px;
+    .lostCard,
+    .sitter-card {
+        padding: 16px !important;
+        border-radius: 18px !important;
+        max-width: 100%;
     }
 
-    .card h3,
-    .lostCard h3 {
-        font-size: 16px;
-    }
-
-    .card p,
-    .lostDesc {
-        font-size: 14px;
-    }
-
-    /* badge-uri */
+    /* Badges */
     .badge,
     .lostBadge {
         font-size: 12px;
         padding: 6px 10px;
     }
 
+    /* Sitters footer: stack */
+    .card-footer {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 10px !important;
+    }
+
+    .card-footer button {
+        width: 100% !important;
+    }
+
     /* ===============================
        QUIZ
     ================================ */
-
-    .quizPage {
-        padding: 0 10px;
-    }
-
     .quizProgress {
-        padding: 14px;
-        border-radius: 16px;
+        padding: 14px !important;
+        border-radius: 16px !important;
+        max-width: 100%;
+        overflow: hidden;
     }
 
-    .quizProgress span {
-        font-size: 13px;
-    }
+    .quizProgress span { font-size: 13px; }
 
     .quizCard,
     .quizResult {
-        padding: 18px;
-        border-radius: 20px;
+        padding: 18px !important;
+        border-radius: 20px !important;
+        max-width: 100%;
     }
 
     .answers button {
@@ -206,56 +315,69 @@
         padding: 12px;
     }
 
+    /* Stats: 1 col on mobile (sa nu se înghesuie) */
     .quizStats {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
     }
 
     /* ===============================
-       BUTOANE (quiz / rezultate)
+       RESULT BUTTONS
     ================================ */
-
     .resultActions {
-        flex-direction: column;
-        gap: 12px;
+        flex-direction: column !important;
+        gap: 12px !important;
+        max-width: 100%;
     }
 
     .resultActions button,
     .resultActions a {
-        width: 100%;
-        height: 46px;
-        font-size: 14px;
+        width: 100% !important;
+        height: 46px !important;
+        font-size: 14px !important;
     }
 
     /* ===============================
        404 PAGE
     ================================ */
-
     .notFoundCard {
-        padding: 24px 16px;
+        padding: 24px 16px !important;
+        max-width: 100%;
     }
 
     .notFoundCard h1 {
-        font-size: 42px;
+        font-size: 42px !important;
     }
 
     /* ===============================
-       FOOTER (dacă ai)
+       FOOTER
     ================================ */
-
     footer {
-        padding: 20px 12px;
-        font-size: 13px;
+        padding: 20px 12px !important;
+        font-size: 13px !important;
+        max-width: 100%;
     }
 }
 
-/* ===============================
-   TABLET – între 769px și 1024px
-================================ */
 
-@media (max-width: 1024px) {
-    .cards,
-    .lostCards {
-        grid-template-columns: repeat(2, 1fr);
+/* ===============================
+   EXTRA SMALL – max-width 480px
+================================ */
+@media (max-width: 480px) {
+    h1 { font-size: 24px; }
+    h2 { font-size: 20px; }
+
+    .hero,
+    .adoptHero,
+    .lostHero,
+    .donateHero,
+    .quizHero,
+    .sittersHero {
+        padding: 24px 12px 18px !important;
+    }
+
+    .quizCard,
+    .quizResult {
+        padding: 16px !important;
     }
 }

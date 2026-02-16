@@ -3,13 +3,14 @@
 /* ============================================
    Global Styles
    ============================================ */
-* {
+.med-guide,
+.med-guide * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body {
+.med-guide {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -20,13 +21,13 @@ body {
 /* ============================================
    Navigation
    ============================================ */
-.navbar {
+.med-guide .navbar {
     background: white;
     padding: 1rem 0;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.nav-container {
+.med-guide .nav-container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 0 2rem;
@@ -35,30 +36,30 @@ body {
     justify-content: space-between;
 }
 
-.logo {
+.med-guide .logo {
     display: flex;
     align-items: center;
     gap: 0.5rem;
     text-decoration: none;
 }
 
-.logo-icon {
+.med-guide .logo-icon {
     font-size: 24px;
 }
 
-.logo-text {
+.med-guide .logo-text {
     font-size: 1.5rem;
     font-weight: 700;
     color: #6b4a9e;
 }
 
-.nav-links {
+.med-guide .nav-links {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
 
-.nav-link {
+.med-guide .nav-link {
     padding: 0.6rem 1.2rem;
     border-radius: 25px;
     font-size: 1rem;
@@ -68,23 +69,23 @@ body {
     color: #6b4a9e;
 }
 
-.nav-link:hover {
+.med-guide .nav-link:hover {
     background: #f3e8ff;
 }
 
-.nav-link.primary {
+.med-guide .nav-link.primary {
     background: #6b4a9e;
     color: white;
 }
 
-.nav-link.primary:hover {
+.med-guide .nav-link.primary:hover {
     background: #5a3d85;
 }
 
 /* ============================================
    Hero Section
    ============================================ */
-.hero {
+.med-guide .hero {
     background: linear-gradient(180deg, #d4c5e8 0%, #e8dff5 100%);
     padding: 4rem 2rem;
     text-align: center;
@@ -92,14 +93,14 @@ body {
     overflow: hidden;
 }
 
-.hero-content {
+.med-guide .hero-content {
     max-width: 800px;
     margin: 0 auto;
     position: relative;
     z-index: 1;
 }
 
-.hero-title {
+.med-guide .hero-title {
     font-size: 3.5rem;
     font-weight: 800;
     color: #6b4a9e;
@@ -107,7 +108,7 @@ body {
     letter-spacing: -0.02em;
 }
 
-.hero-subtitle {
+.med-guide .hero-subtitle {
     font-size: 1.2rem;
     color: #5a4570;
     background: white;
@@ -121,65 +122,65 @@ body {
 /* ============================================
    Decorative Elements - Clouds
    ============================================ */
-.cloud {
+.med-guide .cloud {
     position: absolute;
     background: white;
     border-radius: 100px;
     opacity: 0.9;
 }
 
-.cloud-left {
+.med-guide .cloud-left {
     width: 300px;
     height: 150px;
     top: 80px;
     left: 40px;
 }
 
-.cloud-left::before,
-.cloud-left::after {
+.med-guide .cloud-left::before,
+.med-guide .cloud-left::after {
     content: '';
     position: absolute;
     background: white;
     border-radius: 100px;
 }
 
-.cloud-left::before {
+.med-guide .cloud-left::before {
     width: 180px;
     height: 180px;
     top: -80px;
     left: 20px;
 }
 
-.cloud-left::after {
+.med-guide .cloud-left::after {
     width: 150px;
     height: 150px;
     top: -60px;
     right: 20px;
 }
 
-.cloud-right {
+.med-guide .cloud-right {
     width: 350px;
     height: 170px;
     top: 60px;
     right: 40px;
 }
 
-.cloud-right::before,
-.cloud-right::after {
+.med-guide .cloud-right::before,
+.med-guide .cloud-right::after {
     content: '';
     position: absolute;
     background: white;
     border-radius: 100px;
 }
 
-.cloud-right::before {
+.med-guide .cloud-right::before {
     width: 200px;
     height: 200px;
     top: -90px;
     left: 30px;
 }
 
-.cloud-right::after {
+.med-guide .cloud-right::after {
     width: 170px;
     height: 170px;
     top: -70px;
@@ -189,7 +190,7 @@ body {
 /* ============================================
    Decorative Elements - Paw Prints
    ============================================ */
-.paw-print {
+.med-guide .paw-print {
     position: absolute;
     color: rgba(107, 74, 158, 0.15);
     font-size: 24px;
@@ -197,37 +198,37 @@ body {
     pointer-events: none;
 }
 
-.paw-1 {
+.med-guide .paw-1 {
     top: 220px;
     left: 60px;
     transform: rotate(-20deg);
 }
 
-.paw-2 {
+.med-guide .paw-2 {
     top: 180px;
     left: 100px;
     transform: rotate(15deg);
 }
 
-.paw-3 {
+.med-guide .paw-3 {
     top: 240px;
     right: 80px;
     transform: rotate(-30deg);
 }
 
-.paw-4 {
+.med-guide .paw-4 {
     top: 200px;
     right: 120px;
     transform: rotate(25deg);
 }
 
-.paw-5 {
+.med-guide .paw-5 {
     bottom: 80px;
     left: 100px;
     transform: rotate(10deg);
 }
 
-.paw-6 {
+.med-guide .paw-6 {
     bottom: 100px;
     right: 100px;
     transform: rotate(-15deg);
@@ -236,13 +237,13 @@ body {
 /* ============================================
    Main Content
    ============================================ */
-.main-content {
+.med-guide .main-content {
     max-width: 1200px;
     margin: 0 auto;
     padding: 4rem 2rem;
 }
 
-.section-title {
+.med-guide .section-title {
     text-align: center;
     font-size: 2.5rem;
     font-weight: 800;
@@ -250,7 +251,7 @@ body {
     margin-bottom: 1rem;
 }
 
-.section-subtitle {
+.med-guide .section-subtitle {
     text-align: center;
     font-size: 1.1rem;
     color: #6b7280;
@@ -260,7 +261,7 @@ body {
 /* ============================================
    Cards Grid
    ============================================ */
-.cards-grid {
+.med-guide .cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
@@ -268,7 +269,7 @@ body {
     margin: 0 auto;
 }
 
-.card {
+.med-guide .card {
     background: white;
     border-radius: 20px;
     padding: 2.5rem;
@@ -276,33 +277,33 @@ body {
     transition: all 0.3s ease;
 }
 
-.card:hover {
+.med-guide .card:hover {
     transform: translateY(-4px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
 }
 
-.card-title {
+.med-guide .card-title {
     font-size: 1.5rem;
     font-weight: 700;
     color: #6b4a9e;
     margin-bottom: 1.5rem;
 }
 
-.card-description {
+.med-guide .card-description {
     font-size: 0.95rem;
     color: #6b7280;
     margin-bottom: 1.5rem;
     line-height: 1.6;
 }
 
-.card-list {
+.med-guide .card-list {
     list-style: none;
     display: flex;
     flex-direction: column;
     gap: 0.9rem;
 }
 
-.card-list-item {
+.med-guide .card-list-item {
     display: flex;
     align-items: flex-start;
     color: #4a5568;
@@ -310,7 +311,7 @@ body {
     font-size: 0.95rem;
 }
 
-.bullet {
+.med-guide .bullet {
     color: #6b4a9e;
     margin-right: 0.75rem;
     font-size: 1rem;
@@ -321,7 +322,7 @@ body {
 /* ============================================
    Footer
    ============================================ */
-.footer {
+.med-guide .footer {
     background: #f9fafb;
     padding: 2rem;
     text-align: center;
@@ -330,7 +331,7 @@ body {
     border-top: 1px solid #e5e7eb;
 }
 
-.footer p {
+.med-guide .footer p {
     font-size: 0.95rem;
 }
 
@@ -338,62 +339,62 @@ body {
    Responsive Design
    ============================================ */
 @media (max-width: 1024px) {
-    .cards-grid {
+    .med-guide .cards-grid {
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     }
 }
 
 @media (max-width: 768px) {
-    .nav-links {
+    .med-guide .nav-links {
         display: none;
     }
 
-    .hero-title {
+    .med-guide .hero-title {
         font-size: 2.5rem;
     }
 
-    .hero-subtitle {
+    .med-guide .hero-subtitle {
         font-size: 1rem;
         padding: 0.8rem 1.5rem;
     }
 
-    .section-title {
+    .med-guide .section-title {
         font-size: 2rem;
     }
 
-    .cloud-left,
-    .cloud-right,
-    .paw-print {
+    .med-guide .cloud-left,
+    .med-guide .cloud-right,
+    .med-guide .paw-print {
         display: none;
     }
 
-    .card {
+    .med-guide .card {
         padding: 2rem;
     }
 
-    .main-content {
+    .med-guide .main-content {
         padding: 3rem 1.5rem;
     }
 
-    .nav-container {
+    .med-guide .nav-container {
         padding: 0 1.5rem;
     }
 }
 
 @media (max-width: 480px) {
-    .hero-title {
+    .med-guide .hero-title {
         font-size: 2rem;
     }
 
-    .hero-subtitle {
+    .med-guide .hero-subtitle {
         font-size: 0.9rem;
     }
 
-    .card-title {
+    .med-guide .card-title {
         font-size: 1.3rem;
     }
 
-    .cards-grid {
+    .med-guide .cards-grid {
         gap: 1.5rem;
     }
 }
@@ -412,67 +413,67 @@ body {
     }
 }
 
-.card {
+.med-guide .card {
     animation: fadeIn 0.5s ease-out;
 }
 
-.card:nth-child(2) {
+.med-guide .card:nth-child(2) {
     animation-delay: 0.1s;
 }
 
-.card:nth-child(3) {
+.med-guide .card:nth-child(3) {
     animation-delay: 0.2s;
 }
 
 /* ============================================
    Utilities
    ============================================ */
-.text-center {
+.med-guide .text-center {
     text-align: center;
 }
 
-.flex {
+.med-guide .flex {
     display: flex;
 }
 
-.items-center {
+.med-guide .items-center {
     align-items: center;
 }
 
-.justify-between {
+.med-guide .justify-between {
     justify-content: space-between;
 }
 
-.gap-1 {
+.med-guide .gap-1 {
     gap: 0.25rem;
 }
 
-.gap-2 {
+.med-guide .gap-2 {
     gap: 0.5rem;
 }
 
-.gap-4 {
+.med-guide .gap-4 {
     gap: 1rem;
 }
 
 /* ============================================
    Custom Scrollbar
    ============================================ */
-::-webkit-scrollbar {
+.med-guide ::-webkit-scrollbar {
     width: 10px;
     height: 10px;
 }
 
-::-webkit-scrollbar-track {
+.med-guide ::-webkit-scrollbar-track {
     background: #f1f1f1;
 }
 
-::-webkit-scrollbar-thumb {
+.med-guide ::-webkit-scrollbar-thumb {
     background: #6b4a9e;
     border-radius: 5px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+.med-guide ::-webkit-scrollbar-thumb:hover {
     background: #5a3d85;
 }
 
@@ -480,19 +481,19 @@ body {
    Print Styles
    ============================================ */
 @media print {
-    .navbar,
-    .footer,
-    .cloud,
-    .paw-print {
+    .med-guide .navbar,
+    .med-guide .footer,
+    .med-guide .cloud,
+    .med-guide .paw-print {
         display: none;
     }
 
-    .hero {
+    .med-guide .hero {
         background: white;
         padding: 2rem 0;
     }
 
-    .card {
+    .med-guide .card {
         page-break-inside: avoid;
         box-shadow: none;
         border: 1px solid #e5e7eb;

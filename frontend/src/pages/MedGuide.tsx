@@ -25,7 +25,7 @@ function MedicalCard({ title, description, items }: MedicalCardProps) {
 
 export default function MedGuide() {
     return (
-        <div>
+        <div className="med-guide">
             {/* HERO */}
             <section className="hero">
                 <div className="cloud cloud-left" />
