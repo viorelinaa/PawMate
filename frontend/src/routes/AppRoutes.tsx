@@ -9,6 +9,7 @@ import SittersList from "../pages/SittersList";
 import Login from "../pages/Login";
 import Signup from "../pages/SignUp";
 import NotFound from "../pages/NotFound";
+import Veterinari from "../pages/Veterinari";
 export default function AppRoutes() {
     return (
         <>
@@ -17,6 +18,7 @@ export default function AppRoutes() {
                 <Route path="/" element={<Home />} />
                 <Route path="/adoptie" element={<Adoption />} />
                 <Route path="/pierdute" element={<LostPets />} />
+                <Route path="/veterinari" element={<Veterinari />} />
                 <Route path="/donatii" element={<Donations />} />
                 <Route path="/sitters" element={<SittersList />} />
                 <Route path="/login" element={<Login />} />
