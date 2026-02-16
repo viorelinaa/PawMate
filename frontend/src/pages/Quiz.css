@@ -1,0 +1,237 @@
+.quizPage {
+    max-width: 980px;
+    margin: 40px auto;
+    padding: 0 16px;
+}
+
+/* PROGRESS */
+.quizProgress {
+    background: #f7f4ff;
+    padding: 18px;
+    border-radius: 18px;
+    box-shadow: 0 10px 30px rgba(120, 80, 200, 0.14);
+    margin-bottom: 24px;
+    border: 1px solid rgba(155, 135, 255, 0.22);
+}
+
+.quizProgressHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.quizProgress span {
+    font-weight: 600;
+    color: #6a4a83;
+}
+
+.quizProgress .bar {
+    height: 10px;
+    background: #e6defa;
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid rgba(106, 74, 131, 0.12);
+}
+
+.quizProgress .fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6a4a83, #9b87ff);
+    transition: width 0.45s ease;
+    border-radius: 999px;
+}
+
+/* CARD */
+.quizCard,
+.quizResult {
+    background: #ffffff;
+    border-radius: 26px;
+    padding: 28px;
+    box-shadow: 0 20px 50px rgba(120, 80, 200, 0.14);
+    border: 1px solid rgba(155, 135, 255, 0.18);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Paw prints */
+.quizCard::before,
+.quizResult::before {
+    content: "🐾 🐾 🐾";
+    position: absolute;
+    top: 18px;
+    right: 22px;
+    font-size: 22px;
+    opacity: 0.08;
+    transform: rotate(-14deg);
+    pointer-events: none;
+}
+
+.quizCard::after,
+.quizResult::after {
+    content: "🐾 🐾";
+    position: absolute;
+    bottom: 18px;
+    left: 22px;
+    font-size: 20px;
+    opacity: 0.06;
+    transform: rotate(12deg);
+    pointer-events: none;
+}
+
+.quizBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 12px;
+    color: #6a4a83;
+    background: #efe9ff;
+    border: 1px solid rgba(155, 135, 255, 0.25);
+    margin-bottom: 14px;
+}
+
+.quizTitle {
+    margin: 0;
+    font-size: 22px;
+    color: #3c2d55;
+}
+
+/* ANSWERS */
+.answers {
+    display: grid;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.answers button {
+    padding: 14px 14px;
+    border-radius: 14px;
+    border: 2px solid #e6defa;
+    background: #faf8ff;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: 0.2s ease;
+    color: #3c2d55;
+}
+
+.answers button:hover {
+    background: #efe9ff;
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(120, 80, 200, 0.14);
+}
+
+/* RESULT BIG */
+.winner {
+    text-align: center;
+    margin: 10px 0 24px;
+}
+
+.winnerEmoji {
+    font-size: 64px;
+    margin-bottom: 8px;
+}
+
+.winnerName {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    color: #6a4a83;
+}
+
+.winnerDesc {
+    margin: 10px 0 0;
+    color: #6b5b7a;
+    font-weight: 500;
+}
+
+/* OTHER SMALL */
+.otherResults {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.otherAnimal {
+    background: #faf8ff;
+    border: 1px solid #e6defa;
+    border-radius: 14px;
+    padding: 10px 12px;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #7a6a95;
+}
+
+.otherAnimal strong {
+    font-weight: 700;
+    color: #6a4a83;
+}
+
+/* ACTIONS / BUTTONS (smaller + centered) */
+.resultActions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+/* all buttons same size, smaller */
+.resultActions .btn {
+    width: 220px;
+    height: 46px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: none;
+    padding: 0 18px;
+    text-align: center;
+}
+
+/* primary */
+.resultActions .btn.primary {
+    background: linear-gradient(135deg, #6a4a83, #8f6bff);
+    color: #fff;
+    box-shadow: 0 10px 22px rgba(120, 80, 200, 0.18);
+}
+
+/* adopt / secondary */
+.resultActions .btn.secondary {
+    background: #6a4a83;
+    color: #fff;
+    box-shadow: 0 10px 22px rgba(120, 80, 200, 0.18);
+}
+
+/* back / ghost */
+.resultActions .btn.ghost {
+    background: #efe9ff;
+    color: #6a4a83;
+    border: 2px solid rgba(155, 135, 255, 0.35);
+    box-shadow: none;
+}
+
+.resultActions .btn:hover {
+    transform: translateY(-2px);
+}
+
+.resultActions .btn.primary:hover,
+.resultActions .btn.secondary:hover {
+    box-shadow: 0 14px 30px rgba(120, 80, 200, 0.25);
+}
+
+.resultActions .btn.ghost:hover {
+    box-shadow: 0 12px 24px rgba(120, 80, 200, 0.14);
+}
