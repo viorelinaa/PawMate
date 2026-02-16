@@ -60,6 +60,9 @@ export default function Navbar() {
                 <NavLink to="/sitters" onClick={() => setOpen(false)}>
                     Sitters
                 </NavLink>
+                                <NavLink to="/voluntariat" onClick={() => setOpen(false)}>
+                    Voluntariat
+                </NavLink>
                 <NavLink to="/login" onClick={() => setOpen(false)}>
                     Login
                 </NavLink>
