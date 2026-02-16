@@ -17,6 +17,76 @@
     text-align: center;
 }
 
+.veterinariHero::before {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    left: 50%;
+    top: 40px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.0) 70%);
+    border-radius: 999px;
+    pointer-events: none;
+}
+
+.veterinariCloud {
+    position: absolute;
+    background: rgba(255,255,255,0.95);
+    border-radius: 999px;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08));
+    pointer-events: none;
+}
+
+.veterinariCloud::before,
+.veterinariCloud::after {
+    content: "";
+    position: absolute;
+    background: rgba(255,255,255,0.95);
+    border-radius: 999px;
+}
+
+.veterinariCloud::before {
+    width: 80px;
+    height: 80px;
+    left: 25px;
+    top: -35px;
+}
+
+.veterinariCloud::after {
+    width: 100px;
+    height: 100px;
+    left: 90px;
+    top: -45px;
+}
+
+.veterinariCloud.vc1 {
+    width: 200px;
+    height: 70px;
+    left: 30px;
+    top: 40px;
+    transform: scale(0.9);
+}
+
+.veterinariCloud.vc2 {
+    width: 220px;
+    height: 75px;
+    right: 30px;
+    top: 50px;
+    transform: scale(1);
+}
+
+.veterinariPaw {
+    position: absolute;
+    font-size: 24px;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.veterinariPaw.vp1 { left: 20px; bottom: 30px; transform: rotate(-14deg); }
+.veterinariPaw.vp2 { right: 24px; bottom: 34px; transform: rotate(12deg); }
+.veterinariPaw.vp3 { left: 50%; top: 20px; transform: translateX(-50%) rotate(8deg); font-size: 20px; }
+
 .veterinariHeroInner {
     position: relative;
 }
