@@ -48,7 +48,6 @@ node_modules/
 .pnp.cjs
 .pnp.data.json
 .yarn-integrity
-package-lock.json
 yarn.lock
 
 #################################

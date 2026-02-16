@@ -1,6 +1,11 @@
 import { Routes, Route } from "react-router-dom";
-import Navbar from "../components/Navbar";
+import Navbar from "../layouts/Navbar";
+import Footer from "../layouts/Footer";
 import Home from "../pages/Home";
+import Adoption from "../pages/Adoption";
+import LostPets from "../pages/LostPets";
+import Donations from "../pages/Donations";
+import Quiz from "../pages/Quiz";
 import SittersList from "../pages/SittersList";
 import Login from "../pages/Login";
 import Signup from "../pages/SignUp";

@@ -111,3 +111,21 @@
 .card-footer button:hover {
     background: #684bb1;
 }
+
+/* MOBILE FIX */
+@media (max-width: 768px) {
+    .pet-sitting-page {
+        padding: 92px 16px 24px; /* 92px = spațiu pentru navbar + buton */
+    }
+
+    .filters {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .filters input {
+        width: 100%;
+    }
+}
