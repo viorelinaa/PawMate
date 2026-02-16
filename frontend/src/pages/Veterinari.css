@@ -1,0 +1,46 @@
+/* src/pages/Veterinari.css */
+
+/* Wrapper pentru fundal lavender complet */
+.veterinariPage {
+    background: lavender;
+    min-height: 100vh;
+}
+
+/* Hero banner cu fundal lavender */
+.veterinariHero {
+    position: relative;
+    padding: 80px 24px 60px;
+    background: lavender;
+    overflow: hidden;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    text-align: center;
+}
+
+.veterinariHeroInner {
+    position: relative;
+}
+
+.veterinariTitle {
+    text-align: center;
+    margin: 0;
+    font-size: clamp(32px, 4vw, 52px);
+    color: #6a4a83;
+    font-weight: 800;
+}
+
+.veterinariSub {
+    text-align: center;
+    margin: 10px 0 0;
+    color: rgba(43,34,54,0.7);
+    font-weight: 600;
+}
+
+/* Content area */
+.veterinariContent {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 24px 70px;
+    background: lavender;
+    min-height: 100vh;
+}
