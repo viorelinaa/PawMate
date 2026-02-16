@@ -8,4 +8,5 @@ export const paths = {
     veterinari: '/veterinari',
     donatii: '/donatii',
     quiz: '/quiz',
+    notfound: '*',
 }

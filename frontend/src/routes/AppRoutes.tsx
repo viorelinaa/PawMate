@@ -27,7 +27,7 @@ export default function AppRoutes() {
                     <Route path={paths.login} element={<Login />} />
                     <Route path={paths.quiz} element={<Quiz />} />
                     <Route path={paths.signup} element={<Signup />} />
-                    <Route path="*" element={<NotFound />} />
+                    <Route path={paths.notfound} element={<NotFound />} />
                 </Routes>
             </main>
             <Footer />
