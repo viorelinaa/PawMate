@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
+import { paths } from "../routes/paths";
 import './Signup.css';
 
 type UserType = 'adopter' | 'sitter';
@@ -187,7 +189,7 @@ const Signup: React.FC = () => {
         </form>
 
         <div className="login-link">
-          Ai deja cont? <a href="/login">Autentifică-te</a>
+          Ai deja cont? <Link to={paths.login}>Autentifică-te</Link>
         </div>
       </div>
     </div>

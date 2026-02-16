@@ -1,4 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from "react-router-dom";
+import { paths } from "../routes/paths";
+
 import './Login.css';
 
 const Login: React.FC = () => {
@@ -50,7 +53,7 @@ const Login: React.FC = () => {
         </form>
 
         <div className="signup-link">
-          Nu ai cont? <a href="/signup">Înregistrează-te</a>
+          Nu ai cont? <Link to={paths.signup}>Înregistrează-te</Link>
         </div>
       </div>
     </div>
