@@ -10,16 +10,27 @@ import SittersList from "../pages/SittersList";
 import Login from "../pages/Login";
 import Signup from "../pages/SignUp";
 import { paths } from "./paths";
+import NotFound from "../pages/NotFound";
+import Veterinari from "../pages/Veterinari";
 export default function AppRoutes() {
     return (
         <>
             <Navbar />
-            <Routes>
-                <Route path={paths.home} element={<Home />} />
-                <Route path= {paths.sitters} element={<SittersList />} />
-                <Route path={paths.login} element={<Login />} />
-                <Route path={paths.signup} element={<Signup />} />
-            </Routes>
+            <main style={{ flex: 1 }}>
+                <Routes>
+                    <Route path={paths.home} element={<Home />} />
+                    <Route path={paths.adoptie} element={<Adoption />} />
+                    <Route path={paths.pierdute} element={<LostPets />} />
+                    <Route path={paths.veterinari} element={<Veterinari />} />
+                    <Route path={paths.donatii} element={<Donations />} />
+                    <Route path={paths.sitters} element={<SittersList />} />
+                    <Route path={paths.login} element={<Login />} />
+                    <Route path={paths.quiz} element={<Quiz />} />
+                    <Route path={paths.signup} element={<Signup />} />
+                    <Route path={paths.notfound} element={<NotFound />} />
+                </Routes>
+            </main>
+            <Footer />
         </>
     );
 }
