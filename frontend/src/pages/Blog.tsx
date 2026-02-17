@@ -93,6 +93,23 @@ export default function Blog() {
 
     return (
         <div className="blogPage">
+            {/* Hero */}
+            <section className="blogHero">
+                <div className="cloud c1" />
+                <div className="cloud c2" />
+
+                <div className="paw p1">🐾</div>
+                <div className="paw p2">🐾</div>
+                <div className="paw p3">🐾</div>
+                <div className="paw p4">🐾</div>
+                <div className="paw p5">🐾</div>
+                <div className="paw p6">🐾</div>
+
+                <div className="blogHeroInner">
+                    <h1 className="blogTitle">Blog PawMate</h1>
+                    <p className="blogSub">Articole utile pentru stăpânii responsabili</p>
+                </div>
+            </section>
         </div>
     );
 }
