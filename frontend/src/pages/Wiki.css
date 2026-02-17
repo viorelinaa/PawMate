@@ -144,6 +144,299 @@
     font-size: 15px;
 }
 
+/* Search Section */
+.searchSection {
+    padding: 40px 20px;
+    background: white;
+    border-bottom: 2px solid #e8e8e8;
+}
+
+.searchContainer {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.searchInput {
+    width: 100%;
+    padding: 15px 20px;
+    border: 2px solid #e0d9ed;
+    border-radius: 12px;
+    font-size: 16px;
+    font-family: inherit;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: #7e6ba0;
+    box-shadow: 0 0 0 3px rgba(126, 107, 160, 0.1);
+}
+
+.searchInput::placeholder {
+    color: #999;
+}
+
+.categoryButtons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.categoryBtn {
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-size: 15px;
+    font-weight: 600;
+    border: 2px solid #e0d9ed;
+    background: white;
+    color: #5a4a7b;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.categoryBtn:hover {
+    border-color: #7e6ba0;
+    background: #f9f7fc;
+}
+
+.categoryBtn.active {
+    background: #7e6ba0;
+    color: white;
+    border-color: #7e6ba0;
+}
+
+/* Animals Section */
+.animalsSection {
+    padding: 60px 20px;
+    background: #f5f5f5;
+}
+
+.animalsContainer {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.animalCard {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.animalCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.animalEmoji {
+    font-size: 72px;
+    margin-bottom: 15px;
+}
+
+.animalName {
+    font-size: 22px;
+    font-weight: 700;
+    color: #5a4a7b;
+    margin-bottom: 8px;
+}
+
+.animalCategory {
+    display: inline-block;
+    padding: 6px 14px;
+    background: #e8d4f8;
+    color: #6b4a8e;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.animalPreview {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    min-height: 60px;
+}
+
+.btnLearnMore {
+    width: 100%;
+    padding: 12px;
+    background: #7e6ba0;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btnLearnMore:hover {
+    background: #6a5989;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(126, 107, 160, 0.3);
+}
+
+.noResults {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.noResults p {
+    font-size: 18px;
+    color: #666;
+}
+
+/* Modal */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modalContent {
+    background: white;
+    border-radius: 20px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modalClose {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #f0f0f0;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.modalClose:hover {
+    background: #e0e0e0;
+    transform: rotate(90deg);
+}
+
+.modalHeader {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 40px 40px 30px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.modalEmoji {
+    font-size: 80px;
+}
+
+.modalTitle {
+    font-size: 28px;
+    font-weight: 700;
+    color: #5a4a7b;
+    margin-bottom: 8px;
+}
+
+.modalCategory {
+    display: inline-block;
+    padding: 6px 14px;
+    background: #e8d4f8;
+    color: #6b4a8e;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.modalBody {
+    padding: 30px 40px 40px;
+}
+
+.modalInfo {
+    background: #f9f7fc;
+    border-radius: 12px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.infoItem {
+    padding: 10px 0;
+    border-bottom: 1px solid #e8e8e8;
+    font-size: 15px;
+    color: #555;
+}
+
+.infoItem:last-child {
+    border-bottom: none;
+}
+
+.infoItem strong {
+    color: #5a4a7b;
+    font-weight: 600;
+    margin-right: 8px;
+}
+
+.modalDescription h3 {
+    font-size: 20px;
+    color: #5a4a7b;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.modalDescription p {
+    font-size: 16px;
+    color: #666;
+    line-height: 1.8;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .wikiTitle {
@@ -183,5 +476,59 @@
     
     .introGrid {
         grid-template-columns: 1fr;
+    }
+
+    .categoryButtons {
+        justify-content: flex-start;
+    }
+
+    .categoryBtn {
+        font-size: 14px;
+        padding: 10px 18px;
+    }
+
+    .animalsContainer {
+        grid-template-columns: 1fr;
+    }
+
+    .modalHeader {
+        padding: 30px 25px 20px;
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .modalBody {
+        padding: 20px 25px 30px;
+    }
+
+    .modalTitle {
+        font-size: 24px;
+    }
+
+    .modalEmoji {
+        font-size: 64px;
+    }
+}
+
+@media (max-width: 480px) {
+    .wikiTitle {
+        font-size: 36px;
+    }
+
+    .searchInput {
+        font-size: 14px;
+        padding: 12px 16px;
+    }
+
+    .animalCard {
+        padding: 25px;
+    }
+
+    .animalEmoji {
+        font-size: 56px;
+    }
+
+    .modalContent {
+        max-height: 90vh;
     }
 }

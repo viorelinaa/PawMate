@@ -1,5 +1,12 @@
+import { useState } from "react";
 import "./Wiki.css";
+
 export default function Wiki() {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState("Toate");
+
+    const categories = ["Toate", "Câini", "Pisici", "Rozătoare", "Păsări"];
+
     return (
         <div>
             {/* Hero Section */}
@@ -44,6 +51,30 @@ export default function Wiki() {
                             Descoperă recomandări și sfaturi de la experți pentru a oferi
                             cea mai bună îngrijire animalului tău.
                         </p>
+                    </div>
+                </div>
+            </section>
+
+            {/* Search & Filter Section */}
+            <section className="searchSection">
+                <div className="searchContainer">
+                    <input
+                        type="text"
+                        className="searchInput"
+                        placeholder="Caută după nume sau descriere..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <div className="categoryButtons">
+                        {categories.map((category) => (
+                            <button
+                                key={category}
+                                className={`categoryBtn ${selectedCategory === category ? "active" : ""}`}
+                                onClick={() => setSelectedCategory(category)}
+                            >
+                                {category}
+                            </button>
+                        ))}
                     </div>
                 </div>
             </section>
