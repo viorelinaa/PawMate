@@ -1,94 +1,208 @@
-/* PAGE */
+/* src/pages/Sitters.css */
+
+/* ── Page ──────────────────────────────────────────────── */
 .pet-sitting-page {
-    padding: 60px 80px;
-    background: linear-gradient(180deg, #faf7ff, #ffffff);
+    background: var(--color-bg);
     min-height: 100vh;
 }
 
-.pet-sitting-page h1 {
+/* ── Hero ──────────────────────────────────────────────── */
+.sitters-hero {
+    position: relative;
+    padding: 80px 24px 60px;
+    background: var(--color-bg);
+    overflow: hidden;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
     text-align: center;
-    color: #6b4fa1;
-    font-size: 42px;
 }
 
-.subtitle {
-    text-align: center;
-    color: #777;
-    margin-bottom: 32px;
+/* Nori */
+.sitters-hero .sitterCloud {
+    position: absolute;
+    background: rgba(255,255,255,0.95);
+    border-radius: var(--radius-full);
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08));
+    pointer-events: none;
 }
 
-/* FILTER BAR */
+.sitters-hero .sitterCloud::before,
+.sitters-hero .sitterCloud::after {
+    content: "";
+    position: absolute;
+    background: rgba(255,255,255,0.95);
+    border-radius: var(--radius-full);
+}
+
+.sitters-hero .sitterCloud::before {
+    width: 80px;
+    height: 80px;
+    left: 25px;
+    top: -35px;
+}
+
+.sitters-hero .sitterCloud::after {
+    width: 100px;
+    height: 100px;
+    left: 90px;
+    top: -45px;
+}
+
+.sitters-hero .sitterCloud.sc1 {
+    width: 200px;
+    height: 70px;
+    left: 30px;
+    top: 40px;
+    transform: scale(0.9);
+}
+
+.sitters-hero .sitterCloud.sc2 {
+    width: 220px;
+    height: 75px;
+    right: 30px;
+    top: 50px;
+}
+
+/* Lăbuțe */
+.sitters-hero .sitterPaw {
+    position: absolute;
+    font-size: 24px;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.sitters-hero .sitterPaw.sp1 { left: 20px;  bottom: 30px; transform: rotate(-14deg); }
+.sitters-hero .sitterPaw.sp2 { right: 24px; bottom: 34px; transform: rotate(12deg); }
+.sitters-hero .sitterPaw.sp3 { left: 50%;   top: 20px;    transform: translateX(-50%) rotate(8deg); font-size: 20px; }
+
+.sitters-hero .heroInner {
+    position: relative;
+    z-index: 1;
+}
+
+.sitters-hero h1 {
+    margin: 0 0 10px;
+    font-size: var(--font-size-xl);
+    color: var(--color-primary);
+    font-weight: 800;
+    font-family: var(--font-family);
+}
+
+.sitters-hero .subtitle {
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-family: var(--font-family);
+    font-size: var(--font-size-md);
+    margin: 0;
+    text-align: center;
+}
+
+/* ── Content ───────────────────────────────────────────── */
+.sitters-content {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 24px 70px;
+}
+
+/* ── Filtre ────────────────────────────────────────────── */
 .filters {
-    max-width: 1000px;
-    margin: 0 auto 48px;
     display: flex;
     align-items: center;
     gap: 24px;
     padding: 22px 28px;
-    border-radius: 20px;
-    background: #ffffff;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-primary-border);
+    margin-bottom: 32px;
 }
 
 .filters input {
     width: 320px;
     padding: 14px 18px;
-    border-radius: 14px;
-    border: 1px solid #e5ddf3;
-    font-size: 16px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-primary-border);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
+    font-weight: 600;
+    color: var(--color-text);
     outline: none;
     box-sizing: border-box;
+    background: white;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .filters input:focus {
-    border-color: #7b5fc4;
-    box-shadow: 0 0 0 3px rgba(123, 95, 196, 0.15);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-faint);
 }
 
 .filter-reset,
 .filter-rating,
 .filter-price {
-    font-weight: 600;
-    color: #7b5fc4;
+    font-weight: 700;
+    color: var(--color-primary);
     cursor: pointer;
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    transition: opacity var(--transition-fast);
 }
 
-/* GRID */
+.filter-reset:hover,
+.filter-rating:hover,
+.filter-price:hover { opacity: 0.7; }
+
+/* ── Grid ──────────────────────────────────────────────── */
 .sitters-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 28px;
-    max-width: 1100px;
-    margin: 0 auto;
 }
 
-/* CARD */
+/* ── Card ──────────────────────────────────────────────── */
 .sitter-card {
-    background: white;
+    background: var(--color-surface);
     padding: 24px;
-    border-radius: 22px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-primary-border);
     position: relative;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.sitter-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
 }
 
 .rating {
     position: absolute;
     top: 18px;
     right: 18px;
-    background: #f3eefc;
+    background: var(--color-primary-faint);
+    color: var(--color-primary);
     padding: 6px 10px;
-    border-radius: 12px;
-    font-weight: 600;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    border: 1px solid var(--color-primary-border);
 }
 
 .sitter-card h3 {
     margin-top: 0;
-    color: #5b3f92;
+    color: var(--color-primary);
+    font-weight: 800;
+    font-family: var(--font-family);
+    font-size: var(--font-size-lg);
 }
 
 .city {
-    color: #888;
+    color: var(--color-text-muted);
     margin-bottom: 8px;
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    font-weight: 600;
 }
 
 .card-footer {
@@ -99,33 +213,30 @@
 }
 
 .card-footer button {
-    background: #7b5fc4;
+    background: var(--color-primary);
     color: white;
     border: none;
     padding: 10px 18px;
-    border-radius: 14px;
+    border-radius: var(--radius-full);
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700;
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    box-shadow: var(--shadow-btn-primary);
+    transition: transform var(--transition-fast), background var(--transition-fast);
 }
 
 .card-footer button:hover {
-    background: #684bb1;
+    background: var(--color-primary-light);
+    transform: translateY(-1px);
 }
 
-/* MOBILE FIX */
+/* ── Responsive ────────────────────────────────────────── */
 @media (max-width: 768px) {
-    .pet-sitting-page {
-        padding: 92px 16px 24px; /* 92px = spațiu pentru navbar + buton */
-    }
-
-    .filters {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 12px;
-        padding: 16px;
-    }
-
-    .filters input {
-        width: 100%;
-    }
+    .sitters-hero { padding: 60px 16px 40px; }
+    .sitters-hero .sitterCloud { display: none; }
+    .sitters-content { padding: 20px 16px 40px; }
+    .filters { flex-direction: column; align-items: stretch; gap: 12px; padding: 16px; }
+    .filters input { width: 100%; }
+    .sitters-grid { grid-template-columns: 1fr; }
 }
