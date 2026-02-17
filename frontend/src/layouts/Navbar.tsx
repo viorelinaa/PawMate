@@ -72,6 +72,9 @@ export default function Navbar() {
                 <NavLink to="/blog" onClick={() => setOpen(false)}>
                     Blog
                 </NavLink>
+                <NavLink to="/evenimente" onClick={() => setOpen(false)}>
+                    Evenimente
+                </NavLink>
                 <NavLink to="/vanzari" onClick={() => setOpen(false)}>
                     Vânzări
                 </NavLink>
