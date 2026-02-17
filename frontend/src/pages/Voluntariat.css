@@ -1,0 +1,491 @@
+/* Hero Section */
+.voluntariatHero {
+    background: linear-gradient(135deg, #d4c5e8 0%, #c8b8dc 100%);
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 60px 20px;
+}
+
+.voluntariatCloud {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 100px;
+    height: 120px;
+    width: 250px;
+}
+
+.voluntariatCloud::before,
+.voluntariatCloud::after {
+    content: '';
+    position: absolute;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+}
+
+.voluntariatCloud::before {
+    width: 100px;
+    height: 100px;
+    top: -50px;
+    left: 50px;
+}
+
+.voluntariatCloud::after {
+    width: 120px;
+    height: 120px;
+    top: -60px;
+    right: 50px;
+}
+
+.vc1 {
+    top: 80px;
+    left: 50px;
+}
+
+.vc2 {
+    top: 80px;
+    right: 50px;
+}
+
+.voluntariatPaw {
+    position: absolute;
+    font-size: 24px;
+    opacity: 0.3;
+}
+
+.vp1 {
+    bottom: 40px;
+    left: 60px;
+}
+
+.vp2 {
+    bottom: 40px;
+    left: 100px;
+}
+
+.vp3 {
+    bottom: 40px;
+    left: 140px;
+}
+
+.voluntariatHeroInner {
+    text-align: center;
+    z-index: 10;
+    max-width: 800px;
+}
+
+.voluntariatTitle {
+    font-size: 64px;
+    font-weight: 700;
+    color: #5a4a7b;
+    margin: 0 0 15px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.voluntariatSub {
+    font-size: 18px;
+    color: #6b5b8c;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* Info Section */
+.infoSection {
+    padding: 60px 20px;
+    background: #f9f7fc;
+}
+
+.sectionTitle {
+    font-size: 36px;
+    font-weight: 700;
+    color: #5a4a7b;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.infoGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.infoCard {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+}
+
+.infoCard:hover {
+    transform: translateY(-5px);
+}
+
+.infoIcon {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.infoCard h3 {
+    font-size: 20px;
+    color: #5a4a7b;
+    margin-bottom: 10px;
+}
+
+.infoCard p {
+    color: #666;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+/* Activități Section */
+.activitiesSection {
+    padding: 60px 20px;
+    background: white;
+}
+
+.sectionSubtitle {
+    text-align: center;
+    color: #6b5b8c;
+    font-size: 16px;
+    margin-bottom: 40px;
+    margin-top: -20px;
+}
+
+.activityCards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.activityCard {
+    background: linear-gradient(135deg, #f9f7fc 0%, #f3effa 100%);
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.activityCard:hover {
+    border-color: #7e6ba0;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(126, 107, 160, 0.15);
+}
+
+.activityIcon {
+    font-size: 48px;
+    margin-bottom: 15px;
+}
+
+.activityCard h3 {
+    font-size: 18px;
+    color: #5a4a7b;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.activityCard p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Beneficii Section */
+.benefitsSection {
+    padding: 60px 20px;
+    background: #f9f7fc;
+}
+
+.benefitsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.benefitCard {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.benefitCard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.benefitIcon {
+    font-size: 42px;
+    margin-bottom: 15px;
+}
+
+.benefitCard h3 {
+    font-size: 19px;
+    color: #5a4a7b;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.benefitCard p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Formular Section */
+.formSection {
+    padding: 60px 20px;
+    background: white;
+}
+
+.volunteerForm {
+    background: #f9f7fc;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    max-width: 900px;
+    margin: 30px auto 0;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.formGroup {
+    margin-bottom: 20px;
+}
+
+.formGroup label {
+    display: block;
+    font-weight: 600;
+    color: #5a4a7b;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.formInput,
+.formSelect,
+.formTextarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e0d9ed;
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background: white;
+    box-sizing: border-box;
+}
+
+.formInput:focus,
+.formSelect:focus,
+.formTextarea:focus {
+    outline: none;
+    border-color: #7e6ba0;
+    box-shadow: 0 0 0 3px rgba(126, 107, 160, 0.1);
+}
+
+.formInput:disabled,
+.formSelect:disabled,
+.formTextarea:disabled {
+    background: #f0f0f0;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.formTextarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.checkboxGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.checkboxLabel:hover {
+    background: rgba(126, 107, 160, 0.05);
+}
+
+.checkboxLabel input[type="checkbox"] {
+    width: auto;
+    cursor: pointer;
+    accent-color: #7e6ba0;
+}
+
+.checkboxLabel span {
+    font-size: 14px;
+    color: #555;
+}
+
+.formActions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.btnReset,
+.btnSubmit {
+    padding: 14px 35px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btnReset {
+    background: white;
+    color: #7e6ba0;
+    border: 2px solid #7e6ba0;
+}
+
+.btnReset:hover {
+    background: #f9f7fc;
+}
+
+.btnReset:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btnSubmit {
+    background: #7e6ba0;
+    color: white;
+    box-shadow: 0 4px 12px rgba(126, 107, 160, 0.3);
+}
+
+.btnSubmit:hover:not(:disabled) {
+    background: #6a5989;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(126, 107, 160, 0.4);
+}
+
+.btnSubmit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.successMessage {
+    background: #d4edda;
+    color: #155724;
+    padding: 18px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 500;
+    border: 2px solid #c3e6cb;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* FAQ SECTION */
+
+.faqSection {
+    padding: 60px 20px;
+    background: #f9f7fc;
+}
+
+.faqGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.faqCard {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.faqCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.faqCard h3 {
+    font-size: 17px;
+    color: #5a4a7b;
+    margin-bottom: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.faqCard p {
+    color: #666;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .voluntariatTitle {
+        font-size: 48px;
+    }
+    
+    .sectionTitle {
+        font-size: 28px;
+    }
+    
+    .activityCards,
+    .benefitsGrid,
+    .faqGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .volunteerForm {
+        padding: 30px 20px;
+    }
+
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .checkboxGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .formActions {
+        flex-direction: column;
+    }
+
+    .btnReset,
+    .btnSubmit {
+        width: 100%;
+    }
+}

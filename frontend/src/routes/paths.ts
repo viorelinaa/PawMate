@@ -8,6 +8,8 @@ export const paths = {
     veterinari: '/veterinari',
     donatii: '/donatii',
     quiz: '/quiz',
+    voluntariat: '/voluntariat',
+    wiki: '/wiki',
     ghidMedical: '/ghid-medical',
     notfound: '*',
 }

@@ -12,6 +12,8 @@ import Signup from "../pages/SignUp";
 import { paths } from "./paths";
 import NotFound from "../pages/NotFound";
 import Veterinari from "../pages/Veterinari";
+import Voluntariat from "../pages/Voluntariat";
+import Wiki from "../pages/Wiki";
 import MedGuide from "../pages/MedGuide";
 export default function AppRoutes() {
     return (
@@ -29,6 +31,8 @@ export default function AppRoutes() {
                     <Route path={paths.login} element={<Login />} />
                     <Route path={paths.quiz} element={<Quiz />} />
                     <Route path={paths.signup} element={<Signup />} />
+                    <Route path={paths.voluntariat} element={<Voluntariat />} />
+                    <Route path={paths.wiki} element={<Wiki />} />
                     <Route path={paths.notfound} element={<NotFound />} />
                 </Routes>
             </main>
