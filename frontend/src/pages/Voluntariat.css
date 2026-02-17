@@ -143,10 +143,7 @@
     font-size: 15px;
 }
 
-/* ========================================= */
-/* ACTIVITĂȚI SECTION - STILURI NOI */
-/* ========================================= */
-
+/* Activități Section */
 .activitiesSection {
     padding: 60px 20px;
     background: white;
@@ -201,6 +198,55 @@
     line-height: 1.6;
 }
 
+/* ========================================= */
+/* BENEFICII SECTION - STILURI NOI */
+/* ========================================= */
+
+.benefitsSection {
+    padding: 60px 20px;
+    background: #f9f7fc;
+}
+
+.benefitsGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.benefitCard {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.benefitCard:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.benefitIcon {
+    font-size: 42px;
+    margin-bottom: 15px;
+}
+
+.benefitCard h3 {
+    font-size: 19px;
+    color: #5a4a7b;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.benefitCard p {
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .voluntariatTitle {
@@ -211,7 +257,8 @@
         font-size: 28px;
     }
     
-    .activityCards {
+    .activityCards,
+    .benefitsGrid {
         grid-template-columns: 1fr;
     }
 }
