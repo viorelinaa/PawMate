@@ -8,7 +8,6 @@
 html, body {
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden;
 }
 
 *, *::before, *::after {
@@ -28,6 +27,8 @@ img, video, canvas, svg {
 
 /* Optional: smoother font */
 body {
+    overflow-x: hidden;
+    overflow-y: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -58,7 +59,10 @@ body {
     /* ===============================
        GLOBAL TYPO
     ================================ */
-    body { font-size: 14px; }
+    body {
+        font-size: 14px;
+        padding-bottom: calc(56px + env(safe-area-inset-bottom));
+    }
     h1 { font-size: 26px; }
     h2 { font-size: 22px; }
     p  { font-size: 14px; }
@@ -353,7 +357,7 @@ body {
        FOOTER
     ================================ */
     footer {
-        padding: 20px 12px !important;
+        padding: 20px 12px calc(20px + env(safe-area-inset-bottom)) !important;
         font-size: 13px !important;
         max-width: 100%;
     }
