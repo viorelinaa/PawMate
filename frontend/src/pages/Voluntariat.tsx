@@ -225,7 +225,7 @@ export default function Voluntariat() {
                 </div>
             </section>
 
-            {/* Formular Section - SECȚIUNEA NOUĂ */}
+            {/* Formular Section */}
             <section className="formSection">
                 <h2 className="sectionTitle">Înscrie-te ca voluntar</h2>
                 <p className="sectionSubtitle">
@@ -404,6 +404,56 @@ export default function Voluntariat() {
                         </button>
                     </div>
                 </form>
+            </section>
+
+            {/* FAQ Section - SECȚIUNEA NOUĂ */}
+            <section className="faqSection">
+                <h2 className="sectionTitle">Întrebări frecvente</h2>
+                <p className="sectionSubtitle">Răspunsuri la cele mai comune întrebări</p>
+                <div className="faqGrid">
+                    <div className="faqCard">
+                        <h3>❓ Trebuie să am experiență cu animale?</h3>
+                        <p>
+                            Nu este necesar! Oferim training complet pentru toți voluntarii noi.
+                            Vei fi ghidat pas cu pas de echipa noastră experimentată.
+                        </p>
+                    </div>
+                    <div className="faqCard">
+                        <h3>⏰ Câte ore pe săptămână trebuie să ofer?</h3>
+                        <p>
+                            Programul este flexibil - chiar și 2-3 ore pe săptămână fac diferența!
+                            Tu decizi când și cât timp poți oferi.
+                        </p>
+                    </div>
+                    <div className="faqCard">
+                        <h3>👶 Există vârstă minimă pentru voluntariat?</h3>
+                        <p>
+                            Tinerii între 16-18 ani pot participa cu acordul părinților.
+                            Peste 18 ani, te poți înscrie independent.
+                        </p>
+                    </div>
+                    <div className="faqCard">
+                        <h3>💰 Sunt costuri asociate?</h3>
+                        <p>
+                            Nu, voluntariatul la PawMate este complet gratuit. Oferim tot
+                            echipamentul necesar pentru activități.
+                        </p>
+                    </div>
+                    <div className="faqCard">
+                        <h3>🏥 Trebuie să am cunoștințe medicale?</h3>
+                        <p>
+                            Nu este necesar. Procedurile medicale sunt efectuate doar de veterinari.
+                            Voluntarii ajută cu îngrijirea de bază.
+                        </p>
+                    </div>
+                    <div className="faqCard">
+                        <h3>📅 Cum arată procesul de înscriere?</h3>
+                        <p>
+                            După completarea formularului, te contactăm în 2-3 zile. Urmează o
+                            întâlnire introductivă și un training de orientare.
+                        </p>
+                    </div>
+                </div>
             </section>
         </div>
     );
