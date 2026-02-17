@@ -110,6 +110,30 @@ export default function Blog() {
                     <p className="blogSub">Articole utile pentru stăpânii responsabili</p>
                 </div>
             </section>
+
+            {/* Search & Filter */}
+            <section className="blogSearchSection">
+                <div className="blogSearchContainer">
+                    <input
+                        type="text"
+                        className="blogSearchInput"
+                        placeholder="Caută articole..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
+                    <div className="blogCategoryButtons">
+                        {categories.map((cat) => (
+                            <button
+                                key={cat}
+                                className={`blogCategoryBtn ${selectedCategory === cat ? "active" : ""}`}
+                                onClick={() => setSelectedCategory(cat)}
+                            >
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            </section>
         </div>
     );
 }
