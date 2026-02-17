@@ -258,6 +258,7 @@
     }
 }
 
+/* Animals Section */
 .animalsSection {
     padding: 60px 20px;
     background: #f5f5f5;
@@ -289,6 +290,32 @@
 .animalEmoji {
     font-size: 72px;
     margin-bottom: 15px;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Support for images instead of emojis */
+.animalEmoji img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 15px;
+}
+
+/* Alternative: circular images */
+.animalEmoji.circular img {
+    border-radius: 50%;
+}
+
+/* Alternative: images with border */
+.animalEmoji.bordered img {
+    border: 3px solid #e8d4f8;
+    border-radius: 15px;
 }
 
 .animalName {
@@ -336,13 +363,16 @@
     box-shadow: 0 4px 12px rgba(126, 107, 160, 0.3);
 }
 
-.noResults {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 60px 20px;
-}
+@media (max-width: 768px) {
+    .animalsContainer {
+        grid-template-columns: 1fr;
+    }
 
-.noResults p {
-    font-size: 18px;
-    color: #666;
+    .animalCard {
+        padding: 25px;
+    }
+
+    .animalEmoji {
+        font-size: 56px;
+    }
 }

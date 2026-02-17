@@ -83,10 +83,83 @@ export default function Wiki() {
             size: "Mare (5.5-8 kg)",
             care: "Mediu",
             description: "Maine Coon este una dintre cele mai mari rase de pisici domestice. Extrem de prietenoasă și cu o personalitate asemănătoare câinilor."
+        },
+        {
+            id: 7,
+            name: "Hamster Syrian",
+            category: "Rozătoare",
+            emoji: "🐹",
+            temperament: "Solitar, Nocturn, Jucăuș",
+            lifespan: "2-3 ani",
+            size: "Mic (100-150g)",
+            care: "Scăzut",
+            description: "Hamsterul Syrian este perfect pentru începători. Este solitar și preferă să trăiască singur, fiind activ în special noaptea."
+        },
+        {
+            id: 8,
+            name: "Iepure Pitic",
+            category: "Rozătoare",
+            emoji: "🐰",
+            temperament: "Social, Timid, Curios",
+            lifespan: "8-12 ani",
+            size: "Mic (1-2 kg)",
+            care: "Mediu",
+            description: "Iepurele pitic este un animal social și afectuos care necesită atenție zilnică și un spațiu generos pentru a se mișca."
+        },
+        {
+            id: 9,
+            name: "Cobai",
+            category: "Rozătoare",
+            emoji: "🐹",
+            temperament: "Social, Vocal, Prietenos",
+            lifespan: "5-7 ani",
+            size: "Mic (700-1200g)",
+            care: "Mediu",
+            description: "Cobaiul este extrem de social și preferă să trăiască în grupuri. Este vocal și va comunica prin diferite sunete."
+        },
+        {
+            id: 10,
+            name: "Papagal Perușă",
+            category: "Păsări",
+            emoji: "🦜",
+            temperament: "Social, Jucăuș, Vocal",
+            lifespan: "10-15 ani",
+            size: "Mic (30-40g)",
+            care: "Mediu",
+            description: "Perușa este o pasăre mică și socială, perfectă pentru începători. Poate învăța să vorbească și să facă trucuri simple."
+        },
+        {
+            id: 11,
+            name: "Canarul",
+            category: "Păsări",
+            emoji: "🐦",
+            temperament: "Melodios, Independent, Liniștit",
+            lifespan: "10-15 ani",
+            size: "Mic (15-25g)",
+            care: "Scăzut-Mediu",
+            description: "Canarul este cunoscut pentru cântecul său melodios. Este mai independent decât alte păsări și nu necesită interacțiune constantă."
+        },
+        {
+            id: 12,
+            name: "Agapornis",
+            category: "Păsări",
+            emoji: "🦜",
+            temperament: "Afectuos, Social, Energic",
+            lifespan: "10-15 ani",
+            size: "Mic (40-60g)",
+            care: "Mediu-Ridicat",
+            description: "Agapornisul, cunoscut și ca 'lovebird', este extrem de afectuos și preferă să trăiască în perechi sau cu partenerul uman."
         }
     ];
 
     const categories = ["Toate", "Câini", "Pisici", "Rozătoare", "Păsări"];
+
+    const filteredAnimals = animals.filter(animal => {
+        const matchesSearch = animal.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                            animal.description.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesCategory = selectedCategory === "Toate" || animal.category === selectedCategory;
+        return matchesSearch && matchesCategory;
+    });
 
     return (
         <div>
@@ -163,15 +236,21 @@ export default function Wiki() {
             {/* Animals Grid Section */}
             <section className="animalsSection">
                 <div className="animalsContainer">
-                    {animals.map((animal) => (
-                        <div key={animal.id} className="animalCard">
-                            <div className="animalEmoji">{animal.emoji}</div>
-                            <h3 className="animalName">{animal.name}</h3>
-                            <span className="animalCategory">{animal.category}</span>
-                            <p className="animalPreview">{animal.description.substring(0, 100)}...</p>
-                            <button className="btnLearnMore">Află mai multe</button>
+                    {filteredAnimals.length > 0 ? (
+                        filteredAnimals.map((animal) => (
+                            <div key={animal.id} className="animalCard">
+                                <div className="animalEmoji">{animal.emoji}</div>
+                                <h3 className="animalName">{animal.name}</h3>
+                                <span className="animalCategory">{animal.category}</span>
+                                <p className="animalPreview">{animal.description.substring(0, 100)}...</p>
+                                <button className="btnLearnMore">Află mai multe</button>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="noResults">
+                            <p>Nu au fost găsite rezultate pentru căutarea ta.</p>
                         </div>
-                    ))}
+                    )}
                 </div>
             </section>
         </div>
