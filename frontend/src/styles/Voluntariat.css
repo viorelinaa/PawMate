@@ -1,6 +1,8 @@
-/* Hero Section */
+/* src/pages/Voluntariat.css */
+
+/* ── Hero ──────────────────────────────────────────────── */
 .voluntariatHero {
-    background: linear-gradient(135deg, #d4c5e8 0%, #c8b8dc 100%);
+    background: var(--color-bg);
     min-height: 200px;
     display: flex;
     align-items: center;
@@ -8,47 +10,43 @@
     position: relative;
     overflow: hidden;
     padding: 60px 20px;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
 }
 
 .voluntariatCloud {
     position: absolute;
-    background: rgba(255, 255, 255, 0.7);
-    border-radius: 100px;
-    height: 120px;
-    width: 250px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius-full);
+    height: 70px;
+    width: 220px;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08));
 }
 
 .voluntariatCloud::before,
 .voluntariatCloud::after {
     content: '';
     position: absolute;
-    background: rgba(255, 255, 255, 0.7);
-    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: var(--radius-full);
 }
 
 .voluntariatCloud::before {
-    width: 100px;
-    height: 100px;
-    top: -50px;
-    left: 50px;
+    width: 80px;
+    height: 80px;
+    top: -35px;
+    left: 25px;
 }
 
 .voluntariatCloud::after {
-    width: 120px;
-    height: 120px;
-    top: -60px;
-    right: 50px;
+    width: 100px;
+    height: 100px;
+    top: -45px;
+    right: 25px;
 }
 
-.vc1 {
-    top: 80px;
-    left: 50px;
-}
-
-.vc2 {
-    top: 80px;
-    right: 50px;
-}
+.vc1 { top: 40px; left: 30px; transform: scale(0.9); }
+.vc2 { top: 50px; right: 30px; }
 
 .voluntariatPaw {
     position: absolute;
@@ -56,54 +54,56 @@
     opacity: 0.3;
 }
 
-.vp1 {
-    bottom: 40px;
-    left: 60px;
-}
-
-.vp2 {
-    bottom: 40px;
-    left: 100px;
-}
-
-.vp3 {
-    bottom: 40px;
-    left: 140px;
-}
+.vp1 { bottom: 30px; left: 20px;  transform: rotate(-14deg); }
+.vp2 { bottom: 34px; right: 24px; transform: rotate(12deg); }
+.vp3 { left: 50%; top: 20px; transform: translateX(-50%) rotate(8deg); font-size: 20px; }
 
 .voluntariatHeroInner {
     text-align: center;
     z-index: 10;
     max-width: 800px;
+    position: relative;
 }
 
 .voluntariatTitle {
-    font-size: 64px;
-    font-weight: 700;
-    color: #5a4a7b;
+    font-size: var(--font-size-xl);
+    font-weight: 800;
+    color: var(--color-primary);
     margin: 0 0 15px 0;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: var(--font-family);
 }
 
 .voluntariatSub {
-    font-size: 18px;
-    color: #6b5b8c;
+    font-size: var(--font-size-md);
+    color: var(--color-text-muted);
     margin: 0;
-    font-weight: 400;
+    font-weight: 600;
+    font-family: var(--font-family);
 }
 
-/* Info Section */
-.infoSection {
-    padding: 60px 20px;
-    background: #f9f7fc;
-}
-
+/* ── Titluri sectiuni ──────────────────────────────────── */
 .sectionTitle {
     font-size: 36px;
-    font-weight: 700;
-    color: #5a4a7b;
+    font-weight: 800;
+    color: var(--color-primary);
     text-align: center;
     margin-bottom: 40px;
+    font-family: var(--font-family);
+}
+
+.sectionSubtitle {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-md);
+    margin-bottom: 40px;
+    margin-top: -20px;
+    font-family: var(--font-family);
+}
+
+/* ── Info Section ──────────────────────────────────────── */
+.infoSection {
+    padding: 60px 20px;
+    background: var(--color-bg);
 }
 
 .infoGrid {
@@ -115,46 +115,40 @@
 }
 
 .infoCard {
-    background: white;
+    background: var(--color-surface);
     padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-primary-border);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .infoCard:hover {
     transform: translateY(-5px);
+    box-shadow: var(--shadow-card-hover);
 }
 
-.infoIcon {
-    font-size: 40px;
-    margin-bottom: 15px;
-}
+.infoIcon { font-size: 40px; margin-bottom: 15px; }
 
 .infoCard h3 {
-    font-size: 20px;
-    color: #5a4a7b;
+    font-size: var(--font-size-lg);
+    color: var(--color-primary);
     margin-bottom: 10px;
+    font-weight: 700;
+    font-family: var(--font-family);
 }
 
 .infoCard p {
-    color: #666;
+    color: var(--color-text-muted);
     line-height: 1.6;
-    font-size: 15px;
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
 }
 
-/* Activități Section */
+/* ── Activitati Section ────────────────────────────────── */
 .activitiesSection {
     padding: 60px 20px;
-    background: white;
-}
-
-.sectionSubtitle {
-    text-align: center;
-    color: #6b5b8c;
-    font-size: 16px;
-    margin-bottom: 40px;
-    margin-top: -20px;
+    background: var(--color-surface-soft);
 }
 
 .activityCards {
@@ -166,42 +160,42 @@
 }
 
 .activityCard {
-    background: linear-gradient(135deg, #f9f7fc 0%, #f3effa 100%);
+    background: var(--color-surface);
     padding: 30px;
-    border-radius: 15px;
+    border-radius: var(--radius-md);
     text-align: center;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
+    border: 1px solid var(--color-primary-border);
+    box-shadow: var(--shadow-card);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .activityCard:hover {
-    border-color: #7e6ba0;
     transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(126, 107, 160, 0.15);
+    box-shadow: var(--shadow-card-hover);
+    border-color: var(--color-primary);
 }
 
-.activityIcon {
-    font-size: 48px;
-    margin-bottom: 15px;
-}
+.activityIcon { font-size: 48px; margin-bottom: 15px; }
 
 .activityCard h3 {
-    font-size: 18px;
-    color: #5a4a7b;
+    font-size: var(--font-size-lg);
+    color: var(--color-primary);
     margin-bottom: 12px;
-    font-weight: 600;
+    font-weight: 700;
+    font-family: var(--font-family);
 }
 
 .activityCard p {
-    color: #666;
-    font-size: 14px;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-base);
     line-height: 1.6;
+    font-family: var(--font-family);
 }
 
-/* Beneficii Section */
+/* ── Beneficii Section ─────────────────────────────────── */
 .benefitsSection {
     padding: 60px 20px;
-    background: #f9f7fc;
+    background: var(--color-bg);
 }
 
 .benefitsGrid {
@@ -213,48 +207,49 @@
 }
 
 .benefitCard {
-    background: white;
+    background: var(--color-surface);
     padding: 30px;
-    border-radius: 15px;
+    border-radius: var(--radius-md);
     text-align: center;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-primary-border);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .benefitCard:hover {
     transform: scale(1.05);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--shadow-card-hover);
 }
 
-.benefitIcon {
-    font-size: 42px;
-    margin-bottom: 15px;
-}
+.benefitIcon { font-size: 42px; margin-bottom: 15px; }
 
 .benefitCard h3 {
-    font-size: 19px;
-    color: #5a4a7b;
+    font-size: var(--font-size-lg);
+    color: var(--color-primary);
     margin-bottom: 10px;
-    font-weight: 600;
+    font-weight: 700;
+    font-family: var(--font-family);
 }
 
 .benefitCard p {
-    color: #666;
-    font-size: 14px;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-base);
     line-height: 1.6;
+    font-family: var(--font-family);
 }
 
-/* Formular Section */
+/* ── Form Section ──────────────────────────────────────── */
 .formSection {
     padding: 60px 20px;
-    background: white;
+    background: var(--color-surface-soft);
 }
 
 .volunteerForm {
-    background: #f9f7fc;
+    background: var(--color-surface);
     padding: 40px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-primary-border);
     max-width: 900px;
     margin: 30px auto 0;
 }
@@ -266,16 +261,15 @@
     margin-bottom: 20px;
 }
 
-.formGroup {
-    margin-bottom: 20px;
-}
+.formGroup { margin-bottom: 20px; }
 
 .formGroup label {
     display: block;
-    font-weight: 600;
-    color: #5a4a7b;
+    font-weight: 700;
+    color: var(--color-primary);
     margin-bottom: 8px;
-    font-size: 14px;
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
 }
 
 .formInput,
@@ -283,12 +277,14 @@
 .formTextarea {
     width: 100%;
     padding: 12px 15px;
-    border: 2px solid #e0d9ed;
-    border-radius: 10px;
-    font-size: 14px;
-    font-family: inherit;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
+    font-weight: 600;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
     background: white;
+    color: var(--color-text);
     box-sizing: border-box;
 }
 
@@ -296,8 +292,8 @@
 .formSelect:focus,
 .formTextarea:focus {
     outline: none;
-    border-color: #7e6ba0;
-    box-shadow: 0 0 0 3px rgba(126, 107, 160, 0.1);
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-faint);
 }
 
 .formInput:disabled,
@@ -326,23 +322,23 @@
     gap: 10px;
     cursor: pointer;
     padding: 10px;
-    border-radius: 8px;
-    transition: background 0.2s ease;
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+    font-family: var(--font-family);
 }
 
-.checkboxLabel:hover {
-    background: rgba(126, 107, 160, 0.05);
-}
+.checkboxLabel:hover { background: var(--color-primary-faint); }
 
 .checkboxLabel input[type="checkbox"] {
     width: auto;
     cursor: pointer;
-    accent-color: #7e6ba0;
+    accent-color: var(--color-primary);
 }
 
 .checkboxLabel span {
-    font-size: 14px;
-    color: #555;
+    font-size: var(--font-size-base);
+    color: var(--color-text-soft);
+    font-family: var(--font-family);
 }
 
 .formActions {
@@ -352,42 +348,40 @@
     margin-top: 30px;
 }
 
-.btnReset,
+.btnReset {
+    padding: 14px 35px;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    cursor: pointer;
+    font-family: var(--font-family);
+    background: var(--color-surface);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary-border);
+    box-shadow: var(--shadow-btn-ghost);
+    transition: transform var(--transition-fast);
+}
+
+.btnReset:hover { transform: translateY(-1px); }
+.btnReset:disabled { opacity: 0.5; cursor: not-allowed; }
+
 .btnSubmit {
     padding: 14px 35px;
-    border-radius: 10px;
-    font-size: 16px;
-    font-weight: 600;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-md);
+    font-weight: 700;
     border: none;
     cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.btnReset {
-    background: white;
-    color: #7e6ba0;
-    border: 2px solid #7e6ba0;
-}
-
-.btnReset:hover {
-    background: #f9f7fc;
-}
-
-.btnReset:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.btnSubmit {
-    background: #7e6ba0;
+    font-family: var(--font-family);
+    background: var(--color-primary);
     color: white;
-    box-shadow: 0 4px 12px rgba(126, 107, 160, 0.3);
+    box-shadow: var(--shadow-btn-primary);
+    transition: transform var(--transition-fast), background var(--transition-fast);
 }
 
 .btnSubmit:hover:not(:disabled) {
-    background: #6a5989;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(126, 107, 160, 0.4);
+    background: var(--color-primary-light);
+    transform: translateY(-1px);
 }
 
 .btnSubmit:disabled {
@@ -400,21 +394,21 @@
     background: #d4edda;
     color: #155724;
     padding: 18px;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     margin-bottom: 25px;
     text-align: center;
-    font-weight: 500;
-    border: 2px solid #c3e6cb;
+    font-weight: 600;
+    border: 1px solid #c3e6cb;
     max-width: 900px;
     margin-left: auto;
     margin-right: auto;
+    font-family: var(--font-family);
 }
 
-/* FAQ SECTION */
-
+/* ── FAQ Section ───────────────────────────────────────── */
 .faqSection {
     padding: 60px 20px;
-    background: #f9f7fc;
+    background: var(--color-bg);
 }
 
 .faqGrid {
@@ -426,66 +420,45 @@
 }
 
 .faqCard {
-    background: white;
+    background: var(--color-surface);
     padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-primary-border);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .faqCard:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--shadow-card-hover);
 }
 
 .faqCard h3 {
-    font-size: 17px;
-    color: #5a4a7b;
+    font-size: var(--font-size-md);
+    color: var(--color-primary);
     margin-bottom: 12px;
-    font-weight: 600;
+    font-weight: 700;
     line-height: 1.4;
+    font-family: var(--font-family);
 }
 
 .faqCard p {
-    color: #666;
+    color: var(--color-text-muted);
     line-height: 1.6;
-    font-size: 14px;
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
 }
 
-/* Responsive */
+/* ── Responsive ────────────────────────────────────────── */
 @media (max-width: 768px) {
-    .voluntariatTitle {
-        font-size: 48px;
-    }
-    
-    .sectionTitle {
-        font-size: 28px;
-    }
-    
+    .voluntariatTitle { font-size: 40px; }
+    .sectionTitle { font-size: 28px; }
     .activityCards,
     .benefitsGrid,
-    .faqGrid {
-        grid-template-columns: 1fr;
-    }
-
-    .volunteerForm {
-        padding: 30px 20px;
-    }
-
-    .formGrid {
-        grid-template-columns: 1fr;
-    }
-
-    .checkboxGrid {
-        grid-template-columns: 1fr;
-    }
-
-    .formActions {
-        flex-direction: column;
-    }
-
-    .btnReset,
-    .btnSubmit {
-        width: 100%;
-    }
+    .faqGrid { grid-template-columns: 1fr; }
+    .volunteerForm { padding: 30px 20px; }
+    .formGrid { grid-template-columns: 1fr; }
+    .checkboxGrid { grid-template-columns: 1fr; }
+    .formActions { flex-direction: column; }
+    .btnReset, .btnSubmit { width: 100%; }
 }

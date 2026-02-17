@@ -1,0 +1,196 @@
+/* src/pages/Home.css */
+
+.home {
+    min-height: calc(100vh - 64px);
+    color: var(--color-text);
+}
+
+/* ── Hero ──────────────────────────────────────────────── */
+.hero {
+    position: relative;
+    padding: 110px 24px 90px;
+    background: var(--color-bg);
+    overflow: hidden;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+}
+
+.hero::before {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    left: 50%;
+    top: 80px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.0) 70%);
+    border-radius: var(--radius-full);
+    pointer-events: none;
+}
+
+/* ── Lăbuțe ────────────────────────────────────────────── */
+.paw {
+    position: absolute;
+    font-size: 28px;
+    opacity: 0.35;
+    filter: grayscale(20%);
+    pointer-events: none;
+}
+.paw.p1 { left: 18px;  top: 120px;    transform: rotate(-18deg); }
+.paw.p2 { left: 34px;  top: 180px;    transform: rotate(12deg);  font-size: 22px; }
+.paw.p3 { right: 22px; top: 110px;    transform: rotate(18deg); }
+.paw.p4 { right: 38px; top: 170px;    transform: rotate(-10deg); font-size: 22px; }
+.paw.p5 { left: 18px;  bottom: 26px;  transform: rotate(14deg); }
+.paw.p6 { right: 18px; bottom: 26px;  transform: rotate(-14deg); }
+
+/* ── Nori ──────────────────────────────────────────────── */
+.cloud {
+    position: absolute;
+    width: 240px;
+    height: 90px;
+    background: rgba(255,255,255,0.95);
+    border-radius: var(--radius-full);
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08));
+    pointer-events: none;
+}
+.cloud::before,
+.cloud::after {
+    content: "";
+    position: absolute;
+    background: rgba(255,255,255,0.95);
+    border-radius: var(--radius-full);
+}
+.cloud::before { width: 100px; height: 100px; left: 30px;  top: -40px; }
+.cloud::after  { width: 120px; height: 120px; left: 110px; top: -55px; }
+
+.cloud.c1 { left: 40px;  top: 60px; transform: scale(1.05); }
+.cloud.c2 { right: 40px; top: 70px; transform: scale(1.1); }
+
+/* ── Hero inner ────────────────────────────────────────── */
+.heroInner {
+    position: relative;
+    max-width: 980px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.brandTitle {
+    font-size: clamp(42px, 7vw, 90px);
+    line-height: 1;
+    margin: 0;
+    color: var(--color-primary);
+    letter-spacing: 1px;
+    font-weight: 800;
+    font-family: var(--font-family);
+}
+
+.subtitlePill {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 14px 18px;
+    background: var(--color-surface);
+    border-radius: var(--radius-full);
+    color: var(--color-primary);
+    font-weight: 600;
+    box-shadow: var(--shadow-btn-ghost);
+    font-family: var(--font-family);
+}
+
+.heroActions {
+    margin-top: 18px;
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btnPrimary,
+.btnGhost {
+    border: 0;
+    border-radius: var(--radius-full);
+    padding: 12px 18px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.btnPrimary {
+    background: var(--color-primary);
+    color: white;
+    box-shadow: var(--shadow-btn-primary);
+}
+
+.btnGhost {
+    background: var(--color-surface);
+    color: var(--color-primary);
+    box-shadow: var(--shadow-btn-ghost);
+}
+
+.btnPrimary:hover,
+.btnGhost:hover { transform: translateY(-1px); }
+
+/* ── Explore ───────────────────────────────────────────── */
+.explore {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 44px 24px 70px;
+}
+
+.exploreTitle {
+    text-align: center;
+    margin: 0;
+    font-size: clamp(26px, 3.2vw, 44px);
+    color: var(--color-primary);
+    font-weight: 800;
+    font-family: var(--font-family);
+}
+
+.exploreSub {
+    text-align: center;
+    margin: 10px 0 26px;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-family: var(--font-family);
+}
+
+/* ── Cards grid ────────────────────────────────────────── */
+.cards {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (max-width: 980px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .cards { grid-template-columns: 1fr; } }
+
+.card {
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
+    padding: 18px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-primary-border);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    cursor: pointer;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-card-hover);
+}
+
+.cardTitle {
+    margin: 0 0 6px;
+    color: var(--color-primary);
+    font-weight: 800;
+    font-size: var(--font-size-lg);
+    font-family: var(--font-family);
+}
+
+.cardDesc {
+    margin: 0;
+    color: var(--color-text-soft);
+    font-weight: 600;
+    font-family: var(--font-family);
+}

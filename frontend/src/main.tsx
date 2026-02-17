@@ -1,11 +1,12 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-import "./styles/index.css";
-import "./styles/responsive.css";
+// src/main.tsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './styles/global.css';   // ← Design system global (prima linie de stiluri)
+import './index.css';             // ← Stiluri locale suplimentare (dacă există)
+import App from './App';
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
 );

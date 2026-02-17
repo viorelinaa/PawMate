@@ -1,16 +1,16 @@
 /* src/pages/Veterinari.css */
 
-/* Wrapper pentru fundal lavender complet */
+/* ── Page wrapper ──────────────────────────────────────── */
 .veterinariPage {
-    background: lavender;
+    background: var(--color-bg);
     min-height: 100vh;
 }
 
-/* Hero banner cu fundal lavender */
+/* ── Hero ──────────────────────────────────────────────── */
 .veterinariHero {
     position: relative;
     padding: 80px 24px 60px;
-    background: lavender;
+    background: var(--color-bg);
     overflow: hidden;
     border-bottom-left-radius: 40px;
     border-bottom-right-radius: 40px;
@@ -26,14 +26,14 @@
     top: 40px;
     transform: translateX(-50%);
     background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.0) 70%);
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     pointer-events: none;
 }
 
 .veterinariCloud {
     position: absolute;
     background: rgba(255,255,255,0.95);
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08));
     pointer-events: none;
 }
@@ -43,7 +43,7 @@
     content: "";
     position: absolute;
     background: rgba(255,255,255,0.95);
-    border-radius: 999px;
+    border-radius: var(--radius-full);
 }
 
 .veterinariCloud::before {
@@ -73,7 +73,6 @@
     height: 75px;
     right: 30px;
     top: 50px;
-    transform: scale(1);
 }
 
 .veterinariPaw {
@@ -83,45 +82,45 @@
     pointer-events: none;
 }
 
-.veterinariPaw.vp1 { left: 20px; bottom: 30px; transform: rotate(-14deg); }
+.veterinariPaw.vp1 { left: 20px;  bottom: 30px; transform: rotate(-14deg); }
 .veterinariPaw.vp2 { right: 24px; bottom: 34px; transform: rotate(12deg); }
-.veterinariPaw.vp3 { left: 50%; top: 20px; transform: translateX(-50%) rotate(8deg); font-size: 20px; }
+.veterinariPaw.vp3 { left: 50%;   top: 20px;    transform: translateX(-50%) rotate(8deg); font-size: 20px; }
 
-.veterinariHeroInner {
-    position: relative;
-}
+.veterinariHeroInner { position: relative; }
 
 .veterinariTitle {
     text-align: center;
     margin: 0;
-    font-size: clamp(32px, 4vw, 52px);
-    color: #6a4a83;
+    font-size: var(--font-size-xl);
+    color: var(--color-primary);
     font-weight: 800;
+    font-family: var(--font-family);
 }
 
 .veterinariSub {
     text-align: center;
     margin: 10px 0 0;
-    color: rgba(43,34,54,0.7);
+    color: var(--color-text-muted);
     font-weight: 600;
+    font-family: var(--font-family);
 }
 
-/* Content area */
+/* ── Content area ──────────────────────────────────────── */
 .veterinariContent {
     max-width: 1100px;
     margin: 0 auto;
     padding: 30px 24px 70px;
-    background: lavender;
+    background: var(--color-bg);
     min-height: 100vh;
 }
 
-/* Filters */
+/* ── Filtre ────────────────────────────────────────────── */
 .veterinariContent .filters {
     margin-top: 18px;
-    background: rgba(255,255,255,0.8);
-    border: 1px solid rgba(106,74,131,0.10);
-    box-shadow: 0 12px 22px rgba(0,0,0,0.08);
-    border-radius: 22px;
+    background: var(--color-surface-soft);
+    border: 1px solid var(--color-primary-border);
+    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-lg);
     padding: 16px;
 }
 
@@ -142,14 +141,14 @@
 .veterinariContent .filterSelect {
     width: 100%;
     padding: 12px 14px;
-    border-radius: 14px;
-    border: 1px solid rgba(106,74,131,0.15);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-primary-border);
     outline: none;
     font-weight: 600;
-    color: #2b2236;
+    color: var(--color-text);
     background: #fff;
-    font-family: inherit;
-    font-size: 14px;
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
     box-sizing: border-box;
 }
 
@@ -157,41 +156,40 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    color: rgba(43,34,54,0.7);
+    color: var(--color-text-muted);
     font-weight: 700;
-    font-size: 13px;
+    font-size: var(--font-size-sm);
     padding: 12px 14px;
-    border-radius: 14px;
-    border: 1px dashed rgba(106,74,131,0.15);
-    background: rgba(255,255,255,0.65);
+    border-radius: var(--radius-sm);
+    border: 1px dashed var(--color-primary-border);
+    background: var(--color-surface-dim);
     cursor: pointer;
+    font-family: var(--font-family);
 }
 
 .veterinariContent .filterCheck input[type="checkbox"] {
-    accent-color: #6a4a83;
+    accent-color: var(--color-primary);
     width: 16px;
     height: 16px;
 }
 
 .veterinariContent .btnReset {
     border: 0;
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     padding: 12px 18px;
     font-weight: 700;
     cursor: pointer;
-    background: rgba(255,255,255,0.9);
-    color: #6a4a83;
-    box-shadow: 0 10px 18px rgba(0,0,0,0.08);
-    transition: transform 120ms ease, box-shadow 120ms ease;
-    font-family: inherit;
-    font-size: 14px;
+    background: var(--color-surface);
+    color: var(--color-primary);
+    box-shadow: var(--shadow-btn-ghost);
+    transition: transform var(--transition-fast);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
 }
 
-.veterinariContent .btnReset:hover {
-    transform: translateY(-1px);
-}
+.veterinariContent .btnReset:hover { transform: translateY(-1px); }
 
-/* Vet Cards */
+/* ── Vet Cards ─────────────────────────────────────────── */
 .vetCards {
     display: grid;
     gap: 16px;
@@ -204,17 +202,17 @@
 }
 
 .vetCard {
-    background: rgba(255,255,255,0.92);
-    border-radius: 18px;
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
     padding: 18px;
-    box-shadow: 0 12px 22px rgba(0,0,0,0.08);
-    border: 1px solid rgba(106,74,131,0.10);
-    transition: transform 120ms ease, box-shadow 120ms ease;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-primary-border);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .vetCard:hover {
     transform: translateY(-2px);
-    box-shadow: 0 16px 28px rgba(0,0,0,0.11);
+    box-shadow: var(--shadow-card-hover);
 }
 
 .vetCardHeader {
@@ -226,35 +224,39 @@
 
 .vetName {
     margin: 0;
-    color: #6a4a83;
+    color: var(--color-primary);
     font-weight: 800;
-    font-size: 18px;
+    font-size: var(--font-size-lg);
+    font-family: var(--font-family);
 }
 
 .vetCity {
-    font-size: 12px;
-    color: rgba(43,34,54,0.7);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
     font-weight: 600;
+    font-family: var(--font-family);
 }
 
 .emergencyBadge {
     display: inline-flex;
     align-items: center;
     padding: 6px 12px;
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     font-size: 11px;
     font-weight: 700;
-    background: #ff4757;
+    background: var(--color-danger);
     color: white;
-    border: 1px solid rgba(255,71,87,0.3);
+    border: 1px solid var(--color-danger-border);
+    font-family: var(--font-family);
 }
 
 .vetAddress,
 .vetPhone {
     margin: 6px 0;
-    color: rgba(43,34,54,0.75);
+    color: var(--color-text-soft);
     font-weight: 600;
-    font-size: 14px;
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
 }
 
 .services {
@@ -268,50 +270,54 @@
     display: inline-flex;
     align-items: center;
     padding: 6px 12px;
-    border-radius: 999px;
-    font-size: 12px;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
     font-weight: 700;
-    background: rgba(106,74,131,0.1);
-    color: #6a4a83;
-    border: 1px solid rgba(106,74,131,0.15);
+    background: var(--color-primary-faint);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary-border);
+    font-family: var(--font-family);
 }
 
 .vetDesc {
     margin: 10px 0 0;
-    color: rgba(43,34,54,0.75);
+    color: var(--color-text-soft);
     font-weight: 600;
     line-height: 1.55;
+    font-family: var(--font-family);
 }
 
 .btnContact {
     border: 0;
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     padding: 10px 18px;
     font-weight: 700;
     cursor: pointer;
-    background: #6a4a83;
+    background: var(--color-primary);
     color: white;
-    box-shadow: 0 14px 24px rgba(106,74,131,0.28);
-    transition: transform 120ms ease, box-shadow 120ms ease;
+    box-shadow: var(--shadow-btn-primary);
+    transition: transform var(--transition-fast), background var(--transition-fast);
     margin-top: 14px;
-    font-family: inherit;
-    font-size: 14px;
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
     width: 100%;
 }
 
 .btnContact:hover {
     transform: translateY(-1px);
-    background: #7d5f96;
+    background: var(--color-primary-light);
 }
 
+/* ── Empty notice ──────────────────────────────────────── */
 .veterinariContent .emptyNotice {
     margin-top: 18px;
-    background: rgba(255,255,255,0.85);
-    border: 1px solid rgba(106,74,131,0.15);
-    border-radius: 22px;
+    background: var(--color-surface-soft);
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-lg);
     padding: 16px;
-    box-shadow: 0 12px 22px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-card);
     text-align: center;
-    color: rgba(43,34,54,0.7);
+    color: var(--color-text-muted);
     font-weight: 700;
+    font-family: var(--font-family);
 }

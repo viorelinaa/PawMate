@@ -1,0 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-primary:        #6a4a83;
+  --color-primary-light:  #7d5f96;
+  --color-primary-faint:  rgba(106, 74, 131, 0.10);
+  --color-primary-border: rgba(106, 74, 131, 0.15);
+  --color-bg:             lavender;
+  --color-surface:        rgba(255, 255, 255, 0.92);
+  --color-surface-soft:   rgba(255, 255, 255, 0.80);
+  --color-surface-dim:    rgba(255, 255, 255, 0.65);
+  --color-text:           #2b2236;
+  --color-text-muted:     rgba(43, 34, 54, 0.70);
+  --color-text-soft:      rgba(43, 34, 54, 0.75);
+  --color-danger:         #ff4757;
+  --color-danger-border:  rgba(255, 71, 87, 0.30);
+  --shadow-card:          0 12px 22px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover:    0 16px 28px rgba(0, 0, 0, 0.11);
+  --shadow-btn-primary:   0 14px 24px rgba(106, 74, 131, 0.28);
+  --shadow-btn-ghost:     0 10px 18px rgba(0, 0, 0, 0.08);
+  --radius-sm:            14px;
+  --radius-md:            18px;
+  --radius-lg:            22px;
+  --radius-full:          999px;
+  --font-family:          'Nunito', sans-serif;
+  --font-size-xs:         12px;
+  --font-size-sm:         13px;
+  --font-size-base:       14px;
+  --font-size-md:         16px;
+  --font-size-lg:         18px;
+  --font-size-xl:         clamp(32px, 4vw, 52px);
+  --transition-fast:      120ms ease;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  font-family: var(--font-family);
+  font-weight: 600;
+  background: var(--color-bg);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+}

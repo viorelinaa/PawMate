@@ -1,30 +1,22 @@
-/* PawMate Medical Guide - CSS Styles */
+/* src/pages/MedGuide.css */
 
-/* ============================================
-   Global Styles
-   ============================================ */
 .med-guide,
 .med-guide * {
-    margin: 0;
-    padding: 0;
     box-sizing: border-box;
 }
 
 .med-guide {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-family: var(--font-family);
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     min-height: 100vh;
-    background: #f5f5f7;
+    background: var(--color-bg);
 }
 
-/* ============================================
-   Navigation
-   ============================================ */
+/* ── Navbar ────────────────────────────────────────────── */
 .med-guide .navbar {
-    background: white;
+    background: var(--color-surface);
     padding: 1rem 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--shadow-card);
 }
 
 .med-guide .nav-container {
@@ -43,14 +35,13 @@
     text-decoration: none;
 }
 
-.med-guide .logo-icon {
-    font-size: 24px;
-}
+.med-guide .logo-icon { font-size: 24px; }
 
 .med-guide .logo-text {
-    font-size: 1.5rem;
+    font-size: var(--font-size-lg);
     font-weight: 700;
-    color: #6b4a9e;
+    color: var(--color-primary);
+    font-family: var(--font-family);
 }
 
 .med-guide .nav-links {
@@ -61,36 +52,34 @@
 
 .med-guide .nav-link {
     padding: 0.6rem 1.2rem;
-    border-radius: 25px;
-    font-size: 1rem;
-    font-weight: 500;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-base);
+    font-weight: 600;
     text-decoration: none;
-    transition: all 0.2s;
-    color: #6b4a9e;
+    font-family: var(--font-family);
+    color: var(--color-primary);
+    transition: all var(--transition-fast);
 }
 
-.med-guide .nav-link:hover {
-    background: #f3e8ff;
-}
+.med-guide .nav-link:hover { background: var(--color-primary-faint); }
 
 .med-guide .nav-link.primary {
-    background: #6b4a9e;
+    background: var(--color-primary);
     color: white;
+    box-shadow: var(--shadow-btn-primary);
 }
 
-.med-guide .nav-link.primary:hover {
-    background: #5a3d85;
-}
+.med-guide .nav-link.primary:hover { background: var(--color-primary-light); }
 
-/* ============================================
-   Hero Section
-   ============================================ */
+/* ── Hero ──────────────────────────────────────────────── */
 .med-guide .hero {
-    background: linear-gradient(180deg, #d4c5e8 0%, #e8dff5 100%);
+    background: var(--color-bg);
     padding: 4rem 2rem;
     text-align: center;
     position: relative;
     overflow: hidden;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
 }
 
 .med-guide .hero-content {
@@ -101,142 +90,71 @@
 }
 
 .med-guide .hero-title {
-    font-size: 3.5rem;
+    font-size: var(--font-size-xl);
     font-weight: 800;
-    color: #6b4a9e;
+    color: var(--color-primary);
     margin-bottom: 1.5rem;
-    letter-spacing: -0.02em;
+    font-family: var(--font-family);
 }
 
 .med-guide .hero-subtitle {
-    font-size: 1.2rem;
-    color: #5a4570;
-    background: white;
+    font-size: var(--font-size-md);
+    color: var(--color-text-muted);
+    background: var(--color-surface);
     padding: 1rem 2rem;
-    border-radius: 30px;
+    border-radius: var(--radius-full);
     display: inline-block;
     margin-bottom: 2rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--shadow-btn-ghost);
+    font-family: var(--font-family);
+    font-weight: 600;
 }
 
-/* ============================================
-   Decorative Elements - Clouds
-   ============================================ */
+/* ── Nori ──────────────────────────────────────────────── */
 .med-guide .cloud {
     position: absolute;
-    background: white;
-    border-radius: 100px;
-    opacity: 0.9;
+    background: rgba(255,255,255,0.95);
+    border-radius: var(--radius-full);
+    opacity: 0.95;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08));
 }
 
-.med-guide .cloud-left {
-    width: 300px;
-    height: 150px;
-    top: 80px;
-    left: 40px;
-}
+.med-guide .cloud-left  { width: 300px; height: 150px; top: 80px; left: 40px; }
+.med-guide .cloud-right { width: 350px; height: 170px; top: 60px; right: 40px; }
 
 .med-guide .cloud-left::before,
-.med-guide .cloud-left::after {
-    content: '';
-    position: absolute;
-    background: white;
-    border-radius: 100px;
-}
-
-.med-guide .cloud-left::before {
-    width: 180px;
-    height: 180px;
-    top: -80px;
-    left: 20px;
-}
-
-.med-guide .cloud-left::after {
-    width: 150px;
-    height: 150px;
-    top: -60px;
-    right: 20px;
-}
-
-.med-guide .cloud-right {
-    width: 350px;
-    height: 170px;
-    top: 60px;
-    right: 40px;
-}
-
+.med-guide .cloud-left::after,
 .med-guide .cloud-right::before,
 .med-guide .cloud-right::after {
     content: '';
     position: absolute;
-    background: white;
-    border-radius: 100px;
+    background: rgba(255,255,255,0.95);
+    border-radius: var(--radius-full);
 }
 
-.med-guide .cloud-right::before {
-    width: 200px;
-    height: 200px;
-    top: -90px;
-    left: 30px;
-}
+.med-guide .cloud-left::before  { width: 180px; height: 180px; top: -80px; left: 20px; }
+.med-guide .cloud-left::after   { width: 150px; height: 150px; top: -60px; right: 20px; }
+.med-guide .cloud-right::before { width: 200px; height: 200px; top: -90px; left: 30px; }
+.med-guide .cloud-right::after  { width: 170px; height: 170px; top: -70px; right: 30px; }
 
-.med-guide .cloud-right::after {
-    width: 170px;
-    height: 170px;
-    top: -70px;
-    right: 30px;
-}
-
-/* ============================================
-   Decorative Elements - Paw Prints
-   ============================================ */
+/* ── Lăbuțe ────────────────────────────────────────────── */
 .med-guide .paw-print {
     position: absolute;
-    color: rgba(107, 74, 158, 0.15);
+    color: var(--color-primary-faint);
     font-size: 24px;
     user-select: none;
     pointer-events: none;
+    opacity: 0.3;
 }
 
-.med-guide .paw-1 {
-    top: 220px;
-    left: 60px;
-    transform: rotate(-20deg);
-}
+.med-guide .paw-1 { top: 220px; left: 60px;   transform: rotate(-20deg); }
+.med-guide .paw-2 { top: 180px; left: 100px;  transform: rotate(15deg); }
+.med-guide .paw-3 { top: 240px; right: 80px;  transform: rotate(-30deg); }
+.med-guide .paw-4 { top: 200px; right: 120px; transform: rotate(25deg); }
+.med-guide .paw-5 { bottom: 80px;  left: 100px;  transform: rotate(10deg); }
+.med-guide .paw-6 { bottom: 100px; right: 100px; transform: rotate(-15deg); }
 
-.med-guide .paw-2 {
-    top: 180px;
-    left: 100px;
-    transform: rotate(15deg);
-}
-
-.med-guide .paw-3 {
-    top: 240px;
-    right: 80px;
-    transform: rotate(-30deg);
-}
-
-.med-guide .paw-4 {
-    top: 200px;
-    right: 120px;
-    transform: rotate(25deg);
-}
-
-.med-guide .paw-5 {
-    bottom: 80px;
-    left: 100px;
-    transform: rotate(10deg);
-}
-
-.med-guide .paw-6 {
-    bottom: 100px;
-    right: 100px;
-    transform: rotate(-15deg);
-}
-
-/* ============================================
-   Main Content
-   ============================================ */
+/* ── Main content ──────────────────────────────────────── */
 .med-guide .main-content {
     max-width: 1200px;
     margin: 0 auto;
@@ -247,20 +165,20 @@
     text-align: center;
     font-size: 2.5rem;
     font-weight: 800;
-    color: #6b4a9e;
+    color: var(--color-primary);
     margin-bottom: 1rem;
+    font-family: var(--font-family);
 }
 
 .med-guide .section-subtitle {
     text-align: center;
-    font-size: 1.1rem;
-    color: #6b7280;
+    font-size: var(--font-size-md);
+    color: var(--color-text-muted);
     margin-bottom: 3rem;
+    font-family: var(--font-family);
 }
 
-/* ============================================
-   Cards Grid
-   ============================================ */
+/* ── Cards ─────────────────────────────────────────────── */
 .med-guide .cards-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -270,30 +188,37 @@
 }
 
 .med-guide .card {
-    background: white;
-    border-radius: 20px;
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
     padding: 2.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s ease;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-primary-border);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    animation: fadeIn 0.5s ease-out;
 }
+
+.med-guide .card:nth-child(2) { animation-delay: 0.1s; }
+.med-guide .card:nth-child(3) { animation-delay: 0.2s; }
 
 .med-guide .card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    box-shadow: var(--shadow-card-hover);
 }
 
 .med-guide .card-title {
-    font-size: 1.5rem;
+    font-size: var(--font-size-lg);
     font-weight: 700;
-    color: #6b4a9e;
+    color: var(--color-primary);
     margin-bottom: 1.5rem;
+    font-family: var(--font-family);
 }
 
 .med-guide .card-description {
-    font-size: 0.95rem;
-    color: #6b7280;
+    font-size: var(--font-size-base);
+    color: var(--color-text-muted);
     margin-bottom: 1.5rem;
     line-height: 1.6;
+    font-family: var(--font-family);
 }
 
 .med-guide .card-list {
@@ -306,196 +231,68 @@
 .med-guide .card-list-item {
     display: flex;
     align-items: flex-start;
-    color: #4a5568;
+    color: var(--color-text-soft);
     line-height: 1.6;
-    font-size: 0.95rem;
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
 }
 
 .med-guide .bullet {
-    color: #6b4a9e;
+    color: var(--color-primary);
     margin-right: 0.75rem;
-    font-size: 1rem;
+    font-size: var(--font-size-md);
     flex-shrink: 0;
     margin-top: 0.1rem;
 }
 
-/* ============================================
-   Footer
-   ============================================ */
+/* ── Footer ────────────────────────────────────────────── */
 .med-guide .footer {
-    background: #f9fafb;
+    background: var(--color-surface-soft);
     padding: 2rem;
     text-align: center;
-    color: #6b7280;
+    color: var(--color-text-muted);
     margin-top: 4rem;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid var(--color-primary-border);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
 }
 
-.med-guide .footer p {
-    font-size: 0.95rem;
+/* ── Scrollbar ─────────────────────────────────────────── */
+.med-guide ::-webkit-scrollbar { width: 10px; height: 10px; }
+.med-guide ::-webkit-scrollbar-track { background: var(--color-bg); }
+.med-guide ::-webkit-scrollbar-thumb { background: var(--color-primary); border-radius: 5px; }
+.med-guide ::-webkit-scrollbar-thumb:hover { background: var(--color-primary-light); }
+
+/* ── Animatii ──────────────────────────────────────────── */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-/* ============================================
-   Responsive Design
-   ============================================ */
-@media (max-width: 1024px) {
-    .med-guide .cards-grid {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    }
-}
-
+/* ── Responsive ────────────────────────────────────────── */
 @media (max-width: 768px) {
-    .med-guide .nav-links {
-        display: none;
-    }
-
-    .med-guide .hero-title {
-        font-size: 2.5rem;
-    }
-
-    .med-guide .hero-subtitle {
-        font-size: 1rem;
-        padding: 0.8rem 1.5rem;
-    }
-
-    .med-guide .section-title {
-        font-size: 2rem;
-    }
-
+    .med-guide .nav-links { display: none; }
+    .med-guide .hero-title { font-size: 2.5rem; }
+    .med-guide .section-title { font-size: 2rem; }
     .med-guide .cloud-left,
     .med-guide .cloud-right,
-    .med-guide .paw-print {
-        display: none;
-    }
-
-    .med-guide .card {
-        padding: 2rem;
-    }
-
-    .med-guide .main-content {
-        padding: 3rem 1.5rem;
-    }
-
-    .med-guide .nav-container {
-        padding: 0 1.5rem;
-    }
+    .med-guide .paw-print { display: none; }
+    .med-guide .card { padding: 2rem; }
+    .med-guide .main-content { padding: 3rem 1.5rem; }
+    .med-guide .nav-container { padding: 0 1.5rem; }
 }
 
 @media (max-width: 480px) {
-    .med-guide .hero-title {
-        font-size: 2rem;
-    }
-
-    .med-guide .hero-subtitle {
-        font-size: 0.9rem;
-    }
-
-    .med-guide .card-title {
-        font-size: 1.3rem;
-    }
-
-    .med-guide .cards-grid {
-        gap: 1.5rem;
-    }
+    .med-guide .hero-title { font-size: 2rem; }
+    .med-guide .card-title { font-size: var(--font-size-md); }
+    .med-guide .cards-grid { gap: 1.5rem; }
 }
 
-/* ============================================
-   Animations
-   ============================================ */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.med-guide .card {
-    animation: fadeIn 0.5s ease-out;
-}
-
-.med-guide .card:nth-child(2) {
-    animation-delay: 0.1s;
-}
-
-.med-guide .card:nth-child(3) {
-    animation-delay: 0.2s;
-}
-
-/* ============================================
-   Utilities
-   ============================================ */
-.med-guide .text-center {
-    text-align: center;
-}
-
-.med-guide .flex {
-    display: flex;
-}
-
-.med-guide .items-center {
-    align-items: center;
-}
-
-.med-guide .justify-between {
-    justify-content: space-between;
-}
-
-.med-guide .gap-1 {
-    gap: 0.25rem;
-}
-
-.med-guide .gap-2 {
-    gap: 0.5rem;
-}
-
-.med-guide .gap-4 {
-    gap: 1rem;
-}
-
-/* ============================================
-   Custom Scrollbar
-   ============================================ */
-.med-guide ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
-}
-
-.med-guide ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-.med-guide ::-webkit-scrollbar-thumb {
-    background: #6b4a9e;
-    border-radius: 5px;
-}
-
-.med-guide ::-webkit-scrollbar-thumb:hover {
-    background: #5a3d85;
-}
-
-/* ============================================
-   Print Styles
-   ============================================ */
 @media print {
     .med-guide .navbar,
     .med-guide .footer,
     .med-guide .cloud,
-    .med-guide .paw-print {
-        display: none;
-    }
-
-    .med-guide .hero {
-        background: white;
-        padding: 2rem 0;
-    }
-
-    .med-guide .card {
-        page-break-inside: avoid;
-        box-shadow: none;
-        border: 1px solid #e5e7eb;
-    }
+    .med-guide .paw-print { display: none; }
+    .med-guide .hero { background: white; padding: 2rem 0; }
+    .med-guide .card { page-break-inside: avoid; box-shadow: none; border: 1px solid var(--color-primary-border); }
 }
