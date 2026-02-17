@@ -1,0 +1,187 @@
+/* Hero Section */
+.wikiHero {
+    background: linear-gradient(135deg, #d4c5e8 0%, #c8b8dc 100%);
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 60px 20px;
+}
+
+.wikiCloud {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 100px;
+    height: 120px;
+    width: 250px;
+}
+
+.wikiCloud::before,
+.wikiCloud::after {
+    content: '';
+    position: absolute;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+}
+
+.wikiCloud::before {
+    width: 100px;
+    height: 100px;
+    top: -50px;
+    left: 50px;
+}
+
+.wikiCloud::after {
+    width: 120px;
+    height: 120px;
+    top: -60px;
+    right: 50px;
+}
+
+.wc1 {
+    top: 80px;
+    left: 50px;
+}
+
+.wc2 {
+    top: 80px;
+    right: 50px;
+}
+
+.wikiPaw {
+    position: absolute;
+    font-size: 24px;
+    opacity: 0.3;
+}
+
+.wp1 {
+    bottom: 40px;
+    left: 60px;
+}
+
+.wp2 {
+    bottom: 40px;
+    left: 100px;
+}
+
+.wp3 {
+    bottom: 40px;
+    left: 140px;
+}
+
+.wikiHeroInner {
+    text-align: center;
+    z-index: 10;
+    max-width: 800px;
+}
+
+.wikiTitle {
+    font-size: 64px;
+    font-weight: 700;
+    color: #5a4a7b;
+    margin: 0 0 15px 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.wikiSub {
+    font-size: 18px;
+    color: #6b5b8c;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* Introducere Section */
+.introSection {
+    padding: 60px 20px;
+    background: #f9f7fc;
+}
+
+.sectionTitle {
+    font-size: 36px;
+    font-weight: 700;
+    color: #5a4a7b;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.introGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.introCard {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease;
+}
+
+.introCard:hover {
+    transform: translateY(-5px);
+}
+
+.introIcon {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.introCard h3 {
+    font-size: 20px;
+    color: #5a4a7b;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.introCard p {
+    color: #666;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .wikiTitle {
+        font-size: 48px;
+    }
+    
+    .wikiSub {
+        font-size: 16px;
+    }
+    
+    .sectionTitle {
+        font-size: 28px;
+    }
+    
+    .wikiHero {
+        min-height: 350px;
+        padding: 40px 20px;
+    }
+    
+    .wc1,
+    .wc2 {
+        width: 180px;
+        height: 80px;
+    }
+    
+    .wc1 {
+        left: -30px;
+    }
+    
+    .wc2 {
+        right: -30px;
+    }
+    
+    .wikiPaw {
+        display: none;
+    }
+    
+    .introGrid {
+        grid-template-columns: 1fr;
+    }
+}

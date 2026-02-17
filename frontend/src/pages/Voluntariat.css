@@ -1,7 +1,7 @@
 /* Hero Section */
 .voluntariatHero {
     background: linear-gradient(135deg, #d4c5e8 0%, #c8b8dc 100%);
-    min-height: 400px;
+    min-height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;

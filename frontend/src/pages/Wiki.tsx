@@ -1,3 +1,4 @@
+import "./Wiki.css";
 export default function Wiki() {
     return (
         <div>
