@@ -10,5 +10,6 @@ export const paths = {
     quiz: '/quiz',
     voluntariat: '/voluntariat',
     wiki: '/wiki',
+    ghidMedical: '/ghid-medical',
     notfound: '*',
 }
