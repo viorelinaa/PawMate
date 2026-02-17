@@ -134,6 +134,42 @@ export default function Blog() {
                     </div>
                 </div>
             </section>
+
+            {/* Grid articole */}
+            <section className="blogGridSection">
+                <div className="blogGrid">
+                    {filtered.length > 0 ? (
+                        filtered.map((post) => (
+                            <div key={post.id} className="blogCard">
+                                <div className="blogCardEmoji">{post.emoji}</div>
+                                <div className="blogCardMeta">
+                                    <span
+                                        className="blogTag"
+                                        style={{ background: tagColors[post.tag] ?? "#a78bfa" }}
+                                    >
+                                        {post.tag}
+                                    </span>
+                                    <span className="blogDate">{post.date}</span>
+                                    <span className="blogReadTime">⏱ {post.readTime}</span>
+                                </div>
+                                <h3 className="blogCardTitle">{post.title}</h3>
+                                <p className="blogCardExcerpt">{post.excerpt}</p>
+                                <button
+                                    className="blogReadBtn"
+                                    onClick={() => alert("Articol complet — în curând!")}
+                                >
+                                    Citește articolul →
+                                </button>
+                            </div>
+                        ))
+                    ) : (
+                        <div className="blogNoResults">
+                            <span>🔍</span>
+                            <p>Niciun articol găsit pentru căutarea ta.</p>
+                        </div>
+                    )}
+                </div>
+            </section>
         </div>
     );
 }
