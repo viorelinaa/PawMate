@@ -1,0 +1,568 @@
+/* src/styles/dark.css */
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --dm-bg: #15121a;
+    --dm-bg-soft: #1b1622;
+    --dm-surface: #1f1a27;
+    --dm-surface-strong: #241f2f;
+    --dm-border: rgba(200, 170, 240, 0.2);
+    --dm-border-soft: rgba(200, 170, 240, 0.14);
+    --dm-text: #f1eaf9;
+    --dm-muted: rgba(241, 234, 249, 0.72);
+    --dm-accent: #cbb0ea;
+    --dm-accent-strong: #b89adf;
+    --dm-accent-soft: rgba(200, 170, 240, 0.12);
+    --dm-shadow: 0 12px 22px rgba(0, 0, 0, 0.45);
+    --dm-shadow-strong: 0 16px 28px rgba(0, 0, 0, 0.55);
+    --dm-hero: linear-gradient(180deg, #2a2434 0%, #211b2c 60%, #181422 100%);
+    --dm-hero-soft: linear-gradient(135deg, #2b2436 0%, #1e1926 100%);
+    --dm-hero-radial: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+}
+
+:root[data-theme="dark"] body {
+    background: var(--dm-bg);
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] #root {
+    background: var(--dm-bg);
+}
+
+:root[data-theme="dark"] a {
+    color: var(--dm-accent);
+}
+
+/* Navbar + footer */
+:root[data-theme="dark"] .navbar,
+:root[data-theme="dark"] .footer {
+    background: var(--dm-bg-soft);
+    border-color: var(--dm-border);
+}
+
+:root[data-theme="dark"] .logo,
+:root[data-theme="dark"] .links a,
+:root[data-theme="dark"] .footerText {
+    color: var(--dm-accent);
+}
+
+:root[data-theme="dark"] .links a:hover {
+    background: var(--dm-accent-soft);
+}
+
+:root[data-theme="dark"] .links a.active {
+    background: var(--dm-accent-strong);
+    color: #1a1424;
+}
+
+:root[data-theme="dark"] .menuIcon,
+:root[data-theme="dark"] .menuIcon::before,
+:root[data-theme="dark"] .menuIcon::after {
+    background: var(--dm-accent);
+}
+
+:root[data-theme="dark"] .menuBtn:hover {
+    background: var(--dm-accent-soft);
+}
+
+:root[data-theme="dark"] .navOverlay.show {
+    background: rgba(0, 0, 0, 0.35);
+}
+
+:root[data-theme="dark"] .btnDonate {
+    background: var(--dm-accent-strong);
+    color: #1a1424;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+:root[data-theme="dark"] .themeToggle {
+    background: var(--dm-surface-strong);
+    color: var(--dm-accent);
+    border-color: var(--dm-border);
+}
+
+:root[data-theme="dark"] .themeToggle:hover {
+    background: var(--dm-accent-soft);
+}
+
+@media (max-width: 768px) {
+    :root[data-theme="dark"] .links {
+        background: var(--dm-surface-strong);
+        border-color: var(--dm-border);
+        box-shadow: var(--dm-shadow);
+    }
+}
+
+:root[data-theme="dark"] .med-guide .nav-link {
+    color: var(--dm-accent);
+}
+
+:root[data-theme="dark"] .med-guide .nav-link:hover {
+    background: var(--dm-accent-soft);
+}
+
+:root[data-theme="dark"] .med-guide .nav-link.primary {
+    background: var(--dm-accent-strong);
+    color: #1a1424;
+}
+
+:root[data-theme="dark"] .med-guide .logo-text {
+    color: var(--dm-accent);
+}
+
+/* Heroes */
+:root[data-theme="dark"] .hero,
+:root[data-theme="dark"] .adoptionHero,
+:root[data-theme="dark"] .lostHero,
+:root[data-theme="dark"] .donHero,
+:root[data-theme="dark"] .veterinariHero,
+:root[data-theme="dark"] .salesHero,
+:root[data-theme="dark"] .eventsHero,
+:root[data-theme="dark"] .blogHero {
+    background: var(--dm-hero);
+}
+
+:root[data-theme="dark"] .wikiHero,
+:root[data-theme="dark"] .voluntariatHero,
+:root[data-theme="dark"] .med-guide .hero,
+:root[data-theme="dark"] .login-container,
+:root[data-theme="dark"] .signup-container {
+    background: var(--dm-hero-soft);
+}
+
+:root[data-theme="dark"] .hero::before,
+:root[data-theme="dark"] .adoptionHero::before,
+:root[data-theme="dark"] .lostHero::before,
+:root[data-theme="dark"] .donHero::before,
+:root[data-theme="dark"] .veterinariHero::before,
+:root[data-theme="dark"] .salesHero::before,
+:root[data-theme="dark"] .eventsHero::before,
+:root[data-theme="dark"] .blogHero::before {
+    background: var(--dm-hero-radial);
+}
+
+:root[data-theme="dark"] .cloud,
+:root[data-theme="dark"] .adoptionCloud,
+:root[data-theme="dark"] .lostCloud,
+:root[data-theme="dark"] .donCloud,
+:root[data-theme="dark"] .veterinariCloud,
+:root[data-theme="dark"] .salesCloud,
+:root[data-theme="dark"] .eventsCloud,
+:root[data-theme="dark"] .wikiCloud,
+:root[data-theme="dark"] .voluntariatCloud,
+:root[data-theme="dark"] .med-guide .cloud {
+    background: rgba(255, 255, 255, 0.08);
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.45));
+}
+
+:root[data-theme="dark"] .cloud::before,
+:root[data-theme="dark"] .cloud::after,
+:root[data-theme="dark"] .adoptionCloud::before,
+:root[data-theme="dark"] .adoptionCloud::after,
+:root[data-theme="dark"] .lostCloud::before,
+:root[data-theme="dark"] .lostCloud::after,
+:root[data-theme="dark"] .donCloud::before,
+:root[data-theme="dark"] .donCloud::after,
+:root[data-theme="dark"] .veterinariCloud::before,
+:root[data-theme="dark"] .veterinariCloud::after,
+:root[data-theme="dark"] .salesCloud::before,
+:root[data-theme="dark"] .salesCloud::after,
+:root[data-theme="dark"] .eventsCloud::before,
+:root[data-theme="dark"] .eventsCloud::after,
+:root[data-theme="dark"] .wikiCloud::before,
+:root[data-theme="dark"] .wikiCloud::after,
+:root[data-theme="dark"] .voluntariatCloud::before,
+:root[data-theme="dark"] .voluntariatCloud::after,
+:root[data-theme="dark"] .med-guide .cloud::before,
+:root[data-theme="dark"] .med-guide .cloud::after {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+:root[data-theme="dark"] .paw,
+:root[data-theme="dark"] .adoptionPaw,
+:root[data-theme="dark"] .lostPaw,
+:root[data-theme="dark"] .donPaw,
+:root[data-theme="dark"] .veterinariPaw,
+:root[data-theme="dark"] .salesPaw,
+:root[data-theme="dark"] .eventsPaw,
+:root[data-theme="dark"] .wikiPaw,
+:root[data-theme="dark"] .voluntariatPaw,
+:root[data-theme="dark"] .med-guide .paw-print {
+    opacity: 0.16;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+/* Page backgrounds */
+:root[data-theme="dark"] .home,
+:root[data-theme="dark"] .explore,
+:root[data-theme="dark"] .adoptionContent,
+:root[data-theme="dark"] .lostContent,
+:root[data-theme="dark"] .donContent,
+:root[data-theme="dark"] .veterinariContent,
+:root[data-theme="dark"] .salesContent,
+:root[data-theme="dark"] .eventsContent,
+:root[data-theme="dark"] .blogPage,
+:root[data-theme="dark"] .blogSearchSection,
+:root[data-theme="dark"] .blogGridSection,
+:root[data-theme="dark"] .pet-sitting-page,
+:root[data-theme="dark"] .quizPage,
+:root[data-theme="dark"] .infoSection,
+:root[data-theme="dark"] .activitiesSection,
+:root[data-theme="dark"] .benefitsSection,
+:root[data-theme="dark"] .formSection,
+:root[data-theme="dark"] .faqSection,
+:root[data-theme="dark"] .introSection,
+:root[data-theme="dark"] .searchSection,
+:root[data-theme="dark"] .animalsSection,
+:root[data-theme="dark"] .med-guide,
+:root[data-theme="dark"] .med-guide .main-content,
+:root[data-theme="dark"] .med-guide .footer,
+:root[data-theme="dark"] .nfWrap {
+    background: var(--dm-bg);
+}
+
+/* Cards and containers */
+:root[data-theme="dark"] .card,
+:root[data-theme="dark"] .petCard,
+:root[data-theme="dark"] .lostCard,
+:root[data-theme="dark"] .donCard,
+:root[data-theme="dark"] .vetCard,
+:root[data-theme="dark"] .salesCard,
+:root[data-theme="dark"] .eventsCard,
+:root[data-theme="dark"] .blogCard,
+:root[data-theme="dark"] .sitter-card,
+:root[data-theme="dark"] .quizCard,
+:root[data-theme="dark"] .quizResult,
+:root[data-theme="dark"] .infoCard,
+:root[data-theme="dark"] .activityCard,
+:root[data-theme="dark"] .benefitCard,
+:root[data-theme="dark"] .faqCard,
+:root[data-theme="dark"] .introCard,
+:root[data-theme="dark"] .animalCard,
+:root[data-theme="dark"] .modalContent,
+:root[data-theme="dark"] .med-guide .card,
+:root[data-theme="dark"] .volunteerForm,
+:root[data-theme="dark"] .login-box,
+:root[data-theme="dark"] .signup-box,
+:root[data-theme="dark"] .nfCard,
+:root[data-theme="dark"] .quizProgress,
+:root[data-theme="dark"] .modalInfo {
+    background: var(--dm-surface);
+    border-color: var(--dm-border);
+    box-shadow: var(--dm-shadow);
+}
+
+:root[data-theme="dark"] .filters,
+:root[data-theme="dark"] .lostFilters,
+:root[data-theme="dark"] .eventsFilters,
+:root[data-theme="dark"] .salesFilters,
+:root[data-theme="dark"] .veterinariContent .filters {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    box-shadow: var(--dm-shadow);
+}
+
+:root[data-theme="dark"] .activityCard {
+    background: var(--dm-surface-strong);
+}
+
+:root[data-theme="dark"] .quizProgress .bar {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--dm-border);
+}
+
+:root[data-theme="dark"] .otherAnimal {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+}
+
+:root[data-theme="dark"] .otherAnimal strong {
+    color: var(--dm-accent);
+}
+
+:root[data-theme="dark"] .modalOverlay {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+/* Badges */
+:root[data-theme="dark"] .badge,
+:root[data-theme="dark"] .lostBadge,
+:root[data-theme="dark"] .donBadge,
+:root[data-theme="dark"] .salesBadge,
+:root[data-theme="dark"] .eventsTag,
+:root[data-theme="dark"] .serviceBadge,
+:root[data-theme="dark"] .quizBadge,
+:root[data-theme="dark"] .animalCategory,
+:root[data-theme="dark"] .modalCategory,
+:root[data-theme="dark"] .rating {
+    background: var(--dm-accent-soft);
+    color: var(--dm-accent);
+    border-color: var(--dm-border);
+}
+
+/* Inputs */
+:root[data-theme="dark"] input,
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] input::placeholder,
+:root[data-theme="dark"] textarea::placeholder {
+    color: rgba(241, 234, 249, 0.5);
+}
+
+/* Buttons (ghost + secondary) */
+:root[data-theme="dark"] .btnGhost,
+:root[data-theme="dark"] .btnReset,
+:root[data-theme="dark"] .lostBtnReset,
+:root[data-theme="dark"] .filter-reset,
+:root[data-theme="dark"] .blogCategoryBtn,
+:root[data-theme="dark"] .categoryBtn,
+:root[data-theme="dark"] .nfBtn,
+:root[data-theme="dark"] .resultActions .btn.ghost,
+:root[data-theme="dark"] .user-type-option {
+    background: var(--dm-surface-strong);
+    color: var(--dm-accent);
+    border-color: var(--dm-border);
+}
+
+:root[data-theme="dark"] .blogCategoryBtn:hover,
+:root[data-theme="dark"] .categoryBtn:hover,
+:root[data-theme="dark"] .nfBtn:hover,
+:root[data-theme="dark"] .user-type-option:hover {
+    background: var(--dm-accent-soft);
+}
+
+:root[data-theme="dark"] .blogCategoryBtn.active,
+:root[data-theme="dark"] .categoryBtn.active,
+:root[data-theme="dark"] .user-type-option.active {
+    background: var(--dm-accent-strong);
+    color: #1a1424;
+    border-color: var(--dm-accent-strong);
+}
+
+/* Titles and subtitles */
+:root[data-theme="dark"] .brandTitle,
+:root[data-theme="dark"] .exploreTitle,
+:root[data-theme="dark"] .adoptionTitle,
+:root[data-theme="dark"] .lostTitle,
+:root[data-theme="dark"] .donTitle,
+:root[data-theme="dark"] .veterinariTitle,
+:root[data-theme="dark"] .salesTitle,
+:root[data-theme="dark"] .eventsTitle,
+:root[data-theme="dark"] .blogTitle,
+:root[data-theme="dark"] .wikiTitle,
+:root[data-theme="dark"] .voluntariatTitle,
+:root[data-theme="dark"] .hero-title,
+:root[data-theme="dark"] .sectionTitle,
+:root[data-theme="dark"] .section-title,
+:root[data-theme="dark"] .quizTitle,
+:root[data-theme="dark"] .winnerName,
+:root[data-theme="dark"] .med-guide .section-title,
+:root[data-theme="dark"] .med-guide .card-title,
+:root[data-theme="dark"] .nfTitle {
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .cardTitle,
+:root[data-theme="dark"] .petName,
+:root[data-theme="dark"] .donName,
+:root[data-theme="dark"] .vetName,
+:root[data-theme="dark"] .salesName,
+:root[data-theme="dark"] .eventsName,
+:root[data-theme="dark"] .blogCardTitle,
+:root[data-theme="dark"] .animalName,
+:root[data-theme="dark"] .introCard h3,
+:root[data-theme="dark"] .infoCard h3,
+:root[data-theme="dark"] .activityCard h3,
+:root[data-theme="dark"] .benefitCard h3,
+:root[data-theme="dark"] .faqCard h3,
+:root[data-theme="dark"] .modalTitle,
+:root[data-theme="dark"] .med-guide .card-title {
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .subtitlePill,
+:root[data-theme="dark"] .blogSub,
+:root[data-theme="dark"] .hero-subtitle {
+    background: var(--dm-surface-strong);
+    color: var(--dm-accent);
+    box-shadow: var(--dm-shadow);
+}
+
+:root[data-theme="dark"] .exploreSub,
+:root[data-theme="dark"] .adoptionSub,
+:root[data-theme="dark"] .lostSub,
+:root[data-theme="dark"] .donSub,
+:root[data-theme="dark"] .veterinariSub,
+:root[data-theme="dark"] .salesSubtitle,
+:root[data-theme="dark"] .eventsSubtitle,
+:root[data-theme="dark"] .wikiSub,
+:root[data-theme="dark"] .voluntariatSub,
+:root[data-theme="dark"] .sectionSubtitle,
+:root[data-theme="dark"] .cardDesc,
+:root[data-theme="dark"] .petDesc,
+:root[data-theme="dark"] .lostDesc,
+:root[data-theme="dark"] .donDesc,
+:root[data-theme="dark"] .vetDesc,
+:root[data-theme="dark"] .salesDesc,
+:root[data-theme="dark"] .eventsDesc,
+:root[data-theme="dark"] .blogCardExcerpt,
+:root[data-theme="dark"] .subtitle,
+:root[data-theme="dark"] .city,
+:root[data-theme="dark"] .winnerDesc,
+:root[data-theme="dark"] .quizProgress span,
+:root[data-theme="dark"] .otherAnimal,
+:root[data-theme="dark"] .med-guide .section-subtitle,
+:root[data-theme="dark"] .med-guide .card-description,
+:root[data-theme="dark"] .med-guide .card-list-item,
+:root[data-theme="dark"] .med-guide .footer,
+:root[data-theme="dark"] .signup-link,
+:root[data-theme="dark"] .login-link,
+:root[data-theme="dark"] .nfText {
+    color: var(--dm-muted);
+}
+
+:root[data-theme="dark"] .petCity,
+:root[data-theme="dark"] .lostSmall,
+:root[data-theme="dark"] .donSmall,
+:root[data-theme="dark"] .vetCity,
+:root[data-theme="dark"] .eventsDate,
+:root[data-theme="dark"] .blogDate,
+:root[data-theme="dark"] .blogReadTime,
+:root[data-theme="dark"] .animalPreview,
+:root[data-theme="dark"] .modalDescription p,
+:root[data-theme="dark"] .infoItem,
+:root[data-theme="dark"] .sectionSubtitle {
+    color: var(--dm-muted);
+}
+
+:root[data-theme="dark"] .infoCard p,
+:root[data-theme="dark"] .activityCard p,
+:root[data-theme="dark"] .benefitCard p,
+:root[data-theme="dark"] .faqCard p,
+:root[data-theme="dark"] .introCard p,
+:root[data-theme="dark"] .animalPreview,
+:root[data-theme="dark"] .modalDescription p {
+    color: var(--dm-muted);
+}
+
+:root[data-theme="dark"] .infoItem strong {
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .formGroup label,
+:root[data-theme="dark"] .login-header h1,
+:root[data-theme="dark"] .signup-header h1,
+:root[data-theme="dark"] .form-group label {
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .checkboxLabel span,
+:root[data-theme="dark"] .checkbox-group label {
+    color: var(--dm-muted);
+}
+
+:root[data-theme="dark"] .successMessage {
+    background: rgba(46, 92, 64, 0.35);
+    color: #c8f5d8;
+    border-color: rgba(46, 92, 64, 0.45);
+}
+
+:root[data-theme="dark"] .nfWrap {
+    background: radial-gradient(circle at top, rgba(203, 176, 234, 0.12) 0%, #15121a 50%, #121019 100%);
+}
+
+:root[data-theme="dark"] .nfBtn.primary {
+    background: var(--dm-accent-strong);
+    color: #1a1424;
+}
+
+:root[data-theme="dark"] .quizCard::before,
+:root[data-theme="dark"] .quizCard::after,
+:root[data-theme="dark"] .quizResult::before,
+:root[data-theme="dark"] .quizResult::after {
+    opacity: 0.12;
+}
+
+:root[data-theme="dark"] .blogSearchInput {
+    border-color: var(--dm-border);
+    box-shadow: none;
+}
+
+:root[data-theme="dark"] .blogSearchInput:focus {
+    border-color: var(--dm-accent-strong);
+    box-shadow: 0 0 0 3px rgba(200, 170, 240, 0.2);
+}
+
+:root[data-theme="dark"] .blogCategoryBtn {
+    border-color: var(--dm-border);
+}
+
+:root[data-theme="dark"] .blogReadBtn {
+    border-color: var(--dm-accent-strong);
+    color: var(--dm-accent);
+}
+
+:root[data-theme="dark"] .blogReadBtn:hover {
+    background: var(--dm-accent-strong);
+    color: #1a1424;
+}
+
+:root[data-theme="dark"] .blogNoResults p {
+    color: var(--dm-muted);
+}
+
+:root[data-theme="dark"] .answers button {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .answers button:hover {
+    background: var(--dm-accent-soft);
+    box-shadow: var(--dm-shadow);
+}
+
+:root[data-theme="dark"] .resultActions .btn.primary,
+:root[data-theme="dark"] .resultActions .btn.secondary,
+:root[data-theme="dark"] .btnPrimary,
+:root[data-theme="dark"] .btnContact,
+:root[data-theme="dark"] .btnDetails,
+:root[data-theme="dark"] .donBtn,
+:root[data-theme="dark"] .salesBtn,
+:root[data-theme="dark"] .btnLearnMore,
+:root[data-theme="dark"] .btnSubmit,
+:root[data-theme="dark"] .login-button,
+:root[data-theme="dark"] .signup-button {
+    box-shadow: var(--dm-shadow);
+}
+
+:root[data-theme="dark"] .modalHeader,
+:root[data-theme="dark"] .searchSection {
+    border-color: var(--dm-border);
+}
+
+:root[data-theme="dark"] .modalClose {
+    background: var(--dm-surface-strong);
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .modalClose:hover {
+    background: var(--dm-accent-soft);
+}
+
+:root[data-theme="dark"] .infoItem {
+    border-bottom-color: var(--dm-border-soft);
+}
+
+:root[data-theme="dark"] .med-guide ::-webkit-scrollbar-track {
+    background: #1b1622;
+}
+
+:root[data-theme="dark"] .med-guide ::-webkit-scrollbar-thumb {
+    background: var(--dm-accent-strong);
+}
