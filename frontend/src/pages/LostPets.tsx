@@ -26,6 +26,41 @@ const lostAds: LostAd[] = [
         contact: "+373 6xx xxx xxx",
         description: "Câine negru de talie mare, foarte prietenos, pierdut lângă parcul central.",
     },
+    {
+        id: "l4", species: "Pasăre", city: "Orhei", date: "2026-02-08",
+        contact: "+373 6xx xxx xxx",
+        description: "Papagal verde cu inel albastru, zboară spre zona centru.",
+    },
+    {
+        id: "l5", species: "Rozător", city: "Cahul", date: "2026-02-10",
+        contact: "+373 7xx xxx xxx",
+        description: "Iepuraș alb cu pete gri, a ieșit din curte în dimineața de vineri.",
+    },
+    {
+        id: "l6", species: "Altul", city: "Ungheni", date: "2026-02-11",
+        contact: "+373 6xx xxx xxx",
+        description: "Broască țestoasă mică, carapace verde-olive, dispărută din balcon.",
+    },
+    {
+        id: "l7", species: "Pisică", city: "Soroca", date: "2026-02-12",
+        contact: "+373 7xx xxx xxx",
+        description: "Pisică albă cu coadă neagră, poartă medalion roșu.",
+    },
+    {
+        id: "l8", species: "Câine", city: "Bălți", date: "2026-02-13",
+        contact: "+373 6xx xxx xxx",
+        description: "Câine mic, rasa bichon, zgardă roz, dispărut în zona gară.",
+    },
+    {
+        id: "l9", species: "Pasăre", city: "Chișinău", date: "2026-02-14",
+        contact: "+373 7xx xxx xxx",
+        description: "Canar galben, foarte vocal, poate fi speriat de zgomote.",
+    },
+    {
+        id: "l10", species: "Rozător", city: "Comrat", date: "2026-02-15",
+        contact: "+373 6xx xxx xxx",
+        description: "Porcușor de Guineea maro, poartă zgardă mică verde.",
+    },
 ];
 
 export default function LostPets() {
