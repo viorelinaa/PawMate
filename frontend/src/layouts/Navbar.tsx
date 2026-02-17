@@ -4,6 +4,12 @@ import "../styles/Navbar.css";
 
 export default function Navbar() {
     const [open, setOpen] = useState(false);
+    const [theme, setTheme] = useState(() => {
+        if (typeof window === "undefined") return "light";
+        const saved = window.localStorage.getItem("theme");
+        if (saved === "light" || saved === "dark") return saved;
+        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    });
 
     // când treci pe desktop, închide meniul (ca să nu rămână "open" din mobil)
     useEffect(() => {
@@ -13,6 +19,14 @@ export default function Navbar() {
         window.addEventListener("resize", onResize);
         return () => window.removeEventListener("resize", onResize);
     }, []);
+
+    useEffect(() => {
+        document.documentElement.setAttribute("data-theme", theme);
+        window.localStorage.setItem("theme", theme);
+    }, [theme]);
+
+    const isDark = theme === "dark";
+    const toggleLabel = isDark ? "Activează modul luminos" : "Activează modul întunecat";
 
     return (
         <header className="navbar">
@@ -81,6 +95,15 @@ export default function Navbar() {
                 <NavLink to="/login" onClick={() => setOpen(false)}>
                     Login
                 </NavLink>
+                <button
+                    type="button"
+                    className="themeToggle"
+                    onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
+                    aria-label={toggleLabel}
+                    title={toggleLabel}
+                >
+                    <span aria-hidden="true">{isDark ? "☀️" : "🌙"}</span>
+                </button>
             </nav>
         </header>
     );
