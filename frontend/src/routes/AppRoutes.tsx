@@ -14,6 +14,7 @@ import Veterinari from "../pages/Veterinari";
 import Voluntariat from "../pages/Voluntariat";
 import Wiki from "../pages/Wiki";
 import MedGuide from "../pages/MedGuide";
+import Blog from "../pages/Blog";
 export default function AppRoutes() {
     return (
         <>
@@ -31,6 +32,7 @@ export default function AppRoutes() {
                     <Route path={paths.signup} element={<Signup />} />
                     <Route path={paths.voluntariat} element={<Voluntariat />} />
                     <Route path={paths.wiki} element={<Wiki />} />
+                    <Route path={paths.blog} element={<Blog />} />
                     <Route path={paths.notfound} element={<NotFound />} />
                 </Routes>
             </main>

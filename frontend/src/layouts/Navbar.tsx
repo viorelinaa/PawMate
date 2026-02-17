@@ -69,6 +69,9 @@ export default function Navbar() {
                      <NavLink to="/wiki" onClick={() => setOpen(false)}>
                     Wiki
                 </NavLink>
+                <NavLink to="/blog" onClick={() => setOpen(false)}>
+                    Blog
+                </NavLink>
                 <NavLink to="/login" onClick={() => setOpen(false)}>
                     Login
                 </NavLink>

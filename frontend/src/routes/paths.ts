@@ -11,5 +11,6 @@ export const paths = {
     quiz: "/quiz",
     login: "/login",
     signup: "/signup",
+    blog: "/blog",
     notfound: "*",
 } as const;
