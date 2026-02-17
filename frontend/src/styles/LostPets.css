@@ -1,15 +1,10 @@
 /* src/pages/LostPets.css */
 
-/* Hero banner */
+/* ── Hero ──────────────────────────────────────────────── */
 .lostHero {
     position: relative;
     padding: 80px 24px 60px;
-    background: linear-gradient(
-        180deg,
-        #d8c6ea 0%,
-        #e5dbf2 45%,
-        #f5f1fa 100%
-    );
+    background: var(--color-bg);
     overflow: hidden;
     border-bottom-left-radius: 40px;
     border-bottom-right-radius: 40px;
@@ -25,14 +20,14 @@
     top: 40px;
     transform: translateX(-50%);
     background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.0) 70%);
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     pointer-events: none;
 }
 
 .lostCloud {
     position: absolute;
     background: rgba(255,255,255,0.95);
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08));
     pointer-events: none;
 }
@@ -42,83 +37,53 @@
     content: "";
     position: absolute;
     background: rgba(255,255,255,0.95);
-    border-radius: 999px;
+    border-radius: var(--radius-full);
 }
 
-.lostCloud::before {
-    width: 80px;
-    height: 80px;
-    left: 25px;
-    top: -35px;
-}
+.lostCloud::before { width: 80px;  height: 80px;  left: 25px; top: -35px; }
+.lostCloud::after  { width: 100px; height: 100px; left: 90px; top: -45px; }
 
-.lostCloud::after {
-    width: 100px;
-    height: 100px;
-    left: 90px;
-    top: -45px;
-}
+.lostCloud.lc1 { width: 200px; height: 70px; left: 30px;  top: 40px; transform: scale(0.9); }
+.lostCloud.lc2 { width: 220px; height: 75px; right: 30px; top: 50px; }
 
-.lostCloud.lc1 {
-    width: 200px;
-    height: 70px;
-    left: 30px;
-    top: 40px;
-    transform: scale(0.9);
-}
-
-.lostCloud.lc2 {
-    width: 220px;
-    height: 75px;
-    right: 30px;
-    top: 50px;
-    transform: scale(1);
-}
-
-.lostPaw {
-    position: absolute;
-    font-size: 24px;
-    opacity: 0.3;
-    pointer-events: none;
-}
-
-.lostPaw.lp1 { left: 20px; bottom: 30px; transform: rotate(-14deg); }
+.lostPaw { position: absolute; font-size: 24px; opacity: 0.3; pointer-events: none; }
+.lostPaw.lp1 { left: 20px;  bottom: 30px; transform: rotate(-14deg); }
 .lostPaw.lp2 { right: 24px; bottom: 34px; transform: rotate(12deg); }
-.lostPaw.lp3 { left: 50%; top: 20px; transform: translateX(-50%) rotate(8deg); font-size: 20px; }
+.lostPaw.lp3 { left: 50%;   top: 20px;    transform: translateX(-50%) rotate(8deg); font-size: 20px; }
 
-.lostHeroInner {
-    position: relative;
-}
+.lostHeroInner { position: relative; }
 
 .lostTitle {
     text-align: center;
     margin: 0;
-    font-size: clamp(32px, 4vw, 52px);
-    color: #6a4a83;
+    font-size: var(--font-size-xl);
+    color: var(--color-primary);
     font-weight: 800;
+    font-family: var(--font-family);
 }
 
 .lostSub {
     text-align: center;
     margin: 10px 0 0;
-    color: rgba(43,34,54,0.7);
+    color: var(--color-text-muted);
     font-weight: 600;
+    font-family: var(--font-family);
 }
 
-/* Content area */
+/* ── Content ───────────────────────────────────────────── */
 .lostContent {
     max-width: 1100px;
     margin: 0 auto;
     padding: 30px 24px 70px;
 }
 
-/* Filters */
+/* ── Filtre ────────────────────────────────────────────── */
 .lostFilters {
     margin-top: 18px;
-    background: rgba(255,255,255,0.8);
-    border: 1px solid rgba(106,74,131,0.10);
-    box-shadow: 0 12px 22px rgba(0,0,0,0.08);
-    border-radius: 22px;
+    background: var(--color-surface-soft);
+    border: 1px solid var(--color-primary-border);
+    box-shadow: var(--shadow-card);
+    border-radius: var(--radius-lg);
     padding: 16px;
 }
 
@@ -128,47 +93,48 @@
     grid-template-columns: repeat(4, 1fr);
 }
 
-@media (max-width: 980px) {
-    .lostFiltersGrid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 640px) {
-    .lostFiltersGrid { grid-template-columns: 1fr; }
-}
+@media (max-width: 980px) { .lostFiltersGrid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 640px) { .lostFiltersGrid { grid-template-columns: 1fr; } }
 
 .lostInput,
 .lostSelect {
     width: 100%;
     padding: 12px 14px;
-    border-radius: 14px;
-    border: 1px solid rgba(106,74,131,0.15);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--color-primary-border);
     outline: none;
     font-weight: 600;
-    color: #2b2236;
+    color: var(--color-text);
     background: #fff;
-    font-family: inherit;
-    font-size: 14px;
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
     box-sizing: border-box;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.lostInput:focus,
+.lostSelect:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-faint);
 }
 
 .lostBtnReset {
     border: 0;
-    border-radius: 999px;
+    border-radius: var(--radius-full);
     padding: 12px 18px;
     font-weight: 700;
     cursor: pointer;
-    background: rgba(255,255,255,0.9);
-    color: #6a4a83;
-    box-shadow: 0 10px 18px rgba(0,0,0,0.08);
-    transition: transform 120ms ease, box-shadow 120ms ease;
-    font-family: inherit;
-    font-size: 14px;
+    background: var(--color-surface);
+    color: var(--color-primary);
+    box-shadow: var(--shadow-btn-ghost);
+    transition: transform var(--transition-fast);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
 }
 
-.lostBtnReset:hover {
-    transform: translateY(-1px);
-}
+.lostBtnReset:hover { transform: translateY(-1px); }
 
-/* Lost Cards */
+/* ── Cards ─────────────────────────────────────────────── */
 .lostCards {
     display: grid;
     gap: 16px;
@@ -176,25 +142,21 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-@media (max-width: 980px) {
-    .lostCards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-}
-@media (max-width: 640px) {
-    .lostCards { grid-template-columns: 1fr; }
-}
+@media (max-width: 980px) { .lostCards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 640px) { .lostCards { grid-template-columns: 1fr; } }
 
 .lostCard {
-    background: rgba(255,255,255,0.92);
-    border-radius: 18px;
+    background: var(--color-surface);
+    border-radius: var(--radius-md);
     padding: 18px;
-    box-shadow: 0 12px 22px rgba(0,0,0,0.08);
-    border: 1px solid rgba(106,74,131,0.10);
-    transition: transform 120ms ease, box-shadow 120ms ease;
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-primary-border);
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .lostCard:hover {
     transform: translateY(-2px);
-    box-shadow: 0 16px 28px rgba(0,0,0,0.11);
+    box-shadow: var(--shadow-card-hover);
 }
 
 .lostCardHeader {
@@ -206,21 +168,23 @@
 }
 
 .lostSmall {
-    font-size: 12px;
-    color: rgba(43,34,54,0.7);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
     font-weight: 600;
+    font-family: var(--font-family);
 }
 
 .lostBadge {
     display: inline-flex;
     align-items: center;
     padding: 6px 12px;
-    border-radius: 999px;
-    font-size: 12px;
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-xs);
     font-weight: 700;
-    background: rgba(255,255,255,0.8);
-    color: #6a4a83;
-    border: 1px solid rgba(106,74,131,0.15);
+    background: var(--color-primary-faint);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary-border);
+    font-family: var(--font-family);
 }
 
 .lostBadges {
@@ -232,19 +196,21 @@
 
 .lostDesc {
     margin: 10px 0 0;
-    color: rgba(43,34,54,0.75);
+    color: var(--color-text-soft);
     font-weight: 600;
     line-height: 1.55;
+    font-family: var(--font-family);
 }
 
 .lostEmpty {
     margin-top: 18px;
-    background: rgba(255,255,255,0.85);
-    border: 1px solid rgba(106,74,131,0.15);
-    border-radius: 22px;
+    background: var(--color-surface-soft);
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-lg);
     padding: 16px;
-    box-shadow: 0 12px 22px rgba(0,0,0,0.08);
+    box-shadow: var(--shadow-card);
     text-align: center;
-    color: rgba(43,34,54,0.7);
+    color: var(--color-text-muted);
     font-weight: 700;
+    font-family: var(--font-family);
 }
