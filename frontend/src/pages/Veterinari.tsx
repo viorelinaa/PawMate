@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./Veterinari.css";
+import "../styles/Veterinari.css";
 
 interface Veterinar {
     id: string;

@@ -1,4 +1,4 @@
-import "./MedGuide.css";
+import "../styles/MedGuide.css";
 
 type MedicalCardProps = {
     title: string;
