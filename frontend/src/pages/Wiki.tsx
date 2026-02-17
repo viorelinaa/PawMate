@@ -16,6 +16,7 @@ interface AnimalData {
 export default function Wiki() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("Toate");
+    const [selectedAnimal, setSelectedAnimal] = useState<AnimalData | null>(null);
 
     const animals: AnimalData[] = [
         {
@@ -161,6 +162,14 @@ export default function Wiki() {
         return matchesSearch && matchesCategory;
     });
 
+    const openModal = (animal: AnimalData) => {
+        setSelectedAnimal(animal);
+    };
+
+    const closeModal = () => {
+        setSelectedAnimal(null);
+    };
+
     return (
         <div>
             {/* Hero Section */}
@@ -238,7 +247,7 @@ export default function Wiki() {
                 <div className="animalsContainer">
                     {filteredAnimals.length > 0 ? (
                         filteredAnimals.map((animal) => (
-                            <div key={animal.id} className="animalCard">
+                            <div key={animal.id} className="animalCard" onClick={() => openModal(animal)}>
                                 <div className="animalEmoji">{animal.emoji}</div>
                                 <h3 className="animalName">{animal.name}</h3>
                                 <span className="animalCategory">{animal.category}</span>
@@ -253,6 +262,42 @@ export default function Wiki() {
                     )}
                 </div>
             </section>
+
+            {/* Modal */}
+            {selectedAnimal && (
+                <div className="modalOverlay" onClick={closeModal}>
+                    <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+                        <button className="modalClose" onClick={closeModal}>✕</button>
+                        <div className="modalHeader">
+                            <span className="modalEmoji">{selectedAnimal.emoji}</span>
+                            <div>
+                                <h2 className="modalTitle">{selectedAnimal.name}</h2>
+                                <span className="modalCategory">{selectedAnimal.category}</span>
+                            </div>
+                        </div>
+                        <div className="modalBody">
+                            <div className="modalInfo">
+                                <div className="infoItem">
+                                    <strong>Temperament:</strong> {selectedAnimal.temperament}
+                                </div>
+                                <div className="infoItem">
+                                    <strong>Durata de viață:</strong> {selectedAnimal.lifespan}
+                                </div>
+                                <div className="infoItem">
+                                    <strong>Mărime:</strong> {selectedAnimal.size}
+                                </div>
+                                <div className="infoItem">
+                                    <strong>Nivel de îngrijire:</strong> {selectedAnimal.care}
+                                </div>
+                            </div>
+                            <div className="modalDescription">
+                                <h3>Descriere</h3>
+                                <p>{selectedAnimal.description}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
