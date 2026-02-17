@@ -1,6 +1,94 @@
+import { useState } from "react";
+import type { FormEvent, ChangeEvent } from "react";
 import "./Voluntariat.css";
 
 export default function Voluntariat() {
+    const [formData, setFormData] = useState({
+        nume: "",
+        prenume: "",
+        email: "",
+        telefon: "",
+        varsta: "",
+        experienta: "",
+        disponibilitate: "",
+        activitati: [] as string[],
+        mesaj: ""
+    });
+
+    const [submitted, setSubmitted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const activitatiList = [
+        "Îngrijire animale",
+        "Plimbări cu câinii",
+        "Socializare pisici",
+        "Fotografie animale",
+        "Evenimente și campanii",
+        "Transport animale",
+        "Social Media",
+        "Educație comunitate"
+    ];
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleCheckboxChange = (activitate: string) => {
+        setFormData(prev => ({
+            ...prev,
+            activitati: prev.activitati.includes(activitate)
+                ? prev.activitati.filter(a => a !== activitate)
+                : [...prev.activitati, activitate]
+        }));
+    };
+
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setIsLoading(true);
+
+        try {
+            console.log("Form submitted:", formData);
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            setSubmitted(true);
+            
+            setTimeout(() => {
+                setSubmitted(false);
+                setFormData({
+                    nume: "",
+                    prenume: "",
+                    email: "",
+                    telefon: "",
+                    varsta: "",
+                    experienta: "",
+                    disponibilitate: "",
+                    activitati: [],
+                    mesaj: ""
+                });
+            }, 3000);
+        } catch (error) {
+            console.error("Error:", error);
+            alert("A apărut o eroare. Te rugăm să încerci din nou.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const resetForm = () => {
+        setFormData({
+            nume: "",
+            prenume: "",
+            email: "",
+            telefon: "",
+            varsta: "",
+            experienta: "",
+            disponibilitate: "",
+            activitati: [],
+            mesaj: ""
+        });
+    };
+
     return (
         <div>
             {/* Hero Section */}
@@ -99,7 +187,7 @@ export default function Voluntariat() {
                 </div>
             </section>
 
-            {/* Beneficii Section - SECȚIUNEA NOUĂ */}
+            {/* Beneficii Section */}
             <section className="benefitsSection">
                 <h2 className="sectionTitle">Beneficiile voluntariatului</h2>
                 <p className="sectionSubtitle">Ce câștigi devenind voluntar la PawMate</p>
@@ -135,6 +223,187 @@ export default function Voluntariat() {
                         <p>Program adaptat disponibilității tale, fără obligații stricte</p>
                     </div>
                 </div>
+            </section>
+
+            {/* Formular Section - SECȚIUNEA NOUĂ */}
+            <section className="formSection">
+                <h2 className="sectionTitle">Înscrie-te ca voluntar</h2>
+                <p className="sectionSubtitle">
+                    Completează formularul și te vom contacta în cel mai scurt timp
+                </p>
+
+                {submitted && (
+                    <div className="successMessage">
+                        ✓ Mulțumim! Formularul a fost trimis cu succes. Te vom contacta în curând!
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="volunteerForm">
+                    <div className="formGrid">
+                        <div className="formGroup">
+                            <label htmlFor="nume">Nume *</label>
+                            <input
+                                type="text"
+                                id="nume"
+                                name="nume"
+                                value={formData.nume}
+                                onChange={handleInputChange}
+                                required
+                                placeholder="Popescu"
+                                disabled={isLoading}
+                                className="formInput"
+                            />
+                        </div>
+
+                        <div className="formGroup">
+                            <label htmlFor="prenume">Prenume *</label>
+                            <input
+                                type="text"
+                                id="prenume"
+                                name="prenume"
+                                value={formData.prenume}
+                                onChange={handleInputChange}
+                                required
+                                placeholder="Ion"
+                                disabled={isLoading}
+                                className="formInput"
+                            />
+                        </div>
+
+                        <div className="formGroup">
+                            <label htmlFor="email">Email *</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value={formData.email}
+                                onChange={handleInputChange}
+                                required
+                                placeholder="ion.popescu@email.com"
+                                disabled={isLoading}
+                                className="formInput"
+                            />
+                        </div>
+
+                        <div className="formGroup">
+                            <label htmlFor="telefon">Telefon *</label>
+                            <input
+                                type="tel"
+                                id="telefon"
+                                name="telefon"
+                                value={formData.telefon}
+                                onChange={handleInputChange}
+                                required
+                                placeholder="060000000"
+                                disabled={isLoading}
+                                className="formInput"
+                            />
+                        </div>
+
+                        <div className="formGroup">
+                            <label htmlFor="varsta">Vârsta *</label>
+                            <input
+                                type="number"
+                                id="varsta"
+                                name="varsta"
+                                value={formData.varsta}
+                                onChange={handleInputChange}
+                                required
+                                min="16"
+                                placeholder="18"
+                                disabled={isLoading}
+                                className="formInput"
+                            />
+                        </div>
+
+                        <div className="formGroup">
+                            <label htmlFor="disponibilitate">Disponibilitate *</label>
+                            <select
+                                id="disponibilitate"
+                                name="disponibilitate"
+                                value={formData.disponibilitate}
+                                onChange={handleInputChange}
+                                required
+                                disabled={isLoading}
+                                className="formSelect"
+                            >
+                                <option value="">Alege opțiune</option>
+                                <option value="weekend">Weekend</option>
+                                <option value="săptămână">În timpul săptămânii</option>
+                                <option value="ambele">Oricând</option>
+                                <option value="occasional">Ocazional</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div className="formGroup">
+                        <label htmlFor="experienta">Experiență cu animale</label>
+                        <select
+                            id="experienta"
+                            name="experienta"
+                            value={formData.experienta}
+                            onChange={handleInputChange}
+                            disabled={isLoading}
+                            className="formSelect"
+                        >
+                            <option value="">Alege opțiune</option>
+                            <option value="deloc">Fără experiență</option>
+                            <option value="putin">Puțină experiență</option>
+                            <option value="moderat">Experiență moderată</option>
+                            <option value="mult">Multă experiență</option>
+                            <option value="profesional">Profesional (veterinar, tehnician)</option>
+                        </select>
+                    </div>
+
+                    <div className="formGroup">
+                        <label>Activități de interes (selectează toate care te interesează)</label>
+                        <div className="checkboxGrid">
+                            {activitatiList.map((act) => (
+                                <label key={act} className="checkboxLabel">
+                                    <input
+                                        type="checkbox"
+                                        checked={formData.activitati.includes(act)}
+                                        onChange={() => handleCheckboxChange(act)}
+                                        disabled={isLoading}
+                                    />
+                                    <span>{act}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="formGroup">
+                        <label htmlFor="mesaj">Spune-ne mai multe despre tine (opțional)</label>
+                        <textarea
+                            id="mesaj"
+                            name="mesaj"
+                            value={formData.mesaj}
+                            onChange={handleInputChange}
+                            rows={4}
+                            placeholder="De ce vrei să devii voluntar? Ce te motivează?"
+                            disabled={isLoading}
+                            className="formTextarea"
+                        />
+                    </div>
+
+                    <div className="formActions">
+                        <button 
+                            type="button" 
+                            onClick={resetForm} 
+                            className="btnReset"
+                            disabled={isLoading}
+                        >
+                            Reset formular
+                        </button>
+                        <button 
+                            type="submit" 
+                            className="btnSubmit"
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Se trimite..." : "Trimite cererea"}
+                        </button>
+                    </div>
+                </form>
             </section>
         </div>
     );
