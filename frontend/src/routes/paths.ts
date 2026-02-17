@@ -9,5 +9,6 @@ export const paths = {
     donatii: '/donatii',
     quiz: '/quiz',
     voluntariat: '/voluntariat',
+    wiki: '/wiki',
     notfound: '*',
 }
