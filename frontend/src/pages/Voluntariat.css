@@ -244,10 +244,7 @@
     line-height: 1.6;
 }
 
-/* ========================================= */
-/* FORMULAR SECTION - STILURI NOI */
-/* ========================================= */
-
+/* Formular Section */
 .formSection {
     padding: 60px 20px;
     background: white;
@@ -413,6 +410,48 @@
     margin-right: auto;
 }
 
+/* FAQ SECTION */
+
+.faqSection {
+    padding: 60px 20px;
+    background: #f9f7fc;
+}
+
+.faqGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.faqCard {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.faqCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+.faqCard h3 {
+    font-size: 17px;
+    color: #5a4a7b;
+    margin-bottom: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+}
+
+.faqCard p {
+    color: #666;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .voluntariatTitle {
@@ -424,7 +463,8 @@
     }
     
     .activityCards,
-    .benefitsGrid {
+    .benefitsGrid,
+    .faqGrid {
         grid-template-columns: 1fr;
     }
 

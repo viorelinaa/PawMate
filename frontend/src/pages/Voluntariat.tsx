@@ -406,7 +406,7 @@ export default function Voluntariat() {
                 </form>
             </section>
 
-            {/* FAQ Section - SECȚIUNEA NOUĂ */}
+            {/* FAQ Section */}
             <section className="faqSection">
                 <h2 className="sectionTitle">Întrebări frecvente</h2>
                 <p className="sectionSubtitle">Răspunsuri la cele mai comune întrebări</p>
