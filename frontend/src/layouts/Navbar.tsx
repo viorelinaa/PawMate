@@ -54,6 +54,9 @@ export default function Navbar() {
                 <NavLink to="/veterinari" onClick={() => setOpen(false)}>
                     Veterinari
                 </NavLink>
+                <NavLink to="/ghid-medical" onClick={() => setOpen(false)}>
+                    MedGuide
+                </NavLink>
                 <NavLink to="/donatii" onClick={() => setOpen(false)}>
                     Donații
                 </NavLink>
