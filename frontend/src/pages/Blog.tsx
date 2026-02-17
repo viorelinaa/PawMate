@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./Blog.css";
+import "../styles/Blog.css";
 
 interface BlogPost {
     id: string;

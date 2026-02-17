@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./Wiki.css";
+import "../styles/Wiki.css";
 
 interface AnimalData {
     id: number;

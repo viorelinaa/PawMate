@@ -1,4 +1,4 @@
-import "./Donations.css";
+import "../styles/Donations.css";
 
 interface DonationOrg {
     id: string;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import { paths } from "../routes/paths";
-import './Signup.css';
+import '../styles/SignUp.css';
 
 type UserType = 'adopter' | 'sitter';
 
