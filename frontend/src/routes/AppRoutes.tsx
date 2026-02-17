@@ -1,5 +1,4 @@
 import { Routes, Route } from "react-router-dom";
-import Navbar from "../layouts/Navbar";
 import Footer from "../layouts/Footer";
 import Home from "../pages/Home";
 import Adoption from "../pages/Adoption";
@@ -19,7 +18,6 @@ import Blog from "../pages/Blog";
 export default function AppRoutes() {
     return (
         <>
-            <Navbar />
             <main style={{ flex: 1 }}>
                 <Routes>
                     <Route path={paths.home} element={<Home />} />
