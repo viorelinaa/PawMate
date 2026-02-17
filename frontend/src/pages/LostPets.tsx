@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./LostPets.css";
+import "../styles/LostPets.css";
 
 interface LostAd {
     id: string;

@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import "./quiz.css";
+import "../styles/Quiz.css";
 
 type AnimalKey =
     | "dog"

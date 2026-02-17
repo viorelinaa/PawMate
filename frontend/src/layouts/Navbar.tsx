@@ -1,6 +1,6 @@
 import { NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
-import "./Navbar.css";
+import "../styles/Navbar.css";
 
 export default function Navbar() {
     const [open, setOpen] = useState(false);
@@ -63,11 +63,17 @@ export default function Navbar() {
                 <NavLink to="/sitters" onClick={() => setOpen(false)}>
                     Sitters
                 </NavLink>
-                     <NavLink to="/voluntariat" onClick={() => setOpen(false)}>
+                <NavLink to="/voluntariat" onClick={() => setOpen(false)}>
                     Voluntariat
                 </NavLink>
-                     <NavLink to="/wiki" onClick={() => setOpen(false)}>
+                <NavLink to="/wiki" onClick={() => setOpen(false)}>
                     Wiki
+                </NavLink>
+                <NavLink to="/blog" onClick={() => setOpen(false)}>
+                    Blog
+                </NavLink>
+                <NavLink to="/vanzari" onClick={() => setOpen(false)}>
+                    Vânzări
                 </NavLink>
                 <NavLink to="/login" onClick={() => setOpen(false)}>
                     Login

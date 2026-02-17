@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "./petSitting.css";
+import "../styles/petSitting.css";
 
 type Sitter = {
     id: number;
