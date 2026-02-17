@@ -174,3 +174,142 @@
     border-color: #a855f7;
     box-shadow: 0 6px 18px rgba(168, 85, 247, 0.35);
 }
+
+/* --- Grid --- */
+.blogGridSection {
+    background: #e9d5ff;
+    padding: 30px 20px 60px;
+}
+
+.blogGrid {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+/* --- Card --- */
+.blogCard {
+    background: #ffffff;
+    border-radius: 22px;
+    padding: 26px 22px;
+    box-shadow: 0 8px 28px rgba(124, 58, 237, 0.12);
+    border: 1.5px solid rgba(192, 132, 252, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.blogCard:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(124, 58, 237, 0.2);
+}
+
+.blogCardEmoji {
+    font-size: 2.4rem;
+    line-height: 1;
+}
+
+.blogCardMeta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.blogTag {
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.3px;
+}
+
+.blogDate {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.blogReadTime {
+    font-size: 0.8rem;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.blogCardTitle {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #4b2d7f;
+    line-height: 1.4;
+}
+
+.blogCardExcerpt {
+    font-size: 0.9rem;
+    color: #6b7280;
+    line-height: 1.6;
+    flex: 1;
+}
+
+.blogReadBtn {
+    margin-top: 6px;
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: 2px solid #a855f7;
+    background: transparent;
+    color: #7c3aed;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    align-self: flex-start;
+}
+
+.blogReadBtn:hover {
+    background: #a855f7;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 18px rgba(168, 85, 247, 0.3);
+}
+
+/* --- No results --- */
+.blogNoResults {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.blogNoResults span {
+    font-size: 3rem;
+}
+
+.blogNoResults p {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #9333ea;
+}
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+    .blogGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 580px) {
+    .blogGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .blogHero {
+        padding: 80px 16px 50px;
+    }
+}
