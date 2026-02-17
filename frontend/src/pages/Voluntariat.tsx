@@ -1,7 +1,6 @@
 import { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import "./Voluntariat.css";
-
 export default function Voluntariat() {
     const [formData, setFormData] = useState({
         nume: "",
