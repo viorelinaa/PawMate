@@ -98,6 +98,44 @@ export default function Voluntariat() {
                     </div>
                 </div>
             </section>
+
+            {/* Beneficii Section - SECȚIUNEA NOUĂ */}
+            <section className="benefitsSection">
+                <h2 className="sectionTitle">Beneficiile voluntariatului</h2>
+                <p className="sectionSubtitle">Ce câștigi devenind voluntar la PawMate</p>
+                <div className="benefitsGrid">
+                    <div className="benefitCard">
+                        <div className="benefitIcon">❤️</div>
+                        <h3>Face diferența</h3>
+                        <p>Ajută animale nevinovate să găsească familii iubitoare și un cămin sigur</p>
+                    </div>
+                    <div className="benefitCard">
+                        <div className="benefitIcon">🤝</div>
+                        <h3>Comunitate</h3>
+                        <p>Cunoști oameni minunați care împărtășesc aceeași pasiune pentru animale</p>
+                    </div>
+                    <div className="benefitCard">
+                        <div className="benefitIcon">📜</div>
+                        <h3>Certificare</h3>
+                        <p>Primești certificat de voluntar și experiență valoroasă pentru CV</p>
+                    </div>
+                    <div className="benefitCard">
+                        <div className="benefitIcon">🎓</div>
+                        <h3>Învățare</h3>
+                        <p>Dezvolți abilități noi în îngrijirea și comportamentul animalelor</p>
+                    </div>
+                    <div className="benefitCard">
+                        <div className="benefitIcon">😊</div>
+                        <h3>Fericire</h3>
+                        <p>Bucuria de a vedea animale fericite, sănătoase și adoptate</p>
+                    </div>
+                    <div className="benefitCard">
+                        <div className="benefitIcon">⏰</div>
+                        <h3>Flexibilitate</h3>
+                        <p>Program adaptat disponibilității tale, fără obligații stricte</p>
+                    </div>
+                </div>
+            </section>
         </div>
     );
 }
