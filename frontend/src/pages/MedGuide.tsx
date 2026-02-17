@@ -59,9 +59,11 @@ export default function MedGuide() {
                         description="Atunci când trebuie să mergi urgent la veterinar:"
                         items={[
                             "Lipsa poftei de mâncare > 24h",
-                            "Letargie puternică",
-                            "Respirație grea / febră",
-                            "Vărsături repetate",
+                            "Letargie puternică / apatie",
+                            "Respirație grea, tuse persistentă",
+                            "Vărsături sau diaree repetată",
+                            "Sângerare vizibilă",
+                            "Abdomen umflat sau dureros",
                         ]}
                     />
 
@@ -73,6 +75,8 @@ export default function MedGuide() {
                             "Deparazitare periodică",
                             "Hidratare și hrană potrivită",
                             "Vizite regulate la veterinar",
+                            "Controlul greutății",
+                            "Microcipare și identificare",
                         ]}
                     />
 
@@ -84,6 +88,32 @@ export default function MedGuide() {
                             "Igienă dentară",
                             "Curățarea urechilor și ochilor",
                             "Periaj regulat al blănii",
+                            "Apă proaspătă permanent",
+                            "Observă apetitul și scaunul",
+                        ]}
+                    />
+
+                    <MedicalCard
+                        title="Prim ajutor de bază"
+                        description="Lucruri utile până ajungi la veterinar:"
+                        items={[
+                            "Păstrează un kit de prim ajutor",
+                            "Curăță plăgi superficiale cu ser fiziologic",
+                            "Nu administra medicamente umane",
+                            "Ține animalul calm și ferit de stres",
+                            "Sună la veterinar înainte de transport",
+                        ]}
+                    />
+
+                    <MedicalCard
+                        title="Nutriție & greutate"
+                        description="Sfaturi simple pentru o dietă sănătoasă:"
+                        items={[
+                            "Porții măsurate, la ore fixe",
+                            "Recompensele sub 10% din dietă",
+                            "Evită oase gătite și resturi grase",
+                            "Hrana adaptată vârstei și rasei",
+                            "Monitorizează greutatea lunar",
                         ]}
                     />
                 </div>
