@@ -257,3 +257,92 @@
         padding: 10px 18px;
     }
 }
+
+.animalsSection {
+    padding: 60px 20px;
+    background: #f5f5f5;
+}
+
+.animalsContainer {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+}
+
+.animalCard {
+    background: white;
+    border-radius: 15px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.animalCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.animalEmoji {
+    font-size: 72px;
+    margin-bottom: 15px;
+}
+
+.animalName {
+    font-size: 22px;
+    font-weight: 700;
+    color: #5a4a7b;
+    margin-bottom: 8px;
+}
+
+.animalCategory {
+    display: inline-block;
+    padding: 6px 14px;
+    background: #e8d4f8;
+    color: #6b4a8e;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 15px;
+}
+
+.animalPreview {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 20px;
+    min-height: 60px;
+}
+
+.btnLearnMore {
+    width: 100%;
+    padding: 12px;
+    background: #7e6ba0;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btnLearnMore:hover {
+    background: #6a5989;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(126, 107, 160, 0.3);
+}
+
+.noResults {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.noResults p {
+    font-size: 18px;
+    color: #666;
+}
