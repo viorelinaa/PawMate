@@ -11,6 +11,8 @@
     position: sticky;
     top: 0;
     z-index: 50;
+    width: 100%;
+    max-width: 100%;
 }
 
 .logo {
@@ -144,6 +146,10 @@
         padding: 12px 14px;
     }
 
+    .navRight {
+        justify-content: flex-end;
+    }
+
     .menuBtn {
         display: inline-flex;
         align-items: center;
@@ -191,6 +197,71 @@
         background: rgba(0, 0, 0, 0.08);
         z-index: 54;
     }
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        padding: 8px 12px;
+    }
+
+    .logo {
+        font-size: 18px;
+        gap: 4px;
+    }
+
+    .navRight {
+        gap: 8px;
+    }
+
+    .themeToggle {
+        width: 34px;
+        height: 34px;
+    }
+
+    .menuBtn {
+        padding: 6px;
+        border-radius: 12px;
+    }
+
+    .menuIcon,
+    .menuIcon::before,
+    .menuIcon::after {
+        width: 18px;
+    }
+}
+
+@media (max-width: 420px) {
+    .navbar {
+        padding: 6px 8px;
+        gap: 8px;
+    }
+
+    .logo {
+        font-size: 16px;
+    }
+
+    .navRight {
+        gap: 6px;
+    }
+
+    .themeToggle {
+        width: 30px;
+        height: 30px;
+    }
+
+    .menuBtn {
+        padding: 4px;
+        border-radius: 10px;
+    }
+
+    .menuIcon,
+    .menuIcon::before,
+    .menuIcon::after {
+        width: 16px;
+    }
+
+    .menuIcon::before { top: -6px; }
+    .menuIcon::after { top: 6px; }
 }
 
 /* ── User indicator ─────────────────────────────────────── */
