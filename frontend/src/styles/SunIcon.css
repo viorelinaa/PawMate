@@ -1,0 +1,49 @@
+/* src/styles/SunIcon.css */
+
+.sunIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.sunIcon svg {
+    display: block;
+    transform-origin: 50% 50%;
+}
+
+.sunIcon__center,
+.sunIcon__ray {
+    transform-origin: 50% 50%;
+    transform-box: fill-box;
+}
+
+.sunIcon--animate svg {
+    animation: sun-rotate var(--sun-duration, 1s) ease;
+}
+
+.sunIcon--animate .sunIcon__center {
+    animation: sun-pulse var(--sun-duration, 1s) ease-in-out;
+}
+
+.sunIcon--animate .sunIcon__ray {
+    animation: sun-rays var(--sun-duration, 1s) ease-in-out;
+}
+
+@keyframes sun-rotate {
+    0% { transform: rotate(0deg); }
+    50% { transform: rotate(12deg); }
+    100% { transform: rotate(0deg); }
+}
+
+@keyframes sun-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.18); }
+    100% { transform: scale(1); }
+}
+
+@keyframes sun-rays {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}

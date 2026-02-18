@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/Wiki.css";
+import { SearchIcon } from "../components/SearchIcon";
 
 interface AnimalData {
     id: number;
@@ -179,9 +180,21 @@ export default function Wiki() {
                 <span className="wikiPaw wp1">🐾</span>
                 <span className="wikiPaw wp2">🐾</span>
                 <span className="wikiPaw wp3">🐾</span>
+                <span
+                    className="wikiPaw"
+                    style={{ top: "30px", left: "130px", transform: "rotate(10deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="wikiPaw"
+                    style={{ bottom: "78px", right: "130px", transform: "rotate(-12deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
                 <div className="wikiHeroInner">
-                    <h1 className="wikiTitle">Wiki Animale</h1>
-                    <p className="wikiSub">
+                    <h1 className="wikiTitle heroTitle">Wiki Animale</h1>
+                    <p className="wikiSub heroSubtitle">
                         Descoperă tot ce trebuie să știi despre animalele de companie
                     </p>
                 </div>
@@ -221,13 +234,16 @@ export default function Wiki() {
             {/* Search & Filter Section */}
             <section className="searchSection">
                 <div className="searchContainer">
-                    <input
-                        type="text"
-                        className="searchInput"
-                        placeholder="Caută după nume sau descriere..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+                    <div className="searchField">
+                        <SearchIcon size={18} aria-hidden="true" />
+                        <input
+                            type="text"
+                            className="searchInput"
+                            placeholder="Caută după nume sau descriere..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
                     <div className="categoryButtons">
                         {categories.map((category) => (
                             <button

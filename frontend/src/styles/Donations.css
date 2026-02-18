@@ -163,6 +163,9 @@
     padding-top: 10px;
     font-family: var(--font-family);
     font-size: var(--font-size-base);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .donBtn:hover {

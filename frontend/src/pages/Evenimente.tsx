@@ -1,8 +1,10 @@
 import { useState } from "react";
+import type { KeyboardEvent } from "react";
 import "../styles/Evenimente.css";
 import { AdminOnly } from "../components/AdminOnly";
+import { SearchIcon } from "../components/SearchIcon";
 
-type Event = {
+type EventItem = {
     id: string;
     city: string;
     date: string;
@@ -11,7 +13,7 @@ type Event = {
     type: string;
 };
 
-const events: Event[] = [
+const events: EventItem[] = [
     {
         id: "e1",
         city: "Chișinău",
@@ -106,6 +108,20 @@ export default function Evenimente() {
         setEventType("ALL");
     }
 
+    function handleEventClick(entry: EventItem) {
+        const accepted = window.confirm(`Vrei să te înregistrezi la "${entry.title}"?`);
+        if (accepted) {
+            alert("Înregistrare trimisă (mock)!");
+        }
+    }
+
+    function handleEventKeyDown(event: KeyboardEvent<HTMLElement>, entry: EventItem) {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            handleEventClick(entry);
+        }
+    }
+
     return (
         <div className="eventsPage">
             <section className="eventsHero">
@@ -114,9 +130,21 @@ export default function Evenimente() {
                 <span className="eventsPaw ep1">🐾</span>
                 <span className="eventsPaw ep2">🐾</span>
                 <span className="eventsPaw ep3">🐾</span>
+                <span
+                    className="eventsPaw"
+                    style={{ top: "30px", left: "130px", transform: "rotate(10deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="eventsPaw"
+                    style={{ bottom: "78px", right: "130px", transform: "rotate(-12deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
                 <div className="eventsHeroInner">
-                    <h1 className="eventsTitle">Evenimente</h1>
-                    <p className="eventsSubtitle">Târguri, întâlniri, acțiuni de voluntariat.</p>
+                    <h1 className="eventsTitle heroTitle">Evenimente</h1>
+                    <p className="eventsSubtitle heroSubtitle">Târguri, întâlniri, acțiuni de voluntariat.</p>
                 </div>
             </section>
 
@@ -131,12 +159,15 @@ export default function Evenimente() {
             <section className="eventsContent">
                 <div className="eventsFilters">
                     <div className="eventsFiltersGrid">
-                        <input
-                            className="filterInput"
-                            placeholder="Caută după titlu..."
-                            value={query}
-                            onChange={(event) => setQuery(event.target.value)}
-                        />
+                        <div className="searchField">
+                            <SearchIcon size={18} aria-hidden="true" />
+                            <input
+                                className="filterInput"
+                                placeholder="Caută după titlu..."
+                                value={query}
+                                onChange={(event) => setQuery(event.target.value)}
+                            />
+                        </div>
                         <select
                             className="filterSelect"
                             value={city}
@@ -170,7 +201,14 @@ export default function Evenimente() {
                 {filtered.length > 0 ? (
                     <div className="eventsGrid">
                         {filtered.map((event) => (
-                            <article className="eventsCard" key={event.id}>
+                            <article
+                                className="eventsCard"
+                                key={event.id}
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => handleEventClick(event)}
+                                onKeyDown={(keyEvent) => handleEventKeyDown(keyEvent, event)}
+                            >
                                 <div className="eventsCardTop">
                                     <span className="eventsCity">{event.city}</span>
                                     <span className="eventsDate">{event.date}</span>

@@ -1,5 +1,6 @@
 import "../styles/Donations.css";
 import { AdminOnly } from "../components/AdminOnly";
+import { HandCoinsIcon } from "../components/HandCoinsIcon";
 
 interface DonationOrg {
     id: string;
@@ -37,9 +38,21 @@ export default function Donations() {
                 <span className="donPaw dp1">🐾</span>
                 <span className="donPaw dp2">🐾</span>
                 <span className="donPaw dp3">🐾</span>
+                <span
+                    className="donPaw"
+                    style={{ top: "28px", left: "130px", transform: "rotate(10deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="donPaw"
+                    style={{ bottom: "80px", right: "130px", transform: "rotate(-12deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
                 <div className="donHeroInner">
-                    <h1 className="donTitle">Donații</h1>
-                    <p className="donSub">ONG-uri și adăposturi care au nevoie de ajutor.</p>
+                    <h1 className="donTitle heroTitle">Donații</h1>
+                    <p className="donSub heroSubtitle">ONG-uri și adăposturi care au nevoie de ajutor.</p>
                 </div>
             </section>
 
@@ -65,6 +78,7 @@ export default function Donations() {
                             <p className="donDesc">{o.description}</p>
                             <div style={{ marginTop: "auto", paddingTop: "14px" }}>
                                 <button className="donBtn" onClick={() => alert("Donație (mock)!")}>
+                                    <HandCoinsIcon size={16} aria-hidden="true" />
                                     Donează
                                 </button>
                             </div>

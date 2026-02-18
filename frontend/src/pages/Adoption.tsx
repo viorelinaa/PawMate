@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/Adoption.css";
 import { UserOnly } from "../components/UserOnly";
+import { SearchIcon } from "../components/SearchIcon";
 
 interface Pet {
     id: string;
@@ -76,9 +77,21 @@ export default function Adoption() {
                 <span className="adoptionPaw ap1">🐾</span>
                 <span className="adoptionPaw ap2">🐾</span>
                 <span className="adoptionPaw ap3">🐾</span>
+                <span
+                    className="adoptionPaw"
+                    style={{ top: "32px", left: "140px", transform: "rotate(8deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="adoptionPaw"
+                    style={{ bottom: "80px", right: "140px", transform: "rotate(-12deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
                 <div className="adoptionHeroInner">
-                    <h1 className="adoptionTitle">Adopție</h1>
-                    <p className="adoptionSub">Filtrează și găsește animalul potrivit.</p>
+                    <h1 className="adoptionTitle heroTitle">Adopție</h1>
+                    <p className="adoptionSub heroSubtitle">Filtrează și găsește animalul potrivit.</p>
                 </div>
             </section>
 
@@ -93,12 +106,15 @@ export default function Adoption() {
             <div className="adoptionContent">
             <div className="filters">
                 <div className="filtersGrid">
-                    <input
-                        className="filterInput"
-                        placeholder="Caută după nume/descriere..."
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                    />
+                    <div className="searchField">
+                        <SearchIcon size={18} aria-hidden="true" />
+                        <input
+                            className="filterInput"
+                            placeholder="Caută după nume/descriere..."
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                        />
+                    </div>
                     <select className="filterSelect" value={city} onChange={(e) => setCity(e.target.value)}>
                         <option value="ALL">Toate orașele</option>
                         {allCities.map((c) => (

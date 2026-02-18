@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/petSitting.css";
 import { UserOnly } from "../components/UserOnly";
+import { SearchIcon } from "../components/SearchIcon";
 
 type Sitter = {
     id: number;
@@ -41,10 +42,22 @@ export default function SittersList() {
                 <span className="sitterPaw sp1">🐾</span>
                 <span className="sitterPaw sp2">🐾</span>
                 <span className="sitterPaw sp3">🐾</span>
+                <span
+                    className="sitterPaw"
+                    style={{ top: "30px", left: "130px", transform: "rotate(10deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="sitterPaw"
+                    style={{ bottom: "78px", right: "130px", transform: "rotate(-12deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
 
                 <div className="heroInner">
-                    <h1>Pet Sitting</h1>
-                    <p className="subtitle">Caută îngrijitori pentru animalul tău de companie.</p>
+                    <h1 className="heroTitle">Pet Sitting</h1>
+                    <p className="subtitle heroSubtitle">Caută îngrijitori pentru animalul tău de companie.</p>
                 </div>
             </div>
 
@@ -61,12 +74,15 @@ export default function SittersList() {
 
                 {/* Filtre */}
                 <div className="filters">
-                    <input
-                        type="text"
-                        placeholder="Caută după nume sau oraș..."
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                    />
+                    <div className="searchField">
+                        <SearchIcon size={18} aria-hidden="true" />
+                        <input
+                            type="text"
+                            placeholder="Caută după nume sau oraș..."
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                        />
+                    </div>
                     <span className="filter-reset" onClick={() => setQuery("")}>Reset</span>
                     <span className="filter-rating">⭐ rating inclus</span>
                     <span className="filter-price">Preț / zi</span>

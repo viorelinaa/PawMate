@@ -74,28 +74,6 @@
     text-align: center;
 }
 
-.brandTitle {
-    font-size: clamp(42px, 7vw, 90px);
-    line-height: 1;
-    margin: 0;
-    color: var(--color-primary);
-    letter-spacing: 1px;
-    font-weight: 800;
-    font-family: var(--font-family);
-}
-
-.subtitlePill {
-    display: inline-block;
-    margin-top: 18px;
-    padding: 14px 18px;
-    background: var(--color-surface);
-    border-radius: var(--radius-full);
-    color: var(--color-primary);
-    font-weight: 600;
-    box-shadow: var(--shadow-btn-ghost);
-    font-family: var(--font-family);
-}
-
 .heroActions {
     margin-top: 18px;
     display: flex;

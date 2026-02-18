@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/Veterinari.css";
 import { AdminOnly } from "../components/AdminOnly";
+import { SearchIcon } from "../components/SearchIcon";
 
 interface Veterinar {
     id: string;
@@ -92,9 +93,21 @@ export default function Veterinari() {
                 <span className="veterinariPaw vp1">🐾</span>
                 <span className="veterinariPaw vp2">🐾</span>
                 <span className="veterinariPaw vp3">🐾</span>
+                <span
+                    className="veterinariPaw"
+                    style={{ top: "30px", left: "130px", transform: "rotate(12deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="veterinariPaw"
+                    style={{ bottom: "78px", right: "130px", transform: "rotate(-10deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
                 <div className="veterinariHeroInner">
-                    <h1 className="veterinariTitle">Veterinari</h1>
-                    <p className="veterinariSub">Găsește clinici veterinare din apropiere.</p>
+                    <h1 className="veterinariTitle heroTitle">Veterinari</h1>
+                    <p className="veterinariSub heroSubtitle">Găsește clinici veterinare din apropiere.</p>
                 </div>
             </section>
 
@@ -109,12 +122,15 @@ export default function Veterinari() {
             <div className="veterinariContent">
                 <div className="filters">
                     <div className="filtersGrid">
-                        <input
-                            className="filterInput"
-                            placeholder="Caută după nume/adresă..."
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                        />
+                        <div className="searchField">
+                            <SearchIcon size={18} aria-hidden="true" />
+                            <input
+                                className="filterInput"
+                                placeholder="Caută după nume/adresă..."
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                            />
+                        </div>
                         <select className="filterSelect" value={city} onChange={(e) => setCity(e.target.value)}>
                             <option value="ALL">Toate orașele</option>
                             {allCities.map((c) => (

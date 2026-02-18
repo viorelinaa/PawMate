@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/Blog.css";
 import { UserOnly } from "../components/UserOnly";
+import { SearchIcon } from "../components/SearchIcon";
 
 interface BlogPost {
     id: string;
@@ -105,10 +106,16 @@ export default function Blog() {
                 <div className="paw p4">🐾</div>
                 <div className="paw p5">🐾</div>
                 <div className="paw p6">🐾</div>
+                <div className="paw" style={{ top: "36px", left: "140px", transform: "rotate(10deg)", fontSize: "20px" }}>
+                    🐾
+                </div>
+                <div className="paw" style={{ bottom: "84px", right: "140px", transform: "rotate(-12deg)", fontSize: "22px" }}>
+                    🐾
+                </div>
 
                 <div className="blogHeroInner">
-                    <h1 className="blogTitle">Blog PawMate</h1>
-                    <p className="blogSub">Articole utile pentru stăpânii responsabili</p>
+                    <h1 className="blogTitle heroTitle">Blog PawMate</h1>
+                    <p className="blogSub heroSubtitle">Articole utile pentru stăpânii responsabili</p>
                 </div>
             </section>
 
@@ -123,13 +130,16 @@ export default function Blog() {
             {/* Search & Filter */}
             <section className="blogSearchSection">
                 <div className="blogSearchContainer">
-                    <input
-                        type="text"
-                        className="blogSearchInput"
-                        placeholder="Caută articole..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+                    <div className="searchField">
+                        <SearchIcon size={18} aria-hidden="true" />
+                        <input
+                            type="text"
+                            className="blogSearchInput"
+                            placeholder="Caută articole..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
                     <div className="blogCategoryButtons">
                         {categories.map((cat) => (
                             <button

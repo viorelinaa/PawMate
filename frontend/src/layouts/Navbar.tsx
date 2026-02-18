@@ -2,6 +2,10 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../styles/Navbar.css";
 import { useAuth } from "../context/AuthContext";
+import { MoonIcon } from "../components/MoonIcon";
+import { SunIcon } from "../components/SunIcon";
+import { UserRoundIcon } from "../components/UserRoundIcon";
+import { ShieldUserIcon } from "../components/ShieldUserIcon";
 export default function Navbar() {
     const { currentUser, logout } = useAuth();
     const navigate = useNavigate();
@@ -87,8 +91,18 @@ export default function Navbar() {
 
                 {currentUser && (
                     <div className="navUser">
-                        <span className="navUserBadge">
-                            {currentUser.role === 'admin' ? '🔑' : '👤'} {currentUser.displayName}
+                        <span className={`navUserBadge ${currentUser.role === 'admin' ? 'isAdmin' : 'isUser'}`}>
+                            <span className="navUserEmoji">
+                                {currentUser.role === 'admin' ? '🔑' : '👤'}
+                            </span>
+                            <span className="navUserName">{currentUser.displayName}</span>
+                            <span className="navUserIcon" aria-hidden="true">
+                                {currentUser.role === 'admin' ? (
+                                    <ShieldUserIcon size={16} />
+                                ) : (
+                                    <UserRoundIcon size={16} />
+                                )}
+                            </span>
                         </span>
                         <button
                             type="button"
@@ -107,7 +121,11 @@ export default function Navbar() {
                     aria-label={toggleLabel}
                     title={toggleLabel}
                 >
-                    <span aria-hidden="true">{isDark ? "☀️" : "🌙"}</span>
+                    {isDark ? (
+                        <SunIcon size={20} aria-hidden="true" />
+                    ) : (
+                        <MoonIcon size={20} aria-hidden="true" />
+                    )}
                 </button>
 
                 {/* buton hamburger DOAR pe mobil */}

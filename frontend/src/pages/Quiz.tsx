@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Quiz.css";
 import { AdminOnly } from "../components/AdminOnly";
+import { PlusIcon } from "../components/PlusIcon";
 
 type AnimalKey =
     | "dog"
@@ -225,9 +226,17 @@ export default function Quiz() {
     return (
         <div className="quizPage">
             <AdminOnly>
-                <div className="roleActionBar">
-                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare întrebare — în curând!")}>
-                        + Adaugă întrebare
+                <div className="roleActionBar addQuestionBar">
+                    <button
+                        className="roleActionBtn addQuestionBtn"
+                        onClick={() => alert("Formular adăugare întrebare — în curând!")}
+                        aria-label="Adaugă întrebare"
+                        title="Adaugă întrebare"
+                    >
+                        <span className="addQuestionIcon" aria-hidden="true">
+                            <PlusIcon size={18} />
+                        </span>
+                        <span className="addQuestionText">Adaugă întrebare</span>
                     </button>
                 </div>
             </AdminOnly>

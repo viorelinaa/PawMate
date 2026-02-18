@@ -1,0 +1,40 @@
+/* src/styles/EyeIcon.css */
+
+.eyeIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.eyeIcon svg {
+    display: block;
+}
+
+.eyeIcon__eye,
+.eyeIcon__pupil {
+    transform-origin: 50% 50%;
+    transform-box: fill-box;
+}
+
+.eyeIcon--animate .eyeIcon__eye {
+    animation: eye-blink calc(0.25 * var(--eye-duration, 1s)) ease-in-out;
+}
+
+.eyeIcon--animate .eyeIcon__pupil {
+    animation: eye-scan calc(1.6 * var(--eye-duration, 1s)) ease-in-out;
+}
+
+@keyframes eye-blink {
+    0% { transform: scaleY(1); }
+    50% { transform: scaleY(0.1); }
+    100% { transform: scaleY(1); }
+}
+
+@keyframes eye-scan {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    50% { transform: translateX(2px); }
+    75% { transform: translateX(-1px); }
+    100% { transform: translateX(0); }
+}

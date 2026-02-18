@@ -1,8 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { paths } from "../routes/paths";
 import { useAuth } from '../context/AuthContext';
 import '../styles/Login.css';
+import { UserRoundIcon } from "../components/UserRoundIcon";
+import { ShieldUserIcon } from "../components/ShieldUserIcon";
+import { EyeIcon } from "../components/EyeIcon";
+import { EyeOffIcon } from "../components/EyeOffIcon";
 
 const DEMO = {
   user:  { username: 'user@pawmate.ro',  password: 'User1234!'  },
@@ -16,6 +20,7 @@ const Login: React.FC = () => {
   const [selectedRole, setSelectedRole] = useState<'user' | 'admin'>('user');
   const [email, setEmail]       = useState(DEMO.user.username);
   const [password, setPassword] = useState(DEMO.user.password);
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError]       = useState('');
 
   const handleRoleSwitch = (role: 'user' | 'admin') => {
@@ -35,11 +40,18 @@ const Login: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    document.body.classList.add("login-body");
+    return () => {
+      document.body.classList.remove("login-body");
+    };
+  }, []);
+
   return (
     <div className="login-container">
       <div className="login-box">
         <div className="login-header">
-          <h1>🐾 PawMate Login</h1>
+          <h1>PawMate Login</h1>
           <p>Bine ai revenit!</p>
         </div>
 
@@ -49,14 +61,20 @@ const Login: React.FC = () => {
             className={`role-tab ${selectedRole === 'user' ? 'active' : ''}`}
             onClick={() => handleRoleSwitch('user')}
           >
-            👤 Utilizator
+            <span className="role-tab-icon" aria-hidden="true">
+              <UserRoundIcon size={18} />
+            </span>
+            <span>Utilizator</span>
           </button>
           <button
             type="button"
             className={`role-tab ${selectedRole === 'admin' ? 'active' : ''}`}
             onClick={() => handleRoleSwitch('admin')}
           >
-            🔑 Admin
+            <span className="role-tab-icon" aria-hidden="true">
+              <ShieldUserIcon size={18} />
+            </span>
+            <span>Admin</span>
           </button>
         </div>
 
@@ -81,14 +99,29 @@ const Login: React.FC = () => {
 
           <div className="form-group">
             <label htmlFor="password">Parolă</label>
-            <input
-              type="password"
-              id="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="********"
-              required
-            />
+            <div className="password-field">
+              <input
+                type={showPassword ? "text" : "password"}
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="********"
+                required
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Ascunde parola" : "Arată parola"}
+                title={showPassword ? "Ascunde parola" : "Arată parola"}
+              >
+                {showPassword ? (
+                  <EyeOffIcon size={18} aria-hidden="true" />
+                ) : (
+                  <EyeIcon size={18} aria-hidden="true" />
+                )}
+              </button>
+            </div>
           </div>
 
           {error && <p className="login-error">{error}</p>}

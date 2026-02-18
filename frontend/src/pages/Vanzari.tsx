@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/Vanzari.css";
 import { UserOnly } from "../components/UserOnly";
+import { SearchIcon } from "../components/SearchIcon";
 
 type Product = {
     id: string;
@@ -87,9 +88,21 @@ export default function Vanzari() {
                 <span className="salesPaw sp1">🐾</span>
                 <span className="salesPaw sp2">🐾</span>
                 <span className="salesPaw sp3">🐾</span>
+                <span
+                    className="salesPaw"
+                    style={{ top: "28px", left: "140px", transform: "rotate(8deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="salesPaw"
+                    style={{ bottom: "78px", right: "140px", transform: "rotate(-12deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
                 <div className="salesHeroInner">
-                    <h1 className="salesTitle">Vânzări</h1>
-                    <p className="salesSubtitle">Produse pentru animale (mock).</p>
+                    <h1 className="salesTitle heroTitle">Vânzări</h1>
+                    <p className="salesSubtitle heroSubtitle">Produse pentru animale (mock).</p>
                 </div>
             </section>
 
@@ -104,12 +117,15 @@ export default function Vanzari() {
             <section className="salesContent">
                 <div className="salesFilters">
                     <div className="salesFiltersGrid">
-                        <input
-                            className="filterInput"
-                            placeholder="Caută după nume..."
-                            value={query}
-                            onChange={(event) => setQuery(event.target.value)}
-                        />
+                        <div className="searchField">
+                            <SearchIcon size={18} aria-hidden="true" />
+                            <input
+                                className="filterInput"
+                                placeholder="Caută după nume..."
+                                value={query}
+                                onChange={(event) => setQuery(event.target.value)}
+                            />
+                        </div>
                         <select
                             className="filterSelect"
                             value={category}

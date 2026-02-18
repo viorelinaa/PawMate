@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/LostPets.css";
 import { UserOnly } from "../components/UserOnly";
+import { SearchIcon } from "../components/SearchIcon";
 
 interface LostAd {
     id: string;
@@ -95,9 +96,21 @@ export default function LostPets() {
                 <span className="lostPaw lp1">🐾</span>
                 <span className="lostPaw lp2">🐾</span>
                 <span className="lostPaw lp3">🐾</span>
+                <span
+                    className="lostPaw"
+                    style={{ top: "30px", left: "120px", transform: "rotate(14deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="lostPaw"
+                    style={{ bottom: "70px", right: "120px", transform: "rotate(-10deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
                 <div className="lostHeroInner">
-                    <h1 className="lostTitle">Animale pierdute</h1>
-                    <p className="lostSub">Caută în anunțuri și ajută la găsirea lor.</p>
+                    <h1 className="lostTitle heroTitle">Animale pierdute</h1>
+                    <p className="lostSub heroSubtitle">Caută în anunțuri și ajută la găsirea lor.</p>
                 </div>
             </section>
 
@@ -112,12 +125,15 @@ export default function LostPets() {
             <div className="lostContent">
                 <div className="lostFilters">
                     <div className="lostFiltersGrid">
-                        <input
-                            className="lostInput"
-                            placeholder="Caută în descriere..."
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                        />
+                        <div className="searchField">
+                            <SearchIcon size={18} aria-hidden="true" />
+                            <input
+                                className="lostInput"
+                                placeholder="Caută în descriere..."
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                            />
+                        </div>
                         <select className="lostSelect" value={species} onChange={(e) => setSpecies(e.target.value)}>
                             <option value="ALL">Toate speciile</option>
                             <option value="Câine">Câine</option>
