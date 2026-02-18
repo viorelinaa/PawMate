@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/Veterinari.css";
+import { AdminOnly } from "../components/AdminOnly";
 
 interface Veterinar {
     id: string;
@@ -96,6 +97,14 @@ export default function Veterinari() {
                     <p className="veterinariSub">Găsește clinici veterinare din apropiere.</p>
                 </div>
             </section>
+
+            <AdminOnly>
+                <div className="roleActionBar">
+                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare clinică — în curând!")}>
+                        + Adaugă clinică
+                    </button>
+                </div>
+            </AdminOnly>
 
             <div className="veterinariContent">
                 <div className="filters">

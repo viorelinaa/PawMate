@@ -267,3 +267,34 @@ body {
   color: var(--color-text-muted);
   font-weight: 700;
 }
+
+/* ── Role action bar ─────────────────────────────────────── */
+.roleActionBar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 12px 24px 0;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.roleActionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: var(--color-primary, #6B4C8A);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-full, 999px);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: var(--font-family, 'Poppins', sans-serif);
+  transition: opacity 0.2s, transform 0.15s;
+  box-shadow: var(--shadow-btn-primary, 0 4px 14px rgba(107,76,138,0.3));
+}
+
+.roleActionBtn:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}

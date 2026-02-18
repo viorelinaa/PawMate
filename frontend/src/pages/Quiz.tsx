@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Quiz.css";
+import { AdminOnly } from "../components/AdminOnly";
 
 type AnimalKey =
     | "dog"
@@ -223,6 +224,13 @@ export default function Quiz() {
 
     return (
         <div className="quizPage">
+            <AdminOnly>
+                <div className="roleActionBar">
+                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare întrebare — în curând!")}>
+                        + Adaugă întrebare
+                    </button>
+                </div>
+            </AdminOnly>
             {/* PROGRESS */}
             <div className="quizProgress">
                 <div className="quizProgressHeader">

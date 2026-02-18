@@ -1,7 +1,10 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../styles/Navbar.css";
+import { useAuth } from "../context/AuthContext";
 export default function Navbar() {
+    const { currentUser, logout } = useAuth();
+    const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const [theme, setTheme] = useState(() => {
         if (typeof window === "undefined") return "light";
@@ -75,10 +78,27 @@ export default function Navbar() {
                     <NavLink to="/vanzari" onClick={() => setOpen(false)}>
                         Vânzări
                     </NavLink>
-                    <NavLink to="/login" onClick={() => setOpen(false)}>
-                        Login
-                    </NavLink>
+                    {!currentUser && (
+                        <NavLink to="/login" onClick={() => setOpen(false)}>
+                            Login
+                        </NavLink>
+                    )}
                 </nav>
+
+                {currentUser && (
+                    <div className="navUser">
+                        <span className="navUserBadge">
+                            {currentUser.role === 'admin' ? '🔑' : '👤'} {currentUser.displayName}
+                        </span>
+                        <button
+                            type="button"
+                            className="navLogoutBtn"
+                            onClick={() => { logout(); navigate('/login'); setOpen(false); }}
+                        >
+                            Logout
+                        </button>
+                    </div>
+                )}
 
                 <button
                     type="button"

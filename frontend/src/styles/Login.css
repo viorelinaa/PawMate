@@ -88,3 +88,60 @@
 .signup-link a:hover {
   text-decoration: underline;
 }
+
+/* Role tabs */
+.role-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.role-tab {
+  flex: 1;
+  padding: 10px;
+  border: 2px solid #E6D5F0;
+  border-radius: 10px;
+  background: white;
+  color: #6B4C8A;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.role-tab.active {
+  background: #6B4C8A;
+  color: white;
+  border-color: #6B4C8A;
+}
+
+/* Demo card */
+.demo-card {
+  background: #F5EEF9;
+  border: 1px solid #E6D5F0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  color: #4a3060;
+}
+
+.demo-card p {
+  margin: 4px 0 0;
+}
+
+.demo-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #9370b5;
+}
+
+/* Error */
+.login-error {
+  color: #c0392b;
+  font-size: 0.9rem;
+  text-align: center;
+  margin: 0;
+}
