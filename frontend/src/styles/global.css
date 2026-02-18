@@ -153,6 +153,9 @@ body {
 .med-guide .cloud {
   background: var(--hero-cloud) !important;
   filter: var(--hero-cloud-shadow) !important;
+  width: 240px !important;
+  height: 80px !important;
+  border-radius: var(--radius-full) !important;
 }
 
 .cloud::before,
@@ -178,6 +181,42 @@ body {
 .med-guide .cloud::before,
 .med-guide .cloud::after {
   background: var(--hero-cloud) !important;
+}
+
+.cloud::before,
+.adoptionCloud::before,
+.lostCloud::before,
+.donCloud::before,
+.veterinariCloud::before,
+.salesCloud::before,
+.eventsCloud::before,
+.sitterCloud::before,
+.wikiCloud::before,
+.voluntariatCloud::before,
+.med-guide .cloud::before {
+  width: 90px !important;
+  height: 90px !important;
+  left: 18px !important;
+  top: -40px !important;
+  right: auto !important;
+}
+
+.cloud::after,
+.adoptionCloud::after,
+.lostCloud::after,
+.donCloud::after,
+.veterinariCloud::after,
+.salesCloud::after,
+.eventsCloud::after,
+.sitterCloud::after,
+.wikiCloud::after,
+.voluntariatCloud::after,
+.med-guide .cloud::after {
+  width: 120px !important;
+  height: 120px !important;
+  left: 105px !important;
+  top: -58px !important;
+  right: auto !important;
 }
 
 /* ── Global hero typography ─────────────────────────────────────────── */

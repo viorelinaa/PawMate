@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import "../styles/Navbar.css";
 import { useAuth } from "../context/AuthContext";
+import { MoonIcon } from "../components/MoonIcon";
 export default function Navbar() {
     const { currentUser, logout } = useAuth();
     const navigate = useNavigate();
@@ -107,7 +108,11 @@ export default function Navbar() {
                     aria-label={toggleLabel}
                     title={toggleLabel}
                 >
-                    <span aria-hidden="true">{isDark ? "☀️" : "🌙"}</span>
+                    {isDark ? (
+                        <span aria-hidden="true">☀️</span>
+                    ) : (
+                        <MoonIcon size={20} aria-hidden="true" />
+                    )}
                 </button>
 
                 {/* buton hamburger DOAR pe mobil */}

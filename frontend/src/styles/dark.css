@@ -23,7 +23,7 @@
 :root[data-theme="dark"] {
     --hero-bg: var(--dm-hero);
     --hero-radial: var(--dm-hero-radial);
-    --hero-cloud: rgba(255, 255, 255, 0.08);
+    --hero-cloud: #c9bddb;
     --hero-cloud-shadow: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.45));
     --hero-title-color: var(--dm-text);
     --hero-subtitle-color: var(--dm-muted);
