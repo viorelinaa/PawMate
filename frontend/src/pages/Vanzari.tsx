@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/Vanzari.css";
 import { UserOnly } from "../components/UserOnly";
+import { SearchIcon } from "../components/SearchIcon";
 
 type Product = {
     id: string;
@@ -104,12 +105,15 @@ export default function Vanzari() {
             <section className="salesContent">
                 <div className="salesFilters">
                     <div className="salesFiltersGrid">
-                        <input
-                            className="filterInput"
-                            placeholder="Caută după nume..."
-                            value={query}
-                            onChange={(event) => setQuery(event.target.value)}
-                        />
+                        <div className="searchField">
+                            <SearchIcon size={18} aria-hidden="true" />
+                            <input
+                                className="filterInput"
+                                placeholder="Caută după nume..."
+                                value={query}
+                                onChange={(event) => setQuery(event.target.value)}
+                            />
+                        </div>
                         <select
                             className="filterSelect"
                             value={category}

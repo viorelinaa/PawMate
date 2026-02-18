@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/Wiki.css";
+import { SearchIcon } from "../components/SearchIcon";
 
 interface AnimalData {
     id: number;
@@ -221,13 +222,16 @@ export default function Wiki() {
             {/* Search & Filter Section */}
             <section className="searchSection">
                 <div className="searchContainer">
-                    <input
-                        type="text"
-                        className="searchInput"
-                        placeholder="Caută după nume sau descriere..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+                    <div className="searchField">
+                        <SearchIcon size={18} aria-hidden="true" />
+                        <input
+                            type="text"
+                            className="searchInput"
+                            placeholder="Caută după nume sau descriere..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
                     <div className="categoryButtons">
                         {categories.map((category) => (
                             <button

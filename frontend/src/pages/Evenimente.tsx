@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { KeyboardEvent } from "react";
 import "../styles/Evenimente.css";
 import { AdminOnly } from "../components/AdminOnly";
+import { SearchIcon } from "../components/SearchIcon";
 
 type EventItem = {
     id: string;
@@ -146,12 +147,15 @@ export default function Evenimente() {
             <section className="eventsContent">
                 <div className="eventsFilters">
                     <div className="eventsFiltersGrid">
-                        <input
-                            className="filterInput"
-                            placeholder="Caută după titlu..."
-                            value={query}
-                            onChange={(event) => setQuery(event.target.value)}
-                        />
+                        <div className="searchField">
+                            <SearchIcon size={18} aria-hidden="true" />
+                            <input
+                                className="filterInput"
+                                placeholder="Caută după titlu..."
+                                value={query}
+                                onChange={(event) => setQuery(event.target.value)}
+                            />
+                        </div>
                         <select
                             className="filterSelect"
                             value={city}

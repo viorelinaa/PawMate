@@ -95,6 +95,10 @@
     background: var(--dm-accent-soft);
 }
 
+:root[data-theme="dark"] .searchField .searchIcon {
+    color: var(--dm-accent);
+}
+
 @media (max-width: 768px) {
     :root[data-theme="dark"] .links {
         background: var(--dm-surface-strong);

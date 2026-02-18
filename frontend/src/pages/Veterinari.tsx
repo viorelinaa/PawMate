@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/Veterinari.css";
 import { AdminOnly } from "../components/AdminOnly";
+import { SearchIcon } from "../components/SearchIcon";
 
 interface Veterinar {
     id: string;
@@ -109,12 +110,15 @@ export default function Veterinari() {
             <div className="veterinariContent">
                 <div className="filters">
                     <div className="filtersGrid">
-                        <input
-                            className="filterInput"
-                            placeholder="Caută după nume/adresă..."
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                        />
+                        <div className="searchField">
+                            <SearchIcon size={18} aria-hidden="true" />
+                            <input
+                                className="filterInput"
+                                placeholder="Caută după nume/adresă..."
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                            />
+                        </div>
                         <select className="filterSelect" value={city} onChange={(e) => setCity(e.target.value)}>
                             <option value="ALL">Toate orașele</option>
                             {allCities.map((c) => (

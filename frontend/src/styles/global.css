@@ -390,6 +390,27 @@ body {
   padding: var(--space-8) var(--space-6) var(--space-20);
 }
 
+/* Search input with icon */
+.searchField {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.searchField .searchIcon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-primary);
+  pointer-events: none;
+}
+
+.searchField input {
+  padding-left: 42px !important;
+}
+
 /* ── Butoane ─────────────────────────────────────────────── */
 
 /* Buton primar */

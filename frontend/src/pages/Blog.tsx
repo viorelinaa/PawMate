@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/Blog.css";
 import { UserOnly } from "../components/UserOnly";
+import { SearchIcon } from "../components/SearchIcon";
 
 interface BlogPost {
     id: string;
@@ -123,13 +124,16 @@ export default function Blog() {
             {/* Search & Filter */}
             <section className="blogSearchSection">
                 <div className="blogSearchContainer">
-                    <input
-                        type="text"
-                        className="blogSearchInput"
-                        placeholder="Caută articole..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                    />
+                    <div className="searchField">
+                        <SearchIcon size={18} aria-hidden="true" />
+                        <input
+                            type="text"
+                            className="blogSearchInput"
+                            placeholder="Caută articole..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                    </div>
                     <div className="blogCategoryButtons">
                         {categories.map((cat) => (
                             <button

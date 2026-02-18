@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/petSitting.css";
 import { UserOnly } from "../components/UserOnly";
+import { SearchIcon } from "../components/SearchIcon";
 
 type Sitter = {
     id: number;
@@ -61,12 +62,15 @@ export default function SittersList() {
 
                 {/* Filtre */}
                 <div className="filters">
-                    <input
-                        type="text"
-                        placeholder="Caută după nume sau oraș..."
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                    />
+                    <div className="searchField">
+                        <SearchIcon size={18} aria-hidden="true" />
+                        <input
+                            type="text"
+                            placeholder="Caută după nume sau oraș..."
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                        />
+                    </div>
                     <span className="filter-reset" onClick={() => setQuery("")}>Reset</span>
                     <span className="filter-rating">⭐ rating inclus</span>
                     <span className="filter-price">Preț / zi</span>

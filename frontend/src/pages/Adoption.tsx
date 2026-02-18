@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/Adoption.css";
 import { UserOnly } from "../components/UserOnly";
+import { SearchIcon } from "../components/SearchIcon";
 
 interface Pet {
     id: string;
@@ -93,12 +94,15 @@ export default function Adoption() {
             <div className="adoptionContent">
             <div className="filters">
                 <div className="filtersGrid">
-                    <input
-                        className="filterInput"
-                        placeholder="Caută după nume/descriere..."
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                    />
+                    <div className="searchField">
+                        <SearchIcon size={18} aria-hidden="true" />
+                        <input
+                            className="filterInput"
+                            placeholder="Caută după nume/descriere..."
+                            value={query}
+                            onChange={(e) => setQuery(e.target.value)}
+                        />
+                    </div>
                     <select className="filterSelect" value={city} onChange={(e) => setCity(e.target.value)}>
                         <option value="ALL">Toate orașele</option>
                         {allCities.map((c) => (

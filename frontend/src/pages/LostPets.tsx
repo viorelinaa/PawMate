@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/LostPets.css";
 import { UserOnly } from "../components/UserOnly";
+import { SearchIcon } from "../components/SearchIcon";
 
 interface LostAd {
     id: string;
@@ -112,12 +113,15 @@ export default function LostPets() {
             <div className="lostContent">
                 <div className="lostFilters">
                     <div className="lostFiltersGrid">
-                        <input
-                            className="lostInput"
-                            placeholder="Caută în descriere..."
-                            value={query}
-                            onChange={(e) => setQuery(e.target.value)}
-                        />
+                        <div className="searchField">
+                            <SearchIcon size={18} aria-hidden="true" />
+                            <input
+                                className="lostInput"
+                                placeholder="Caută în descriere..."
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                            />
+                        </div>
                         <select className="lostSelect" value={species} onChange={(e) => setSpecies(e.target.value)}>
                             <option value="ALL">Toate speciile</option>
                             <option value="Câine">Câine</option>

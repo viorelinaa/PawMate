@@ -132,6 +132,14 @@
     transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
+.filters .searchField {
+    width: 320px;
+}
+
+.filters .searchField input {
+    width: 100%;
+}
+
 .filters input:focus {
     border-color: var(--color-primary);
     box-shadow: 0 0 0 3px var(--color-primary-faint);
