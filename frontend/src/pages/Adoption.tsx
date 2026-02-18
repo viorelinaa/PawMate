@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/Adoption.css";
+import { UserOnly } from "../components/UserOnly";
 
 interface Pet {
     id: string;
@@ -80,6 +81,14 @@ export default function Adoption() {
                     <p className="adoptionSub">Filtrează și găsește animalul potrivit.</p>
                 </div>
             </section>
+
+            <UserOnly>
+                <div className="roleActionBar">
+                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare animal — în curând!")}>
+                        + Adaugă animal pentru adopție
+                    </button>
+                </div>
+            </UserOnly>
 
             <div className="adoptionContent">
             <div className="filters">

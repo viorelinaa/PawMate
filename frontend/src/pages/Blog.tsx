@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/Blog.css";
+import { UserOnly } from "../components/UserOnly";
 
 interface BlogPost {
     id: string;
@@ -110,6 +111,14 @@ export default function Blog() {
                     <p className="blogSub">Articole utile pentru stăpânii responsabili</p>
                 </div>
             </section>
+
+            <UserOnly>
+                <div className="roleActionBar">
+                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare articol — în curând!")}>
+                        + Adaugă articol
+                    </button>
+                </div>
+            </UserOnly>
 
             {/* Search & Filter */}
             <section className="blogSearchSection">

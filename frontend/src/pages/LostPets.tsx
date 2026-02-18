@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/LostPets.css";
+import { UserOnly } from "../components/UserOnly";
 
 interface LostAd {
     id: string;
@@ -99,6 +100,14 @@ export default function LostPets() {
                     <p className="lostSub">Caută în anunțuri și ajută la găsirea lor.</p>
                 </div>
             </section>
+
+            <UserOnly>
+                <div className="roleActionBar">
+                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare anunț — în curând!")}>
+                        + Adaugă anunț animal pierdut
+                    </button>
+                </div>
+            </UserOnly>
 
             <div className="lostContent">
                 <div className="lostFilters">

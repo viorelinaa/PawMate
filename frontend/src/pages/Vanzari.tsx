@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/Vanzari.css";
+import { UserOnly } from "../components/UserOnly";
 
 type Product = {
     id: string;
@@ -91,6 +92,14 @@ export default function Vanzari() {
                     <p className="salesSubtitle">Produse pentru animale (mock).</p>
                 </div>
             </section>
+
+            <UserOnly>
+                <div className="roleActionBar">
+                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare produs — în curând!")}>
+                        + Adaugă produs/anunț
+                    </button>
+                </div>
+            </UserOnly>
 
             <section className="salesContent">
                 <div className="salesFilters">

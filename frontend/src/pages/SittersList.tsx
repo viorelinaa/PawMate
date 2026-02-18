@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/petSitting.css";
+import { UserOnly } from "../components/UserOnly";
 
 type Sitter = {
     id: number;
@@ -46,6 +47,14 @@ export default function SittersList() {
                     <p className="subtitle">Caută îngrijitori pentru animalul tău de companie.</p>
                 </div>
             </div>
+
+            <UserOnly>
+                <div className="roleActionBar">
+                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare profil sitter — în curând!")}>
+                        + Adaugă profil sitter
+                    </button>
+                </div>
+            </UserOnly>
 
             {/* ── Content ── */}
             <div className="sitters-content">
