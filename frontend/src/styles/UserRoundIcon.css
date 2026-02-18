@@ -1,0 +1,42 @@
+/* src/styles/UserRoundIcon.css */
+
+.userRoundIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.userRoundIcon svg {
+    display: block;
+}
+
+.userRoundIcon__head,
+.userRoundIcon__curve {
+    transform-origin: 50% 50%;
+    transform-box: fill-box;
+}
+
+.userRoundIcon__curve {
+    stroke-dasharray: 40;
+    stroke-dashoffset: 0;
+}
+
+.userRoundIcon--animate .userRoundIcon__head {
+    animation: user-head calc(0.6 * var(--user-duration, 1s)) ease-out;
+}
+
+.userRoundIcon--animate .userRoundIcon__curve {
+    animation: user-curve calc(0.6 * var(--user-duration, 1s)) ease-in-out 0.3s;
+}
+
+@keyframes user-head {
+    0% { transform: scale(0.5); opacity: 0; }
+    60% { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes user-curve {
+    0% { stroke-dashoffset: 40; opacity: 0.3; }
+    100% { stroke-dashoffset: 0; opacity: 1; }
+}

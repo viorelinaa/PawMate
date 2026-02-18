@@ -272,7 +272,65 @@
     flex-shrink: 0;
 }
 
+@media (max-width: 768px) {
+    .navUser {
+        max-width: 140px;
+    }
+
+    .navUserBadge {
+        max-width: 100%;
+    }
+
+    .navUserIcon {
+        display: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .navUser {
+        gap: 6px;
+        max-width: 120px;
+    }
+
+    .navUserBadge {
+        font-size: 0.72rem;
+        padding: 4px 8px;
+    }
+
+    .navLogoutBtn {
+        padding: 4px 8px;
+        font-size: 0.72rem;
+    }
+
+    .navUserBadge.isUser .navUserName,
+    .navUserBadge.isUser .navUserEmoji {
+        display: none;
+    }
+
+    .navUserBadge.isUser .navUserIcon {
+        display: inline-flex;
+    }
+
+    .navUserBadge.isUser {
+        min-width: 32px;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 420px) {
+    .navUser {
+        max-width: 100px;
+    }
+
+    .navUserBadge.isUser {
+        padding: 4px 6px;
+    }
+}
+
 .navUserBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
     font-size: 0.8rem;
     font-weight: 700;
     color: var(--color-primary, #6B4C8A);
