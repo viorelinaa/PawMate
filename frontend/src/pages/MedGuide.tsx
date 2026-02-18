@@ -39,8 +39,8 @@ export default function MedGuide() {
                 <div className="paw-print paw-6">🐾</div>
 
                 <div className="hero-content">
-                    <h1 className="hero-title">Ghid Medical</h1>
-                    <p className="hero-subtitle">
+                    <h1 className="hero-title heroTitle">Ghid Medical</h1>
+                    <p className="hero-subtitle heroSubtitle">
                         Tot ce ai nevoie despre sănătatea animalelor de companie
                     </p>
                 </div>

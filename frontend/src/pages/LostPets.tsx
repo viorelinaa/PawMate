@@ -96,8 +96,8 @@ export default function LostPets() {
                 <span className="lostPaw lp2">🐾</span>
                 <span className="lostPaw lp3">🐾</span>
                 <div className="lostHeroInner">
-                    <h1 className="lostTitle">Animale pierdute</h1>
-                    <p className="lostSub">Caută în anunțuri și ajută la găsirea lor.</p>
+                    <h1 className="lostTitle heroTitle">Animale pierdute</h1>
+                    <p className="lostSub heroSubtitle">Caută în anunțuri și ajută la găsirea lor.</p>
                 </div>
             </section>
 

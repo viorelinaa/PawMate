@@ -65,6 +65,14 @@
 
   /* Tranziții */
   --transition-fast: 120ms ease;
+
+  /* Global hero skin */
+  --hero-bg: var(--color-bg);
+  --hero-radial: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0) 70%);
+  --hero-cloud: rgba(255,255,255,0.95);
+  --hero-cloud-shadow: drop-shadow(0 10px 20px rgba(0,0,0,0.08));
+  --hero-title-color: var(--color-primary);
+  --hero-subtitle-color: var(--color-text-muted);
 }
 
 /* ── Reset de bază ───────────────────────────────────────── */
@@ -88,6 +96,117 @@ body {
   background: var(--color-bg);
   color: var(--color-text);
   min-height: 100vh;
+}
+
+/* ── Global hero look (override page-specific styles) ─────────────────── */
+.hero,
+.adoptionHero,
+.lostHero,
+.donHero,
+.veterinariHero,
+.salesHero,
+.eventsHero,
+.sitters-hero,
+.wikiHero,
+.voluntariatHero,
+.blogHero,
+.med-guide .hero {
+  background: var(--hero-bg) !important;
+  min-height: 240px !important;
+  padding: 80px 24px 60px !important;
+}
+
+.hero::before,
+.adoptionHero::before,
+.lostHero::before,
+.donHero::before,
+.veterinariHero::before,
+.salesHero::before,
+.eventsHero::before,
+.sitters-hero::before,
+.wikiHero::before,
+.voluntariatHero::before,
+.blogHero::before,
+.med-guide .hero::before {
+  content: "" !important;
+  position: absolute !important;
+  width: 220px !important;
+  height: 220px !important;
+  left: 50% !important;
+  top: 60px !important;
+  transform: translateX(-50%) !important;
+  background: var(--hero-radial) !important;
+  border-radius: var(--radius-full) !important;
+  pointer-events: none !important;
+}
+
+.cloud,
+.adoptionCloud,
+.lostCloud,
+.donCloud,
+.veterinariCloud,
+.salesCloud,
+.eventsCloud,
+.sitterCloud,
+.wikiCloud,
+.voluntariatCloud,
+.med-guide .cloud {
+  background: var(--hero-cloud) !important;
+  filter: var(--hero-cloud-shadow) !important;
+}
+
+.cloud::before,
+.cloud::after,
+.adoptionCloud::before,
+.adoptionCloud::after,
+.lostCloud::before,
+.lostCloud::after,
+.donCloud::before,
+.donCloud::after,
+.veterinariCloud::before,
+.veterinariCloud::after,
+.salesCloud::before,
+.salesCloud::after,
+.eventsCloud::before,
+.eventsCloud::after,
+.sitterCloud::before,
+.sitterCloud::after,
+.wikiCloud::before,
+.wikiCloud::after,
+.voluntariatCloud::before,
+.voluntariatCloud::after,
+.med-guide .cloud::before,
+.med-guide .cloud::after {
+  background: var(--hero-cloud) !important;
+}
+
+/* ── Global hero typography ─────────────────────────────────────────── */
+.heroTitle {
+  margin: 0 0 12px !important;
+  font-size: var(--font-size-xl) !important;
+  font-weight: 800 !important;
+  color: var(--hero-title-color) !important;
+  text-align: center !important;
+  letter-spacing: 0 !important;
+  line-height: 1.1 !important;
+  font-family: var(--font-family) !important;
+}
+
+.heroSubtitle {
+  margin: 0 !important;
+  font-size: var(--font-size-md) !important;
+  font-weight: 600 !important;
+  color: var(--hero-subtitle-color) !important;
+  text-align: center !important;
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  border: 0 !important;
+  display: block !important;
+  max-width: 760px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  font-family: var(--font-family) !important;
 }
 
 /* ── Clase utilitare globale ─────────────────────────────── */

@@ -98,8 +98,8 @@ export default function Voluntariat() {
                 <span className="voluntariatPaw vp2">🐾</span>
                 <span className="voluntariatPaw vp3">🐾</span>
                 <div className="voluntariatHeroInner">
-                    <h1 className="voluntariatTitle">Voluntariat</h1>
-                    <p className="voluntariatSub">
+                    <h1 className="voluntariatTitle heroTitle">Voluntariat</h1>
+                    <p className="voluntariatSub heroSubtitle">
                         Alătură-te echipei noastre și salvează vieți împreună
                     </p>
                 </div>

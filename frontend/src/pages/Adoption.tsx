@@ -77,8 +77,8 @@ export default function Adoption() {
                 <span className="adoptionPaw ap2">🐾</span>
                 <span className="adoptionPaw ap3">🐾</span>
                 <div className="adoptionHeroInner">
-                    <h1 className="adoptionTitle">Adopție</h1>
-                    <p className="adoptionSub">Filtrează și găsește animalul potrivit.</p>
+                    <h1 className="adoptionTitle heroTitle">Adopție</h1>
+                    <p className="adoptionSub heroSubtitle">Filtrează și găsește animalul potrivit.</p>
                 </div>
             </section>
 

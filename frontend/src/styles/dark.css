@@ -20,6 +20,15 @@
     --dm-hero-radial: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
 }
 
+:root[data-theme="dark"] {
+    --hero-bg: var(--dm-hero);
+    --hero-radial: var(--dm-hero-radial);
+    --hero-cloud: rgba(255, 255, 255, 0.08);
+    --hero-cloud-shadow: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.45));
+    --hero-title-color: var(--dm-text);
+    --hero-subtitle-color: var(--dm-muted);
+}
+
 :root[data-theme="dark"] body {
     background: var(--dm-bg);
     color: var(--dm-text);
@@ -111,76 +120,7 @@
 }
 
 /* Heroes */
-:root[data-theme="dark"] .hero,
-:root[data-theme="dark"] .adoptionHero,
-:root[data-theme="dark"] .lostHero,
-:root[data-theme="dark"] .donHero,
-:root[data-theme="dark"] .veterinariHero,
-:root[data-theme="dark"] .salesHero,
-:root[data-theme="dark"] .eventsHero,
-:root[data-theme="dark"] .sitters-hero,
-:root[data-theme="dark"] .blogHero {
-    background: var(--dm-hero);
-}
-
-:root[data-theme="dark"] .wikiHero,
-:root[data-theme="dark"] .voluntariatHero,
-:root[data-theme="dark"] .med-guide .hero,
-:root[data-theme="dark"] .login-container,
-:root[data-theme="dark"] .signup-container {
-    background: var(--dm-hero-soft);
-}
-
-:root[data-theme="dark"] .hero::before,
-:root[data-theme="dark"] .adoptionHero::before,
-:root[data-theme="dark"] .lostHero::before,
-:root[data-theme="dark"] .donHero::before,
-:root[data-theme="dark"] .veterinariHero::before,
-:root[data-theme="dark"] .salesHero::before,
-:root[data-theme="dark"] .eventsHero::before,
-:root[data-theme="dark"] .blogHero::before {
-    background: var(--dm-hero-radial);
-}
-
-:root[data-theme="dark"] .cloud,
-:root[data-theme="dark"] .adoptionCloud,
-:root[data-theme="dark"] .lostCloud,
-:root[data-theme="dark"] .donCloud,
-:root[data-theme="dark"] .veterinariCloud,
-:root[data-theme="dark"] .salesCloud,
-:root[data-theme="dark"] .eventsCloud,
-:root[data-theme="dark"] .sitterCloud,
-:root[data-theme="dark"] .wikiCloud,
-:root[data-theme="dark"] .voluntariatCloud,
-:root[data-theme="dark"] .med-guide .cloud {
-    background: rgba(255, 255, 255, 0.08);
-    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.45));
-}
-
-:root[data-theme="dark"] .cloud::before,
-:root[data-theme="dark"] .cloud::after,
-:root[data-theme="dark"] .adoptionCloud::before,
-:root[data-theme="dark"] .adoptionCloud::after,
-:root[data-theme="dark"] .lostCloud::before,
-:root[data-theme="dark"] .lostCloud::after,
-:root[data-theme="dark"] .donCloud::before,
-:root[data-theme="dark"] .donCloud::after,
-:root[data-theme="dark"] .veterinariCloud::before,
-:root[data-theme="dark"] .veterinariCloud::after,
-:root[data-theme="dark"] .salesCloud::before,
-:root[data-theme="dark"] .salesCloud::after,
-:root[data-theme="dark"] .eventsCloud::before,
-:root[data-theme="dark"] .eventsCloud::after,
-:root[data-theme="dark"] .sitterCloud::before,
-:root[data-theme="dark"] .sitterCloud::after,
-:root[data-theme="dark"] .wikiCloud::before,
-:root[data-theme="dark"] .wikiCloud::after,
-:root[data-theme="dark"] .voluntariatCloud::before,
-:root[data-theme="dark"] .voluntariatCloud::after,
-:root[data-theme="dark"] .med-guide .cloud::before,
-:root[data-theme="dark"] .med-guide .cloud::after {
-    background: rgba(255, 255, 255, 0.08);
-}
+/* hero background handled by global.css via variables */
 
 :root[data-theme="dark"] .paw,
 :root[data-theme="dark"] .adoptionPaw,

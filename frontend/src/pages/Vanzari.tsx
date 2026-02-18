@@ -88,8 +88,8 @@ export default function Vanzari() {
                 <span className="salesPaw sp2">🐾</span>
                 <span className="salesPaw sp3">🐾</span>
                 <div className="salesHeroInner">
-                    <h1 className="salesTitle">Vânzări</h1>
-                    <p className="salesSubtitle">Produse pentru animale (mock).</p>
+                    <h1 className="salesTitle heroTitle">Vânzări</h1>
+                    <p className="salesSubtitle heroSubtitle">Produse pentru animale (mock).</p>
                 </div>
             </section>
 

@@ -180,8 +180,8 @@ export default function Wiki() {
                 <span className="wikiPaw wp2">🐾</span>
                 <span className="wikiPaw wp3">🐾</span>
                 <div className="wikiHeroInner">
-                    <h1 className="wikiTitle">Wiki Animale</h1>
-                    <p className="wikiSub">
+                    <h1 className="wikiTitle heroTitle">Wiki Animale</h1>
+                    <p className="wikiSub heroSubtitle">
                         Descoperă tot ce trebuie să știi despre animalele de companie
                     </p>
                 </div>

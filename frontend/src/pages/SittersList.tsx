@@ -43,8 +43,8 @@ export default function SittersList() {
                 <span className="sitterPaw sp3">🐾</span>
 
                 <div className="heroInner">
-                    <h1>Pet Sitting</h1>
-                    <p className="subtitle">Caută îngrijitori pentru animalul tău de companie.</p>
+                    <h1 className="heroTitle">Pet Sitting</h1>
+                    <p className="subtitle heroSubtitle">Caută îngrijitori pentru animalul tău de companie.</p>
                 </div>
             </div>
 

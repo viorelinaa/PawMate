@@ -107,8 +107,8 @@ export default function Blog() {
                 <div className="paw p6">🐾</div>
 
                 <div className="blogHeroInner">
-                    <h1 className="blogTitle">Blog PawMate</h1>
-                    <p className="blogSub">Articole utile pentru stăpânii responsabili</p>
+                    <h1 className="blogTitle heroTitle">Blog PawMate</h1>
+                    <p className="blogSub heroSubtitle">Articole utile pentru stăpânii responsabili</p>
                 </div>
             </section>
 

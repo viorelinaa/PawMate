@@ -37,11 +37,11 @@ export default function Home() {
                 <div className="paw p6">🐾</div>
 
                 <div className="heroInner">
-                    <h1 className="brandTitle">PawMate</h1>
+                    <h1 className="heroTitle">PawMate</h1>
 
-                    <div className="subtitlePill">
+                    <p className="heroSubtitle">
                         Tot ce ai nevoie despre animalele de companie
-                    </div>
+                    </p>
 
                     <div className="heroActions">
                         <button className="btnPrimary" onClick={() => navigate("/adoptie")}>

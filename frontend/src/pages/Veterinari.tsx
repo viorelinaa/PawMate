@@ -93,8 +93,8 @@ export default function Veterinari() {
                 <span className="veterinariPaw vp2">🐾</span>
                 <span className="veterinariPaw vp3">🐾</span>
                 <div className="veterinariHeroInner">
-                    <h1 className="veterinariTitle">Veterinari</h1>
-                    <p className="veterinariSub">Găsește clinici veterinare din apropiere.</p>
+                    <h1 className="veterinariTitle heroTitle">Veterinari</h1>
+                    <p className="veterinariSub heroSubtitle">Găsește clinici veterinare din apropiere.</p>
                 </div>
             </section>
 

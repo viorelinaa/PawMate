@@ -38,8 +38,8 @@ export default function Donations() {
                 <span className="donPaw dp2">🐾</span>
                 <span className="donPaw dp3">🐾</span>
                 <div className="donHeroInner">
-                    <h1 className="donTitle">Donații</h1>
-                    <p className="donSub">ONG-uri și adăposturi care au nevoie de ajutor.</p>
+                    <h1 className="donTitle heroTitle">Donații</h1>
+                    <p className="donSub heroSubtitle">ONG-uri și adăposturi care au nevoie de ajutor.</p>
                 </div>
             </section>
 

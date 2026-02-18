@@ -130,8 +130,8 @@ export default function Evenimente() {
                 <span className="eventsPaw ep2">🐾</span>
                 <span className="eventsPaw ep3">🐾</span>
                 <div className="eventsHeroInner">
-                    <h1 className="eventsTitle">Evenimente</h1>
-                    <p className="eventsSubtitle">Târguri, întâlniri, acțiuni de voluntariat.</p>
+                    <h1 className="eventsTitle heroTitle">Evenimente</h1>
+                    <p className="eventsSubtitle heroSubtitle">Târguri, întâlniri, acțiuni de voluntariat.</p>
                 </div>
             </section>
 
