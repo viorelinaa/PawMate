@@ -1,0 +1,41 @@
+/* src/styles/EyeOffIcon.css */
+
+.eyeOffIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.eyeOffIcon svg {
+    display: block;
+}
+
+.eyeOffIcon__arc,
+.eyeOffIcon__slash {
+    transform-origin: 50% 50%;
+    transform-box: fill-box;
+}
+
+.eyeOffIcon__slash {
+    stroke-dasharray: 24;
+    stroke-dashoffset: 0;
+}
+
+.eyeOffIcon--animate .eyeOffIcon__arc {
+    animation: eyeoff-arc calc(0.25 * var(--eyeoff-duration, 1s)) ease-out;
+}
+
+.eyeOffIcon--animate .eyeOffIcon__slash {
+    animation: eyeoff-slash calc(0.35 * var(--eyeoff-duration, 1s)) ease-out;
+}
+
+@keyframes eyeoff-arc {
+    0% { opacity: 1; transform: scale(1); }
+    100% { opacity: 0.4; transform: scale(0.92); }
+}
+
+@keyframes eyeoff-slash {
+    0% { stroke-dashoffset: 24; opacity: 0.6; }
+    100% { stroke-dashoffset: 0; opacity: 1; }
+}

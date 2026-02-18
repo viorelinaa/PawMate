@@ -6,6 +6,7 @@ import '../styles/Login.css';
 import { UserRoundIcon } from "../components/UserRoundIcon";
 import { ShieldUserIcon } from "../components/ShieldUserIcon";
 import { EyeIcon } from "../components/EyeIcon";
+import { EyeOffIcon } from "../components/EyeOffIcon";
 
 const DEMO = {
   user:  { username: 'user@pawmate.ro',  password: 'User1234!'  },
@@ -114,7 +115,11 @@ const Login: React.FC = () => {
                 aria-label={showPassword ? "Ascunde parola" : "Arată parola"}
                 title={showPassword ? "Ascunde parola" : "Arată parola"}
               >
-                <EyeIcon size={18} aria-hidden="true" />
+                {showPassword ? (
+                  <EyeOffIcon size={18} aria-hidden="true" />
+                ) : (
+                  <EyeIcon size={18} aria-hidden="true" />
+                )}
               </button>
             </div>
           </div>
