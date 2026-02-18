@@ -2,6 +2,7 @@ import { BrowserRouter, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import AppRoutes from "./routes/AppRoutes";
 import Navbar from "./layouts/Navbar";
+import { AuthProvider } from "./context/AuthContext";
 
 function ScrollToTop() {
     const { pathname } = useLocation();
@@ -13,10 +14,12 @@ function ScrollToTop() {
 
 export default function App() {
     return (
-        <BrowserRouter>
-            <ScrollToTop />
-            <Navbar />
-            <AppRoutes />
-        </BrowserRouter>
+        <AuthProvider>
+            <BrowserRouter>
+                <ScrollToTop />
+                <Navbar />
+                <AppRoutes />
+            </BrowserRouter>
+        </AuthProvider>
     );
 }
