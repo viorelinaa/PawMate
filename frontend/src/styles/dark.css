@@ -280,6 +280,10 @@
     color: var(--dm-accent);
 }
 
+:root[data-theme="dark"] .eventsCard:focus-visible {
+    outline-color: var(--dm-accent);
+}
+
 :root[data-theme="dark"] .modalOverlay {
     background: rgba(0, 0, 0, 0.7);
 }

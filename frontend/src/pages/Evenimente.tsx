@@ -1,8 +1,9 @@
 import { useState } from "react";
+import type { KeyboardEvent } from "react";
 import "../styles/Evenimente.css";
 import { AdminOnly } from "../components/AdminOnly";
 
-type Event = {
+type EventItem = {
     id: string;
     city: string;
     date: string;
@@ -11,7 +12,7 @@ type Event = {
     type: string;
 };
 
-const events: Event[] = [
+const events: EventItem[] = [
     {
         id: "e1",
         city: "Chișinău",
@@ -106,6 +107,20 @@ export default function Evenimente() {
         setEventType("ALL");
     }
 
+    function handleEventClick(entry: EventItem) {
+        const accepted = window.confirm(`Vrei să te înregistrezi la "${entry.title}"?`);
+        if (accepted) {
+            alert("Înregistrare trimisă (mock)!");
+        }
+    }
+
+    function handleEventKeyDown(event: KeyboardEvent<HTMLElement>, entry: EventItem) {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            handleEventClick(entry);
+        }
+    }
+
     return (
         <div className="eventsPage">
             <section className="eventsHero">
@@ -170,7 +185,14 @@ export default function Evenimente() {
                 {filtered.length > 0 ? (
                     <div className="eventsGrid">
                         {filtered.map((event) => (
-                            <article className="eventsCard" key={event.id}>
+                            <article
+                                className="eventsCard"
+                                key={event.id}
+                                role="button"
+                                tabIndex={0}
+                                onClick={() => handleEventClick(event)}
+                                onKeyDown={(keyEvent) => handleEventKeyDown(keyEvent, event)}
+                            >
                                 <div className="eventsCardTop">
                                     <span className="eventsCity">{event.city}</span>
                                     <span className="eventsDate">{event.date}</span>
