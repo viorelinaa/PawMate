@@ -274,15 +274,21 @@
 
 @media (max-width: 768px) {
     .navUser {
-        max-width: 140px;
+        max-width: 120px;
     }
 
     .navUserBadge {
         max-width: 100%;
+        justify-content: center;
+    }
+
+    .navUserName,
+    .navUserEmoji {
+        display: none;
     }
 
     .navUserIcon {
-        display: none;
+        display: inline-flex;
     }
 }
 
@@ -294,41 +300,20 @@
 
     .navUserBadge {
         font-size: 0.72rem;
-        padding: 4px 8px;
+        padding: 4px 6px;
+        min-width: 32px;
+        justify-content: center;
     }
 
     .navLogoutBtn {
         padding: 4px 8px;
         font-size: 0.72rem;
     }
-
-    .navUserBadge.isUser .navUserName,
-    .navUserBadge.isUser .navUserEmoji,
-    .navUserBadge.isAdmin .navUserName,
-    .navUserBadge.isAdmin .navUserEmoji {
-        display: none;
-    }
-
-    .navUserBadge.isUser .navUserIcon,
-    .navUserBadge.isAdmin .navUserIcon {
-        display: inline-flex;
-    }
-
-    .navUserBadge.isUser,
-    .navUserBadge.isAdmin {
-        min-width: 32px;
-        justify-content: center;
-    }
 }
 
 @media (max-width: 420px) {
     .navUser {
         max-width: 100px;
-    }
-
-    .navUserBadge.isUser,
-    .navUserBadge.isAdmin {
-        padding: 4px 6px;
     }
 }
 
@@ -346,6 +331,15 @@
     max-width: 180px;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.navUserName,
+.navUserEmoji {
+    display: none;
+}
+
+.navUserIcon {
+    display: inline-flex;
 }
 
 .navLogoutBtn {

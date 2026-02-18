@@ -52,6 +52,40 @@
   transition: border-color 0.3s;
 }
 
+.password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-field input {
+  width: 100%;
+  padding-right: 44px;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 0;
+  background: transparent;
+  color: #6B4C8A;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.password-toggle:hover {
+  background: #f3eefc;
+  transform: translateY(-50%) scale(1.02);
+}
+
 .form-group input:focus {
   outline: none;
   border-color: #6B4C8A;
@@ -107,12 +141,23 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .role-tab.active {
   background: #6B4C8A;
   color: white;
   border-color: #6B4C8A;
+}
+
+.role-tab-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
 }
 
 /* Demo card */
