@@ -31,6 +31,9 @@
     transition: transform 120ms ease, box-shadow 120ms ease;
     font-family: inherit;
     font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .btnDonate:hover {

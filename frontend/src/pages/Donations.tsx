@@ -1,5 +1,6 @@
 import "../styles/Donations.css";
 import { AdminOnly } from "../components/AdminOnly";
+import { HandCoinsIcon } from "../components/HandCoinsIcon";
 
 interface DonationOrg {
     id: string;
@@ -65,6 +66,7 @@ export default function Donations() {
                             <p className="donDesc">{o.description}</p>
                             <div style={{ marginTop: "auto", paddingTop: "14px" }}>
                                 <button className="donBtn" onClick={() => alert("Donație (mock)!")}>
+                                    <HandCoinsIcon size={16} aria-hidden="true" />
                                     Donează
                                 </button>
                             </div>

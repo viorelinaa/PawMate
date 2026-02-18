@@ -1,0 +1,48 @@
+/* src/styles/HandCoinsIcon.css */
+
+.handCoinsIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.handCoinsIcon svg {
+    display: block;
+}
+
+.handCoinsIcon__group,
+.handCoinsIcon__hand,
+.handCoinsIcon__coin {
+    transform-origin: 50% 50%;
+    transform-box: fill-box;
+}
+
+.handCoinsIcon--animate .handCoinsIcon__group {
+    animation: handcoins-group calc(0.9 * var(--handcoins-duration, 1s)) ease;
+}
+
+.handCoinsIcon--animate .handCoinsIcon__coin {
+    animation: handcoins-coin calc(0.6 * var(--handcoins-duration, 1s)) ease-out;
+}
+
+.handCoinsIcon--animate .handCoinsIcon__hand {
+    animation: handcoins-hand calc(0.9 * var(--handcoins-duration, 1s)) ease-in-out;
+}
+
+@keyframes handcoins-group {
+    0% { transform: scale(1) rotate(0deg); }
+    40% { transform: scale(1.06) rotate(-2deg); }
+    70% { transform: scale(0.98) rotate(1deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes handcoins-coin {
+    0% { transform: translateY(-6px) scale(0.7); opacity: 0; }
+    100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes handcoins-hand {
+    0% { stroke-dasharray: 60; stroke-dashoffset: 60; opacity: 0.5; transform: translateY(2px); }
+    100% { stroke-dasharray: 60; stroke-dashoffset: 0; opacity: 1; transform: translateY(0); }
+}
