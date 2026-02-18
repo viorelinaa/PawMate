@@ -27,6 +27,7 @@
     --hero-cloud-shadow: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.45));
     --hero-title-color: var(--dm-text);
     --hero-subtitle-color: var(--dm-muted);
+    --page-bg: var(--dm-bg);
 }
 
 :root[data-theme="dark"] body {

@@ -73,6 +73,7 @@
   --hero-cloud-shadow: drop-shadow(0 10px 20px rgba(0,0,0,0.08));
   --hero-title-color: var(--color-primary);
   --hero-subtitle-color: var(--color-text-muted);
+  --page-bg: var(--color-bg);
 }
 
 /* ── Reset de bază ───────────────────────────────────────── */
@@ -133,11 +134,49 @@ body {
   width: 220px !important;
   height: 220px !important;
   left: 50% !important;
-  top: 60px !important;
+  top: 28px !important;
   transform: translateX(-50%) !important;
   background: var(--hero-radial) !important;
   border-radius: var(--radius-full) !important;
   pointer-events: none !important;
+}
+
+.hero::after,
+.adoptionHero::after,
+.lostHero::after,
+.donHero::after,
+.veterinariHero::after,
+.salesHero::after,
+.eventsHero::after,
+.sitters-hero::after,
+.wikiHero::after,
+.voluntariatHero::after,
+.blogHero::after,
+.med-guide .hero::after {
+  content: "" !important;
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  height: 70px !important;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, var(--page-bg) 100%) !important;
+  pointer-events: none !important;
+}
+
+.heroInner,
+.adoptionHeroInner,
+.lostHeroInner,
+.donHeroInner,
+.veterinariHeroInner,
+.salesHeroInner,
+.eventsHeroInner,
+.sittersHeroInner,
+.wikiHeroInner,
+.voluntariatHeroInner,
+.blogHeroInner,
+.med-guide .hero-content {
+  position: relative;
+  z-index: 2;
 }
 
 .cloud,
