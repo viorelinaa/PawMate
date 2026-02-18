@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './styles/global.css';   // ← Design system global (prima linie de stiluri)
+import './styles/dark.css';
 import './index.css';             // ← Stiluri locale suplimentare (dacă există)
 import App from './App';
 
