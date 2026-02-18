@@ -130,6 +130,18 @@ export default function Evenimente() {
                 <span className="eventsPaw ep1">🐾</span>
                 <span className="eventsPaw ep2">🐾</span>
                 <span className="eventsPaw ep3">🐾</span>
+                <span
+                    className="eventsPaw"
+                    style={{ top: "30px", left: "130px", transform: "rotate(10deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="eventsPaw"
+                    style={{ bottom: "78px", right: "130px", transform: "rotate(-12deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
                 <div className="eventsHeroInner">
                     <h1 className="eventsTitle heroTitle">Evenimente</h1>
                     <p className="eventsSubtitle heroSubtitle">Târguri, întâlniri, acțiuni de voluntariat.</p>

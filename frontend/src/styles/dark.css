@@ -138,8 +138,8 @@
 :root[data-theme="dark"] .wikiPaw,
 :root[data-theme="dark"] .voluntariatPaw,
 :root[data-theme="dark"] .med-guide .paw-print {
-    opacity: 0.16;
-    color: rgba(255, 255, 255, 0.2);
+    opacity: 0.85;
+    color: rgba(255, 255, 255, 1);
 }
 
 /* Page backgrounds */

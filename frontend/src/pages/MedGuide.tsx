@@ -37,6 +37,18 @@ export default function MedGuide() {
                 <div className="paw-print paw-4">🐾</div>
                 <div className="paw-print paw-5">🐾</div>
                 <div className="paw-print paw-6">🐾</div>
+                <div
+                    className="paw-print"
+                    style={{ top: "120px", left: "260px", transform: "rotate(18deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </div>
+                <div
+                    className="paw-print"
+                    style={{ bottom: "70px", right: "220px", transform: "rotate(-12deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </div>
 
                 <div className="hero-content">
                     <h1 className="hero-title heroTitle">Ghid Medical</h1>

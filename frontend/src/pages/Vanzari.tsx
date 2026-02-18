@@ -88,6 +88,18 @@ export default function Vanzari() {
                 <span className="salesPaw sp1">🐾</span>
                 <span className="salesPaw sp2">🐾</span>
                 <span className="salesPaw sp3">🐾</span>
+                <span
+                    className="salesPaw"
+                    style={{ top: "28px", left: "140px", transform: "rotate(8deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="salesPaw"
+                    style={{ bottom: "78px", right: "140px", transform: "rotate(-12deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
                 <div className="salesHeroInner">
                     <h1 className="salesTitle heroTitle">Vânzări</h1>
                     <p className="salesSubtitle heroSubtitle">Produse pentru animale (mock).</p>

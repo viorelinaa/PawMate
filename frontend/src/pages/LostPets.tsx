@@ -96,6 +96,18 @@ export default function LostPets() {
                 <span className="lostPaw lp1">🐾</span>
                 <span className="lostPaw lp2">🐾</span>
                 <span className="lostPaw lp3">🐾</span>
+                <span
+                    className="lostPaw"
+                    style={{ top: "30px", left: "120px", transform: "rotate(14deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="lostPaw"
+                    style={{ bottom: "70px", right: "120px", transform: "rotate(-10deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
                 <div className="lostHeroInner">
                     <h1 className="lostTitle heroTitle">Animale pierdute</h1>
                     <p className="lostSub heroSubtitle">Caută în anunțuri și ajută la găsirea lor.</p>

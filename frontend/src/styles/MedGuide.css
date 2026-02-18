@@ -140,11 +140,11 @@
 /* ── Lăbuțe ────────────────────────────────────────────── */
 .med-guide .paw-print {
     position: absolute;
-    color: var(--color-primary-faint);
+    color: rgba(106, 74, 131, 0.35);
     font-size: 24px;
     user-select: none;
     pointer-events: none;
-    opacity: 0.3;
+    opacity: 0.55;
 }
 
 .med-guide .paw-1 { top: 220px; left: 60px;   transform: rotate(-20deg); }

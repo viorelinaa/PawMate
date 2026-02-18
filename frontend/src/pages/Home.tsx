@@ -35,6 +35,12 @@ export default function Home() {
                 <div className="paw p4">🐾</div>
                 <div className="paw p5">🐾</div>
                 <div className="paw p6">🐾</div>
+                <div className="paw" style={{ top: "36px", left: "140px", transform: "rotate(10deg)", fontSize: "20px" }}>
+                    🐾
+                </div>
+                <div className="paw" style={{ bottom: "84px", right: "140px", transform: "rotate(-12deg)", fontSize: "22px" }}>
+                    🐾
+                </div>
 
                 <div className="heroInner">
                     <h1 className="heroTitle">PawMate</h1>

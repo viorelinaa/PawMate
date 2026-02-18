@@ -77,6 +77,18 @@ export default function Adoption() {
                 <span className="adoptionPaw ap1">🐾</span>
                 <span className="adoptionPaw ap2">🐾</span>
                 <span className="adoptionPaw ap3">🐾</span>
+                <span
+                    className="adoptionPaw"
+                    style={{ top: "32px", left: "140px", transform: "rotate(8deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="adoptionPaw"
+                    style={{ bottom: "80px", right: "140px", transform: "rotate(-12deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
                 <div className="adoptionHeroInner">
                     <h1 className="adoptionTitle heroTitle">Adopție</h1>
                     <p className="adoptionSub heroSubtitle">Filtrează și găsește animalul potrivit.</p>

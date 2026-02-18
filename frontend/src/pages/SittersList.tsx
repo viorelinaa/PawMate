@@ -42,6 +42,18 @@ export default function SittersList() {
                 <span className="sitterPaw sp1">🐾</span>
                 <span className="sitterPaw sp2">🐾</span>
                 <span className="sitterPaw sp3">🐾</span>
+                <span
+                    className="sitterPaw"
+                    style={{ top: "30px", left: "130px", transform: "rotate(10deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="sitterPaw"
+                    style={{ bottom: "78px", right: "130px", transform: "rotate(-12deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
 
                 <div className="heroInner">
                     <h1 className="heroTitle">Pet Sitting</h1>

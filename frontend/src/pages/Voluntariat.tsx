@@ -97,6 +97,18 @@ export default function Voluntariat() {
                 <span className="voluntariatPaw vp1">🐾</span>
                 <span className="voluntariatPaw vp2">🐾</span>
                 <span className="voluntariatPaw vp3">🐾</span>
+                <span
+                    className="voluntariatPaw"
+                    style={{ top: "30px", left: "130px", transform: "rotate(10deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="voluntariatPaw"
+                    style={{ bottom: "78px", right: "130px", transform: "rotate(-12deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
                 <div className="voluntariatHeroInner">
                     <h1 className="voluntariatTitle heroTitle">Voluntariat</h1>
                     <p className="voluntariatSub heroSubtitle">

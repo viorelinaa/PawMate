@@ -93,6 +93,18 @@ export default function Veterinari() {
                 <span className="veterinariPaw vp1">🐾</span>
                 <span className="veterinariPaw vp2">🐾</span>
                 <span className="veterinariPaw vp3">🐾</span>
+                <span
+                    className="veterinariPaw"
+                    style={{ top: "30px", left: "130px", transform: "rotate(12deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="veterinariPaw"
+                    style={{ bottom: "78px", right: "130px", transform: "rotate(-10deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
                 <div className="veterinariHeroInner">
                     <h1 className="veterinariTitle heroTitle">Veterinari</h1>
                     <p className="veterinariSub heroSubtitle">Găsește clinici veterinare din apropiere.</p>

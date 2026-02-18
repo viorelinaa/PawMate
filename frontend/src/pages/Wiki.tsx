@@ -180,6 +180,18 @@ export default function Wiki() {
                 <span className="wikiPaw wp1">🐾</span>
                 <span className="wikiPaw wp2">🐾</span>
                 <span className="wikiPaw wp3">🐾</span>
+                <span
+                    className="wikiPaw"
+                    style={{ top: "30px", left: "130px", transform: "rotate(10deg)", fontSize: "20px" }}
+                >
+                    🐾
+                </span>
+                <span
+                    className="wikiPaw"
+                    style={{ bottom: "78px", right: "130px", transform: "rotate(-12deg)", fontSize: "22px" }}
+                >
+                    🐾
+                </span>
                 <div className="wikiHeroInner">
                     <h1 className="wikiTitle heroTitle">Wiki Animale</h1>
                     <p className="wikiSub heroSubtitle">
