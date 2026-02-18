@@ -348,11 +348,16 @@
     color: #fff;
     background: var(--color-primary, #6B4C8A);
     border: none;
-    padding: 5px 12px;
+    padding: 6px;
     border-radius: 999px;
     cursor: pointer;
     transition: opacity 0.2s;
     white-space: nowrap;
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .navLogoutBtn:hover {

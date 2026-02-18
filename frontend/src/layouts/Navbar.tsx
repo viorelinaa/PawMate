@@ -6,6 +6,7 @@ import { MoonIcon } from "../components/MoonIcon";
 import { SunIcon } from "../components/SunIcon";
 import { UserRoundIcon } from "../components/UserRoundIcon";
 import { ShieldUserIcon } from "../components/ShieldUserIcon";
+import { LogoutIcon } from "../components/LogoutIcon";
 export default function Navbar() {
     const { currentUser, logout } = useAuth();
     const navigate = useNavigate();
@@ -108,8 +109,10 @@ export default function Navbar() {
                             type="button"
                             className="navLogoutBtn"
                             onClick={() => { logout(); navigate('/login'); setOpen(false); }}
+                            aria-label="Logout"
+                            title="Logout"
                         >
-                            Logout
+                            <LogoutIcon size={18} aria-hidden="true" />
                         </button>
                     </div>
                 )}
