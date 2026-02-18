@@ -219,6 +219,79 @@ body {
   right: auto !important;
 }
 
+@media (max-width: 768px) {
+  .cloud,
+  .adoptionCloud,
+  .lostCloud,
+  .donCloud,
+  .veterinariCloud,
+  .salesCloud,
+  .eventsCloud,
+  .sitterCloud,
+  .wikiCloud,
+  .voluntariatCloud,
+  .med-guide .cloud {
+    width: 160px !important;
+    height: 52px !important;
+    opacity: 0.7 !important;
+  }
+
+  .cloud::before,
+  .adoptionCloud::before,
+  .lostCloud::before,
+  .donCloud::before,
+  .veterinariCloud::before,
+  .salesCloud::before,
+  .eventsCloud::before,
+  .sitterCloud::before,
+  .wikiCloud::before,
+  .voluntariatCloud::before,
+  .med-guide .cloud::before {
+    width: 60px !important;
+    height: 60px !important;
+    left: 10px !important;
+    top: -28px !important;
+  }
+
+  .cloud::after,
+  .adoptionCloud::after,
+  .lostCloud::after,
+  .donCloud::after,
+  .veterinariCloud::after,
+  .salesCloud::after,
+  .eventsCloud::after,
+  .sitterCloud::after,
+  .wikiCloud::after,
+  .voluntariatCloud::after,
+  .med-guide .cloud::after {
+    width: 80px !important;
+    height: 80px !important;
+    left: 70px !important;
+    top: -36px !important;
+  }
+
+  .hero,
+  .adoptionHero,
+  .lostHero,
+  .donHero,
+  .veterinariHero,
+  .salesHero,
+  .eventsHero,
+  .sitters-hero,
+  .wikiHero,
+  .voluntariatHero,
+  .blogHero,
+  .med-guide .hero {
+    padding-top: 96px !important;
+  }
+
+  .heroTitle,
+  .heroSubtitle {
+    position: relative;
+    z-index: 2;
+  }
+}
+
 /* ── Global hero typography ─────────────────────────────────────────── */
 .heroTitle {
   margin: 0 0 12px !important;
