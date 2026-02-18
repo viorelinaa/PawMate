@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { MoonIcon } from "../components/MoonIcon";
 import { SunIcon } from "../components/SunIcon";
 import { UserRoundIcon } from "../components/UserRoundIcon";
+import { ShieldUserIcon } from "../components/ShieldUserIcon";
 export default function Navbar() {
     const { currentUser, logout } = useAuth();
     const navigate = useNavigate();
@@ -95,11 +96,13 @@ export default function Navbar() {
                                 {currentUser.role === 'admin' ? '🔑' : '👤'}
                             </span>
                             <span className="navUserName">{currentUser.displayName}</span>
-                            {currentUser.role !== 'admin' && (
-                                <span className="navUserIcon" aria-hidden="true">
+                            <span className="navUserIcon" aria-hidden="true">
+                                {currentUser.role === 'admin' ? (
+                                    <ShieldUserIcon size={16} />
+                                ) : (
                                     <UserRoundIcon size={16} />
-                                </span>
-                            )}
+                                )}
+                            </span>
                         </span>
                         <button
                             type="button"

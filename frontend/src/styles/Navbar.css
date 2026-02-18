@@ -303,15 +303,19 @@
     }
 
     .navUserBadge.isUser .navUserName,
-    .navUserBadge.isUser .navUserEmoji {
+    .navUserBadge.isUser .navUserEmoji,
+    .navUserBadge.isAdmin .navUserName,
+    .navUserBadge.isAdmin .navUserEmoji {
         display: none;
     }
 
-    .navUserBadge.isUser .navUserIcon {
+    .navUserBadge.isUser .navUserIcon,
+    .navUserBadge.isAdmin .navUserIcon {
         display: inline-flex;
     }
 
-    .navUserBadge.isUser {
+    .navUserBadge.isUser,
+    .navUserBadge.isAdmin {
         min-width: 32px;
         justify-content: center;
     }
@@ -322,7 +326,8 @@
         max-width: 100px;
     }
 
-    .navUserBadge.isUser {
+    .navUserBadge.isUser,
+    .navUserBadge.isAdmin {
         padding: 4px 6px;
     }
 }
