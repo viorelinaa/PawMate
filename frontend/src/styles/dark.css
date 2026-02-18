@@ -139,6 +139,7 @@
 
 /* Page backgrounds */
 :root[data-theme="dark"] .home,
+:root[data-theme="dark"] .veterinariPage,
 :root[data-theme="dark"] .salesPage,
 :root[data-theme="dark"] .eventsPage,
 :root[data-theme="dark"] .salesPage,
