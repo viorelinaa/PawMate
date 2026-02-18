@@ -118,6 +118,7 @@
 :root[data-theme="dark"] .veterinariHero,
 :root[data-theme="dark"] .salesHero,
 :root[data-theme="dark"] .eventsHero,
+:root[data-theme="dark"] .sitters-hero,
 :root[data-theme="dark"] .blogHero {
     background: var(--dm-hero);
 }
@@ -148,6 +149,7 @@
 :root[data-theme="dark"] .veterinariCloud,
 :root[data-theme="dark"] .salesCloud,
 :root[data-theme="dark"] .eventsCloud,
+:root[data-theme="dark"] .sitterCloud,
 :root[data-theme="dark"] .wikiCloud,
 :root[data-theme="dark"] .voluntariatCloud,
 :root[data-theme="dark"] .med-guide .cloud {
@@ -169,6 +171,8 @@
 :root[data-theme="dark"] .salesCloud::after,
 :root[data-theme="dark"] .eventsCloud::before,
 :root[data-theme="dark"] .eventsCloud::after,
+:root[data-theme="dark"] .sitterCloud::before,
+:root[data-theme="dark"] .sitterCloud::after,
 :root[data-theme="dark"] .wikiCloud::before,
 :root[data-theme="dark"] .wikiCloud::after,
 :root[data-theme="dark"] .voluntariatCloud::before,
@@ -185,6 +189,7 @@
 :root[data-theme="dark"] .veterinariPaw,
 :root[data-theme="dark"] .salesPaw,
 :root[data-theme="dark"] .eventsPaw,
+:root[data-theme="dark"] .sitterPaw,
 :root[data-theme="dark"] .wikiPaw,
 :root[data-theme="dark"] .voluntariatPaw,
 :root[data-theme="dark"] .med-guide .paw-print {
@@ -194,6 +199,10 @@
 
 /* Page backgrounds */
 :root[data-theme="dark"] .home,
+:root[data-theme="dark"] .salesPage,
+:root[data-theme="dark"] .eventsPage,
+:root[data-theme="dark"] .salesPage,
+:root[data-theme="dark"] .eventsPage,
 :root[data-theme="dark"] .explore,
 :root[data-theme="dark"] .adoptionContent,
 :root[data-theme="dark"] .lostContent,
