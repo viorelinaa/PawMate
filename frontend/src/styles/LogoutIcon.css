@@ -1,0 +1,48 @@
+/* src/styles/LogoutIcon.css */
+
+.logoutIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.logoutIcon svg {
+    display: block;
+    transform-origin: 50% 50%;
+}
+
+.logoutIcon__arrow,
+.logoutIcon__door {
+    transform-origin: 50% 50%;
+    transform-box: fill-box;
+}
+
+.logoutIcon--animate svg {
+    animation: logout-bounce calc(0.9 * var(--logout-duration, 1s)) ease-in-out;
+}
+
+.logoutIcon--animate .logoutIcon__arrow {
+    animation: logout-arrow calc(0.6 * var(--logout-duration, 1s)) ease-out;
+}
+
+.logoutIcon--animate .logoutIcon__door {
+    animation: logout-door calc(0.7 * var(--logout-duration, 1s)) ease-in-out;
+}
+
+@keyframes logout-bounce {
+    0% { transform: scale(1) rotate(0deg); }
+    35% { transform: scale(1.1) rotate(3deg); }
+    65% { transform: scale(0.95) rotate(-2deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes logout-arrow {
+    0% { transform: translateX(8px); opacity: 0; }
+    100% { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes logout-door {
+    0% { stroke-dasharray: 40; stroke-dashoffset: 40; }
+    100% { stroke-dasharray: 40; stroke-dashoffset: 0; }
+}
