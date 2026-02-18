@@ -1,0 +1,32 @@
+/* src/components/MoonIcon.css */
+
+.moonIcon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+}
+
+.moonIcon svg {
+    display: block;
+}
+
+.moonIcon--animate svg {
+    animation: moon-float var(--moon-duration, 0.8s) ease-in-out;
+}
+
+.moonIcon--animate path {
+    animation: moon-glow var(--moon-duration, 0.8s) ease-in-out;
+}
+
+@keyframes moon-float {
+    0% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-2px) scale(1.04); }
+    100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes moon-glow {
+    0% { opacity: 0.85; }
+    50% { opacity: 1; }
+    100% { opacity: 0.9; }
+}
