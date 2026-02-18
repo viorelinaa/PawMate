@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "../styles/Evenimente.css";
+import { AdminOnly } from "../components/AdminOnly";
 
 type Event = {
     id: string;
@@ -118,6 +119,14 @@ export default function Evenimente() {
                     <p className="eventsSubtitle">Târguri, întâlniri, acțiuni de voluntariat.</p>
                 </div>
             </section>
+
+            <AdminOnly>
+                <div className="roleActionBar">
+                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare eveniment — în curând!")}>
+                        + Adaugă eveniment
+                    </button>
+                </div>
+            </AdminOnly>
 
             <section className="eventsContent">
                 <div className="eventsFilters">

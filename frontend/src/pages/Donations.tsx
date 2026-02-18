@@ -1,4 +1,5 @@
 import "../styles/Donations.css";
+import { AdminOnly } from "../components/AdminOnly";
 
 interface DonationOrg {
     id: string;
@@ -41,6 +42,14 @@ export default function Donations() {
                     <p className="donSub">ONG-uri și adăposturi care au nevoie de ajutor.</p>
                 </div>
             </section>
+
+            <AdminOnly>
+                <div className="roleActionBar">
+                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare ONG — în curând!")}>
+                        + Adaugă ONG
+                    </button>
+                </div>
+            </AdminOnly>
 
             <div className="donContent">
                 <div className="donCards">
