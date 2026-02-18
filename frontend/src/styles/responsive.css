@@ -98,8 +98,7 @@ body {
     .navbarLinks,
     .navLinks,
     .menuLinks,
-    nav ul,
-    .links {
+    nav ul {
         display: flex !important;
         gap: 10px;
         overflow-x: auto;
@@ -111,14 +110,12 @@ body {
     }
 
     nav ul::-webkit-scrollbar,
-    .navbarLinks::-webkit-scrollbar,
-    .links::-webkit-scrollbar {
+    .navbarLinks::-webkit-scrollbar {
         display: none;
     }
 
     nav ul a,
-    .navbarLinks a,
-    .links a {
+    .navbarLinks a {
         font-size: 14px;
         padding: 10px 16px;
         border-radius: 999px;
@@ -130,8 +127,7 @@ body {
     }
 
     nav ul a.active,
-    .navbarLinks a.active,
-    .links a.active {
+    .navbarLinks a.active {
         background: #6a4a83;
         color: #fff;
     }

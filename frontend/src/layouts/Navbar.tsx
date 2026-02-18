@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import "../styles/Navbar.css";
 import { useAuth } from "../context/AuthContext";
 import { MoonIcon } from "../components/MoonIcon";
+import { SunIcon } from "../components/SunIcon";
 export default function Navbar() {
     const { currentUser, logout } = useAuth();
     const navigate = useNavigate();
@@ -109,7 +110,7 @@ export default function Navbar() {
                     title={toggleLabel}
                 >
                     {isDark ? (
-                        <span aria-hidden="true">☀️</span>
+                        <SunIcon size={20} aria-hidden="true" />
                     ) : (
                         <MoonIcon size={20} aria-hidden="true" />
                     )}

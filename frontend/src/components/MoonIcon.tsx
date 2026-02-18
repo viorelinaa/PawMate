@@ -1,6 +1,6 @@
 import { forwardRef, useCallback, useImperativeHandle, useRef, useState } from "react";
 import type { HTMLAttributes } from "react";
-import "./MoonIcon.css";
+import "../styles/MoonIcon.css";
 
 export interface MoonIconHandle {
     startAnimation: () => void;
