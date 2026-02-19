@@ -35,6 +35,30 @@ const adoptionPets: Pet[] = [
 
 const allCities = [...new Set(adoptionPets.map((p) => p.city))];
 
+function PetCard({ p }: { p: Pet }) {
+    return (
+        <div className="petCard">
+            <div className="petCardHeader">
+                <div>
+                    <h3 className="petName">{p.name}</h3>
+                    <span className="petCity">{p.city}</span>
+                </div>
+                <span className="badge">{p.species}</span>
+            </div>
+            <div className="badges">
+                <span className="badge">{p.age}</span>
+                <span className="badge">{p.size}</span>
+                <span className="badge">{p.vaccinated ? "Vaccinat" : "Nevaccinat"}</span>
+                <span className="badge">{p.sterilized ? "Sterilizat" : "Nesterilizat"}</span>
+            </div>
+            <p className="petDesc">{p.description}</p>
+            <button className="btnDetails" onClick={() => alert("Cerere trimisă (mock)!")}>
+                Cere detalii
+            </button>
+        </div>
+    );
+}
+
 export default function Adoption() {
     const [query, setQuery] = useState("");
     const [city, setCity] = useState("ALL");
@@ -157,27 +181,7 @@ export default function Adoption() {
             {filtered.length > 0 ? (
                 <div className="petCards">
                     {filtered.map((p) => (
-                        <div className="petCard" key={p.id}>
-                            <div className="petCardHeader">
-                                <div>
-                                    <h3 className="petName">{p.name}</h3>
-                                    <span className="petCity">{p.city}</span>
-                                </div>
-                                <span className="badge">{p.species}</span>
-                            </div>
-
-                            <div className="badges">
-                                <span className="badge">{p.age}</span>
-                                <span className="badge">{p.size}</span>
-                                <span className="badge">{p.vaccinated ? "Vaccinat" : "Nevaccinat"}</span>
-                                <span className="badge">{p.sterilized ? "Sterilizat" : "Nesterilizat"}</span>
-                            </div>
-
-                            <p className="petDesc">{p.description}</p>
-                            <button className="btnDetails" onClick={() => alert("Cerere trimisă (mock)!")}>
-                                Cere detalii
-                            </button>
-                        </div>
+                        <PetCard key={p.id} p={p} />
                     ))}
                 </div>
             ) : (
