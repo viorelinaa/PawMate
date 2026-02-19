@@ -65,6 +65,21 @@ const lostAds: LostAd[] = [
     },
 ];
 
+function LostPetCard({ a }: { a: LostAd }) {
+    return (
+        <div className="lostCard">
+            <div className="lostCardHeader">
+                <span className="lostBadge">{a.species}</span>
+                <span className="lostSmall">{a.city} • {a.date}</span>
+            </div>
+            <p className="lostDesc">{a.description}</p>
+            <div className="lostBadges">
+                <span className="lostBadge">Contact: {a.contact}</span>
+            </div>
+        </div>
+    );
+}
+
 export default function LostPets() {
     const [query, setQuery] = useState("");
     const [species, setSpecies] = useState("ALL");
@@ -155,16 +170,7 @@ export default function LostPets() {
                 {filtered.length > 0 ? (
                     <div className="lostCards">
                         {filtered.map((a) => (
-                            <div className="lostCard" key={a.id}>
-                                <div className="lostCardHeader">
-                                    <span className="lostBadge">{a.species}</span>
-                                    <span className="lostSmall">{a.city} • {a.date}</span>
-                                </div>
-                                <p className="lostDesc">{a.description}</p>
-                                <div className="lostBadges">
-                                    <span className="lostBadge">Contact: {a.contact}</span>
-                                </div>
-                            </div>
+                            <LostPetCard key={a.id} a={a} />
                         ))}
                     </div>
                 ) : (
