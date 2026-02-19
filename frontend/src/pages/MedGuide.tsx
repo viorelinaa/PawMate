@@ -1,10 +1,73 @@
+import { useState } from "react";
 import "../styles/MedGuide.css";
+import { SearchIcon } from "../components/SearchIcon";
 
 type MedicalCardProps = {
     title: string;
     description: string;
     items: string[];
 };
+
+const medCards: MedicalCardProps[] = [
+    {
+        title: "Semne de alarmă",
+        description: "Atunci când trebuie să mergi urgent la veterinar:",
+        items: [
+            "Lipsa poftei de mâncare > 24h",
+            "Letargie puternică / apatie",
+            "Respirație grea, tuse persistentă",
+            "Vărsături sau diaree repetată",
+            "Sângerare vizibilă",
+            "Abdomen umflat sau dureros",
+        ],
+    },
+    {
+        title: "Prevenție",
+        description: "Păstrează-ți animalul sănătos:",
+        items: [
+            "Vaccinuri la timp",
+            "Deparazitare periodică",
+            "Hidratare și hrană potrivită",
+            "Vizite regulate la veterinar",
+            "Controlul greutății",
+            "Microcipare și identificare",
+        ],
+    },
+    {
+        title: "Îngrijire zilnică",
+        description: "Menține rutina sănătoasă:",
+        items: [
+            "Exercițiu fizic regulat",
+            "Igienă dentară",
+            "Curățarea urechilor și ochilor",
+            "Periaj regulat al blănii",
+            "Apă proaspătă permanent",
+            "Observă apetitul și scaunul",
+        ],
+    },
+    {
+        title: "Prim ajutor de bază",
+        description: "Lucruri utile până ajungi la veterinar:",
+        items: [
+            "Păstrează un kit de prim ajutor",
+            "Curăță plăgi superficiale cu ser fiziologic",
+            "Nu administra medicamente umane",
+            "Ține animalul calm și ferit de stres",
+            "Sună la veterinar înainte de transport",
+        ],
+    },
+    {
+        title: "Nutriție & greutate",
+        description: "Sfaturi simple pentru o dietă sănătoasă:",
+        items: [
+            "Porții măsurate, la ore fixe",
+            "Recompensele sub 10% din dietă",
+            "Evită oase gătite și resturi grase",
+            "Hrana adaptată vârstei și rasei",
+            "Monitorizează greutatea lunar",
+        ],
+    },
+];
 
 function MedicalCard({ title, description, items }: MedicalCardProps) {
     return (
@@ -24,6 +87,12 @@ function MedicalCard({ title, description, items }: MedicalCardProps) {
 }
 
 export default function MedGuide() {
+    const [query, setQuery] = useState("");
+
+    const filtered = medCards.filter((card) =>
+        card.title.toLowerCase().includes(query.toLowerCase())
+    );
+
     return (
         <div className="med-guide">
             {/* HERO */}
@@ -65,70 +134,35 @@ export default function MedGuide() {
                     Semne de alarmă + prevenție (general, nu medical advice).
                 </p>
 
-                <div className="cards-grid">
-                    <MedicalCard
-                        title="Semne de alarmă"
-                        description="Atunci când trebuie să mergi urgent la veterinar:"
-                        items={[
-                            "Lipsa poftei de mâncare > 24h",
-                            "Letargie puternică / apatie",
-                            "Respirație grea, tuse persistentă",
-                            "Vărsături sau diaree repetată",
-                            "Sângerare vizibilă",
-                            "Abdomen umflat sau dureros",
-                        ]}
-                    />
-
-                    <MedicalCard
-                        title="Prevenție"
-                        description="Păstrează-ți animalul sănătos:"
-                        items={[
-                            "Vaccinuri la timp",
-                            "Deparazitare periodică",
-                            "Hidratare și hrană potrivită",
-                            "Vizite regulate la veterinar",
-                            "Controlul greutății",
-                            "Microcipare și identificare",
-                        ]}
-                    />
-
-                    <MedicalCard
-                        title="Îngrijire zilnică"
-                        description="Menține rutina sănătoasă:"
-                        items={[
-                            "Exercițiu fizic regulat",
-                            "Igienă dentară",
-                            "Curățarea urechilor și ochilor",
-                            "Periaj regulat al blănii",
-                            "Apă proaspătă permanent",
-                            "Observă apetitul și scaunul",
-                        ]}
-                    />
-
-                    <MedicalCard
-                        title="Prim ajutor de bază"
-                        description="Lucruri utile până ajungi la veterinar:"
-                        items={[
-                            "Păstrează un kit de prim ajutor",
-                            "Curăță plăgi superficiale cu ser fiziologic",
-                            "Nu administra medicamente umane",
-                            "Ține animalul calm și ferit de stres",
-                            "Sună la veterinar înainte de transport",
-                        ]}
-                    />
-
-                    <MedicalCard
-                        title="Nutriție & greutate"
-                        description="Sfaturi simple pentru o dietă sănătoasă:"
-                        items={[
-                            "Porții măsurate, la ore fixe",
-                            "Recompensele sub 10% din dietă",
-                            "Evită oase gătite și resturi grase",
-                            "Hrana adaptată vârstei și rasei",
-                            "Monitorizează greutatea lunar",
-                        ]}
-                    />
+                <div className="medFilters">
+                    <div className="medFiltersGrid">
+                        <div className="searchField">
+                            <SearchIcon size={18} aria-hidden="true" />
+                            <input
+                                className="medFilterInput"
+                                type="text"
+                                placeholder="Caută articol medical..."
+                                value={query}
+                                onChange={(e) => setQuery(e.target.value)}
+                            />
+                        </div>
+                        <button className="medBtnReset" onClick={() => setQuery("")}>
+                            Reset
+                        </button>
+                    </div>
                 </div>
+
+                {filtered.length > 0 ? (
+                    <div className="cards-grid">
+                        {filtered.map((card) => (
+                            <MedicalCard key={card.title} {...card} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="medNoResults">
+                        Niciun articol găsit pentru „{query}".
+                    </div>
+                )}
             </main>
         </div>
     );
