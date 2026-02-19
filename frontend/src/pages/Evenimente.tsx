@@ -83,6 +83,32 @@ const events: EventItem[] = [
 const allCities = [...new Set(events.map((event) => event.city))];
 const allTypes = [...new Set(events.map((event) => event.type))];
 
+function EventCard({ event, onClick, onKeyDown }: {
+    event: EventItem;
+    onClick: () => void;
+    onKeyDown: (e: KeyboardEvent<HTMLElement>) => void;
+}) {
+    return (
+        <article
+            className="eventsCard"
+            role="button"
+            tabIndex={0}
+            onClick={onClick}
+            onKeyDown={onKeyDown}
+        >
+            <div className="eventsCardTop">
+                <span className="eventsCity">{event.city}</span>
+                <span className="eventsDate">{event.date}</span>
+            </div>
+            <h3 className="eventsName">{event.title}</h3>
+            <div className="eventsTags">
+                <span className="eventsTag">{event.type}</span>
+            </div>
+            <p className="eventsDesc">{event.description}</p>
+        </article>
+    );
+}
+
 export default function Evenimente() {
     const [query, setQuery] = useState("");
     const [city, setCity] = useState("ALL");
@@ -201,24 +227,12 @@ export default function Evenimente() {
                 {filtered.length > 0 ? (
                     <div className="eventsGrid">
                         {filtered.map((event) => (
-                            <article
-                                className="eventsCard"
+                            <EventCard
                                 key={event.id}
-                                role="button"
-                                tabIndex={0}
+                                event={event}
                                 onClick={() => handleEventClick(event)}
                                 onKeyDown={(keyEvent) => handleEventKeyDown(keyEvent, event)}
-                            >
-                                <div className="eventsCardTop">
-                                    <span className="eventsCity">{event.city}</span>
-                                    <span className="eventsDate">{event.date}</span>
-                                </div>
-                                <h3 className="eventsName">{event.title}</h3>
-                                <div className="eventsTags">
-                                    <span className="eventsTag">{event.type}</span>
-                                </div>
-                                <p className="eventsDesc">{event.description}</p>
-                            </article>
+                            />
                         ))}
                     </div>
                 ) : (

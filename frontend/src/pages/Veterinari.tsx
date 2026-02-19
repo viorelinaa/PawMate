@@ -59,6 +59,33 @@ const veterinariList: Veterinar[] = [
 
 const allCities = [...new Set(veterinariList.map((v) => v.city))];
 
+function VeterinarCard({ v }: { v: Veterinar }) {
+    return (
+        <div className="vetCard">
+            <div className="vetCardHeader">
+                <div>
+                    <h3 className="vetName">{v.name}</h3>
+                    <span className="vetCity">{v.city}</span>
+                </div>
+                {v.emergency && <span className="emergencyBadge">Urgențe 24/7</span>}
+            </div>
+            <p className="vetAddress">📍 {v.address}</p>
+            <p className="vetPhone">📞 {v.phone}</p>
+            <div className="services">
+                {v.services.map((service) => (
+                    <span key={service} className="serviceBadge">
+                        {service}
+                    </span>
+                ))}
+            </div>
+            <p className="vetDesc">{v.description}</p>
+            <button className="btnContact" onClick={() => alert(`Sună la ${v.phone}`)}>
+                Contactează
+            </button>
+        </div>
+    );
+}
+
 export default function Veterinari() {
     const [query, setQuery] = useState("");
     const [city, setCity] = useState("ALL");
@@ -156,31 +183,7 @@ export default function Veterinari() {
                 {filtered.length > 0 ? (
                     <div className="vetCards">
                         {filtered.map((v) => (
-                            <div className="vetCard" key={v.id}>
-                                <div className="vetCardHeader">
-                                    <div>
-                                        <h3 className="vetName">{v.name}</h3>
-                                        <span className="vetCity">{v.city}</span>
-                                    </div>
-                                    {v.emergency && <span className="emergencyBadge">Urgențe 24/7</span>}
-                                </div>
-
-                                <p className="vetAddress">📍 {v.address}</p>
-                                <p className="vetPhone">📞 {v.phone}</p>
-
-                                <div className="services">
-                                    {v.services.map((service) => (
-                                        <span key={service} className="serviceBadge">
-                                            {service}
-                                        </span>
-                                    ))}
-                                </div>
-
-                                <p className="vetDesc">{v.description}</p>
-                                <button className="btnContact" onClick={() => alert(`Sună la ${v.phone}`)}>
-                                    Contactează
-                                </button>
-                            </div>
+                            <VeterinarCard key={v.id} v={v} />
                         ))}
                     </div>
                 ) : (
