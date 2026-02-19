@@ -172,6 +172,23 @@ const QUESTIONS: Question[] = [
     },
 ];
 
+function AnswerButton({ answer, onPick }: { answer: Answer; onPick: (v: AnimalKey) => void }) {
+    return (
+        <button onClick={() => onPick(answer.value)}>
+            {answer.text}
+        </button>
+    );
+}
+
+function OtherAnimalItem({ animalKey, score }: { animalKey: AnimalKey; score: number }) {
+    return (
+        <div className="otherAnimal">
+            <span>{ANIMALS[animalKey].emoji} {ANIMALS[animalKey].name}</span>
+            <strong>{score}</strong>
+        </div>
+    );
+}
+
 export default function Quiz() {
     const [index, setIndex] = useState(0);
     const [picked, setPicked] = useState<AnimalKey[]>([]);
@@ -262,9 +279,7 @@ export default function Quiz() {
 
                     <div className="answers">
                         {QUESTIONS[index].answers.map((a) => (
-                            <button key={a.text} onClick={() => handlePick(a.value)}>
-                                {a.text}
-                            </button>
+                            <AnswerButton key={a.text} answer={a} onPick={handlePick} />
                         ))}
                     </div>
                 </div>
@@ -284,12 +299,7 @@ export default function Quiz() {
                     {/* OTHERS SMALL */}
                     <div className="otherResults">
                         {otherAnimalsSorted.map((k) => (
-                            <div className="otherAnimal" key={k}>
-                <span>
-                  {ANIMALS[k].emoji} {ANIMALS[k].name}
-                </span>
-                                <strong>{scores[k]}</strong>
-                            </div>
+                            <OtherAnimalItem key={k} animalKey={k} score={scores[k]} />
                         ))}
                     </div>
 
