@@ -58,6 +58,26 @@ const products: Product[] = [
 
 const allCategories = [...new Set(products.map((product) => product.category))];
 
+function ProductCard({ product }: { product: Product }) {
+    return (
+        <article className="salesCard">
+            <div className="salesCardTop">
+                <h3 className="salesName">{product.name}</h3>
+                <span className="salesBadge">{product.category}</span>
+            </div>
+            <p className="salesDesc">{product.description}</p>
+            <div className="salesPrice">{product.price}</div>
+            <button
+                className="salesBtn"
+                type="button"
+                onClick={() => alert("Adăugat în coș (mock)!")}
+            >
+                Adaugă în coș
+            </button>
+        </article>
+    );
+}
+
 export default function Vanzari() {
     const [query, setQuery] = useState("");
     const [category, setCategory] = useState("ALL");
@@ -147,21 +167,7 @@ export default function Vanzari() {
                 {filtered.length > 0 ? (
                     <div className="salesGrid">
                         {filtered.map((product) => (
-                            <article className="salesCard" key={product.id}>
-                                <div className="salesCardTop">
-                                    <h3 className="salesName">{product.name}</h3>
-                                    <span className="salesBadge">{product.category}</span>
-                                </div>
-                                <p className="salesDesc">{product.description}</p>
-                                <div className="salesPrice">{product.price}</div>
-                                <button
-                                    className="salesBtn"
-                                    type="button"
-                                    onClick={() => alert("Adăugat în coș (mock)!")}
-                                >
-                                    Adaugă în coș
-                                </button>
-                            </article>
+                            <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
                 ) : (

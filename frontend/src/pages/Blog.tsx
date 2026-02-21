@@ -80,6 +80,32 @@ const tagColors: Record<string, string> = {
     "Dresaj": "#60a5fa",
 };
 
+function BlogCard({ post }: { post: BlogPost }) {
+    return (
+        <div className="blogCard">
+            <div className="blogCardEmoji">{post.emoji}</div>
+            <div className="blogCardMeta">
+                <span
+                    className="blogTag"
+                    style={{ background: tagColors[post.tag] ?? "#a78bfa" }}
+                >
+                    {post.tag}
+                </span>
+                <span className="blogDate">{post.date}</span>
+                <span className="blogReadTime">⏱ {post.readTime}</span>
+            </div>
+            <h3 className="blogCardTitle">{post.title}</h3>
+            <p className="blogCardExcerpt">{post.excerpt}</p>
+            <button
+                className="blogReadBtn"
+                onClick={() => alert("Articol complet — în curând!")}
+            >
+                Citește articolul →
+            </button>
+        </div>
+    );
+}
+
 export default function Blog() {
     const [searchTerm, setSearchTerm] = useState("");
     const [selectedCategory, setSelectedCategory] = useState("Toate");
@@ -159,27 +185,7 @@ export default function Blog() {
                 <div className="blogGrid">
                     {filtered.length > 0 ? (
                         filtered.map((post) => (
-                            <div key={post.id} className="blogCard">
-                                <div className="blogCardEmoji">{post.emoji}</div>
-                                <div className="blogCardMeta">
-                                    <span
-                                        className="blogTag"
-                                        style={{ background: tagColors[post.tag] ?? "#a78bfa" }}
-                                    >
-                                        {post.tag}
-                                    </span>
-                                    <span className="blogDate">{post.date}</span>
-                                    <span className="blogReadTime">⏱ {post.readTime}</span>
-                                </div>
-                                <h3 className="blogCardTitle">{post.title}</h3>
-                                <p className="blogCardExcerpt">{post.excerpt}</p>
-                                <button
-                                    className="blogReadBtn"
-                                    onClick={() => alert("Articol complet — în curând!")}
-                                >
-                                    Citește articolul →
-                                </button>
-                            </div>
+                            <BlogCard key={post.id} post={post} />
                         ))
                     ) : (
                         <div className="blogNoResults">

@@ -7,6 +7,6 @@ interface Props {
 
 export function UserOnly({ children }: Props) {
   const { role } = useAuth();
-  if (role !== 'user') return null;
+  if (role !== 'user' && role !== 'admin') return null;
   return <>{children}</>;
 }

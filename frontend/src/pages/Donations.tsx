@@ -29,6 +29,27 @@ const donationOrgs: DonationOrg[] = [
     },
 ];
 
+function DonationCard({ o }: { o: DonationOrg }) {
+    return (
+        <div className="donCard">
+            <div className="donCardHeader">
+                <div>
+                    <h3 className="donName">{o.name}</h3>
+                    <span className="donSmall">{o.city}</span>
+                </div>
+                <span className="donBadge">{o.type}</span>
+            </div>
+            <p className="donDesc">{o.description}</p>
+            <div style={{ marginTop: "auto", paddingTop: "14px" }}>
+                <button className="donBtn" onClick={() => alert("Donație (mock)!")}>
+                    <HandCoinsIcon size={16} aria-hidden="true" />
+                    Donează
+                </button>
+            </div>
+        </div>
+    );
+}
+
 export default function Donations() {
     return (
         <div>
@@ -67,22 +88,7 @@ export default function Donations() {
             <div className="donContent">
                 <div className="donCards">
                     {donationOrgs.map((o) => (
-                        <div className="donCard" key={o.id}>
-                            <div className="donCardHeader">
-                                <div>
-                                    <h3 className="donName">{o.name}</h3>
-                                    <span className="donSmall">{o.city}</span>
-                                </div>
-                                <span className="donBadge">{o.type}</span>
-                            </div>
-                            <p className="donDesc">{o.description}</p>
-                            <div style={{ marginTop: "auto", paddingTop: "14px" }}>
-                                <button className="donBtn" onClick={() => alert("Donație (mock)!")}>
-                                    <HandCoinsIcon size={16} aria-hidden="true" />
-                                    Donează
-                                </button>
-                            </div>
-                        </div>
+                        <DonationCard key={o.id} o={o} />
                     ))}
                 </div>
             </div>

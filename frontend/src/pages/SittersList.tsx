@@ -20,6 +20,21 @@ const SITERS: Sitter[] = [
     { id: 5, name: "Elena",  city: "Orhei",    desc: "Pet sitting la domiciliu.",                 pricePerDay: 200, rating: 4.7 },
 ];
 
+function SitterCard({ s }: { s: Sitter }) {
+    return (
+        <div className="sitter-card">
+            <div className="rating">⭐ {s.rating}</div>
+            <h3>{s.name}</h3>
+            <p className="city">{s.city}</p>
+            <p>{s.desc}</p>
+            <div className="card-footer">
+                <strong>{s.pricePerDay} MDL / zi</strong>
+                <button>Rezervă</button>
+            </div>
+        </div>
+    );
+}
+
 export default function SittersList() {
     const [query, setQuery] = useState("");
 
@@ -91,16 +106,7 @@ export default function SittersList() {
                 {/* Cards */}
                 <div className="sitters-grid">
                     {filtered.map((s) => (
-                        <div className="sitter-card" key={s.id}>
-                            <div className="rating">⭐ {s.rating}</div>
-                            <h3>{s.name}</h3>
-                            <p className="city">{s.city}</p>
-                            <p>{s.desc}</p>
-                            <div className="card-footer">
-                                <strong>{s.pricePerDay} MDL / zi</strong>
-                                <button>Rezervă</button>
-                            </div>
-                        </div>
+                        <SitterCard key={s.id} s={s} />
                     ))}
                 </div>
 
