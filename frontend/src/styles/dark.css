@@ -425,6 +425,19 @@
     color: var(--dm-muted);
 }
 
+:root[data-theme="dark"] .checkboxLabel {
+    background: var(--dm-surface);
+    border-color: var(--dm-border);
+}
+
+:root[data-theme="dark"] .checkboxLabel:hover {
+    background: var(--dm-surface-strong);
+}
+
+:root[data-theme="dark"] .checkboxLabel span {
+    color: var(--dm-text);
+}
+
 :root[data-theme="dark"] .successMessage {
     background: rgba(46, 92, 64, 0.35);
     color: #c8f5d8;
