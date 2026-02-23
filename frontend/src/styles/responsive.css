@@ -213,7 +213,7 @@ body {
     }
 
     /* Avoid fixed width input on mobile */
-    .filters input {
+    .filters input:not([type="checkbox"]):not([type="radio"]) {
         width: 100% !important;
     }
 
@@ -225,8 +225,9 @@ body {
         max-width: 100%;
     }
 
-    input,
-    select {
+    input:not([type="checkbox"]):not([type="radio"]),
+    select,
+    textarea {
         width: 100%;
         font-size: 14px;
         padding: 12px 14px;
