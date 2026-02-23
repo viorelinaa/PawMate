@@ -712,3 +712,30 @@
     border-color: var(--dm-border);
     color: var(--dm-muted);
 }
+/* ── MedGuide page ── */
+:root[data-theme="dark"] .med-guide .medFilters {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    box-shadow: var(--dm-shadow);
+}
+
+:root[data-theme="dark"] .med-guide .medFilterInput {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .med-guide .medFilterInput::placeholder {
+    color: rgba(241, 234, 249, 0.5);
+}
+
+:root[data-theme="dark"] .med-guide .medBtnReset {
+    background: var(--dm-surface-strong);
+    color: var(--dm-accent);
+    border: 1px solid var(--dm-border);
+    box-shadow: none;
+}
+
+:root[data-theme="dark"] .med-guide .medBtnReset:hover {
+    background: var(--dm-accent-soft);
+}
