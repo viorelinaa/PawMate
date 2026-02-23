@@ -18,6 +18,7 @@
     --dm-hero: linear-gradient(180deg, #2a2434 0%, #211b2c 60%, #181422 100%);
     --dm-hero-soft: linear-gradient(135deg, #2b2436 0%, #1e1926 100%);
     --dm-hero-radial: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 70%);
+    --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23d8c4f1' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 }
 
 :root[data-theme="dark"] {
@@ -28,6 +29,17 @@
     --hero-title-color: var(--dm-text);
     --hero-subtitle-color: var(--dm-muted);
     --page-bg: var(--dm-bg);
+}
+
+:root[data-theme="dark"] .appBtn,
+:root[data-theme="dark"] .btn {
+    --color-primary: var(--dm-accent-strong);
+    --color-primary-light: var(--dm-accent);
+    --color-primary-border: var(--dm-border);
+    --color-primary-faint: var(--dm-accent-soft);
+    --color-surface: var(--dm-surface-strong);
+    --shadow-btn-primary: var(--dm-shadow);
+    --shadow-btn-ghost: none;
 }
 
 :root[data-theme="dark"] body {
@@ -215,6 +227,40 @@
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     box-shadow: var(--dm-shadow);
+}
+
+:root[data-theme="dark"] .filter-btn,
+:root[data-theme="dark"] .filter-reset,
+:root[data-theme="dark"] .filter-rating,
+:root[data-theme="dark"] .filter-price {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    color: var(--dm-accent);
+    box-shadow: none;
+}
+
+:root[data-theme="dark"] .filter-btn.isActive {
+    background: var(--dm-accent-soft);
+    border-color: var(--dm-accent);
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .filter-menu {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    box-shadow: var(--dm-shadow);
+}
+
+:root[data-theme="dark"] .filter-menu button {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    color: var(--dm-accent);
+}
+
+:root[data-theme="dark"] .filter-menu button.isActive {
+    background: var(--dm-accent-soft);
+    border-color: var(--dm-accent);
+    color: var(--dm-text);
 }
 
 :root[data-theme="dark"] .activityCard {

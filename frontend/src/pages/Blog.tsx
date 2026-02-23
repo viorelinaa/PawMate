@@ -2,6 +2,8 @@ import { useState } from "react";
 import "../styles/Blog.css";
 import { UserOnly } from "../components/UserOnly";
 import { SearchIcon } from "../components/SearchIcon";
+import { AppButton } from "../components/AppButton";
+import { AddActionButton } from "../components/AddActionButton";
 
 interface BlogPost {
     id: string;
@@ -96,12 +98,13 @@ function BlogCard({ post }: { post: BlogPost }) {
             </div>
             <h3 className="blogCardTitle">{post.title}</h3>
             <p className="blogCardExcerpt">{post.excerpt}</p>
-            <button
+            <AppButton
                 className="blogReadBtn"
+                variant="primary"
                 onClick={() => alert("Articol complet — în curând!")}
             >
                 Citește articolul →
-            </button>
+            </AppButton>
         </div>
     );
 }
@@ -147,9 +150,10 @@ export default function Blog() {
 
             <UserOnly>
                 <div className="roleActionBar">
-                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare articol — în curând!")}>
-                        + Adaugă articol
-                    </button>
+                    <AddActionButton
+                        label="Adaugă articol"
+                        onClick={() => alert("Formular adăugare articol — în curând!")}
+                    />
                 </div>
             </UserOnly>
 
@@ -168,13 +172,14 @@ export default function Blog() {
                     </div>
                     <div className="blogCategoryButtons">
                         {categories.map((cat) => (
-                            <button
+                            <AppButton
                                 key={cat}
-                                className={`blogCategoryBtn ${selectedCategory === cat ? "active" : ""}`}
+                                className="blogCategoryBtn"
+                                variant={selectedCategory === cat ? "primary" : "ghost"}
                                 onClick={() => setSelectedCategory(cat)}
                             >
                                 {cat}
-                            </button>
+                            </AppButton>
                         ))}
                     </div>
                 </div>

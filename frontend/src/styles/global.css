@@ -74,6 +74,7 @@
   --hero-title-color: var(--color-primary);
   --hero-subtitle-color: var(--color-text-muted);
   --page-bg: var(--color-bg);
+  --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%236a4a83' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 }
 
 /* ── Reset de bază ───────────────────────────────────────── */
@@ -412,38 +413,38 @@ body {
 }
 
 /* ── Butoane ─────────────────────────────────────────────── */
-
-/* Buton primar */
 .btn {
-  border: 0;
+  border: 1px solid var(--color-primary-border);
   border-radius: var(--radius-full);
-  padding: 10px 18px;
+  height: 46px;
+  padding: 0 18px;
   font-weight: 700;
   cursor: pointer;
   font-family: var(--font-family);
   font-size: var(--font-size-base);
-  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
-              background var(--transition-fast);
-}
-
-.btn-primary {
-  background: var(--color-primary);
-  color: #fff;
-  box-shadow: var(--shadow-btn-primary);
-}
-.btn-primary:hover {
-  transform: translateY(-1px);
-  background: var(--color-primary-light);
-}
-
-/* Buton ghost */
-.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   background: var(--color-surface);
   color: var(--color-primary);
   box-shadow: var(--shadow-btn-ghost);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+              background var(--transition-fast);
+  text-decoration: none;
 }
-.btn-ghost:hover {
-  transform: translateY(-1px);
+
+.btn:hover { transform: translateY(-1px); }
+
+.btn.primary,
+.btn-primary,
+.btn.ghost,
+.btn-ghost,
+.btn.secondary {
+  background: var(--color-surface);
+  color: var(--color-primary);
+  border-color: var(--color-primary-border);
+  box-shadow: var(--shadow-btn-ghost);
 }
 
 /* ── Inputs ──────────────────────────────────────────────── */
@@ -461,6 +462,20 @@ body {
   font-size: var(--font-size-base);
   box-sizing: border-box;
   transition: border-color var(--transition-fast);
+}
+
+select,
+.select,
+.filterSelect,
+.lostSelect {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: var(--select-chevron);
+  background-repeat: no-repeat;
+  background-position: calc(100% - 18px) 50%;
+  background-size: 14px 14px;
+  padding-right: 44px !important;
 }
 .input:focus,
 .select:focus {
@@ -588,4 +603,59 @@ body {
 .roleActionBtn:hover {
   opacity: 0.88;
   transform: translateY(-1px);
+}
+
+.addActionBtn {
+  --add-action-expanded-width: 260px;
+  height: 46px;
+  width: 46px;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  flex-direction: row-reverse;
+  justify-content: center;
+  transition: width 180ms ease, padding 180ms ease, gap 180ms ease, transform 0.15s;
+}
+
+.addActionIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+}
+
+.addActionText {
+  max-width: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: max-width 180ms ease, opacity 180ms ease;
+}
+
+.addActionBtn:hover {
+  width: var(--add-action-expanded-width);
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 0 8px 0 12px;
+}
+
+.addActionBtn:hover .addActionText {
+  max-width: calc(var(--add-action-expanded-width) - 80px);
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .addActionBtn,
+  .addActionBtn:hover {
+    width: 46px;
+    padding: 0;
+    gap: 0;
+    justify-content: center;
+  }
+
+  .addActionText {
+    display: none;
+  }
 }

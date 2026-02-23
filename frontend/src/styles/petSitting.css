@@ -105,10 +105,11 @@
 }
 
 /* ── Filtre ────────────────────────────────────────────── */
-.filters {
-    display: flex;
-    align-items: center;
-    gap: 24px;
+.pet-sitting-page .filters {
+    display: grid;
+    grid-template-columns: minmax(260px, 1.3fr) repeat(3, minmax(140px, 1fr));
+    align-items: stretch;
+    gap: 16px;
     padding: 22px 28px;
     border-radius: var(--radius-lg);
     background: var(--color-surface);
@@ -117,8 +118,8 @@
     margin-bottom: 32px;
 }
 
-.filters input {
-    width: 320px;
+.pet-sitting-page .filters input {
+    width: 100%;
     padding: 14px 18px;
     border-radius: var(--radius-sm);
     border: 1px solid var(--color-primary-border);
@@ -132,33 +133,112 @@
     transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.filters .searchField {
-    width: 320px;
-}
-
-.filters .searchField input {
+.pet-sitting-page .filters .searchField {
     width: 100%;
 }
 
-.filters input:focus {
+.pet-sitting-page .filters .searchField input {
+    width: 100%;
+}
+
+.pet-sitting-page .filters input:focus {
     border-color: var(--color-primary);
     box-shadow: 0 0 0 3px var(--color-primary-faint);
 }
 
-.filter-reset,
-.filter-rating,
-.filter-price {
+.filter-btn {
+    appearance: none;
+    border: 1px solid var(--color-primary-border);
+    background: var(--color-surface);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 14px;
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-btn-ghost);
     font-weight: 700;
     color: var(--color-primary);
-    cursor: pointer;
     font-family: var(--font-family);
     font-size: var(--font-size-base);
-    transition: opacity var(--transition-fast);
+    transition: opacity var(--transition-fast), transform var(--transition-fast), background var(--transition-fast);
+    justify-content: center;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    height: 46px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.filter-reset:hover,
-.filter-rating:hover,
-.filter-price:hover { opacity: 0.7; }
+.filter-dropdown {
+    position: relative;
+    width: 100%;
+    min-height: 46px;
+}
+
+.filter-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    right: 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    padding: 10px;
+    display: grid;
+    gap: 8px;
+    z-index: 5;
+}
+
+.filter-menu button {
+    appearance: none;
+    border: 1px solid var(--color-primary-border);
+    background: var(--color-surface);
+    color: var(--color-primary);
+    border-radius: var(--radius-md);
+    padding: 0 12px;
+    font-weight: 700;
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    transition: opacity var(--transition-fast), transform var(--transition-fast), background var(--transition-fast);
+    text-align: center;
+    width: 100%;
+    height: 44px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.filter-menu button:hover {
+    opacity: 0.85;
+    transform: translateY(-1px);
+}
+
+.filter-menu button.isActive {
+    background: var(--color-primary-faint);
+    border-color: var(--color-primary);
+}
+
+.filter-btn:hover {
+    transform: translateY(-1px);
+}
+
+.filter-btn:hover { opacity: 0.85; }
+
+.filter-btn:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+}
+
+.filter-btn.isActive {
+    background: var(--color-primary-faint);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+    box-shadow: var(--shadow-btn-ghost);
+}
 
 /* ── Grid ──────────────────────────────────────────────── */
 .sitters-grid {
@@ -242,9 +322,12 @@
 /* ── Responsive ────────────────────────────────────────── */
 @media (max-width: 768px) {
     .sitters-hero { padding: 60px 16px 40px; }
-    .sitters-hero .sitterCloud { display: none; }
     .sitters-content { padding: 20px 16px 40px; }
-    .filters { flex-direction: column; align-items: stretch; gap: 12px; padding: 16px; }
-    .filters input { width: 100%; }
+    .pet-sitting-page .filters { grid-template-columns: 1fr; gap: 12px; padding: 16px; }
+    .pet-sitting-page .filters input { width: 100%; }
     .sitters-grid { grid-template-columns: 1fr; }
+    .filter-menu {
+        position: static;
+        margin-top: 8px;
+    }
 }

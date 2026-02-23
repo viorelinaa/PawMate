@@ -2,6 +2,8 @@ import { useState } from "react";
 import "../styles/Veterinari.css";
 import { AdminOnly } from "../components/AdminOnly";
 import { SearchIcon } from "../components/SearchIcon";
+import { AppButton } from "../components/AppButton";
+import { AddActionButton } from "../components/AddActionButton";
 
 interface Veterinar {
     id: string;
@@ -79,9 +81,9 @@ function VeterinarCard({ v }: { v: Veterinar }) {
                 ))}
             </div>
             <p className="vetDesc">{v.description}</p>
-            <button className="btnContact" onClick={() => alert(`Sună la ${v.phone}`)}>
+            <AppButton className="btnContact" variant="primary" onClick={() => alert(`Sună la ${v.phone}`)}>
                 Contactează
-            </button>
+            </AppButton>
         </div>
     );
 }
@@ -140,9 +142,10 @@ export default function Veterinari() {
 
             <AdminOnly>
                 <div className="roleActionBar">
-                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare clinică — în curând!")}>
-                        + Adaugă clinică
-                    </button>
+                    <AddActionButton
+                        label="Adaugă clinică"
+                        onClick={() => alert("Formular adăugare clinică — în curând!")}
+                    />
                 </div>
             </AdminOnly>
 
@@ -174,9 +177,9 @@ export default function Veterinari() {
                             />
                             Doar urgențe 24/7
                         </label>
-                        <button className="btnReset" onClick={resetFilters}>
+                        <AppButton className="btnReset" variant="ghost" onClick={resetFilters}>
                             Reset filtre
-                        </button>
+                        </AppButton>
                     </div>
                 </div>
 

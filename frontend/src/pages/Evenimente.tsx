@@ -3,6 +3,8 @@ import type { KeyboardEvent } from "react";
 import "../styles/Evenimente.css";
 import { AdminOnly } from "../components/AdminOnly";
 import { SearchIcon } from "../components/SearchIcon";
+import { AppButton } from "../components/AppButton";
+import { AddActionButton } from "../components/AddActionButton";
 
 type EventItem = {
     id: string;
@@ -176,9 +178,10 @@ export default function Evenimente() {
 
             <AdminOnly>
                 <div className="roleActionBar">
-                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare eveniment — în curând!")}>
-                        + Adaugă eveniment
-                    </button>
+                    <AddActionButton
+                        label="Adaugă eveniment"
+                        onClick={() => alert("Formular adăugare eveniment — în curând!")}
+                    />
                 </div>
             </AdminOnly>
 
@@ -218,9 +221,9 @@ export default function Evenimente() {
                                 </option>
                             ))}
                         </select>
-                        <button className="btnReset" onClick={resetFilters}>
+                        <AppButton className="btnReset" variant="ghost" onClick={resetFilters}>
                             Reset filtre
-                        </button>
+                        </AppButton>
                     </div>
                 </div>
 

@@ -2,6 +2,8 @@ import { useState } from "react";
 import "../styles/Vanzari.css";
 import { UserOnly } from "../components/UserOnly";
 import { SearchIcon } from "../components/SearchIcon";
+import { AppButton } from "../components/AppButton";
+import { AddActionButton } from "../components/AddActionButton";
 
 type Product = {
     id: string;
@@ -67,13 +69,14 @@ function ProductCard({ product }: { product: Product }) {
             </div>
             <p className="salesDesc">{product.description}</p>
             <div className="salesPrice">{product.price}</div>
-            <button
+            <AppButton
                 className="salesBtn"
+                variant="primary"
                 type="button"
                 onClick={() => alert("Adăugat în coș (mock)!")}
             >
                 Adaugă în coș
-            </button>
+            </AppButton>
         </article>
     );
 }
@@ -128,9 +131,10 @@ export default function Vanzari() {
 
             <UserOnly>
                 <div className="roleActionBar">
-                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare produs — în curând!")}>
-                        + Adaugă produs/anunț
-                    </button>
+                    <AddActionButton
+                        label="Adaugă produs/anunț"
+                        onClick={() => alert("Formular adăugare produs — în curând!")}
+                    />
                 </div>
             </UserOnly>
 
@@ -158,9 +162,9 @@ export default function Vanzari() {
                                 </option>
                             ))}
                         </select>
-                        <button className="btnReset" onClick={resetFilters}>
+                        <AppButton className="btnReset" variant="ghost" onClick={resetFilters}>
                             Reset filtre
-                        </button>
+                        </AppButton>
                     </div>
                 </div>
 

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import { paths } from "../routes/paths";
 import '../styles/SignUp.css';
+import { AppButton } from "../components/AppButton";
 
 type UserType = 'adopter' | 'sitter';
 
@@ -179,13 +180,15 @@ const Signup: React.FC = () => {
             </label>
           </div>
 
-          <button
+          <AppButton
             type="submit"
             className="signup-button"
+            variant="primary"
+            fullWidth
             disabled={!formData.acceptTerms}
           >
             Creează cont
-          </button>
+          </AppButton>
         </form>
 
         <div className="login-link">

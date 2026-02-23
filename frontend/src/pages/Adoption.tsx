@@ -2,6 +2,8 @@ import { useState } from "react";
 import "../styles/Adoption.css";
 import { UserOnly } from "../components/UserOnly";
 import { SearchIcon } from "../components/SearchIcon";
+import { AppButton } from "../components/AppButton";
+import { AddActionButton } from "../components/AddActionButton";
 
 interface Pet {
     id: string;
@@ -52,9 +54,9 @@ function PetCard({ p }: { p: Pet }) {
                 <span className="badge">{p.sterilized ? "Sterilizat" : "Nesterilizat"}</span>
             </div>
             <p className="petDesc">{p.description}</p>
-            <button className="btnDetails" onClick={() => alert("Cerere trimisă (mock)!")}>
+            <AppButton className="btnDetails" variant="primary" onClick={() => alert("Cerere trimisă (mock)!")}>
                 Cere detalii
-            </button>
+            </AppButton>
         </div>
     );
 }
@@ -121,9 +123,10 @@ export default function Adoption() {
 
             <UserOnly>
                 <div className="roleActionBar">
-                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare animal — în curând!")}>
-                        + Adaugă animal pentru adopție
-                    </button>
+                    <AddActionButton
+                        label="Adaugă animal pentru adopție"
+                        onClick={() => alert("Formular adăugare animal — în curând!")}
+                    />
                 </div>
             </UserOnly>
 
@@ -153,7 +156,9 @@ export default function Adoption() {
                         <option value="Rozător">Rozător</option>
                         <option value="Altul">Altul</option>
                     </select>
-                    <button className="btnReset" onClick={resetFilters}>Reset filtre</button>
+                    <AppButton className="btnReset" variant="ghost" onClick={resetFilters}>
+                        Reset filtre
+                    </AppButton>
 
                     <select className="filterSelect" value={age} onChange={(e) => setAge(e.target.value)}>
                         <option value="ALL">Toate vârstele</option>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/Wiki.css";
 import { SearchIcon } from "../components/SearchIcon";
+import { AppButton } from "../components/AppButton";
 
 interface AnimalData {
     id: number;
@@ -246,13 +247,14 @@ export default function Wiki() {
                     </div>
                     <div className="categoryButtons">
                         {categories.map((category) => (
-                            <button
+                            <AppButton
                                 key={category}
-                                className={`categoryBtn ${selectedCategory === category ? "active" : ""}`}
+                                className="categoryBtn"
+                                variant={selectedCategory === category ? "primary" : "ghost"}
                                 onClick={() => setSelectedCategory(category)}
                             >
                                 {category}
-                            </button>
+                            </AppButton>
                         ))}
                     </div>
                 </div>
@@ -268,7 +270,9 @@ export default function Wiki() {
                                 <h3 className="animalName">{animal.name}</h3>
                                 <span className="animalCategory">{animal.category}</span>
                                 <p className="animalPreview">{animal.description.substring(0, 100)}...</p>
-                                <button className="btnLearnMore">Află mai multe</button>
+                                <AppButton className="btnLearnMore" variant="primary">
+                                    Află mai multe
+                                </AppButton>
                             </div>
                         ))
                     ) : (

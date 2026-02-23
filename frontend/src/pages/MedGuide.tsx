@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "../styles/MedGuide.css";
 import { SearchIcon } from "../components/SearchIcon";
+import { AppButton } from "../components/AppButton";
 
 type MedicalCardProps = {
     title: string;
@@ -146,9 +147,9 @@ export default function MedGuide() {
                                 onChange={(e) => setQuery(e.target.value)}
                             />
                         </div>
-                        <button className="medBtnReset" onClick={() => setQuery("")}>
+                        <AppButton className="medBtnReset" variant="ghost" onClick={() => setQuery("")}>
                             Reset
-                        </button>
+                        </AppButton>
                     </div>
                 </div>
 
