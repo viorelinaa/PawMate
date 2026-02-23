@@ -375,4 +375,101 @@
   .profile-field--full {
     grid-column: 1;
   }
+  
+}
+/* ── Dark mode ─────────────────────────────────────────── */
+[data-theme="dark"] .profile-sidebar,
+[data-theme="dark"] .profile-content {
+  background: #1e1b2e;
+  border-color: rgba(107, 76, 138, 0.3);
+}
+
+[data-theme="dark"] .profile-name {
+  color: #c9a6f5;
+}
+
+[data-theme="dark"] .profile-role,
+[data-theme="dark"] .profile-joined,
+[data-theme="dark"] .profile-empty {
+  color: #9b89b4;
+}
+
+[data-theme="dark"] .profile-nav-btn {
+  color: #9b89b4;
+}
+
+[data-theme="dark"] .profile-nav-btn:hover {
+  background: rgba(107, 76, 138, 0.2);
+  color: #c9a6f5;
+}
+
+[data-theme="dark"] .profile-nav-btn.active {
+  background: #6B4C8A;
+  color: white;
+}
+
+[data-theme="dark"] .profile-section-title {
+  color: #c9a6f5;
+  border-bottom-color: rgba(107, 76, 138, 0.3);
+}
+
+[data-theme="dark"] .profile-field label {
+  color: #9b89b4;
+}
+
+[data-theme="dark"] .profile-field p {
+  background: rgba(107, 76, 138, 0.15);
+  border-color: rgba(107, 76, 138, 0.3);
+  color: #e8e0f0;
+}
+
+[data-theme="dark"] .pet-card {
+  background: rgba(107, 76, 138, 0.15);
+  border-color: rgba(107, 76, 138, 0.3);
+}
+
+[data-theme="dark"] .pet-card-info h4 {
+  color: #c9a6f5;
+}
+
+[data-theme="dark"] .pet-card-info p,
+[data-theme="dark"] .pet-card-date {
+  color: #9b89b4;
+}
+
+[data-theme="dark"] .activity-item {
+  background: rgba(107, 76, 138, 0.15);
+  border-color: rgba(107, 76, 138, 0.3);
+}
+
+[data-theme="dark"] .activity-info p {
+  color: #e8e0f0;
+}
+
+[data-theme="dark"] .activity-info span {
+  color: #9b89b4;
+}
+
+[data-theme="dark"] .profile-form-group label {
+  color: #c9a6f5;
+}
+
+[data-theme="dark"] .profile-form-group input {
+  background: #2a2440;
+  border-color: rgba(107, 76, 138, 0.4);
+  color: #e8e0f0;
+}
+
+[data-theme="dark"] .profile-form-group input:focus {
+  border-color: #9b59b6;
+  box-shadow: 0 0 0 3px rgba(107, 76, 138, 0.25);
+}
+
+[data-theme="dark"] .profile-form-group input::placeholder {
+  color: #6b5a80;
+}
+
+[data-theme="dark"] .security-submit-btn:disabled {
+  background: #3a3050;
+  color: #6b5a80;
 }
