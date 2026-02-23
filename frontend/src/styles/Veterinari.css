@@ -175,7 +175,7 @@
 
 .veterinariContent .btnReset {
     border: 0;
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-sm);
     padding: 12px 18px;
     font-weight: 700;
     cursor: pointer;

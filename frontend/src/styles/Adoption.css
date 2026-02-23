@@ -139,9 +139,9 @@
     height: 16px;
 }
 
-.btnReset {
+.adoptionContent .btnReset {
     border: 0;
-    border-radius: var(--radius-full);
+    border-radius: var(--radius-sm);
     padding: 12px 18px;
     font-weight: 700;
     cursor: pointer;
@@ -153,7 +153,7 @@
     font-size: var(--font-size-base);
 }
 
-.btnReset:hover { transform: translateY(-1px); }
+.adoptionContent .btnReset:hover { transform: translateY(-1px); }
 
 /* ── Pet Cards ─────────────────────────────────────────── */
 .petCards {
