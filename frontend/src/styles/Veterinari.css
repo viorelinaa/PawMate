@@ -122,6 +122,7 @@
     box-shadow: var(--shadow-card);
     border-radius: var(--radius-lg);
     padding: 16px;
+    --filter-h: 46px;
 }
 
 .veterinariContent .filtersGrid {
@@ -140,16 +141,30 @@
 .veterinariContent .filterInput,
 .veterinariContent .filterSelect {
     width: 100%;
-    padding: 12px 14px;
-    border-radius: var(--radius-sm);
+    height: var(--filter-h);
+    padding: 0 16px;
+    border-radius: var(--radius-full);
     border: 1px solid var(--color-primary-border);
     outline: none;
     font-weight: 600;
     color: var(--color-text);
-    background: #fff;
+    background-color: #fff;
     font-family: var(--font-family);
     font-size: var(--font-size-base);
     box-sizing: border-box;
+}
+
+.veterinariContent .filtersGrid > * {
+    min-height: var(--filter-h);
+}
+
+.veterinariContent .filtersGrid .searchField {
+    height: var(--filter-h);
+}
+
+.veterinariContent .filtersGrid .searchField input {
+    height: var(--filter-h);
+    border-radius: var(--radius-full);
 }
 
 .veterinariContent .filterCheck {
@@ -159,10 +174,11 @@
     color: var(--color-text-muted);
     font-weight: 700;
     font-size: var(--font-size-sm);
-    padding: 12px 14px;
-    border-radius: var(--radius-sm);
-    border: 1px dashed var(--color-primary-border);
-    background: var(--color-surface-dim);
+    height: var(--filter-h);
+    padding: 0 16px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-primary-border);
+    background: var(--color-surface);
     cursor: pointer;
     font-family: var(--font-family);
 }
@@ -171,12 +187,14 @@
     accent-color: var(--color-primary);
     width: 16px;
     height: 16px;
+    margin: 0;
 }
 
 .veterinariContent .btnReset {
     border: 0;
-    border-radius: var(--radius-sm);
-    padding: 12px 18px;
+    border-radius: var(--radius-full);
+    height: var(--filter-h);
+    padding: 0 18px;
     font-weight: 700;
     cursor: pointer;
     background: var(--color-surface);
@@ -185,6 +203,9 @@
     transition: transform var(--transition-fast);
     font-family: var(--font-family);
     font-size: var(--font-size-base);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .veterinariContent .btnReset:hover { transform: translateY(-1px); }

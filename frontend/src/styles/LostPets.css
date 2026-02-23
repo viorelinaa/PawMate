@@ -85,6 +85,7 @@
     box-shadow: var(--shadow-card);
     border-radius: var(--radius-lg);
     padding: 16px;
+    --filter-h: 46px;
 }
 
 .lostFiltersGrid {
@@ -99,17 +100,31 @@
 .lostInput,
 .lostSelect {
     width: 100%;
-    padding: 12px 14px;
-    border-radius: var(--radius-sm);
+    height: var(--filter-h);
+    padding: 0 16px;
+    border-radius: var(--radius-full);
     border: 1px solid var(--color-primary-border);
     outline: none;
     font-weight: 600;
     color: var(--color-text);
-    background: #fff;
+    background-color: #fff;
     font-family: var(--font-family);
     font-size: var(--font-size-base);
     box-sizing: border-box;
     transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.lostFiltersGrid > * {
+    min-height: var(--filter-h);
+}
+
+.lostFiltersGrid .searchField {
+    height: var(--filter-h);
+}
+
+.lostFiltersGrid .searchField input {
+    height: var(--filter-h);
+    border-radius: var(--radius-full);
 }
 
 .lostInput:focus,
@@ -120,8 +135,9 @@
 
 .lostBtnReset {
     border: 0;
-    border-radius: var(--radius-sm);
-    padding: 12px 18px;
+    border-radius: var(--radius-full);
+    height: var(--filter-h);
+    padding: 0 18px;
     font-weight: 700;
     cursor: pointer;
     background: var(--color-surface);
@@ -130,6 +146,9 @@
     transition: transform var(--transition-fast);
     font-family: var(--font-family);
     font-size: var(--font-size-base);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .lostBtnReset:hover { transform: translateY(-1px); }
