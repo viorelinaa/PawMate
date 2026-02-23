@@ -1,6 +1,8 @@
 import "../styles/Donations.css";
 import { AdminOnly } from "../components/AdminOnly";
 import { HandCoinsIcon } from "../components/HandCoinsIcon";
+import { AppButton } from "../components/AppButton";
+import { AddActionButton } from "../components/AddActionButton";
 
 interface DonationOrg {
     id: string;
@@ -41,10 +43,10 @@ function DonationCard({ o }: { o: DonationOrg }) {
             </div>
             <p className="donDesc">{o.description}</p>
             <div style={{ marginTop: "auto", paddingTop: "14px" }}>
-                <button className="donBtn" onClick={() => alert("Donație (mock)!")}>
+                <AppButton className="donBtn" variant="primary" onClick={() => alert("Donație (mock)!")}>
                     <HandCoinsIcon size={16} aria-hidden="true" />
                     Donează
-                </button>
+                </AppButton>
             </div>
         </div>
     );
@@ -79,9 +81,10 @@ export default function Donations() {
 
             <AdminOnly>
                 <div className="roleActionBar">
-                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare ONG — în curând!")}>
-                        + Adaugă ONG
-                    </button>
+                    <AddActionButton
+                        label="Adaugă ONG"
+                        onClick={() => alert("Formular adăugare ONG — în curând!")}
+                    />
                 </div>
             </AdminOnly>
 

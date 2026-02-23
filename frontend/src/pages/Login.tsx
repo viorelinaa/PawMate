@@ -7,6 +7,7 @@ import { UserRoundIcon } from "../components/UserRoundIcon";
 import { ShieldUserIcon } from "../components/ShieldUserIcon";
 import { EyeIcon } from "../components/EyeIcon";
 import { EyeOffIcon } from "../components/EyeOffIcon";
+import { AppButton } from "../components/AppButton";
 
 const DEMO = {
   user:  { username: 'user@pawmate.ro',  password: 'User1234!'  },
@@ -56,27 +57,32 @@ const Login: React.FC = () => {
         </div>
 
         <div className="role-tabs">
-          <button
+          <AppButton
             type="button"
-            className={`role-tab ${selectedRole === 'user' ? 'active' : ''}`}
+            className={`role-tab ${selectedRole === "user" ? "isSelected" : ""}`}
+            variant="ghost"
+            aria-pressed={selectedRole === "user"}
             onClick={() => handleRoleSwitch('user')}
           >
             <span className="role-tab-icon" aria-hidden="true">
               <UserRoundIcon size={18} />
             </span>
             <span>Utilizator</span>
-          </button>
-          <button
+          </AppButton>
+          <AppButton
             type="button"
-            className={`role-tab ${selectedRole === 'admin' ? 'active' : ''}`}
+            className={`role-tab ${selectedRole === "admin" ? "isSelected" : ""}`}
+            variant="ghost"
+            aria-pressed={selectedRole === "admin"}
             onClick={() => handleRoleSwitch('admin')}
           >
             <span className="role-tab-icon" aria-hidden="true">
               <ShieldUserIcon size={18} />
             </span>
             <span>Admin</span>
-          </button>
+          </AppButton>
         </div>
+        <p className="role-selected">Ai ales: {selectedRole === "admin" ? "Admin" : "Utilizator"}</p>
 
         <div className="demo-card">
           <span className="demo-label">Date demo {selectedRole === 'admin' ? 'Admin' : 'Utilizator'}</span>
@@ -126,9 +132,9 @@ const Login: React.FC = () => {
 
           {error && <p className="login-error">{error}</p>}
 
-          <button type="submit" className="login-button">
+          <AppButton type="submit" className="login-button" variant="primary" fullWidth>
             Autentificare
-          </button>
+          </AppButton>
         </form>
 
         <div className="signup-link">

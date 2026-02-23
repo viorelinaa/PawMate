@@ -1,6 +1,7 @@
 // src/pages/Home.tsx
 import { useNavigate } from "react-router-dom";
 import "./Home.css";
+import { AppButton } from "../components/AppButton";
 
 export default function Home() {
     const navigate = useNavigate();
@@ -50,13 +51,13 @@ export default function Home() {
                     </p>
 
                     <div className="heroActions">
-                        <button className="btnPrimary" onClick={() => navigate("/adoptie")}>
+                        <AppButton className="btnPrimary" variant="primary" onClick={() => navigate("/adoptie")}>
                             Începe cu adopția
-                        </button>
+                        </AppButton>
 
-                        <button className="btnGhost" onClick={() => navigate("/quiz")}>
+                        <AppButton className="btnGhost" variant="ghost" onClick={() => navigate("/quiz")}>
                             Fă quiz-ul
-                        </button>
+                        </AppButton>
                     </div>
                 </div>
             </section>

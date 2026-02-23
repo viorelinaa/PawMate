@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "../styles/petSitting.css";
 import { UserOnly } from "../components/UserOnly";
 import { SearchIcon } from "../components/SearchIcon";
+import { AppButton } from "../components/AppButton";
+import { AddActionButton } from "../components/AddActionButton";
 
 type Sitter = {
     id: number;
@@ -29,7 +31,7 @@ function SitterCard({ s }: { s: Sitter }) {
             <p>{s.desc}</p>
             <div className="card-footer">
                 <strong>{s.pricePerDay} MDL / zi</strong>
-                <button>Rezervă</button>
+                <AppButton variant="primary">Rezervă</AppButton>
             </div>
         </div>
     );
@@ -37,12 +39,43 @@ function SitterCard({ s }: { s: Sitter }) {
 
 export default function SittersList() {
     const [query, setQuery] = useState("");
+    const [onlyTopRated, setOnlyTopRated] = useState(false);
+    const [priceSort, setPriceSort] = useState<"none" | "asc" | "desc">("none");
+    const [priceMenuOpen, setPriceMenuOpen] = useState(false);
+    const priceMenuRef = useRef<HTMLDivElement | null>(null);
+    const ratingThreshold = 4.7;
 
-    const filtered = SITERS.filter(
-        (s) =>
-            s.name.toLowerCase().includes(query.toLowerCase()) ||
-            s.city.toLowerCase().includes(query.toLowerCase())
-    );
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (!priceMenuRef.current) return;
+            if (!priceMenuRef.current.contains(event.target as Node)) {
+                setPriceMenuOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const filtered = SITERS.filter((s) => {
+        const q = query.trim().toLowerCase();
+        if (!q) return true;
+        return s.name.toLowerCase().includes(q) || s.city.toLowerCase().includes(q);
+    });
+
+    const rated = onlyTopRated
+        ? filtered.filter((s) => s.rating >= ratingThreshold)
+        : filtered;
+
+    const sorted = [...rated].sort((a, b) => {
+        if (priceSort === "asc") return a.pricePerDay - b.pricePerDay;
+        if (priceSort === "desc") return b.pricePerDay - a.pricePerDay;
+        return 0;
+    });
+
+    const priceLabel =
+        priceSort === "asc" ? "Preț / zi ↑" : priceSort === "desc" ? "Preț / zi ↓" : "Preț / zi";
+    const ratingLabel = `⭐ rating ${ratingThreshold}+`;
 
     return (
         <div className="pet-sitting-page">
@@ -78,9 +111,10 @@ export default function SittersList() {
 
             <UserOnly>
                 <div className="roleActionBar">
-                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare profil sitter — în curând!")}>
-                        + Adaugă profil sitter
-                    </button>
+                    <AddActionButton
+                        label="Adaugă profil sitter"
+                        onClick={() => alert("Formular adăugare profil sitter — în curând!")}
+                    />
                 </div>
             </UserOnly>
 
@@ -98,14 +132,83 @@ export default function SittersList() {
                             onChange={(e) => setQuery(e.target.value)}
                         />
                     </div>
-                    <span className="filter-reset" onClick={() => setQuery("")}>Reset</span>
-                    <span className="filter-rating">⭐ rating inclus</span>
-                    <span className="filter-price">Preț / zi</span>
+                    <AppButton
+                        type="button"
+                        variant="ghost"
+                        className="filter-reset filter-btn"
+                        onClick={() => {
+                            setQuery("");
+                            setOnlyTopRated(false);
+                            setPriceSort("none");
+                            setPriceMenuOpen(false);
+                        }}
+                    >
+                        Reset
+                    </AppButton>
+                    <AppButton
+                        type="button"
+                        variant={onlyTopRated ? "primary" : "ghost"}
+                        className="filter-rating filter-btn"
+                        aria-pressed={onlyTopRated}
+                        onClick={() => setOnlyTopRated((prev) => !prev)}
+                    >
+                        {ratingLabel}
+                    </AppButton>
+                    <div className="filter-dropdown" ref={priceMenuRef}>
+                        <AppButton
+                            type="button"
+                            variant={priceSort !== "none" ? "primary" : "ghost"}
+                            className="filter-price filter-btn"
+                            aria-pressed={priceSort !== "none"}
+                            aria-haspopup="menu"
+                            aria-expanded={priceMenuOpen}
+                            onClick={() => setPriceMenuOpen((prev) => !prev)}
+                        >
+                            {priceLabel}
+                        </AppButton>
+                        {priceMenuOpen ? (
+                            <div className="filter-menu" role="menu">
+                                <AppButton
+                                    type="button"
+                                    variant={priceSort === "none" ? "primary" : "ghost"}
+                                    onClick={() => {
+                                        setPriceSort("none");
+                                        setPriceMenuOpen(false);
+                                    }}
+                                    role="menuitem"
+                                >
+                                    Fără sortare
+                                </AppButton>
+                                <AppButton
+                                    type="button"
+                                    variant={priceSort === "asc" ? "primary" : "ghost"}
+                                    onClick={() => {
+                                        setPriceSort("asc");
+                                        setPriceMenuOpen(false);
+                                    }}
+                                    role="menuitem"
+                                >
+                                    Crescător
+                                </AppButton>
+                                <AppButton
+                                    type="button"
+                                    variant={priceSort === "desc" ? "primary" : "ghost"}
+                                    onClick={() => {
+                                        setPriceSort("desc");
+                                        setPriceMenuOpen(false);
+                                    }}
+                                    role="menuitem"
+                                >
+                                    Descrescător
+                                </AppButton>
+                            </div>
+                        ) : null}
+                    </div>
                 </div>
 
                 {/* Cards */}
                 <div className="sitters-grid">
-                    {filtered.map((s) => (
+                    {sorted.map((s) => (
                         <SitterCard key={s.id} s={s} />
                     ))}
                 </div>

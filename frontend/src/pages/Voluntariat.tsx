@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import "../styles/Voluntariat.css";
+import { AppButton } from "../components/AppButton";
 export default function Voluntariat() {
     const [formData, setFormData] = useState({
         nume: "",
@@ -398,21 +399,23 @@ export default function Voluntariat() {
                     </div>
 
                     <div className="formActions">
-                        <button 
-                            type="button" 
-                            onClick={resetForm} 
+                        <AppButton
+                            type="button"
+                            onClick={resetForm}
                             className="btnReset"
+                            variant="ghost"
                             disabled={isLoading}
                         >
                             Reset formular
-                        </button>
-                        <button 
-                            type="submit" 
+                        </AppButton>
+                        <AppButton
+                            type="submit"
                             className="btnSubmit"
+                            variant="primary"
                             disabled={isLoading}
                         >
                             {isLoading ? "Se trimite..." : "Trimite cererea"}
-                        </button>
+                        </AppButton>
                     </div>
                 </form>
             </section>

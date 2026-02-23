@@ -2,6 +2,8 @@ import { useState } from "react";
 import "../styles/LostPets.css";
 import { UserOnly } from "../components/UserOnly";
 import { SearchIcon } from "../components/SearchIcon";
+import { AppButton } from "../components/AppButton";
+import { AddActionButton } from "../components/AddActionButton";
 
 interface LostAd {
     id: string;
@@ -131,9 +133,10 @@ export default function LostPets() {
 
             <UserOnly>
                 <div className="roleActionBar">
-                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare anunț — în curând!")}>
-                        + Adaugă anunț animal pierdut
-                    </button>
+                    <AddActionButton
+                        label="Adaugă anunț animal pierdut"
+                        onClick={() => alert("Formular adăugare anunț — în curând!")}
+                    />
                 </div>
             </UserOnly>
 
@@ -163,7 +166,9 @@ export default function LostPets() {
                                 <option key={c} value={c}>{c}</option>
                             ))}
                         </select>
-                        <button className="lostBtnReset" onClick={resetFilters}>Reset</button>
+                        <AppButton className="lostBtnReset" variant="ghost" onClick={resetFilters}>
+                            Reset
+                        </AppButton>
                     </div>
                 </div>
 

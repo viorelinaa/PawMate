@@ -2,6 +2,9 @@ import { useState } from "react";
 import "../styles/Vanzari.css";
 import { UserOnly } from "../components/UserOnly";
 import { SearchIcon } from "../components/SearchIcon";
+import { AppButton } from "../components/AppButton";
+import { AddActionButton } from "../components/AddActionButton";
+import { ShoppingCartIcon } from "../components/ShoppingCartIcon";
 
 type Product = {
     id: string;
@@ -58,7 +61,19 @@ const products: Product[] = [
 
 const allCategories = [...new Set(products.map((product) => product.category))];
 
-function ProductCard({ product }: { product: Product }) {
+function extractPriceNumber(price: string) {
+    const cleaned = price.replace(",", ".").replace(/[^\d.]/g, "");
+    const parsed = Number.parseFloat(cleaned);
+    return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function ProductCard({
+    product,
+    onAddToCart,
+}: {
+    product: Product;
+    onAddToCart: (product: Product) => void;
+}) {
     return (
         <article className="salesCard">
             <div className="salesCardTop">
@@ -67,13 +82,14 @@ function ProductCard({ product }: { product: Product }) {
             </div>
             <p className="salesDesc">{product.description}</p>
             <div className="salesPrice">{product.price}</div>
-            <button
+            <AppButton
                 className="salesBtn"
+                variant="primary"
                 type="button"
-                onClick={() => alert("Adăugat în coș (mock)!")}
+                onClick={() => onAddToCart(product)}
             >
                 Adaugă în coș
-            </button>
+            </AppButton>
         </article>
     );
 }
@@ -81,6 +97,7 @@ function ProductCard({ product }: { product: Product }) {
 export default function Vanzari() {
     const [query, setQuery] = useState("");
     const [category, setCategory] = useState("ALL");
+    const [cartItems, setCartItems] = useState<Product[]>([]);
 
     const filtered = products.filter((product) => {
         if (category !== "ALL" && product.category !== category) return false;
@@ -98,6 +115,36 @@ export default function Vanzari() {
     function resetFilters() {
         setQuery("");
         setCategory("ALL");
+    }
+
+    function addToCart(product: Product) {
+        setCartItems((prev) => [...prev, product]);
+    }
+
+    function openCartPreview() {
+        if (cartItems.length === 0) {
+            alert("Coșul este gol momentan.");
+            return;
+        }
+
+        const grouped = cartItems.reduce<Record<string, { name: string; price: string; qty: number }>>(
+            (acc, product) => {
+                if (!acc[product.id]) {
+                    acc[product.id] = { name: product.name, price: product.price, qty: 0 };
+                }
+                acc[product.id].qty += 1;
+                return acc;
+            },
+            {}
+        );
+
+        const rows = Object.values(grouped)
+            .map((item) => `• ${item.name} x${item.qty} (${item.price})`)
+            .join("\n");
+
+        const total = cartItems.reduce((sum, product) => sum + extractPriceNumber(product.price), 0);
+
+        alert(`Coșul tău (mock):\n\n${rows}\n\nTotal produse: ${cartItems.length}\nTotal: ${total.toFixed(0)} MDL`);
     }
 
     return (
@@ -127,10 +174,23 @@ export default function Vanzari() {
             </section>
 
             <UserOnly>
-                <div className="roleActionBar">
-                    <button className="roleActionBtn" onClick={() => alert("Formular adăugare produs — în curând!")}>
-                        + Adaugă produs/anunț
+                <div className="roleActionBar salesActionBar">
+                    <button
+                        type="button"
+                        className="roleActionBtn salesCartQuickBtn"
+                        onClick={openCartPreview}
+                        aria-label={`Vezi coșul (${cartItems.length})`}
+                    >
+                        <ShoppingCartIcon size={18} aria-hidden="true" />
+                        <span>Vezi coșul</span>
+                        <span className="salesCartCount" aria-hidden="true">
+                            {cartItems.length}
+                        </span>
                     </button>
+                    <AddActionButton
+                        label="Adaugă produs/anunț"
+                        onClick={() => alert("Formular adăugare produs — în curând!")}
+                    />
                 </div>
             </UserOnly>
 
@@ -158,16 +218,16 @@ export default function Vanzari() {
                                 </option>
                             ))}
                         </select>
-                        <button className="btnReset" onClick={resetFilters}>
+                        <AppButton className="btnReset" variant="ghost" onClick={resetFilters}>
                             Reset filtre
-                        </button>
+                        </AppButton>
                     </div>
                 </div>
 
                 {filtered.length > 0 ? (
                     <div className="salesGrid">
                         {filtered.map((product) => (
-                            <ProductCard key={product.id} product={product} />
+                            <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
                         ))}
                     </div>
                 ) : (

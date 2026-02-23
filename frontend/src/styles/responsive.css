@@ -165,16 +165,13 @@ body {
         font-size: 14px;
     }
 
-    /* Hide decorative absolute items on mobile (safe) */
-    .lostCloud,
-    .heroCloud,
-    .cloud,
+    /* Hide decorative paw items on mobile (safe) */
     .paw,
     .paw-print,
     .lostPaw,
     .heroPaw,
-    .lp1, .lp2, .lp3,
-    .lc1, .lc2 {
+    .sitterPaw,
+    .lp1, .lp2, .lp3 {
         display: none !important;
     }
 

@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "../styles/Footer.css";
 import { HandCoinsIcon } from "../components/HandCoinsIcon";
+import { AppButton } from "../components/AppButton";
 
 export default function Footer() {
     const navigate = useNavigate();
@@ -8,10 +9,10 @@ export default function Footer() {
     return (
         <footer className="footer">
             <p className="footerText">© PawMate. Creat cu ❤️ pentru animale.</p>
-            <button className="btnDonate" onClick={() => navigate("/donatii")}>
+            <AppButton className="btnDonate" variant="primary" onClick={() => navigate("/donatii")}>
                 <HandCoinsIcon size={16} aria-hidden="true" />
                 Donează Acum
-            </button>
+            </AppButton>
         </footer>
     );
 }

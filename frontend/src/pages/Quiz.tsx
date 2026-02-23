@@ -2,7 +2,8 @@ import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Quiz.css";
 import { AdminOnly } from "../components/AdminOnly";
-import { PlusIcon } from "../components/PlusIcon";
+import { AppButton } from "../components/AppButton";
+import { AddActionButton } from "../components/AddActionButton";
 
 type AnimalKey =
     | "dog"
@@ -174,9 +175,9 @@ const QUESTIONS: Question[] = [
 
 function AnswerButton({ answer, onPick }: { answer: Answer; onPick: (v: AnimalKey) => void }) {
     return (
-        <button onClick={() => onPick(answer.value)}>
+        <AppButton variant="ghost" onClick={() => onPick(answer.value)}>
             {answer.text}
-        </button>
+        </AppButton>
     );
 }
 
@@ -244,17 +245,11 @@ export default function Quiz() {
         <div className="quizPage">
             <AdminOnly>
                 <div className="roleActionBar addQuestionBar">
-                    <button
-                        className="roleActionBtn addQuestionBtn"
+                    <AddActionButton
+                        className="addQuestionBtn"
+                        label="Adaugă întrebare"
                         onClick={() => alert("Formular adăugare întrebare — în curând!")}
-                        aria-label="Adaugă întrebare"
-                        title="Adaugă întrebare"
-                    >
-                        <span className="addQuestionIcon" aria-hidden="true">
-                            <PlusIcon size={18} />
-                        </span>
-                        <span className="addQuestionText">Adaugă întrebare</span>
-                    </button>
+                    />
                 </div>
             </AdminOnly>
             {/* PROGRESS */}
@@ -304,9 +299,9 @@ export default function Quiz() {
                     </div>
 
                     <div className="resultActions">
-                        <button className="btn primary" onClick={restart}>
+                        <AppButton className="btn primary" variant="primary" onClick={restart}>
                             Reîncepe quiz-ul
-                        </button>
+                        </AppButton>
 
                         <Link className="btn ghost" to="/">
                             Înapoi acasă
