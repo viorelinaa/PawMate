@@ -152,7 +152,7 @@
 
 .salesContent .btnReset {
     border: 0;
-    border-radius: 999px;
+    border-radius: 14px;
     padding: 12px 18px;
     font-weight: 700;
     cursor: pointer;
