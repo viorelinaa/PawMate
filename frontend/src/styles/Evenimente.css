@@ -119,6 +119,7 @@
     box-shadow: 0 12px 22px rgba(0, 0, 0, 0.08);
     border-radius: 22px;
     padding: 16px;
+    --filter-h: 46px;
 }
 
 .eventsFiltersGrid {
@@ -138,22 +139,37 @@
 .eventsContent .filterInput,
 .eventsContent .filterSelect {
     width: 100%;
-    padding: 12px 14px;
-    border-radius: 14px;
+    height: var(--filter-h);
+    padding: 0 16px;
+    border-radius: 999px;
     border: 1px solid rgba(106, 74, 131, 0.15);
     outline: none;
     font-weight: 600;
     color: #2b2236;
-    background: #fff;
+    background-color: #fff;
     font-family: inherit;
     font-size: 14px;
     box-sizing: border-box;
 }
 
+.eventsFiltersGrid > * {
+    min-height: var(--filter-h);
+}
+
+.eventsFiltersGrid .searchField {
+    height: var(--filter-h);
+}
+
+.eventsFiltersGrid .searchField input {
+    height: var(--filter-h);
+    border-radius: 999px;
+}
+
 .eventsContent .btnReset {
     border: 0;
-    border-radius: 14px;
-    padding: 12px 18px;
+    border-radius: 999px;
+    height: var(--filter-h);
+    padding: 0 18px;
     font-weight: 700;
     cursor: pointer;
     background: rgba(255, 255, 255, 0.9);
@@ -162,6 +178,9 @@
     transition: transform 120ms ease, box-shadow 120ms ease;
     font-family: inherit;
     font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .eventsContent .btnReset:hover {
