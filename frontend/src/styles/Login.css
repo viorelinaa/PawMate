@@ -127,14 +127,15 @@
 .role-tabs {
   display: flex;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .role-tab {
   flex: 1;
-  padding: 10px;
+  height: 46px;
+  padding: 0 14px !important;
   border: 2px solid #E6D5F0;
-  border-radius: 10px;
+  border-radius: 999px;
   background: white;
   color: #6B4C8A;
   font-size: 0.95rem;
@@ -147,10 +148,23 @@
   gap: 8px;
 }
 
-.role-tab.active {
-  background: #6B4C8A;
-  color: white;
-  border-color: #6B4C8A;
+.role-tab.isSelected {
+  background: #6B4C8A !important;
+  color: #fff !important;
+  border-color: #6B4C8A !important;
+  box-shadow: 0 8px 16px rgba(107, 76, 138, 0.28) !important;
+}
+
+.role-tab.isSelected:hover {
+  background: #5A3D75 !important;
+}
+
+.role-selected {
+  margin: 0 0 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #6B4C8A;
+  text-align: center;
 }
 
 .role-tab-icon {
@@ -224,13 +238,19 @@
 
   .role-tabs {
     gap: 6px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
   }
 
   .role-tab {
-    padding: 8px 10px;
+    height: 42px;
+    padding: 0 10px !important;
     font-size: 0.85rem;
-    border-radius: 9px;
+    border-radius: 999px;
+  }
+
+  .role-selected {
+    font-size: 0.82rem;
+    margin-bottom: 10px;
   }
 
   .demo-card {

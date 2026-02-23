@@ -104,6 +104,32 @@
     font-weight: 600;
 }
 
+.salesActionBar {
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.salesCartQuickBtn {
+    min-width: 154px;
+    height: 46px;
+    padding: 0 14px;
+}
+
+.salesCartCount {
+    min-width: 22px;
+    height: 22px;
+    padding: 0 6px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.22);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+}
+
 .salesContent {
     max-width: 1100px;
     margin: 0 auto;
@@ -133,6 +159,16 @@
 
 @media (max-width: 640px) {
     .salesFiltersGrid { grid-template-columns: 1fr; }
+
+    .salesActionBar {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .salesCartQuickBtn {
+        min-width: 138px;
+        padding: 0 12px;
+    }
 }
 
 .salesContent .filterInput,

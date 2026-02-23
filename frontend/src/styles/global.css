@@ -606,7 +606,7 @@ select,
 }
 
 .addActionBtn {
-  --add-action-expanded-width: 260px;
+  --add-action-expanded-width: 210px;
   height: 46px;
   width: 46px;
   padding: 0;
@@ -635,7 +635,7 @@ select,
 }
 
 .addActionBtn:hover {
-  width: var(--add-action-expanded-width);
+  width: min(var(--add-action-expanded-width), calc(100vw - 28px));
   justify-content: flex-start;
   gap: 8px;
   padding: 0 8px 0 12px;

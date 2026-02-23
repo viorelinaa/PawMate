@@ -1,0 +1,57 @@
+/* src/styles/ShoppingCartIcon.css */
+
+.shoppingCartIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.shoppingCartIcon svg {
+  display: block;
+}
+
+.shoppingCartIcon__cart,
+.shoppingCartIcon__wheel {
+  transform-origin: 50% 50%;
+  transform-box: fill-box;
+}
+
+.shoppingCartIcon--animate .shoppingCartIcon__cart,
+.roleActionBtn:hover .shoppingCartIcon__cart,
+.roleActionBtn:focus-visible .shoppingCartIcon__cart {
+  animation: shopping-cart-bounce calc(1.8 * var(--shopping-cart-duration, 1s)) ease-in-out;
+}
+
+.shoppingCartIcon--animate .shoppingCartIcon__wheel,
+.roleActionBtn:hover .shoppingCartIcon__wheel,
+.roleActionBtn:focus-visible .shoppingCartIcon__wheel {
+  animation: shopping-cart-wheel calc(1 * var(--shopping-cart-duration, 1s)) linear;
+}
+
+@keyframes shopping-cart-bounce {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+  25% {
+    transform: translateY(-3px) rotate(-4deg) scale(1);
+  }
+  55% {
+    transform: translateY(0) rotate(3deg) scale(1);
+  }
+  80% {
+    transform: translateY(-1px) rotate(-2deg) scale(1);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg) scale(1);
+  }
+}
+
+@keyframes shopping-cart-wheel {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

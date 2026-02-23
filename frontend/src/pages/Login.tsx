@@ -59,8 +59,9 @@ const Login: React.FC = () => {
         <div className="role-tabs">
           <AppButton
             type="button"
-            className="role-tab"
-            variant={selectedRole === "user" ? "primary" : "ghost"}
+            className={`role-tab ${selectedRole === "user" ? "isSelected" : ""}`}
+            variant="ghost"
+            aria-pressed={selectedRole === "user"}
             onClick={() => handleRoleSwitch('user')}
           >
             <span className="role-tab-icon" aria-hidden="true">
@@ -70,8 +71,9 @@ const Login: React.FC = () => {
           </AppButton>
           <AppButton
             type="button"
-            className="role-tab"
-            variant={selectedRole === "admin" ? "primary" : "ghost"}
+            className={`role-tab ${selectedRole === "admin" ? "isSelected" : ""}`}
+            variant="ghost"
+            aria-pressed={selectedRole === "admin"}
             onClick={() => handleRoleSwitch('admin')}
           >
             <span className="role-tab-icon" aria-hidden="true">
@@ -80,6 +82,7 @@ const Login: React.FC = () => {
             <span>Admin</span>
           </AppButton>
         </div>
+        <p className="role-selected">Ai ales: {selectedRole === "admin" ? "Admin" : "Utilizator"}</p>
 
         <div className="demo-card">
           <span className="demo-label">Date demo {selectedRole === 'admin' ? 'Admin' : 'Utilizator'}</span>
