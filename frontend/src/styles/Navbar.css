@@ -99,13 +99,13 @@
 
 /* ====== BUTON MOBIL ====== */
 .menuBtn {
-    display: none; /* pe desktop ascuns */
+    display: none;
     border: 0;
     background: transparent;
     padding: 10px;
     border-radius: 14px;
     cursor: pointer;
-    z-index: 60; /* peste overlay */
+    z-index: 60;
 }
 
 .menuBtn:hover {
@@ -135,7 +135,6 @@
 .menuIcon::before { top: -7px; }
 .menuIcon::after  { top: 7px; }
 
-/* overlay */
 .navOverlay {
     display: none;
 }
@@ -156,7 +155,6 @@
         justify-content: center;
     }
 
-    /* meniul devine "drawer" */
     .links {
         position: fixed;
         top: 64px;
@@ -272,6 +270,62 @@
     flex-shrink: 0;
 }
 
+.navUserBadge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-primary, #6B4C8A);
+    background: rgba(107, 76, 138, 0.1);
+    padding: 5px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* reset button defaults */
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.2s ease;
+}
+
+.navUserBadge:hover {
+    background: rgba(107, 76, 138, 0.2);
+}
+
+.navUserName,
+.navUserEmoji {
+    display: none;
+}
+
+.navUserIcon {
+    display: inline-flex;
+}
+
+.navLogoutBtn {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+    background: var(--color-primary, #6B4C8A);
+    border: none;
+    padding: 6px;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+    width: 34px;
+    height: 34px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navLogoutBtn:hover {
+    opacity: 0.85;
+}
+
 @media (max-width: 768px) {
     .navUser {
         max-width: 120px;
@@ -315,51 +369,4 @@
     .navUser {
         max-width: 100px;
     }
-}
-
-.navUserBadge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--color-primary, #6B4C8A);
-    background: rgba(107, 76, 138, 0.1);
-    padding: 5px 12px;
-    border-radius: 999px;
-    white-space: nowrap;
-    max-width: 180px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.navUserName,
-.navUserEmoji {
-    display: none;
-}
-
-.navUserIcon {
-    display: inline-flex;
-}
-
-.navLogoutBtn {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: #fff;
-    background: var(--color-primary, #6B4C8A);
-    border: none;
-    padding: 6px;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    white-space: nowrap;
-    width: 34px;
-    height: 34px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.navLogoutBtn:hover {
-    opacity: 0.85;
 }
