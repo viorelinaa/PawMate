@@ -347,6 +347,31 @@
   box-shadow: none;
 }
 
+/* ── Security blocks ── */
+.security-block {
+  margin-bottom: 8px;
+}
+
+.security-block-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  font-family: var(--font-family);
+  margin: 0 0 20px;
+}
+
+.security-divider {
+  height: 1px;
+  background: var(--color-primary-border);
+  margin: 40px 0;
+}
+
+.input-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: var(--color-primary-faint) !important;
+}
+
 /* ── Empty state ── */
 .profile-empty {
   color: var(--color-text-muted);
@@ -355,6 +380,18 @@
   text-align: center;
   padding: 40px 0;
 }
+
+/* ── Password match hint ── */
+.password-match-hint {
+  font-size: 0.8rem;
+  margin: 4px 0 0;
+  font-family: var(--font-family);
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.password-match-hint.match    { color: #6B4C8A; }
+.password-match-hint.no-match { color: #e74c3c; }
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
@@ -375,9 +412,9 @@
   .profile-field--full {
     grid-column: 1;
   }
-  
 }
-/* ── Dark mode ─────────────────────────────────────────── */
+
+/* ── Dark mode ── */
 [data-theme="dark"] .profile-sidebar,
 [data-theme="dark"] .profile-content {
   background: #1e1b2e;
@@ -472,4 +509,20 @@
 [data-theme="dark"] .security-submit-btn:disabled {
   background: #3a3050;
   color: #6b5a80;
+}
+
+[data-theme="dark"] .security-block-title {
+  color: #c9a6f5;
+}
+
+[data-theme="dark"] .security-divider {
+  background: rgba(107, 76, 138, 0.3);
+}
+
+[data-theme="dark"] .input-disabled {
+  background: rgba(107, 76, 138, 0.1) !important;
+}
+
+[data-theme="dark"] .security-message--success {
+  color: #c9a6f5;
 }
