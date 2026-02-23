@@ -739,3 +739,24 @@
 :root[data-theme="dark"] .med-guide .medBtnReset:hover {
     background: var(--dm-accent-soft);
 }
+/* ── Sitters page ── */
+:root[data-theme="dark"] .pet-sitting-page .filters {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    box-shadow: var(--dm-shadow);
+}
+
+:root[data-theme="dark"] .pet-sitting-page .filters input {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .pet-sitting-page .filters input::placeholder {
+    color: rgba(241, 234, 249, 0.5);
+}
+
+:root[data-theme="dark"] .pet-sitting-page .filters input:focus {
+    border-color: var(--dm-accent-strong);
+    box-shadow: 0 0 0 3px rgba(200, 170, 240, 0.2);
+}
