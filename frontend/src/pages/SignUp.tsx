@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { paths } from "../routes/paths";
 import '../styles/SignUp.css';
 import { AppButton } from "../components/AppButton";
+import { usePasswordValidation } from '../hooks/usePasswordValidation';
+import { PasswordStrengthBar } from '../design-system/components/PasswordStrengthBar';
 
 type UserType = 'adopter' | 'sitter';
 
@@ -19,6 +21,11 @@ const Signup: React.FC = () => {
     acceptTerms: false,
   });
 
+  const passwordValidation = usePasswordValidation(formData.password);
+
+  const passwordsMatch =
+    formData.confirmPassword === '' || formData.password === formData.confirmPassword;
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -29,9 +36,14 @@ const Signup: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (formData.password !== formData.confirmPassword) {
       alert('Parolele nu coincid!');
+      return;
+    }
+
+    if (!passwordValidation.isValid) {
+      alert('Parola nu respectă toate cerințele de securitate!');
       return;
     }
 
@@ -147,8 +159,11 @@ const Signup: React.FC = () => {
                 value={formData.password}
                 onChange={handleInputChange}
                 placeholder="Min. 8 caractere"
-                minLength={8}
                 required
+              />
+              <PasswordStrengthBar
+                validation={passwordValidation}
+                password={formData.password}
               />
             </div>
 
@@ -163,6 +178,11 @@ const Signup: React.FC = () => {
                 placeholder="Reintroduci parola"
                 required
               />
+              {formData.confirmPassword && (
+                <p className={`password-match-hint ${passwordsMatch ? 'match' : 'no-match'}`}>
+                  {passwordsMatch ? '✓ Parolele coincid' : '✗ Parolele nu coincid'}
+                </p>
+              )}
             </div>
           </div>
 
@@ -185,7 +205,11 @@ const Signup: React.FC = () => {
             className="signup-button"
             variant="primary"
             fullWidth
-            disabled={!formData.acceptTerms}
+            disabled={
+              !formData.acceptTerms ||
+              !passwordValidation.isValid ||
+              formData.password !== formData.confirmPassword
+            }
           >
             Creează cont
           </AppButton>
