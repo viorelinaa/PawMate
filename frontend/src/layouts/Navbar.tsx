@@ -7,6 +7,8 @@ import { SunIcon } from "../components/SunIcon";
 import { UserRoundIcon } from "../components/UserRoundIcon";
 import { ShieldUserIcon } from "../components/ShieldUserIcon";
 import { LogoutIcon } from "../components/LogoutIcon";
+import { paths } from "../routes/paths";
+
 export default function Navbar() {
     const { currentUser, logout } = useAuth();
     const navigate = useNavigate();
@@ -18,7 +20,6 @@ export default function Navbar() {
         return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
     });
 
-    // când treci pe desktop, închide meniul (ca să nu rămână "open" din mobil)
     useEffect(() => {
         const onResize = () => {
             if (window.innerWidth > 768) setOpen(false);
@@ -44,55 +45,34 @@ export default function Navbar() {
             <div className="navRight">
                 {/* link-uri */}
                 <nav className={`links ${open ? "open" : ""}`}>
-                    <NavLink to="/" end onClick={() => setOpen(false)}>
-                        Acasă
-                    </NavLink>
-                    <NavLink to="/quiz" onClick={() => setOpen(false)}>
-                        Quiz
-                    </NavLink>
-                    <NavLink to="/adoptie" onClick={() => setOpen(false)}>
-                        Adopție
-                    </NavLink>
-                    <NavLink to="/pierdute" onClick={() => setOpen(false)}>
-                        Pierdute
-                    </NavLink>
-                    <NavLink to="/veterinari" onClick={() => setOpen(false)}>
-                        Veterinari
-                    </NavLink>
-                    <NavLink to="/ghid-medical" onClick={() => setOpen(false)}>
-                        MedGuide
-                    </NavLink>
-                    <NavLink to="/donatii" onClick={() => setOpen(false)}>
-                        Donații
-                    </NavLink>
-                    <NavLink to="/sitters" onClick={() => setOpen(false)}>
-                        Sitters
-                    </NavLink>
-                    <NavLink to="/voluntariat" onClick={() => setOpen(false)}>
-                        Voluntariat
-                    </NavLink>
-                    <NavLink to="/wiki" onClick={() => setOpen(false)}>
-                        Wiki
-                    </NavLink>
-                    <NavLink to="/blog" onClick={() => setOpen(false)}>
-                        Blog
-                    </NavLink>
-                    <NavLink to="/evenimente" onClick={() => setOpen(false)}>
-                        Evenimente
-                    </NavLink>
-                    <NavLink to="/vanzari" onClick={() => setOpen(false)}>
-                        Vânzări
-                    </NavLink>
+                    <NavLink to="/" end onClick={() => setOpen(false)}>Acasă</NavLink>
+                    <NavLink to="/quiz" onClick={() => setOpen(false)}>Quiz</NavLink>
+                    <NavLink to="/adoptie" onClick={() => setOpen(false)}>Adopție</NavLink>
+                    <NavLink to="/pierdute" onClick={() => setOpen(false)}>Pierdute</NavLink>
+                    <NavLink to="/veterinari" onClick={() => setOpen(false)}>Veterinari</NavLink>
+                    <NavLink to="/ghid-medical" onClick={() => setOpen(false)}>MedGuide</NavLink>
+                    <NavLink to="/donatii" onClick={() => setOpen(false)}>Donații</NavLink>
+                    <NavLink to="/sitters" onClick={() => setOpen(false)}>Sitters</NavLink>
+                    <NavLink to="/voluntariat" onClick={() => setOpen(false)}>Voluntariat</NavLink>
+                    <NavLink to="/wiki" onClick={() => setOpen(false)}>Wiki</NavLink>
+                    <NavLink to="/blog" onClick={() => setOpen(false)}>Blog</NavLink>
+                    <NavLink to="/evenimente" onClick={() => setOpen(false)}>Evenimente</NavLink>
+                    <NavLink to="/vanzari" onClick={() => setOpen(false)}>Vânzări</NavLink>
                     {!currentUser && (
-                        <NavLink to="/login" onClick={() => setOpen(false)}>
-                            Login
-                        </NavLink>
+                        <NavLink to="/login" onClick={() => setOpen(false)}>Login</NavLink>
                     )}
                 </nav>
 
                 {currentUser && (
                     <div className="navUser">
-                        <span className={`navUserBadge ${currentUser.role === 'admin' ? 'isAdmin' : 'isUser'}`}>
+                        {/* Badge user — click duce la profil */}
+                        <button
+                            type="button"
+                            className={`navUserBadge ${currentUser.role === 'admin' ? 'isAdmin' : 'isUser'}`}
+                            onClick={() => { navigate(paths.profile); setOpen(false); }}
+                            aria-label="Vezi profilul tău"
+                            title="Profilul meu"
+                        >
                             <span className="navUserEmoji">
                                 {currentUser.role === 'admin' ? '🔑' : '👤'}
                             </span>
@@ -104,11 +84,12 @@ export default function Navbar() {
                                     <UserRoundIcon size={16} />
                                 )}
                             </span>
-                        </span>
+                        </button>
+
                         <button
                             type="button"
                             className="navLogoutBtn"
-                            onClick={() => { logout(); navigate('/login'); setOpen(false); }}
+                            onClick={() => { logout(); navigate(paths.login); setOpen(false); }}
                             aria-label="Logout"
                             title="Logout"
                         >
@@ -131,7 +112,6 @@ export default function Navbar() {
                     )}
                 </button>
 
-                {/* buton hamburger DOAR pe mobil */}
                 <button
                     type="button"
                     className="menuBtn"
@@ -143,7 +123,6 @@ export default function Navbar() {
                 </button>
             </div>
 
-            {/* overlay pentru click în afara meniului */}
             <div
                 className={`navOverlay ${open ? "show" : ""}`}
                 onClick={() => setOpen(false)}
