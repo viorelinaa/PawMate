@@ -73,8 +73,8 @@ export default function Cart() {
                     🐾
                 </span>
                 <div className="cartHeroInner">
-                    <h1 className="cartTitle">Coșul meu</h1>
-                    <p className="cartSub">
+                    <h1 className="cartTitle heroTitle">Coșul meu</h1>
+                    <p className="cartSub heroSubtitle">
                         {cartItems.length === 0
                             ? "Coșul este gol."
                             : `${cartItems.length} produs${cartItems.length !== 1 ? "e" : ""} adăugate`}

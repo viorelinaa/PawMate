@@ -63,12 +63,6 @@ const products: Product[] = [
 
 const allCategories = [...new Set(products.map((product) => product.category))];
 
-function extractPriceNumber(price: string) {
-    const cleaned = price.replace(",", ".").replace(/[^\d.]/g, "");
-    const parsed = Number.parseFloat(cleaned);
-    return Number.isFinite(parsed) ? parsed : 0;
-}
-
 function ProductCard({
     product,
     onAddToCart,
