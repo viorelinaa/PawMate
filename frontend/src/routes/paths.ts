@@ -10,6 +10,7 @@ export const paths = {
     ghidMedical: "/ghid-medical",
     evenimente: "/evenimente",
     vanzari: "/vanzari",
+    cos: "/cos",
     blog: "/blog",
     quiz: "/quiz",
     login: "/login",
