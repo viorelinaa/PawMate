@@ -1,6 +1,6 @@
 // src/pages/Home.tsx
 import { useNavigate } from "react-router-dom";
-import "./Home.css";
+import "../styles/Home.css";
 import { AppButton } from "../components/AppButton";
 
 export default function Home() {

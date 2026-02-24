@@ -765,3 +765,37 @@
 :root[data-theme="dark"] .signup-container {
     background: var(--dm-bg);
 }
+/* ===================================================== */
+/* FIXURI DARK MODE – Dropdown orașe + text vizibil vet */
+/* ===================================================== */
+
+/* ── 1. Săgeata dropdown (Toate orașele) ── */
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] .filterSelect {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background-image: var(--select-chevron);
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 18px;
+
+    padding-right: 40px; /* spațiu pentru săgeată */
+    color: var(--dm-text);
+}
+
+/* elimină săgeata default (Edge/IE) */
+:root[data-theme="dark"] select::-ms-expand {
+    display: none;
+}
+
+:root[data-theme="dark"] .vetCard .petCity,
+:root[data-theme="dark"] .vetCard .vetCity,
+:root[data-theme="dark"] .vetCard .eventsDate,
+:root[data-theme="dark"] .vetCard p,
+:root[data-theme="dark"] .vetCard span,
+:root[data-theme="dark"] .vetCard a {
+    color: var(--dm-text) !important;
+    opacity: 1 !important;
+}
