@@ -145,6 +145,7 @@
 :root[data-theme="dark"] .donPaw,
 :root[data-theme="dark"] .veterinariPaw,
 :root[data-theme="dark"] .salesPaw,
+:root[data-theme="dark"] .cartPaw,
 :root[data-theme="dark"] .eventsPaw,
 :root[data-theme="dark"] .sitterPaw,
 :root[data-theme="dark"] .wikiPaw,
@@ -159,6 +160,7 @@
 :root[data-theme="dark"] .veterinariPage,
 :root[data-theme="dark"] .salesPage,
 :root[data-theme="dark"] .eventsPage,
+:root[data-theme="dark"] .cartPage,
 :root[data-theme="dark"] .salesPage,
 :root[data-theme="dark"] .eventsPage,
 :root[data-theme="dark"] .explore,
@@ -168,6 +170,7 @@
 :root[data-theme="dark"] .veterinariContent,
 :root[data-theme="dark"] .salesContent,
 :root[data-theme="dark"] .eventsContent,
+:root[data-theme="dark"] .cartContent,
 :root[data-theme="dark"] .blogPage,
 :root[data-theme="dark"] .blogSearchSection,
 :root[data-theme="dark"] .blogGridSection,
@@ -195,6 +198,9 @@
 :root[data-theme="dark"] .donCard,
 :root[data-theme="dark"] .vetCard,
 :root[data-theme="dark"] .salesCard,
+:root[data-theme="dark"] .cartItem,
+:root[data-theme="dark"] .cartTotal,
+:root[data-theme="dark"] .cartEmpty,
 :root[data-theme="dark"] .eventsCard,
 :root[data-theme="dark"] .blogCard,
 :root[data-theme="dark"] .sitter-card,
@@ -294,6 +300,7 @@
 :root[data-theme="dark"] .lostBadge,
 :root[data-theme="dark"] .donBadge,
 :root[data-theme="dark"] .salesBadge,
+:root[data-theme="dark"] .cartItemCategory,
 :root[data-theme="dark"] .eventsTag,
 :root[data-theme="dark"] .serviceBadge,
 :root[data-theme="dark"] .quizBadge,
@@ -324,6 +331,7 @@
 :root[data-theme="dark"] .btnReset,
 :root[data-theme="dark"] .lostBtnReset,
 :root[data-theme="dark"] .filter-reset,
+:root[data-theme="dark"] .cartBackBtn,
 :root[data-theme="dark"] .blogCategoryBtn,
 :root[data-theme="dark"] .categoryBtn,
 :root[data-theme="dark"] .nfBtn,
@@ -357,6 +365,7 @@
 :root[data-theme="dark"] .donTitle,
 :root[data-theme="dark"] .veterinariTitle,
 :root[data-theme="dark"] .salesTitle,
+:root[data-theme="dark"] .cartTitle,
 :root[data-theme="dark"] .eventsTitle,
 :root[data-theme="dark"] .blogTitle,
 :root[data-theme="dark"] .wikiTitle,
@@ -377,6 +386,7 @@
 :root[data-theme="dark"] .donName,
 :root[data-theme="dark"] .vetName,
 :root[data-theme="dark"] .salesName,
+:root[data-theme="dark"] .cartItemName,
 :root[data-theme="dark"] .eventsName,
 :root[data-theme="dark"] .blogCardTitle,
 :root[data-theme="dark"] .animalName,
@@ -403,6 +413,7 @@
 :root[data-theme="dark"] .lostSub,
 :root[data-theme="dark"] .donSub,
 :root[data-theme="dark"] .veterinariSub,
+:root[data-theme="dark"] .cartSub,
 :root[data-theme="dark"] .salesSubtitle,
 :root[data-theme="dark"] .eventsSubtitle,
 :root[data-theme="dark"] .wikiSub,
@@ -415,6 +426,7 @@
 :root[data-theme="dark"] .vetDesc,
 :root[data-theme="dark"] .salesDesc,
 :root[data-theme="dark"] .eventsDesc,
+:root[data-theme="dark"] .cartEmptyText,
 :root[data-theme="dark"] .blogCardExcerpt,
 :root[data-theme="dark"] .subtitle,
 :root[data-theme="dark"] .city,
@@ -436,6 +448,8 @@
 :root[data-theme="dark"] .donSmall,
 :root[data-theme="dark"] .vetCity,
 :root[data-theme="dark"] .eventsDate,
+:root[data-theme="dark"] .cartItemQty,
+:root[data-theme="dark"] .cartItemUnitPrice,
 :root[data-theme="dark"] .blogDate,
 :root[data-theme="dark"] .blogReadTime,
 :root[data-theme="dark"] .animalPreview,
@@ -552,6 +566,7 @@
 :root[data-theme="dark"] .btnDetails,
 :root[data-theme="dark"] .donBtn,
 :root[data-theme="dark"] .salesBtn,
+:root[data-theme="dark"] .cartOrderBtn,
 :root[data-theme="dark"] .btnLearnMore,
 :root[data-theme="dark"] .btnSubmit,
 :root[data-theme="dark"] .login-button,
@@ -571,6 +586,60 @@
 
 :root[data-theme="dark"] .modalClose:hover {
     background: var(--dm-accent-soft);
+}
+
+/* Cart page */
+:root[data-theme="dark"] .cartHero {
+    background: var(--dm-hero);
+}
+
+:root[data-theme="dark"] .cartHero::before {
+    background: var(--dm-hero-radial);
+}
+
+:root[data-theme="dark"] .cartCloud {
+    background: var(--hero-cloud);
+    filter: var(--hero-cloud-shadow);
+}
+
+:root[data-theme="dark"] .cartCloud::before,
+:root[data-theme="dark"] .cartCloud::after {
+    background: var(--hero-cloud);
+}
+
+:root[data-theme="dark"] .cartItemPrice,
+:root[data-theme="dark"] .cartTotalAmount {
+    color: var(--dm-accent);
+}
+
+:root[data-theme="dark"] .cartTotalLabel {
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .cartBackBtn {
+    box-shadow: none;
+}
+
+:root[data-theme="dark"] .cartBackBtn:hover {
+    background: var(--dm-accent-soft);
+}
+
+:root[data-theme="dark"] .cartOrderBtn {
+    background: var(--dm-accent-strong);
+    color: #1a1424;
+}
+
+:root[data-theme="dark"] .cartOrderBtn:hover {
+    box-shadow: var(--dm-shadow-strong);
+}
+
+:root[data-theme="dark"] .cartItemRemove {
+    color: rgba(241, 234, 249, 0.45);
+}
+
+:root[data-theme="dark"] .cartItemRemove:hover {
+    background: rgba(255, 71, 87, 0.14);
+    color: #ff9ca8;
 }
 
 :root[data-theme="dark"] .infoItem {
