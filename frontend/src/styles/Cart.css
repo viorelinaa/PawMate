@@ -1,0 +1,269 @@
+/* src/styles/Cart.css */
+
+.cartPage {
+    background: lavender;
+    min-height: 100vh;
+}
+
+/* ── Hero ──────────────────────────────────────────────── */
+.cartHero {
+    position: relative;
+    padding: 80px 24px 60px;
+    background: lavender;
+    overflow: hidden;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    text-align: center;
+}
+
+.cartHero::before {
+    content: "";
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    left: 50%;
+    top: 40px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 999px;
+    pointer-events: none;
+}
+
+.cartCloud {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 999px;
+    filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.08));
+    pointer-events: none;
+}
+
+.cartCloud::before,
+.cartCloud::after {
+    content: "";
+    position: absolute;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 999px;
+}
+
+.cartCloud::before { width: 80px;  height: 80px;  left: 25px; top: -35px; }
+.cartCloud::after  { width: 100px; height: 100px; left: 90px; top: -45px; }
+
+.cartCloud.cc1 { width: 200px; height: 70px; left: 30px;  top: 40px; transform: scale(0.9); }
+.cartCloud.cc2 { width: 220px; height: 75px; right: 30px; top: 50px; }
+
+.cartPaw {
+    position: absolute;
+    font-size: 24px;
+    opacity: 0.3;
+    pointer-events: none;
+}
+
+.cartPaw.cp1 { left: 20px;  bottom: 30px; transform: rotate(-14deg); }
+.cartPaw.cp2 { right: 24px; bottom: 34px; transform: rotate(12deg); }
+.cartPaw.cp3 { left: 50%;   top: 20px;    transform: translateX(-50%) rotate(8deg); font-size: 20px; }
+
+.cartHeroInner { position: relative; }
+
+.cartTitle {
+    margin: 0;
+    font-size: clamp(32px, 4vw, 52px);
+    color: #6a4a83;
+    font-weight: 800;
+}
+
+.cartSub {
+    margin: 10px 0 0;
+    color: rgba(43, 34, 54, 0.7);
+    font-weight: 600;
+}
+
+/* ── Content ───────────────────────────────────────────── */
+.cartContent {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 30px 24px 70px;
+}
+
+/* ── Items ─────────────────────────────────────────────── */
+.cartItems {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.cartItem {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 18px;
+    padding: 16px 20px;
+    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(106, 74, 131, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.cartItemInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.cartItemName {
+    margin: 0;
+    color: #6a4a83;
+    font-weight: 800;
+    font-size: 16px;
+}
+
+.cartItemCategory {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(106, 74, 131, 0.1);
+    color: #6a4a83;
+    border: 1px solid rgba(106, 74, 131, 0.15);
+    width: fit-content;
+}
+
+.cartItemUnitPrice {
+    font-size: 12px;
+    color: rgba(43, 34, 54, 0.55);
+    font-weight: 600;
+}
+
+.cartItemRight {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.cartItemRemove {
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: rgba(106, 74, 131, 0.4);
+    font-size: 13px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 999px;
+    transition: background 120ms ease, color 120ms ease;
+    line-height: 1;
+}
+
+.cartItemRemove:hover {
+    background: rgba(200, 50, 50, 0.08);
+    color: #c0392b;
+}
+
+.cartItemQty {
+    font-size: 13px;
+    color: rgba(43, 34, 54, 0.5);
+    font-weight: 700;
+}
+
+.cartItemPrice {
+    font-size: 16px;
+    font-weight: 800;
+    color: #6a4a83;
+}
+
+/* ── Total ─────────────────────────────────────────────── */
+.cartTotal {
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 18px;
+    padding: 16px 20px;
+    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.08);
+    border: 1px solid rgba(106, 74, 131, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.cartTotalLabel {
+    font-size: 16px;
+    font-weight: 800;
+    color: rgba(43, 34, 54, 0.75);
+}
+
+.cartTotalAmount {
+    font-size: 22px;
+    font-weight: 800;
+    color: #6a4a83;
+}
+
+/* ── Actions ───────────────────────────────────────────── */
+.cartActions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.cartBackBtn {
+    border: 0;
+    border-radius: 999px;
+    padding: 12px 22px;
+    font-weight: 700;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.9);
+    color: #6a4a83;
+    box-shadow: 0 10px 18px rgba(0, 0, 0, 0.08);
+    transition: transform 120ms ease;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.cartBackBtn:hover { transform: translateY(-1px); }
+
+.cartOrderBtn {
+    flex: 1;
+    border: 0;
+    border-radius: 999px;
+    padding: 12px 22px;
+    font-weight: 700;
+    cursor: pointer;
+    background: #6a4a83;
+    color: #fff;
+    box-shadow: 0 14px 24px rgba(106, 74, 131, 0.28);
+    transition: transform 120ms ease, box-shadow 120ms ease;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.cartOrderBtn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 28px rgba(106, 74, 131, 0.35);
+}
+
+/* ── Empty ─────────────────────────────────────────────── */
+.cartEmpty {
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(106, 74, 131, 0.15);
+    border-radius: 22px;
+    padding: 32px 24px;
+    box-shadow: 0 12px 22px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.cartEmptyText {
+    color: rgba(43, 34, 54, 0.7);
+    font-weight: 700;
+    font-size: 16px;
+    margin: 0;
+}
+
+@media (max-width: 640px) {
+    .cartActions { flex-direction: column; }
+    .cartOrderBtn { flex: unset; }
+}
