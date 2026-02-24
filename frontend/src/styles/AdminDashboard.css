@@ -1,0 +1,409 @@
+/* ── Admin Dashboard ─────────────────────────────────────── */
+.adminDash {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+}
+
+/* Header */
+.adminDashHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.adminDashWelcome h1 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin: 0 0 4px;
+}
+
+.adminDashWelcome p {
+    font-size: 0.95rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.adminDashDate {
+    font-size: 0.85rem;
+    color: #9ca3af;
+    font-weight: 500;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 6px 14px;
+    border-radius: 999px;
+    white-space: nowrap;
+    align-self: center;
+}
+
+/* Stat Cards */
+.adminStatCards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+}
+
+.adminStatCard {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 20px 20px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease;
+}
+
+.adminStatCard:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.adminStatLabel {
+    font-size: 0.8rem;
+    color: #6b7280;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0 0 6px;
+}
+
+.adminStatValue {
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0 0 4px;
+    line-height: 1;
+}
+
+.adminStatTrend {
+    font-size: 0.78rem;
+    color: #10b981;
+    font-weight: 500;
+    margin: 0;
+}
+
+.adminStatCardIcon {
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    flex-shrink: 0;
+}
+
+/* Middle Row */
+.adminDashMiddle {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 18px;
+    align-items: start;
+}
+
+/* Chart Card */
+.adminChartCard {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.adminChartHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.adminChartHeader h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+}
+
+.adminChartLegend {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-size: 0.78rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+.legendDot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 4px;
+    vertical-align: middle;
+}
+
+.adminChart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 180px;
+    padding-bottom: 24px;
+    position: relative;
+}
+
+.adminChartCol {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+}
+
+.adminChartBars {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    min-height: 0;
+}
+
+.adminChartBar {
+    flex: 1;
+    border-radius: 4px 4px 0 0;
+    min-height: 4px;
+    transition: opacity 0.2s;
+    cursor: pointer;
+}
+
+.adminChartBar:hover {
+    opacity: 0.8;
+}
+
+.adminChartMonth {
+    font-size: 0.7rem;
+    color: #9ca3af;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+/* Activity Card */
+.adminActivityCard {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.adminActivityCard h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 18px;
+}
+
+.adminActivityList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.adminActivityItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.adminActivityIcon {
+    width: 36px;
+    height: 36px;
+    background: #f3eefc;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+}
+
+.adminActivityInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.adminActivityAction {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.adminActivityDetail {
+    font-size: 0.78rem;
+    color: #6b7280;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.adminActivityDate {
+    font-size: 0.72rem;
+    color: #9ca3af;
+    font-weight: 500;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* Page Visits Card */
+.adminPageVisitsCard {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.adminPageVisitsCard h2 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 18px;
+}
+
+.adminPageVisitsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.adminPageVisitItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.adminPageVisitIcon {
+    font-size: 1.3rem;
+    flex-shrink: 0;
+}
+
+.adminPageVisitInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.adminPageVisitName {
+    font-size: 0.83rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    margin: 0 0 2px;
+}
+
+.adminPageVisitCount {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+.adminPageVisitBar {
+    width: 60px;
+    height: 5px;
+    background: #f3f4f6;
+    border-radius: 999px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.adminPageVisitBarFill {
+    height: 100%;
+    background: #6b4fa1;
+    border-radius: 999px;
+    min-width: 4px;
+}
+
+/* ── Dark Mode ─────────────────────────────────────── */
+[data-theme="dark"] .adminDashWelcome h1,
+[data-theme="dark"] .adminChartHeader h2,
+[data-theme="dark"] .adminActivityCard h2,
+[data-theme="dark"] .adminPageVisitsCard h2,
+[data-theme="dark"] .adminActivityAction,
+[data-theme="dark"] .adminPageVisitName {
+    color: #f0f0f0;
+}
+
+[data-theme="dark"] .adminStatCard,
+[data-theme="dark"] .adminChartCard,
+[data-theme="dark"] .adminActivityCard,
+[data-theme="dark"] .adminPageVisitsCard {
+    background: #1e1e2e;
+    border-color: #2e2e40;
+}
+
+[data-theme="dark"] .adminDashDate {
+    background: #1e1e2e;
+    border-color: #2e2e40;
+    color: #9ca3af;
+}
+
+[data-theme="dark"] .adminPageVisitBar {
+    background: #2e2e40;
+}
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 1024px) {
+    .adminStatCards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .adminDashMiddle {
+        grid-template-columns: 1fr;
+    }
+
+    .adminPageVisitsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .adminDash {
+        padding: 20px 14px 32px;
+        gap: 18px;
+    }
+
+    .adminStatCards {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .adminStatValue {
+        font-size: 1.5rem;
+    }
+
+    .adminPageVisitsGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 400px) {
+    .adminStatCards {
+        grid-template-columns: 1fr;
+    }
+}
