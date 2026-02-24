@@ -1,0 +1,331 @@
+/* ── Admin Users ─────────────────────────────────────── */
+.adminUsers {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+}
+
+.adminUsersHeader {
+    margin-bottom: 28px;
+}
+
+.adminUsersHeader h1 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin: 0 0 6px;
+}
+
+.adminUsersHeader p {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Grid */
+.adminUsersGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* Card */
+.adminUserCard {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.adminUserCard:hover {
+    box-shadow: 0 6px 20px rgba(107, 79, 161, 0.1);
+    transform: translateY(-2px);
+}
+
+.adminUserCard--banned {
+    border-color: #fecaca;
+    background: #fff8f8;
+}
+
+.adminUserCard--banned:hover {
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.1);
+}
+
+/* Top row: avatar + info + badge */
+.adminUserCardTop {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.adminUserAvatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6b4fa1, #9b6fd4);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    letter-spacing: 0.5px;
+}
+
+.adminUserAvatar--banned {
+    background: linear-gradient(135deg, #9ca3af, #d1d5db);
+}
+
+.adminUserInfo {
+    flex: 1;
+    min-width: 0;
+}
+
+.adminUserName {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.adminUserEmail {
+    font-size: 0.75rem;
+    color: #6b7280;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Status badge */
+.adminUserBadge {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.adminUserBadge--active {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.adminUserBadge--banned {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+/* Details */
+.adminUserDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.adminUserDetail {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: #4b5563;
+}
+
+.adminUserDetailIcon {
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+
+/* Recent activity */
+.adminUserActivity {
+    background: #f9fafb;
+    border-radius: 10px;
+    padding: 10px 12px;
+}
+
+.adminUserActivityLabel {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 6px;
+}
+
+.adminUserActivityList {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.adminUserActivityItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: #4b5563;
+    line-height: 1.4;
+}
+
+/* Actions */
+.adminUserActions {
+    margin-top: auto;
+}
+
+.adminUserBanBtn {
+    width: 100%;
+    padding: 9px 16px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    border: none;
+    transition: opacity 0.18s ease, transform 0.12s ease;
+}
+
+.adminUserBanBtn:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+}
+
+.adminUserBanBtn--ban {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.adminUserBanBtn--ban:hover {
+    background: #fecaca;
+}
+
+.adminUserBanBtn--unban {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.adminUserBanBtn--unban:hover {
+    background: #a7f3d0;
+}
+
+/* Confirm dialog */
+.adminUserConfirm {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.adminUserConfirmText {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: #374151;
+    margin: 0;
+    text-align: center;
+}
+
+.adminUserConfirmBtns {
+    display: flex;
+    gap: 8px;
+}
+
+.adminUserConfirmYes,
+.adminUserConfirmNo {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 9px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    border: none;
+    transition: opacity 0.15s ease;
+}
+
+.adminUserConfirmYes:hover,
+.adminUserConfirmNo:hover {
+    opacity: 0.85;
+}
+
+.adminUserConfirmYes--ban {
+    background: #ef4444;
+    color: #fff;
+}
+
+.adminUserConfirmYes--unban {
+    background: #10b981;
+    color: #fff;
+}
+
+.adminUserConfirmNo {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+/* ── Dark Mode ─────────────────────────────────────── */
+[data-theme="dark"] .adminUsersHeader h1,
+[data-theme="dark"] .adminUserName {
+    color: #f0f0f0;
+}
+
+[data-theme="dark"] .adminUserCard {
+    background: #1e1e2e;
+    border-color: #2e2e40;
+}
+
+[data-theme="dark"] .adminUserCard--banned {
+    background: #2a1a1a;
+    border-color: #5a2020;
+}
+
+[data-theme="dark"] .adminUserActivity {
+    background: #16161f;
+}
+
+[data-theme="dark"] .adminUserDetail,
+[data-theme="dark"] .adminUserActivityItem {
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .adminUserConfirmText {
+    color: #e5e7eb;
+}
+
+[data-theme="dark"] .adminUserConfirmNo {
+    background: #374151;
+    color: #e5e7eb;
+}
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 1024px) {
+    .adminUsersGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .adminUsers {
+        padding: 20px 14px 32px;
+    }
+
+    .adminUsersGrid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .adminUsersHeader h1 {
+        font-size: 1.4rem;
+    }
+}
