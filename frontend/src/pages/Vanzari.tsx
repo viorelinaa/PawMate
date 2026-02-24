@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { paths } from "../routes/paths";
 import "../styles/Vanzari.css";
 import { UserOnly } from "../components/UserOnly";
 import { SearchIcon } from "../components/SearchIcon";
@@ -94,10 +96,26 @@ function ProductCard({
     );
 }
 
+const CART_KEY = "pawmate_cart";
+
 export default function Vanzari() {
+    const navigate = useNavigate();
     const [query, setQuery] = useState("");
     const [category, setCategory] = useState("ALL");
-    const [cartItems, setCartItems] = useState<Product[]>([]);
+    const [cartItems, setCartItems] = useState<Product[]>(() => {
+        try {
+            const saved = localStorage.getItem(CART_KEY);
+            return saved ? JSON.parse(saved) : [];
+        } catch {
+            return [];
+        }
+    });
+    const [toastVisible, setToastVisible] = useState(false);
+    const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+    useEffect(() => {
+        localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
+    }, [cartItems]);
 
     const filtered = products.filter((product) => {
         if (category !== "ALL" && product.category !== category) return false;
@@ -119,36 +137,22 @@ export default function Vanzari() {
 
     function addToCart(product: Product) {
         setCartItems((prev) => [...prev, product]);
+        if (toastTimer.current) clearTimeout(toastTimer.current);
+        setToastVisible(true);
+        toastTimer.current = setTimeout(() => setToastVisible(false), 2200);
     }
 
     function openCartPreview() {
-        if (cartItems.length === 0) {
-            alert("Coșul este gol momentan.");
-            return;
-        }
-
-        const grouped = cartItems.reduce<Record<string, { name: string; price: string; qty: number }>>(
-            (acc, product) => {
-                if (!acc[product.id]) {
-                    acc[product.id] = { name: product.name, price: product.price, qty: 0 };
-                }
-                acc[product.id].qty += 1;
-                return acc;
-            },
-            {}
-        );
-
-        const rows = Object.values(grouped)
-            .map((item) => `• ${item.name} x${item.qty} (${item.price})`)
-            .join("\n");
-
-        const total = cartItems.reduce((sum, product) => sum + extractPriceNumber(product.price), 0);
-
-        alert(`Coșul tău (mock):\n\n${rows}\n\nTotal produse: ${cartItems.length}\nTotal: ${total.toFixed(0)} MDL`);
+        navigate(paths.cos, { state: { cartItems } });
     }
 
     return (
         <div className="salesPage">
+            {toastVisible && (
+                <div className="salesToast" role="status" aria-live="polite">
+                    ✓ Adăugat în coș!
+                </div>
+            )}
             <section className="salesHero">
                 <div className="salesCloud sc1" />
                 <div className="salesCloud sc2" />
