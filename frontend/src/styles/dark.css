@@ -584,3 +584,184 @@
 :root[data-theme="dark"] .med-guide ::-webkit-scrollbar-thumb {
     background: var(--dm-accent-strong);
 }
+/* ── Profile page ── */
+:root[data-theme="dark"] .profile-sidebar,
+:root[data-theme="dark"] .profile-content {
+    background: var(--dm-surface);
+    border-color: var(--dm-border);
+    box-shadow: var(--dm-shadow);
+}
+
+:root[data-theme="dark"] .profile-name {
+    color: var(--dm-accent);
+}
+
+:root[data-theme="dark"] .profile-role,
+:root[data-theme="dark"] .profile-joined,
+:root[data-theme="dark"] .profile-empty {
+    color: var(--dm-muted);
+}
+
+:root[data-theme="dark"] .profile-nav-btn {
+    color: var(--dm-muted);
+}
+
+:root[data-theme="dark"] .profile-nav-btn:hover {
+    background: var(--dm-accent-soft);
+    color: var(--dm-accent);
+}
+
+:root[data-theme="dark"] .profile-nav-btn.active {
+    background: var(--dm-accent-strong);
+    color: #1a1424;
+}
+
+:root[data-theme="dark"] .profile-section-title {
+    color: var(--dm-text);
+    border-bottom-color: var(--dm-border);
+}
+
+:root[data-theme="dark"] .profile-field label {
+    color: var(--dm-muted);
+}
+
+:root[data-theme="dark"] .profile-field p {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .pet-card {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+}
+
+:root[data-theme="dark"] .pet-card-info h4 {
+    color: var(--dm-accent);
+}
+
+:root[data-theme="dark"] .pet-card-info p,
+:root[data-theme="dark"] .pet-card-date {
+    color: var(--dm-muted);
+}
+
+:root[data-theme="dark"] .activity-item {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+}
+
+:root[data-theme="dark"] .activity-info p {
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .activity-info span {
+    color: var(--dm-muted);
+}
+
+:root[data-theme="dark"] .profile-form-group label {
+    color: var(--dm-accent);
+}
+
+:root[data-theme="dark"] .security-block-title {
+    color: var(--dm-accent);
+}
+
+:root[data-theme="dark"] .security-divider {
+    background: var(--dm-border);
+}
+
+:root[data-theme="dark"] .input-disabled {
+    background: var(--dm-surface-strong) !important;
+    opacity: 0.5;
+}
+
+:root[data-theme="dark"] .security-message--success {
+    color: var(--dm-accent);
+}
+
+:root[data-theme="dark"] .security-submit-btn:disabled {
+    background: var(--dm-surface-strong);
+    color: var(--dm-muted);
+    box-shadow: none;
+}
+
+:root[data-theme="dark"] .password-match-hint.match {
+    color: var(--dm-accent);
+}
+
+/* ── Adoption page dark (filtre) ── */
+:root[data-theme="dark"] .filterInput,
+:root[data-theme="dark"] .filterSelect {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .filterInput::placeholder {
+    color: rgba(241, 234, 249, 0.5);
+}
+
+:root[data-theme="dark"] .filterCheck {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    color: var(--dm-muted);
+}
+
+:root[data-theme="dark"] .emptyNotice {
+    background: var(--dm-surface);
+    border-color: var(--dm-border);
+    color: var(--dm-muted);
+}
+/* ── MedGuide page ── */
+:root[data-theme="dark"] .med-guide .medFilters {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    box-shadow: var(--dm-shadow);
+}
+
+:root[data-theme="dark"] .med-guide .medFilterInput {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .med-guide .medFilterInput::placeholder {
+    color: rgba(241, 234, 249, 0.5);
+}
+
+:root[data-theme="dark"] .med-guide .medBtnReset {
+    background: var(--dm-surface-strong);
+    color: var(--dm-accent);
+    border: 1px solid var(--dm-border);
+    box-shadow: none;
+}
+
+:root[data-theme="dark"] .med-guide .medBtnReset:hover {
+    background: var(--dm-accent-soft);
+}
+/* ── Sitters page ── */
+:root[data-theme="dark"] .pet-sitting-page .filters {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    box-shadow: var(--dm-shadow);
+}
+
+:root[data-theme="dark"] .pet-sitting-page .filters input {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    color: var(--dm-text);
+}
+
+:root[data-theme="dark"] .pet-sitting-page .filters input::placeholder {
+    color: rgba(241, 234, 249, 0.5);
+}
+
+:root[data-theme="dark"] .pet-sitting-page .filters input:focus {
+    border-color: var(--dm-accent-strong);
+    box-shadow: 0 0 0 3px rgba(200, 170, 240, 0.2);
+}
+/* ── Login & Signup background ── */
+:root[data-theme="dark"] .login-container,
+:root[data-theme="dark"] .signup-container {
+    background: var(--dm-bg);
+}
