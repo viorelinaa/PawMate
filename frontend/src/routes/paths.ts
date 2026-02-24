@@ -16,5 +16,8 @@ export const paths = {
     login: "/login",
     signup: "/signup",
     profile: "/profile",
+    adminStatistici: "/admin/statistici",
+    adminPagini: "/admin/pagini",
+    adminUtilizatori: "/admin/utilizatori",
     notfound: "*",
 } as const;

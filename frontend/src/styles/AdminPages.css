@@ -1,0 +1,176 @@
+/* ── Admin Pages ─────────────────────────────────────── */
+.adminPages {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 32px 24px 48px;
+}
+
+.adminPagesHeader {
+    margin-bottom: 28px;
+}
+
+.adminPagesHeader h1 {
+    font-size: 1.7rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin: 0 0 6px;
+}
+
+.adminPagesHeader p {
+    font-size: 0.95rem;
+    color: #6b7280;
+    margin: 0;
+}
+
+/* Grid */
+.adminPagesGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* Card */
+.adminPageCard {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.adminPageCard:hover {
+    box-shadow: 0 6px 20px rgba(107, 79, 161, 0.12);
+    transform: translateY(-2px);
+}
+
+.adminPageCardTop {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.adminPageCardIcon {
+    width: 48px;
+    height: 48px;
+    background: #f3eefc;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.adminPageCardTitle {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin: 0;
+}
+
+.adminPageCardDesc {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin: 0;
+    line-height: 1.5;
+    flex: 1;
+}
+
+/* Actions */
+.adminPageCardActions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+}
+
+/* Override AddActionButton — always fully expanded inside card */
+.adminPageCardActions .roleActionBtn.addActionBtn,
+.adminPageCardActions .roleActionBtn.addActionBtn:hover {
+    width: 100%;
+    height: auto;
+    justify-content: center;
+    border-radius: 10px;
+    padding: 10px 16px;
+    gap: 8px;
+    font-size: 0.85rem;
+    flex-direction: row;
+    overflow: visible;
+}
+
+.adminPageCardActions .addActionText {
+    max-width: none;
+    opacity: 1;
+    overflow: visible;
+    white-space: nowrap;
+}
+
+.adminPageCardViewBtn {
+    width: 100%;
+    padding: 9px 16px;
+    border-radius: 10px;
+    border: 1.5px solid #6b4fa1;
+    background: transparent;
+    color: #6b4fa1;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.18s ease, color 0.18s ease;
+}
+
+.adminPageCardViewBtn:hover {
+    background: #6b4fa1;
+    color: #fff;
+}
+
+/* ── Dark Mode ─────────────────────────────────────── */
+[data-theme="dark"] .adminPagesHeader h1,
+[data-theme="dark"] .adminPageCardTitle {
+    color: #f0f0f0;
+}
+
+[data-theme="dark"] .adminPageCard {
+    background: #1e1e2e;
+    border-color: #2e2e40;
+}
+
+[data-theme="dark"] .adminPageCardIcon {
+    background: #2a1e40;
+}
+
+[data-theme="dark"] .adminPageCardViewBtn {
+    border-color: #8b6fbf;
+    color: #c4a8f0;
+}
+
+[data-theme="dark"] .adminPageCardViewBtn:hover {
+    background: #6b4fa1;
+    color: #fff;
+}
+
+/* ── Responsive ─────────────────────────────────────── */
+@media (max-width: 1024px) {
+    .adminPagesGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .adminPages {
+        padding: 20px 14px 32px;
+    }
+
+    .adminPagesGrid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .adminPagesHeader h1 {
+        font-size: 1.4rem;
+    }
+}

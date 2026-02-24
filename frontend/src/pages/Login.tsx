@@ -35,7 +35,7 @@ const Login: React.FC = () => {
     e.preventDefault();
     const ok = login(email, password);
     if (ok) {
-      navigate(paths.home);
+      navigate(selectedRole === 'admin' ? paths.adminStatistici : paths.home);
     } else {
       setError('Email sau parolă incorecte.');
     }

@@ -19,6 +19,9 @@ import Vanzari from "../pages/Vanzari";
 import Cart from "../pages/Cart";
 import Evenimente from "../pages/Evenimente";
 import Profile from "../pages/Profile";
+import AdminDashboard from "../pages/AdminDashboard";
+import AdminPages from "../pages/AdminPages";
+import AdminUsers from "../pages/AdminUsers";
 export default function AppRoutes() {
     return (
         <>
@@ -41,6 +44,9 @@ export default function AppRoutes() {
                     <Route path={paths.vanzari} element={<Vanzari />} />
                     <Route path={paths.cos} element={<Cart />} />
                     <Route path={paths.profile} element={<Profile />} />
+                    <Route path={paths.adminStatistici} element={<AdminDashboard />} />
+                    <Route path={paths.adminPagini} element={<AdminPages />} />
+                    <Route path={paths.adminUtilizatori} element={<AdminUsers />} />
                     <Route path={paths.notfound} element={<NotFound />} />
                 </Routes>
             </main>
