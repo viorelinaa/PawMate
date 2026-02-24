@@ -760,3 +760,8 @@
     border-color: var(--dm-accent-strong);
     box-shadow: 0 0 0 3px rgba(200, 170, 240, 0.2);
 }
+/* ── Login & Signup background ── */
+:root[data-theme="dark"] .login-container,
+:root[data-theme="dark"] .signup-container {
+    background: var(--dm-bg);
+}
