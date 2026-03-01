@@ -182,6 +182,7 @@ body {
 .voluntariatCloud,
 .medCloud,
 .homeCloud,
+.blogCloud,
 .med-guide .cloud {
   background: var(--hero-cloud) !important;
   filter: var(--hero-cloud-shadow) !important;
@@ -216,6 +217,8 @@ body {
 .medCloud::after,
 .homeCloud::before,
 .homeCloud::after,
+.blogCloud::before,
+.blogCloud::after,
 .med-guide .cloud::before,
 .med-guide .cloud::after {
   background: var(--hero-cloud) !important;
@@ -234,6 +237,7 @@ body {
 .voluntariatCloud::before,
 .medCloud::before,
 .homeCloud::before,
+.blogCloud::before,
 .med-guide .cloud::before {
   width: 90px !important;
   height: 90px !important;
@@ -255,6 +259,7 @@ body {
 .voluntariatCloud::after,
 .medCloud::after,
 .homeCloud::after,
+.blogCloud::after,
 .med-guide .cloud::after {
   width: 120px !important;
   height: 120px !important;
@@ -277,6 +282,7 @@ body {
   .voluntariatCloud,
   .medCloud,
   .homeCloud,
+.blogCloud,
   .med-guide .cloud {
     width: 160px !important;
     height: 52px !important;
@@ -296,6 +302,7 @@ body {
   .voluntariatCloud::before,
   .medCloud::before,
   .homeCloud::before,
+  .blogCloud::before,
   .med-guide .cloud::before {
     width: 60px !important;
     height: 60px !important;
@@ -316,6 +323,7 @@ body {
   .voluntariatCloud::after,
   .medCloud::after,
   .homeCloud::after,
+  .blogCloud::after,
   .med-guide .cloud::after {
     width: 80px !important;
     height: 80px !important;
