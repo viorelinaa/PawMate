@@ -8,11 +8,12 @@
 /* ── Hero ──────────────────────────────────────────────── */
 .hero {
     position: relative;
-    padding: 110px 24px 90px;
+    padding: 80px 24px 60px;
     background: var(--color-bg);
     overflow: hidden;
     border-bottom-left-radius: 40px;
     border-bottom-right-radius: 40px;
+    text-align: center;
 }
 
 .hero::before {
@@ -21,9 +22,9 @@
     width: 220px;
     height: 220px;
     left: 50%;
-    top: 80px;
+    top: 28px;
     transform: translateX(-50%);
-    background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.0) 70%);
+    background: var(--hero-radial);
     border-radius: var(--radius-full);
     pointer-events: none;
 }
@@ -44,31 +45,32 @@
 .paw.p6 { right: 18px; bottom: 26px;  transform: rotate(-14deg); }
 
 /* ── Nori ──────────────────────────────────────────────── */
-.cloud {
+.homeCloud {
     position: absolute;
-    width: 240px;
-    height: 90px;
     background: rgba(255,255,255,0.95);
     border-radius: var(--radius-full);
     filter: drop-shadow(0 10px 20px rgba(0,0,0,0.08));
     pointer-events: none;
 }
-.cloud::before,
-.cloud::after {
+
+.homeCloud::before,
+.homeCloud::after {
     content: "";
     position: absolute;
     background: rgba(255,255,255,0.95);
     border-radius: var(--radius-full);
 }
-.cloud::before { width: 100px; height: 100px; left: 30px;  top: -40px; }
-.cloud::after  { width: 120px; height: 120px; left: 110px; top: -55px; }
 
-.cloud.c1 { left: 40px;  top: 60px; transform: scale(1.05); }
-.cloud.c2 { right: 40px; top: 70px; transform: scale(1.1); }
+.homeCloud::before { width: 80px;  height: 80px;  left: 25px; top: -35px; }
+.homeCloud::after  { width: 100px; height: 100px; left: 90px; top: -45px; }
+
+.homeCloud.hc1 { width: 200px; height: 70px; left: 30px;  top: 40px; transform: scale(0.9); }
+.homeCloud.hc2 { width: 220px; height: 75px; right: 30px; top: 50px; }
 
 /* ── Hero inner ────────────────────────────────────────── */
 .heroInner {
     position: relative;
+    z-index: 2;
     max-width: 980px;
     margin: 0 auto;
     text-align: center;

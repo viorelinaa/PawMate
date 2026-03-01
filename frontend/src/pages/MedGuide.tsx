@@ -96,39 +96,22 @@ export default function MedGuide() {
 
     return (
         <div className="med-guide">
-            {/* HERO */}
-            <section className="hero">
-                <div className="cloud cloud-left" />
-                <div className="cloud cloud-right" />
+            <section className="medHero">
+                <div className="medCloud mc1" />
+                <div className="medCloud mc2" />
 
-                <div className="paw-print paw-1">🐾</div>
-                <div className="paw-print paw-2">🐾</div>
-                <div className="paw-print paw-3">🐾</div>
-                <div className="paw-print paw-4">🐾</div>
-                <div className="paw-print paw-5">🐾</div>
-                <div className="paw-print paw-6">🐾</div>
-                <div
-                    className="paw-print"
-                    style={{ top: "120px", left: "260px", transform: "rotate(18deg)", fontSize: "22px" }}
-                >
-                    🐾
-                </div>
-                <div
-                    className="paw-print"
-                    style={{ bottom: "70px", right: "220px", transform: "rotate(-12deg)", fontSize: "22px" }}
-                >
-                    🐾
-                </div>
+                <span className="medPaw mp1">🐾</span>
+                <span className="medPaw mp2">🐾</span>
+                <span className="medPaw mp3">🐾</span>
+                <span className="medPaw" style={{ top: "32px", left: "140px", transform: "rotate(8deg)", fontSize: "20px" }}>🐾</span>
+                <span className="medPaw" style={{ bottom: "80px", right: "140px", transform: "rotate(-12deg)", fontSize: "22px" }}>🐾</span>
 
-                <div className="hero-content">
-                    <h1 className="hero-title heroTitle">Ghid Medical</h1>
-                    <p className="hero-subtitle heroSubtitle">
-                        Tot ce ai nevoie despre sănătatea animalelor de companie
-                    </p>
+                <div className="medHeroInner">
+                    <h1 className="heroTitle">Ghid Medical</h1>
+                    <p className="heroSubtitle">Tot ce ai nevoie despre sănătatea animalelor de companie</p>
                 </div>
             </section>
 
-            {/* CONTENT */}
             <main className="main-content">
                 <h2 className="section-title">Informații Esențiale</h2>
                 <p className="section-subtitle">
