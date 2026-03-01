@@ -181,6 +181,7 @@ body {
 .wikiCloud,
 .voluntariatCloud,
 .medCloud,
+.homeCloud,
 .med-guide .cloud {
   background: var(--hero-cloud) !important;
   filter: var(--hero-cloud-shadow) !important;
@@ -213,6 +214,8 @@ body {
 .voluntariatCloud::after,
 .medCloud::before,
 .medCloud::after,
+.homeCloud::before,
+.homeCloud::after,
 .med-guide .cloud::before,
 .med-guide .cloud::after {
   background: var(--hero-cloud) !important;
@@ -230,6 +233,7 @@ body {
 .wikiCloud::before,
 .voluntariatCloud::before,
 .medCloud::before,
+.homeCloud::before,
 .med-guide .cloud::before {
   width: 90px !important;
   height: 90px !important;
@@ -250,6 +254,7 @@ body {
 .wikiCloud::after,
 .voluntariatCloud::after,
 .medCloud::after,
+.homeCloud::after,
 .med-guide .cloud::after {
   width: 120px !important;
   height: 120px !important;
@@ -271,6 +276,7 @@ body {
   .wikiCloud,
   .voluntariatCloud,
   .medCloud,
+  .homeCloud,
   .med-guide .cloud {
     width: 160px !important;
     height: 52px !important;
@@ -289,6 +295,7 @@ body {
   .wikiCloud::before,
   .voluntariatCloud::before,
   .medCloud::before,
+  .homeCloud::before,
   .med-guide .cloud::before {
     width: 60px !important;
     height: 60px !important;
@@ -308,6 +315,7 @@ body {
   .wikiCloud::after,
   .voluntariatCloud::after,
   .medCloud::after,
+  .homeCloud::after,
   .med-guide .cloud::after {
     width: 80px !important;
     height: 80px !important;
