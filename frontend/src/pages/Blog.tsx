@@ -124,27 +124,19 @@ export default function Blog() {
 
     return (
         <div className="blogPage">
-            {/* Hero */}
             <section className="blogHero">
-                <div className="cloud c1" />
-                <div className="cloud c2" />
+                <div className="blogCloud bc1" />
+                <div className="blogCloud bc2" />
 
-                <div className="paw p1">🐾</div>
-                <div className="paw p2">🐾</div>
-                <div className="paw p3">🐾</div>
-                <div className="paw p4">🐾</div>
-                <div className="paw p5">🐾</div>
-                <div className="paw p6">🐾</div>
-                <div className="paw" style={{ top: "36px", left: "140px", transform: "rotate(10deg)", fontSize: "20px" }}>
-                    🐾
-                </div>
-                <div className="paw" style={{ bottom: "84px", right: "140px", transform: "rotate(-12deg)", fontSize: "22px" }}>
-                    🐾
-                </div>
+                <span className="blogPaw bp1">🐾</span>
+                <span className="blogPaw bp2">🐾</span>
+                <span className="blogPaw bp3">🐾</span>
+                <span className="blogPaw" style={{ top: "32px", left: "140px", transform: "rotate(10deg)", fontSize: "20px" }}>🐾</span>
+                <span className="blogPaw" style={{ bottom: "80px", right: "140px", transform: "rotate(-12deg)", fontSize: "22px" }}>🐾</span>
 
                 <div className="blogHeroInner">
-                    <h1 className="blogTitle heroTitle">Blog PawMate</h1>
-                    <p className="blogSub heroSubtitle">Articole utile pentru stăpânii responsabili</p>
+                    <h1 className="blogTitle">Blog PawMate</h1>
+                    <p className="blogSub">Articole utile pentru stăpânii responsabili</p>
                 </div>
             </section>
 
@@ -157,7 +149,6 @@ export default function Blog() {
                 </div>
             </UserOnly>
 
-            {/* Search & Filter */}
             <section className="blogSearchSection">
                 <div className="blogSearchContainer">
                     <div className="searchField">
@@ -185,7 +176,6 @@ export default function Blog() {
                 </div>
             </section>
 
-            {/* Grid articole */}
             <section className="blogGridSection">
                 <div className="blogGrid">
                     {filtered.length > 0 ? (
