@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { mockUsers } from '../data/mockUsers';
-import { paths } from '../routes/paths';
 import '../styles/AdminUsers.css';
 
 const ACTIVITY_ICONS: Record<string, string> = {
@@ -13,16 +10,8 @@ const ACTIVITY_ICONS: Record<string, string> = {
 };
 
 const AdminUsers: React.FC = () => {
-    const { currentUser } = useAuth();
-    const navigate = useNavigate();
-
     const [bannedIds, setBannedIds] = useState<Set<string>>(new Set());
     const [confirmId, setConfirmId] = useState<string | null>(null);
-
-    if (!currentUser || currentUser.role !== 'admin') {
-        navigate(paths.home);
-        return null;
-    }
 
     const users = mockUsers.filter((u) => u.role === 'user');
 

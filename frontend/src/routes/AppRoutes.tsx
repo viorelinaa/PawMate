@@ -10,6 +10,7 @@ import Login from "../pages/Login";
 import Signup from "../pages/SignUp";
 import { paths } from "./paths";
 import NotFound from "../pages/NotFound";
+import Forbidden from "../pages/Forbidden";
 import Veterinari from "../pages/Veterinari";
 import Voluntariat from "../pages/Voluntariat";
 import Wiki from "../pages/Wiki";
@@ -22,6 +23,8 @@ import Profile from "../pages/Profile";
 import AdminDashboard from "../pages/AdminDashboard";
 import AdminPages from "../pages/AdminPages";
 import AdminUsers from "../pages/AdminUsers";
+import { RequireAdmin } from "../components/RequireAdmin";
+
 export default function AppRoutes() {
     return (
         <>
@@ -44,9 +47,31 @@ export default function AppRoutes() {
                     <Route path={paths.vanzari} element={<Vanzari />} />
                     <Route path={paths.cos} element={<Cart />} />
                     <Route path={paths.profile} element={<Profile />} />
-                    <Route path={paths.adminStatistici} element={<AdminDashboard />} />
-                    <Route path={paths.adminPagini} element={<AdminPages />} />
-                    <Route path={paths.adminUtilizatori} element={<AdminUsers />} />
+                    <Route path={paths.forbidden} element={<Forbidden />} />
+                    <Route
+                        path={paths.adminStatistici}
+                        element={
+                            <RequireAdmin>
+                                <AdminDashboard />
+                            </RequireAdmin>
+                        }
+                    />
+                    <Route
+                        path={paths.adminPagini}
+                        element={
+                            <RequireAdmin>
+                                <AdminPages />
+                            </RequireAdmin>
+                        }
+                    />
+                    <Route
+                        path={paths.adminUtilizatori}
+                        element={
+                            <RequireAdmin>
+                                <AdminUsers />
+                            </RequireAdmin>
+                        }
+                    />
                     <Route path={paths.notfound} element={<NotFound />} />
                 </Routes>
             </main>

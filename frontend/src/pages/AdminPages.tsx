@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 import { paths } from '../routes/paths';
 import { AddActionButton } from '../components/AddActionButton';
 import '../styles/AdminPages.css';
@@ -18,13 +17,7 @@ interface AdminPageCard {
 }
 
 const AdminPages: React.FC = () => {
-    const { currentUser } = useAuth();
     const navigate = useNavigate();
-
-    if (!currentUser || currentUser.role !== 'admin') {
-        navigate(paths.home);
-        return null;
-    }
 
     const pages: AdminPageCard[] = [
         {
