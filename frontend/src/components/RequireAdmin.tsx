@@ -11,7 +11,17 @@ export function RequireAdmin({ children }: RequireAdminProps) {
     const { currentUser } = useAuth();
     const location = useLocation();
 
-    if (currentUser?.role !== "admin") {
+    if (!currentUser) {
+        return (
+            <Navigate
+                to={paths.unauthorized}
+                replace
+                state={{ from: location.pathname }}
+            />
+        );
+    }
+
+    if (currentUser.role !== "admin") {
         return (
             <Navigate
                 to={paths.forbidden}

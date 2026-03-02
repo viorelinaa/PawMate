@@ -1,10 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { paths } from "../routes/paths";
 import "../styles/NotFound.css";
 
-export default function Forbidden() {
-    const { currentUser } = useAuth();
+export default function Unauthorized() {
     const location = useLocation();
 
     const requestedPath =
@@ -20,9 +18,9 @@ export default function Forbidden() {
             <div className="nfCard">
                 <div className="nfEmoji">🐾</div>
 
-                <h1 className="nfTitle">403</h1>
+                <h1 className="nfTitle">401</h1>
                 <p className="nfText">
-                    Nu ai permisiunea necesară pentru a accesa această pagină.
+                    Trebuie să fii autentificat pentru a accesa această pagină.
                 </p>
 
                 {requestedPath ? (
@@ -30,14 +28,12 @@ export default function Forbidden() {
                 ) : null}
 
                 <div className="nfActions">
-                    <Link className="nfBtn primary" to={paths.home}>
+                    <Link className="nfBtn primary" to={paths.login}>
+                        Mergi la login
+                    </Link>
+                    <Link className="nfBtn" to={paths.home}>
                         Înapoi acasă
                     </Link>
-                    {!currentUser ? (
-                        <Link className="nfBtn" to={paths.login}>
-                            Mergi la login
-                        </Link>
-                    ) : null}
                 </div>
             </div>
         </div>

@@ -1,5 +1,6 @@
 export const paths = {
     home: "/",
+    unauthorized: "/401",
     forbidden: "/403",
     adoptie: "/adoptie",
     pierdute: "/pierdute",

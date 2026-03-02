@@ -10,6 +10,7 @@ import Login from "../pages/Login";
 import Signup from "../pages/SignUp";
 import { paths } from "./paths";
 import NotFound from "../pages/NotFound";
+import Unauthorized from "../pages/Unauthorized";
 import Forbidden from "../pages/Forbidden";
 import Veterinari from "../pages/Veterinari";
 import Voluntariat from "../pages/Voluntariat";
@@ -47,6 +48,7 @@ export default function AppRoutes() {
                     <Route path={paths.vanzari} element={<Vanzari />} />
                     <Route path={paths.cos} element={<Cart />} />
                     <Route path={paths.profile} element={<Profile />} />
+                    <Route path={paths.unauthorized} element={<Unauthorized />} />
                     <Route path={paths.forbidden} element={<Forbidden />} />
                     <Route
                         path={paths.adminStatistici}

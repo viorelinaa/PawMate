@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { paths } from '../routes/paths';
 import { usePasswordValidation } from '../hooks/usePasswordValidation';
@@ -19,6 +19,7 @@ const ACTIVITY_ICONS: Record<string, string> = {
 const Profile: React.FC = () => {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [activeTab, setActiveTab] = useState<Tab>('personal');
 
   // ── Parolă ──
@@ -35,8 +36,7 @@ const Profile: React.FC = () => {
   const [phoneMessage, setPhoneMessage] = useState<Message>(null);
 
   if (!currentUser) {
-    navigate(paths.login);
-    return null;
+    return <Navigate to={paths.unauthorized} replace state={{ from: location.pathname }} />;
   }
 
   const initials = `${currentUser.firstName[0]}${currentUser.lastName[0]}`.toUpperCase();
