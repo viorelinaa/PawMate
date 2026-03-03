@@ -8,6 +8,7 @@ import { ShieldUserIcon } from "../components/ShieldUserIcon";
 import { EyeIcon } from "../components/EyeIcon";
 import { EyeOffIcon } from "../components/EyeOffIcon";
 import { AppButton } from "../components/AppButton";
+import { collectFormValidationErrors, updateSingleFieldError } from "../utils/formValidation";
 
 const DEMO = {
   user:  { username: 'user@pawmate.ro',  password: 'User1234!'  },
@@ -23,6 +24,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState(DEMO.user.password);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError]       = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const handleRoleSwitch = (role: 'user' | 'admin') => {
     setSelectedRole(role);
@@ -31,14 +33,33 @@ const Login: React.FC = () => {
     setError('');
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const { errors, firstInvalidElement } = collectFormValidationErrors(e.currentTarget);
+    setFieldErrors(errors);
+    if (firstInvalidElement) {
+      setError('');
+      firstInvalidElement.focus();
+      return;
+    }
     const ok = login(email, password);
     if (ok) {
       navigate(selectedRole === 'admin' ? paths.adminStatistici : paths.home);
     } else {
       setError('Email sau parolă incorecte.');
     }
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+    setFieldErrors((prev) => updateSingleFieldError(e.target, prev));
+    if (error) setError('');
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+    setFieldErrors((prev) => updateSingleFieldError(e.target, prev));
+    if (error) setError('');
   };
 
   useEffect(() => {
@@ -90,17 +111,24 @@ const Login: React.FC = () => {
           <p><strong>Parolă:</strong> {DEMO[selectedRole].password}</p>
         </div>
 
-        <form className="login-form" onSubmit={handleSubmit}>
+        <form className="login-form" onSubmit={handleSubmit} noValidate>
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
+              name="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={handleEmailChange}
               placeholder="email@example.com"
               required
+              className={fieldErrors.email ? 'field-invalid' : ''}
+              aria-invalid={Boolean(fieldErrors.email)}
+              aria-describedby={fieldErrors.email ? 'login-email-error' : undefined}
             />
+            {fieldErrors.email && (
+              <p className="validation-error" id="login-email-error">{fieldErrors.email}</p>
+            )}
           </div>
 
           <div className="form-group">
@@ -109,10 +137,14 @@ const Login: React.FC = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 id="password"
+                name="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handlePasswordChange}
                 placeholder="********"
                 required
+                className={fieldErrors.password ? 'field-invalid' : ''}
+                aria-invalid={Boolean(fieldErrors.password)}
+                aria-describedby={fieldErrors.password ? 'login-password-error' : undefined}
               />
               <button
                 type="button"
@@ -128,6 +160,9 @@ const Login: React.FC = () => {
                 )}
               </button>
             </div>
+            {fieldErrors.password && (
+              <p className="validation-error" id="login-password-error">{fieldErrors.password}</p>
+            )}
           </div>
 
           {error && <p className="login-error">{error}</p>}

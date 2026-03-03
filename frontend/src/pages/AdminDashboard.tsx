@@ -1,7 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { paths } from '../routes/paths';
 import '../styles/AdminDashboard.css';
 
 const statCards = [
@@ -44,12 +42,7 @@ const pageStats = [
 
 const AdminDashboard: React.FC = () => {
     const { currentUser } = useAuth();
-    const navigate = useNavigate();
-
-    if (!currentUser || currentUser.role !== 'admin') {
-        navigate(paths.home);
-        return null;
-    }
+    if (!currentUser) return null;
 
     return (
         <div className="adminDash">

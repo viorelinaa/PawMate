@@ -326,6 +326,24 @@
     color: rgba(241, 234, 249, 0.5);
 }
 
+:root[data-theme="dark"] .field-invalid {
+    border-color: rgba(255, 156, 168, 0.42) !important;
+    box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.18) !important;
+}
+
+:root[data-theme="dark"] .field-invalid-block {
+    border-color: rgba(255, 156, 168, 0.22) !important;
+    background: rgba(255, 71, 87, 0.1) !important;
+    box-shadow: none;
+}
+
+:root[data-theme="dark"] .validation-error {
+    border-color: rgba(255, 156, 168, 0.2);
+    background: linear-gradient(180deg, rgba(255, 71, 87, 0.14), rgba(255, 71, 87, 0.08));
+    color: #ffd9de;
+    box-shadow: none;
+}
+
 /* Buttons (ghost + secondary) */
 :root[data-theme="dark"] .btnGhost,
 :root[data-theme="dark"] .btnReset,

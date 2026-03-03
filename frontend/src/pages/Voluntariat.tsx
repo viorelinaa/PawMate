@@ -2,6 +2,12 @@ import { useState } from "react";
 import type { FormEvent, ChangeEvent } from "react";
 import "../styles/Voluntariat.css";
 import { AppButton } from "../components/AppButton";
+import {
+    PHONE_HINT,
+    PHONE_PATTERN,
+    collectFormValidationErrors,
+    updateSingleFieldError
+} from "../utils/formValidation";
 export default function Voluntariat() {
     const [formData, setFormData] = useState({
         nume: "",
@@ -17,6 +23,7 @@ export default function Voluntariat() {
 
     const [submitted, setSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
     const activitatiList = [
         "Îngrijire animale",
@@ -32,6 +39,7 @@ export default function Voluntariat() {
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+        setFieldErrors(prev => updateSingleFieldError(e.target, prev));
     };
 
     const handleCheckboxChange = (activitate: string) => {
@@ -45,6 +53,12 @@ export default function Voluntariat() {
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const { errors, firstInvalidElement } = collectFormValidationErrors(e.currentTarget);
+        setFieldErrors(errors);
+        if (firstInvalidElement) {
+            firstInvalidElement.focus();
+            return;
+        }
         setIsLoading(true);
 
         try {
@@ -66,6 +80,7 @@ export default function Voluntariat() {
                     activitati: [],
                     mesaj: ""
                 });
+                setFieldErrors({});
             }, 3000);
         } catch (error) {
             console.error("Error:", error);
@@ -87,6 +102,7 @@ export default function Voluntariat() {
             activitati: [],
             mesaj: ""
         });
+        setFieldErrors({});
     };
 
     return (
@@ -250,7 +266,7 @@ export default function Voluntariat() {
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="volunteerForm">
+                <form onSubmit={handleSubmit} className="volunteerForm" noValidate>
                     <div className="formGrid">
                         <div className="formGroup">
                             <label htmlFor="nume">Nume *</label>
@@ -263,8 +279,13 @@ export default function Voluntariat() {
                                 required
                                 placeholder="Popescu"
                                 disabled={isLoading}
-                                className="formInput"
+                                className={`formInput ${fieldErrors.nume ? "field-invalid" : ""}`}
+                                aria-invalid={Boolean(fieldErrors.nume)}
+                                aria-describedby={fieldErrors.nume ? "volunteer-nume-error" : undefined}
                             />
+                            {fieldErrors.nume && (
+                                <p className="validation-error" id="volunteer-nume-error">{fieldErrors.nume}</p>
+                            )}
                         </div>
 
                         <div className="formGroup">
@@ -278,8 +299,13 @@ export default function Voluntariat() {
                                 required
                                 placeholder="Ion"
                                 disabled={isLoading}
-                                className="formInput"
+                                className={`formInput ${fieldErrors.prenume ? "field-invalid" : ""}`}
+                                aria-invalid={Boolean(fieldErrors.prenume)}
+                                aria-describedby={fieldErrors.prenume ? "volunteer-prenume-error" : undefined}
                             />
+                            {fieldErrors.prenume && (
+                                <p className="validation-error" id="volunteer-prenume-error">{fieldErrors.prenume}</p>
+                            )}
                         </div>
 
                         <div className="formGroup">
@@ -293,8 +319,13 @@ export default function Voluntariat() {
                                 required
                                 placeholder="ion.popescu@email.com"
                                 disabled={isLoading}
-                                className="formInput"
+                                className={`formInput ${fieldErrors.email ? "field-invalid" : ""}`}
+                                aria-invalid={Boolean(fieldErrors.email)}
+                                aria-describedby={fieldErrors.email ? "volunteer-email-error" : undefined}
                             />
+                            {fieldErrors.email && (
+                                <p className="validation-error" id="volunteer-email-error">{fieldErrors.email}</p>
+                            )}
                         </div>
 
                         <div className="formGroup">
@@ -307,9 +338,18 @@ export default function Voluntariat() {
                                 onChange={handleInputChange}
                                 required
                                 placeholder="060000000"
+                                pattern={PHONE_PATTERN}
+                                title={PHONE_HINT}
+                                inputMode="numeric"
+                                autoComplete="tel"
                                 disabled={isLoading}
-                                className="formInput"
+                                className={`formInput ${fieldErrors.telefon ? "field-invalid" : ""}`}
+                                aria-invalid={Boolean(fieldErrors.telefon)}
+                                aria-describedby={fieldErrors.telefon ? "volunteer-telefon-error" : undefined}
                             />
+                            {fieldErrors.telefon && (
+                                <p className="validation-error" id="volunteer-telefon-error">{fieldErrors.telefon}</p>
+                            )}
                         </div>
 
                         <div className="formGroup">
@@ -324,8 +364,13 @@ export default function Voluntariat() {
                                 min="16"
                                 placeholder="18"
                                 disabled={isLoading}
-                                className="formInput"
+                                className={`formInput ${fieldErrors.varsta ? "field-invalid" : ""}`}
+                                aria-invalid={Boolean(fieldErrors.varsta)}
+                                aria-describedby={fieldErrors.varsta ? "volunteer-varsta-error" : undefined}
                             />
+                            {fieldErrors.varsta && (
+                                <p className="validation-error" id="volunteer-varsta-error">{fieldErrors.varsta}</p>
+                            )}
                         </div>
 
                         <div className="formGroup">
@@ -337,7 +382,9 @@ export default function Voluntariat() {
                                 onChange={handleInputChange}
                                 required
                                 disabled={isLoading}
-                                className="formSelect"
+                                className={`formSelect ${fieldErrors.disponibilitate ? "field-invalid" : ""}`}
+                                aria-invalid={Boolean(fieldErrors.disponibilitate)}
+                                aria-describedby={fieldErrors.disponibilitate ? "volunteer-disponibilitate-error" : undefined}
                             >
                                 <option value="">Alege opțiune</option>
                                 <option value="weekend">Weekend</option>
@@ -345,6 +392,11 @@ export default function Voluntariat() {
                                 <option value="ambele">Oricând</option>
                                 <option value="occasional">Ocazional</option>
                             </select>
+                            {fieldErrors.disponibilitate && (
+                                <p className="validation-error" id="volunteer-disponibilitate-error">
+                                    {fieldErrors.disponibilitate}
+                                </p>
+                            )}
                         </div>
                     </div>
 
