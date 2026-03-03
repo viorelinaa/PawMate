@@ -74,6 +74,14 @@ export default function AppRoutes() {
                             </RequireAdmin>
                         }
                     />
+                    <Route
+                        path="/admin/*"
+                        element={
+                            <RequireAdmin>
+                                <NotFound />
+                            </RequireAdmin>
+                        }
+                    />
                     <Route path={paths.notfound} element={<NotFound />} />
                 </Routes>
             </main>

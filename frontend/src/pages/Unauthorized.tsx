@@ -1,8 +1,10 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, Navigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import { paths } from "../routes/paths";
 import "../styles/NotFound.css";
 
 export default function Unauthorized() {
+    const { currentUser } = useAuth();
     const location = useLocation();
 
     const requestedPath =
@@ -12,6 +14,10 @@ export default function Unauthorized() {
         typeof location.state.from === "string"
             ? location.state.from
             : null;
+
+    if (currentUser) {
+        return <Navigate to={paths.home} replace />;
+    }
 
     return (
         <div className="nfWrap">

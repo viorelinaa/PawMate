@@ -12,8 +12,17 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
+function getStoredUser(): MockUser | null {
+  if (typeof window === 'undefined') return null;
+
+  const storedUserId = sessionStorage.getItem('pawmate_uid');
+  if (!storedUserId) return null;
+
+  return mockUsers.find((user) => user.id === storedUserId) ?? null;
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [currentUser, setCurrentUser] = useState<MockUser | null>(null);
+  const [currentUser, setCurrentUser] = useState<MockUser | null>(() => getStoredUser());
 
   const login = (username: string, password: string): boolean => {
     const found = mockUsers.find(
