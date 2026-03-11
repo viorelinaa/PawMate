@@ -40,15 +40,20 @@ export const Button: React.FC<ButtonProps> = ({
   size = 'md',
   fullWidth = false,
   children,
+  className,
+  disabled,
   style,
   ...rest
 }) => {
+  const mergedClassName = ['btn', className].filter(Boolean).join(' ');
   const baseStyle: React.CSSProperties = {
     border:       'none',
     borderRadius: 'var(--radius-full)',
     fontWeight:   700,
-    cursor:       'pointer',
+    cursor:       disabled ? 'not-allowed' : 'pointer',
+    opacity:      disabled ? 0.6 : 1,
     fontFamily:   'var(--font-family)',
+    transform:    'translateY(0)',
     transition:   'transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast)',
     width:        fullWidth ? '100%' : undefined,
     ...variantStyles[variant],
@@ -58,9 +63,9 @@ export const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
+      className={mergedClassName}
       style={baseStyle}
-      onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-1px)'; }}
-      onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; }}
+      disabled={disabled}
       {...rest}
     >
       {children}

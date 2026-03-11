@@ -81,6 +81,22 @@ body {
   min-height: 100vh;
 }
 
+#root {
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+}
+
+.appShell {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
 /* ── Global hero look ─────────────────────────────────────── */
 .hero,
 .adoptionHero,
@@ -452,7 +468,8 @@ body {
   text-decoration: none;
 }
 
-.btn:hover { transform: translateY(-1px); }
+.appBtn:hover:not(:disabled),
+.btn:hover:not(:disabled) { transform: translateY(-1px); }
 
 .btn.primary,
 .btn-primary,

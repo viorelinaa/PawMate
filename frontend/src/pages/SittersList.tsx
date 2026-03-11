@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useState, type FocusEvent } from "react";
 import "../styles/petSitting.css";
 import { UserOnly } from "../components/UserOnly";
 import { SearchIcon } from "../components/SearchIcon";
@@ -42,20 +42,13 @@ export default function SittersList() {
     const [onlyTopRated, setOnlyTopRated] = useState(false);
     const [priceSort, setPriceSort] = useState<"none" | "asc" | "desc">("none");
     const [priceMenuOpen, setPriceMenuOpen] = useState(false);
-    const priceMenuRef = useRef<HTMLDivElement | null>(null);
     const ratingThreshold = 4.7;
 
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (!priceMenuRef.current) return;
-            if (!priceMenuRef.current.contains(event.target as Node)) {
-                setPriceMenuOpen(false);
-            }
-        };
-
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
+    const handlePriceMenuBlur = (event: FocusEvent<HTMLDivElement>) => {
+        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+            setPriceMenuOpen(false);
+        }
+    };
 
     const filtered = SITERS.filter((s) => {
         const q = query.trim().toLowerCase();
@@ -154,7 +147,15 @@ export default function SittersList() {
                     >
                         {ratingLabel}
                     </AppButton>
-                    <div className="filter-dropdown" ref={priceMenuRef}>
+                    <div
+                        className="filter-dropdown"
+                        onBlur={handlePriceMenuBlur}
+                        onKeyDown={(event) => {
+                            if (event.key === "Escape") {
+                                setPriceMenuOpen(false);
+                            }
+                        }}
+                    >
                         <AppButton
                             type="button"
                             variant={priceSort !== "none" ? "primary" : "ghost"}
