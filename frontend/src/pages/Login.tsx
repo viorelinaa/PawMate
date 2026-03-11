@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { paths } from "../routes/paths";
 import { useAuth } from '../context/AuthContext';
@@ -61,13 +61,6 @@ const Login: React.FC = () => {
     setFieldErrors((prev) => updateSingleFieldError(e.target, prev));
     if (error) setError('');
   };
-
-  useEffect(() => {
-    document.body.classList.add("login-body");
-    return () => {
-      document.body.classList.remove("login-body");
-    };
-  }, []);
 
   return (
     <div className="login-container">

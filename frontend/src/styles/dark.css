@@ -1,6 +1,6 @@
 /* src/styles/dark.css */
 
-:root[data-theme="dark"] {
+.appShell[data-theme="dark"] {
     color-scheme: dark;
     --dm-bg: #15121a;
     --dm-bg-soft: #1b1622;
@@ -21,7 +21,7 @@
     --select-chevron: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%23d8c4f1' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
 }
 
-:root[data-theme="dark"] {
+.appShell[data-theme="dark"] {
     --hero-bg: var(--dm-hero);
     --hero-radial: var(--dm-hero-radial);
     --hero-cloud: #c9bddb;
@@ -29,10 +29,12 @@
     --hero-title-color: var(--dm-text);
     --hero-subtitle-color: var(--dm-muted);
     --page-bg: var(--dm-bg);
+    background: var(--dm-bg);
+    color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .appBtn,
-:root[data-theme="dark"] .btn {
+.appShell[data-theme="dark"] .appBtn,
+.appShell[data-theme="dark"] .btn {
     --color-primary: var(--dm-accent-strong);
     --color-primary-light: var(--dm-accent);
     --color-primary-border: var(--dm-border);
@@ -42,302 +44,293 @@
     --shadow-btn-ghost: none;
 }
 
-:root[data-theme="dark"] body {
-    background: var(--dm-bg);
-    color: var(--dm-text);
-}
-
-:root[data-theme="dark"] #root {
-    background: var(--dm-bg);
-}
-
-:root[data-theme="dark"] a {
+.appShell[data-theme="dark"] a {
     color: var(--dm-accent);
 }
 
 /* Navbar + footer */
-:root[data-theme="dark"] .navbar,
-:root[data-theme="dark"] .footer {
+.appShell[data-theme="dark"] .navbar,
+.appShell[data-theme="dark"] .footer {
     background: var(--dm-bg-soft);
     border-color: var(--dm-border);
 }
 
-:root[data-theme="dark"] .logo,
-:root[data-theme="dark"] .links a,
-:root[data-theme="dark"] .footerText {
+.appShell[data-theme="dark"] .logo,
+.appShell[data-theme="dark"] .links a,
+.appShell[data-theme="dark"] .footerText {
     color: var(--dm-accent);
 }
 
-:root[data-theme="dark"] .links a:hover {
+.appShell[data-theme="dark"] .links a:hover {
     background: var(--dm-accent-soft);
 }
 
-:root[data-theme="dark"] .links a.active {
+.appShell[data-theme="dark"] .links a.active {
     background: var(--dm-accent-strong);
     color: #1a1424;
 }
 
-:root[data-theme="dark"] .menuIcon,
-:root[data-theme="dark"] .menuIcon::before,
-:root[data-theme="dark"] .menuIcon::after {
+.appShell[data-theme="dark"] .menuIcon,
+.appShell[data-theme="dark"] .menuIcon::before,
+.appShell[data-theme="dark"] .menuIcon::after {
     background: var(--dm-accent);
 }
 
-:root[data-theme="dark"] .menuBtn:hover {
+.appShell[data-theme="dark"] .menuBtn:hover {
     background: var(--dm-accent-soft);
 }
 
-:root[data-theme="dark"] .navOverlay.show {
+.appShell[data-theme="dark"] .navOverlay.show {
     background: rgba(0, 0, 0, 0.35);
 }
 
-:root[data-theme="dark"] .btnDonate {
+.appShell[data-theme="dark"] .btnDonate {
     background: var(--dm-accent-strong);
     color: #1a1424;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
-:root[data-theme="dark"] .themeToggle {
+.appShell[data-theme="dark"] .themeToggle {
     background: var(--dm-surface-strong);
     color: var(--dm-accent);
     border-color: var(--dm-border);
 }
 
-:root[data-theme="dark"] .themeToggle:hover {
+.appShell[data-theme="dark"] .themeToggle:hover {
     background: var(--dm-accent-soft);
 }
 
-:root[data-theme="dark"] .searchField .searchIcon {
+.appShell[data-theme="dark"] .searchField .searchIcon {
     color: var(--dm-accent);
 }
 
 @media (max-width: 768px) {
-    :root[data-theme="dark"] .links {
+    .appShell[data-theme="dark"] .links {
         background: var(--dm-surface-strong);
         border-color: var(--dm-border);
         box-shadow: var(--dm-shadow);
     }
 }
 
-:root[data-theme="dark"] .med-guide .nav-link {
+.appShell[data-theme="dark"] .med-guide .nav-link {
     color: var(--dm-accent);
 }
 
-:root[data-theme="dark"] .med-guide .nav-link:hover {
+.appShell[data-theme="dark"] .med-guide .nav-link:hover {
     background: var(--dm-accent-soft);
 }
 
-:root[data-theme="dark"] .med-guide .nav-link.primary {
+.appShell[data-theme="dark"] .med-guide .nav-link.primary {
     background: var(--dm-accent-strong);
     color: #1a1424;
 }
 
-:root[data-theme="dark"] .med-guide .logo-text {
+.appShell[data-theme="dark"] .med-guide .logo-text {
     color: var(--dm-accent);
 }
 
 /* Heroes */
 /* hero background handled by global.css via variables */
 
-:root[data-theme="dark"] .paw,
-:root[data-theme="dark"] .adoptionPaw,
-:root[data-theme="dark"] .lostPaw,
-:root[data-theme="dark"] .donPaw,
-:root[data-theme="dark"] .veterinariPaw,
-:root[data-theme="dark"] .salesPaw,
-:root[data-theme="dark"] .cartPaw,
-:root[data-theme="dark"] .eventsPaw,
-:root[data-theme="dark"] .sitterPaw,
-:root[data-theme="dark"] .wikiPaw,
-:root[data-theme="dark"] .voluntariatPaw,
-:root[data-theme="dark"] .med-guide .paw-print {
+.appShell[data-theme="dark"] .paw,
+.appShell[data-theme="dark"] .adoptionPaw,
+.appShell[data-theme="dark"] .lostPaw,
+.appShell[data-theme="dark"] .donPaw,
+.appShell[data-theme="dark"] .veterinariPaw,
+.appShell[data-theme="dark"] .salesPaw,
+.appShell[data-theme="dark"] .cartPaw,
+.appShell[data-theme="dark"] .eventsPaw,
+.appShell[data-theme="dark"] .sitterPaw,
+.appShell[data-theme="dark"] .wikiPaw,
+.appShell[data-theme="dark"] .voluntariatPaw,
+.appShell[data-theme="dark"] .med-guide .paw-print {
     opacity: 0.85;
     color: rgba(255, 255, 255, 1);
 }
 
 /* Page backgrounds */
-:root[data-theme="dark"] .home,
-:root[data-theme="dark"] .veterinariPage,
-:root[data-theme="dark"] .salesPage,
-:root[data-theme="dark"] .eventsPage,
-:root[data-theme="dark"] .cartPage,
-:root[data-theme="dark"] .salesPage,
-:root[data-theme="dark"] .eventsPage,
-:root[data-theme="dark"] .explore,
-:root[data-theme="dark"] .adoptionContent,
-:root[data-theme="dark"] .lostContent,
-:root[data-theme="dark"] .donContent,
-:root[data-theme="dark"] .veterinariContent,
-:root[data-theme="dark"] .salesContent,
-:root[data-theme="dark"] .eventsContent,
-:root[data-theme="dark"] .cartContent,
-:root[data-theme="dark"] .blogPage,
-:root[data-theme="dark"] .blogSearchSection,
-:root[data-theme="dark"] .blogGridSection,
-:root[data-theme="dark"] .pet-sitting-page,
-:root[data-theme="dark"] .quizPage,
-:root[data-theme="dark"] .infoSection,
-:root[data-theme="dark"] .activitiesSection,
-:root[data-theme="dark"] .benefitsSection,
-:root[data-theme="dark"] .formSection,
-:root[data-theme="dark"] .faqSection,
-:root[data-theme="dark"] .introSection,
-:root[data-theme="dark"] .searchSection,
-:root[data-theme="dark"] .animalsSection,
-:root[data-theme="dark"] .med-guide,
-:root[data-theme="dark"] .med-guide .main-content,
-:root[data-theme="dark"] .med-guide .footer,
-:root[data-theme="dark"] .nfWrap {
+.appShell[data-theme="dark"] .home,
+.appShell[data-theme="dark"] .veterinariPage,
+.appShell[data-theme="dark"] .salesPage,
+.appShell[data-theme="dark"] .eventsPage,
+.appShell[data-theme="dark"] .cartPage,
+.appShell[data-theme="dark"] .salesPage,
+.appShell[data-theme="dark"] .eventsPage,
+.appShell[data-theme="dark"] .explore,
+.appShell[data-theme="dark"] .adoptionContent,
+.appShell[data-theme="dark"] .lostContent,
+.appShell[data-theme="dark"] .donContent,
+.appShell[data-theme="dark"] .veterinariContent,
+.appShell[data-theme="dark"] .salesContent,
+.appShell[data-theme="dark"] .eventsContent,
+.appShell[data-theme="dark"] .cartContent,
+.appShell[data-theme="dark"] .blogPage,
+.appShell[data-theme="dark"] .blogSearchSection,
+.appShell[data-theme="dark"] .blogGridSection,
+.appShell[data-theme="dark"] .pet-sitting-page,
+.appShell[data-theme="dark"] .quizPage,
+.appShell[data-theme="dark"] .infoSection,
+.appShell[data-theme="dark"] .activitiesSection,
+.appShell[data-theme="dark"] .benefitsSection,
+.appShell[data-theme="dark"] .formSection,
+.appShell[data-theme="dark"] .faqSection,
+.appShell[data-theme="dark"] .introSection,
+.appShell[data-theme="dark"] .searchSection,
+.appShell[data-theme="dark"] .animalsSection,
+.appShell[data-theme="dark"] .med-guide,
+.appShell[data-theme="dark"] .med-guide .main-content,
+.appShell[data-theme="dark"] .med-guide .footer,
+.appShell[data-theme="dark"] .nfWrap {
     background: var(--dm-bg);
 }
 
 /* Cards and containers */
-:root[data-theme="dark"] .card,
-:root[data-theme="dark"] .petCard,
-:root[data-theme="dark"] .lostCard,
-:root[data-theme="dark"] .donCard,
-:root[data-theme="dark"] .vetCard,
-:root[data-theme="dark"] .salesCard,
-:root[data-theme="dark"] .cartItem,
-:root[data-theme="dark"] .cartTotal,
-:root[data-theme="dark"] .cartEmpty,
-:root[data-theme="dark"] .eventsCard,
-:root[data-theme="dark"] .blogCard,
-:root[data-theme="dark"] .sitter-card,
-:root[data-theme="dark"] .quizCard,
-:root[data-theme="dark"] .quizResult,
-:root[data-theme="dark"] .infoCard,
-:root[data-theme="dark"] .activityCard,
-:root[data-theme="dark"] .benefitCard,
-:root[data-theme="dark"] .faqCard,
-:root[data-theme="dark"] .introCard,
-:root[data-theme="dark"] .animalCard,
-:root[data-theme="dark"] .modalContent,
-:root[data-theme="dark"] .med-guide .card,
-:root[data-theme="dark"] .volunteerForm,
-:root[data-theme="dark"] .login-box,
-:root[data-theme="dark"] .signup-box,
-:root[data-theme="dark"] .nfCard,
-:root[data-theme="dark"] .quizProgress,
-:root[data-theme="dark"] .modalInfo {
+.appShell[data-theme="dark"] .card,
+.appShell[data-theme="dark"] .petCard,
+.appShell[data-theme="dark"] .lostCard,
+.appShell[data-theme="dark"] .donCard,
+.appShell[data-theme="dark"] .vetCard,
+.appShell[data-theme="dark"] .salesCard,
+.appShell[data-theme="dark"] .cartItem,
+.appShell[data-theme="dark"] .cartTotal,
+.appShell[data-theme="dark"] .cartEmpty,
+.appShell[data-theme="dark"] .eventsCard,
+.appShell[data-theme="dark"] .blogCard,
+.appShell[data-theme="dark"] .sitter-card,
+.appShell[data-theme="dark"] .quizCard,
+.appShell[data-theme="dark"] .quizResult,
+.appShell[data-theme="dark"] .infoCard,
+.appShell[data-theme="dark"] .activityCard,
+.appShell[data-theme="dark"] .benefitCard,
+.appShell[data-theme="dark"] .faqCard,
+.appShell[data-theme="dark"] .introCard,
+.appShell[data-theme="dark"] .animalCard,
+.appShell[data-theme="dark"] .modalContent,
+.appShell[data-theme="dark"] .med-guide .card,
+.appShell[data-theme="dark"] .volunteerForm,
+.appShell[data-theme="dark"] .login-box,
+.appShell[data-theme="dark"] .signup-box,
+.appShell[data-theme="dark"] .nfCard,
+.appShell[data-theme="dark"] .quizProgress,
+.appShell[data-theme="dark"] .modalInfo {
     background: var(--dm-surface);
     border-color: var(--dm-border);
     box-shadow: var(--dm-shadow);
 }
 
-:root[data-theme="dark"] .filters,
-:root[data-theme="dark"] .lostFilters,
-:root[data-theme="dark"] .eventsFilters,
-:root[data-theme="dark"] .salesFilters,
-:root[data-theme="dark"] .veterinariContent .filters {
+.appShell[data-theme="dark"] .filters,
+.appShell[data-theme="dark"] .lostFilters,
+.appShell[data-theme="dark"] .eventsFilters,
+.appShell[data-theme="dark"] .salesFilters,
+.appShell[data-theme="dark"] .veterinariContent .filters {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     box-shadow: var(--dm-shadow);
 }
 
-:root[data-theme="dark"] .filter-btn,
-:root[data-theme="dark"] .filter-reset,
-:root[data-theme="dark"] .filter-rating,
-:root[data-theme="dark"] .filter-price {
+.appShell[data-theme="dark"] .filter-btn,
+.appShell[data-theme="dark"] .filter-reset,
+.appShell[data-theme="dark"] .filter-rating,
+.appShell[data-theme="dark"] .filter-price {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     color: var(--dm-accent);
     box-shadow: none;
 }
 
-:root[data-theme="dark"] .filter-btn.isActive {
+.appShell[data-theme="dark"] .filter-btn.isActive {
     background: var(--dm-accent-soft);
     border-color: var(--dm-accent);
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .filter-menu {
+.appShell[data-theme="dark"] .filter-menu {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     box-shadow: var(--dm-shadow);
 }
 
-:root[data-theme="dark"] .filter-menu button {
+.appShell[data-theme="dark"] .filter-menu button {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     color: var(--dm-accent);
 }
 
-:root[data-theme="dark"] .filter-menu button.isActive {
+.appShell[data-theme="dark"] .filter-menu button.isActive {
     background: var(--dm-accent-soft);
     border-color: var(--dm-accent);
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .activityCard {
+.appShell[data-theme="dark"] .activityCard {
     background: var(--dm-surface-strong);
 }
 
-:root[data-theme="dark"] .quizProgress .bar {
+.appShell[data-theme="dark"] .quizProgress .bar {
     background: rgba(255, 255, 255, 0.08);
     border-color: var(--dm-border);
 }
 
-:root[data-theme="dark"] .otherAnimal {
+.appShell[data-theme="dark"] .otherAnimal {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
 }
 
-:root[data-theme="dark"] .otherAnimal strong {
+.appShell[data-theme="dark"] .otherAnimal strong {
     color: var(--dm-accent);
 }
 
-:root[data-theme="dark"] .eventsCard:focus-visible {
+.appShell[data-theme="dark"] .eventsCard:focus-visible {
     outline-color: var(--dm-accent);
 }
 
-:root[data-theme="dark"] .modalOverlay {
+.appShell[data-theme="dark"] .modalOverlay {
     background: rgba(0, 0, 0, 0.7);
 }
 
 /* Badges */
-:root[data-theme="dark"] .badge,
-:root[data-theme="dark"] .lostBadge,
-:root[data-theme="dark"] .donBadge,
-:root[data-theme="dark"] .salesBadge,
-:root[data-theme="dark"] .cartItemCategory,
-:root[data-theme="dark"] .eventsTag,
-:root[data-theme="dark"] .serviceBadge,
-:root[data-theme="dark"] .quizBadge,
-:root[data-theme="dark"] .animalCategory,
-:root[data-theme="dark"] .modalCategory,
-:root[data-theme="dark"] .rating {
+.appShell[data-theme="dark"] .badge,
+.appShell[data-theme="dark"] .lostBadge,
+.appShell[data-theme="dark"] .donBadge,
+.appShell[data-theme="dark"] .salesBadge,
+.appShell[data-theme="dark"] .cartItemCategory,
+.appShell[data-theme="dark"] .eventsTag,
+.appShell[data-theme="dark"] .serviceBadge,
+.appShell[data-theme="dark"] .quizBadge,
+.appShell[data-theme="dark"] .animalCategory,
+.appShell[data-theme="dark"] .modalCategory,
+.appShell[data-theme="dark"] .rating {
     background: var(--dm-accent-soft);
     color: var(--dm-accent);
     border-color: var(--dm-border);
 }
 
 /* Inputs */
-:root[data-theme="dark"] input,
-:root[data-theme="dark"] select,
-:root[data-theme="dark"] textarea {
+.appShell[data-theme="dark"] input,
+.appShell[data-theme="dark"] select,
+.appShell[data-theme="dark"] textarea {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] input::placeholder,
-:root[data-theme="dark"] textarea::placeholder {
+.appShell[data-theme="dark"] input::placeholder,
+.appShell[data-theme="dark"] textarea::placeholder {
     color: rgba(241, 234, 249, 0.5);
 }
 
-:root[data-theme="dark"] .field-invalid {
+.appShell[data-theme="dark"] .field-invalid {
     border-color: rgba(255, 156, 168, 0.42) !important;
     box-shadow: 0 0 0 3px rgba(255, 71, 87, 0.18) !important;
 }
 
-:root[data-theme="dark"] .field-invalid-block {
+.appShell[data-theme="dark"] .field-invalid-block {
     border-color: rgba(255, 156, 168, 0.22) !important;
     background: rgba(255, 71, 87, 0.1) !important;
     box-shadow: none;
 }
 
-:root[data-theme="dark"] .validation-error {
+.appShell[data-theme="dark"] .validation-error {
     border-color: rgba(255, 156, 168, 0.2);
     background: linear-gradient(180deg, rgba(255, 71, 87, 0.14), rgba(255, 71, 87, 0.08));
     color: #ffd9de;
@@ -345,511 +338,511 @@
 }
 
 /* Buttons (ghost + secondary) */
-:root[data-theme="dark"] .btnGhost,
-:root[data-theme="dark"] .btnReset,
-:root[data-theme="dark"] .lostBtnReset,
-:root[data-theme="dark"] .filter-reset,
-:root[data-theme="dark"] .cartBackBtn,
-:root[data-theme="dark"] .blogCategoryBtn,
-:root[data-theme="dark"] .categoryBtn,
-:root[data-theme="dark"] .nfBtn,
-:root[data-theme="dark"] .resultActions .btn.ghost,
-:root[data-theme="dark"] .user-type-option {
+.appShell[data-theme="dark"] .btnGhost,
+.appShell[data-theme="dark"] .btnReset,
+.appShell[data-theme="dark"] .lostBtnReset,
+.appShell[data-theme="dark"] .filter-reset,
+.appShell[data-theme="dark"] .cartBackBtn,
+.appShell[data-theme="dark"] .blogCategoryBtn,
+.appShell[data-theme="dark"] .categoryBtn,
+.appShell[data-theme="dark"] .nfBtn,
+.appShell[data-theme="dark"] .resultActions .btn.ghost,
+.appShell[data-theme="dark"] .user-type-option {
     background: var(--dm-surface-strong);
     color: var(--dm-accent);
     border-color: var(--dm-border);
 }
 
-:root[data-theme="dark"] .blogCategoryBtn:hover,
-:root[data-theme="dark"] .categoryBtn:hover,
-:root[data-theme="dark"] .nfBtn:hover,
-:root[data-theme="dark"] .user-type-option:hover {
+.appShell[data-theme="dark"] .blogCategoryBtn:hover,
+.appShell[data-theme="dark"] .categoryBtn:hover,
+.appShell[data-theme="dark"] .nfBtn:hover,
+.appShell[data-theme="dark"] .user-type-option:hover {
     background: var(--dm-accent-soft);
 }
 
-:root[data-theme="dark"] .blogCategoryBtn.active,
-:root[data-theme="dark"] .categoryBtn.active,
-:root[data-theme="dark"] .user-type-option.active {
+.appShell[data-theme="dark"] .blogCategoryBtn.active,
+.appShell[data-theme="dark"] .categoryBtn.active,
+.appShell[data-theme="dark"] .user-type-option.active {
     background: var(--dm-accent-strong);
     color: #1a1424;
     border-color: var(--dm-accent-strong);
 }
 
 /* Titles and subtitles */
-:root[data-theme="dark"] .brandTitle,
-:root[data-theme="dark"] .exploreTitle,
-:root[data-theme="dark"] .adoptionTitle,
-:root[data-theme="dark"] .lostTitle,
-:root[data-theme="dark"] .donTitle,
-:root[data-theme="dark"] .veterinariTitle,
-:root[data-theme="dark"] .salesTitle,
-:root[data-theme="dark"] .cartTitle,
-:root[data-theme="dark"] .eventsTitle,
-:root[data-theme="dark"] .blogTitle,
-:root[data-theme="dark"] .wikiTitle,
-:root[data-theme="dark"] .voluntariatTitle,
-:root[data-theme="dark"] .hero-title,
-:root[data-theme="dark"] .sectionTitle,
-:root[data-theme="dark"] .section-title,
-:root[data-theme="dark"] .quizTitle,
-:root[data-theme="dark"] .winnerName,
-:root[data-theme="dark"] .med-guide .section-title,
-:root[data-theme="dark"] .med-guide .card-title,
-:root[data-theme="dark"] .nfTitle {
+.appShell[data-theme="dark"] .brandTitle,
+.appShell[data-theme="dark"] .exploreTitle,
+.appShell[data-theme="dark"] .adoptionTitle,
+.appShell[data-theme="dark"] .lostTitle,
+.appShell[data-theme="dark"] .donTitle,
+.appShell[data-theme="dark"] .veterinariTitle,
+.appShell[data-theme="dark"] .salesTitle,
+.appShell[data-theme="dark"] .cartTitle,
+.appShell[data-theme="dark"] .eventsTitle,
+.appShell[data-theme="dark"] .blogTitle,
+.appShell[data-theme="dark"] .wikiTitle,
+.appShell[data-theme="dark"] .voluntariatTitle,
+.appShell[data-theme="dark"] .hero-title,
+.appShell[data-theme="dark"] .sectionTitle,
+.appShell[data-theme="dark"] .section-title,
+.appShell[data-theme="dark"] .quizTitle,
+.appShell[data-theme="dark"] .winnerName,
+.appShell[data-theme="dark"] .med-guide .section-title,
+.appShell[data-theme="dark"] .med-guide .card-title,
+.appShell[data-theme="dark"] .nfTitle {
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .cardTitle,
-:root[data-theme="dark"] .petName,
-:root[data-theme="dark"] .donName,
-:root[data-theme="dark"] .vetName,
-:root[data-theme="dark"] .salesName,
-:root[data-theme="dark"] .cartItemName,
-:root[data-theme="dark"] .eventsName,
-:root[data-theme="dark"] .blogCardTitle,
-:root[data-theme="dark"] .animalName,
-:root[data-theme="dark"] .introCard h3,
-:root[data-theme="dark"] .infoCard h3,
-:root[data-theme="dark"] .activityCard h3,
-:root[data-theme="dark"] .benefitCard h3,
-:root[data-theme="dark"] .faqCard h3,
-:root[data-theme="dark"] .modalTitle,
-:root[data-theme="dark"] .med-guide .card-title {
+.appShell[data-theme="dark"] .cardTitle,
+.appShell[data-theme="dark"] .petName,
+.appShell[data-theme="dark"] .donName,
+.appShell[data-theme="dark"] .vetName,
+.appShell[data-theme="dark"] .salesName,
+.appShell[data-theme="dark"] .cartItemName,
+.appShell[data-theme="dark"] .eventsName,
+.appShell[data-theme="dark"] .blogCardTitle,
+.appShell[data-theme="dark"] .animalName,
+.appShell[data-theme="dark"] .introCard h3,
+.appShell[data-theme="dark"] .infoCard h3,
+.appShell[data-theme="dark"] .activityCard h3,
+.appShell[data-theme="dark"] .benefitCard h3,
+.appShell[data-theme="dark"] .faqCard h3,
+.appShell[data-theme="dark"] .modalTitle,
+.appShell[data-theme="dark"] .med-guide .card-title {
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .subtitlePill,
-:root[data-theme="dark"] .blogSub,
-:root[data-theme="dark"] .hero-subtitle {
+.appShell[data-theme="dark"] .subtitlePill,
+.appShell[data-theme="dark"] .blogSub,
+.appShell[data-theme="dark"] .hero-subtitle {
     background: var(--dm-surface-strong);
     color: var(--dm-accent);
     box-shadow: var(--dm-shadow);
 }
 
-:root[data-theme="dark"] .exploreSub,
-:root[data-theme="dark"] .adoptionSub,
-:root[data-theme="dark"] .lostSub,
-:root[data-theme="dark"] .donSub,
-:root[data-theme="dark"] .veterinariSub,
-:root[data-theme="dark"] .cartSub,
-:root[data-theme="dark"] .salesSubtitle,
-:root[data-theme="dark"] .eventsSubtitle,
-:root[data-theme="dark"] .wikiSub,
-:root[data-theme="dark"] .voluntariatSub,
-:root[data-theme="dark"] .sectionSubtitle,
-:root[data-theme="dark"] .cardDesc,
-:root[data-theme="dark"] .petDesc,
-:root[data-theme="dark"] .lostDesc,
-:root[data-theme="dark"] .donDesc,
-:root[data-theme="dark"] .vetDesc,
-:root[data-theme="dark"] .salesDesc,
-:root[data-theme="dark"] .eventsDesc,
-:root[data-theme="dark"] .cartEmptyText,
-:root[data-theme="dark"] .blogCardExcerpt,
-:root[data-theme="dark"] .subtitle,
-:root[data-theme="dark"] .city,
-:root[data-theme="dark"] .winnerDesc,
-:root[data-theme="dark"] .quizProgress span,
-:root[data-theme="dark"] .otherAnimal,
-:root[data-theme="dark"] .med-guide .section-subtitle,
-:root[data-theme="dark"] .med-guide .card-description,
-:root[data-theme="dark"] .med-guide .card-list-item,
-:root[data-theme="dark"] .med-guide .footer,
-:root[data-theme="dark"] .signup-link,
-:root[data-theme="dark"] .login-link,
-:root[data-theme="dark"] .nfText {
+.appShell[data-theme="dark"] .exploreSub,
+.appShell[data-theme="dark"] .adoptionSub,
+.appShell[data-theme="dark"] .lostSub,
+.appShell[data-theme="dark"] .donSub,
+.appShell[data-theme="dark"] .veterinariSub,
+.appShell[data-theme="dark"] .cartSub,
+.appShell[data-theme="dark"] .salesSubtitle,
+.appShell[data-theme="dark"] .eventsSubtitle,
+.appShell[data-theme="dark"] .wikiSub,
+.appShell[data-theme="dark"] .voluntariatSub,
+.appShell[data-theme="dark"] .sectionSubtitle,
+.appShell[data-theme="dark"] .cardDesc,
+.appShell[data-theme="dark"] .petDesc,
+.appShell[data-theme="dark"] .lostDesc,
+.appShell[data-theme="dark"] .donDesc,
+.appShell[data-theme="dark"] .vetDesc,
+.appShell[data-theme="dark"] .salesDesc,
+.appShell[data-theme="dark"] .eventsDesc,
+.appShell[data-theme="dark"] .cartEmptyText,
+.appShell[data-theme="dark"] .blogCardExcerpt,
+.appShell[data-theme="dark"] .subtitle,
+.appShell[data-theme="dark"] .city,
+.appShell[data-theme="dark"] .winnerDesc,
+.appShell[data-theme="dark"] .quizProgress span,
+.appShell[data-theme="dark"] .otherAnimal,
+.appShell[data-theme="dark"] .med-guide .section-subtitle,
+.appShell[data-theme="dark"] .med-guide .card-description,
+.appShell[data-theme="dark"] .med-guide .card-list-item,
+.appShell[data-theme="dark"] .med-guide .footer,
+.appShell[data-theme="dark"] .signup-link,
+.appShell[data-theme="dark"] .login-link,
+.appShell[data-theme="dark"] .nfText {
     color: var(--dm-muted);
 }
 
-:root[data-theme="dark"] .petCity,
-:root[data-theme="dark"] .lostSmall,
-:root[data-theme="dark"] .donSmall,
-:root[data-theme="dark"] .vetCity,
-:root[data-theme="dark"] .eventsDate,
-:root[data-theme="dark"] .cartItemQty,
-:root[data-theme="dark"] .cartItemUnitPrice,
-:root[data-theme="dark"] .blogDate,
-:root[data-theme="dark"] .blogReadTime,
-:root[data-theme="dark"] .animalPreview,
-:root[data-theme="dark"] .modalDescription p,
-:root[data-theme="dark"] .infoItem,
-:root[data-theme="dark"] .sectionSubtitle {
+.appShell[data-theme="dark"] .petCity,
+.appShell[data-theme="dark"] .lostSmall,
+.appShell[data-theme="dark"] .donSmall,
+.appShell[data-theme="dark"] .vetCity,
+.appShell[data-theme="dark"] .eventsDate,
+.appShell[data-theme="dark"] .cartItemQty,
+.appShell[data-theme="dark"] .cartItemUnitPrice,
+.appShell[data-theme="dark"] .blogDate,
+.appShell[data-theme="dark"] .blogReadTime,
+.appShell[data-theme="dark"] .animalPreview,
+.appShell[data-theme="dark"] .modalDescription p,
+.appShell[data-theme="dark"] .infoItem,
+.appShell[data-theme="dark"] .sectionSubtitle {
     color: var(--dm-muted);
 }
 
-:root[data-theme="dark"] .infoCard p,
-:root[data-theme="dark"] .activityCard p,
-:root[data-theme="dark"] .benefitCard p,
-:root[data-theme="dark"] .faqCard p,
-:root[data-theme="dark"] .introCard p,
-:root[data-theme="dark"] .animalPreview,
-:root[data-theme="dark"] .modalDescription p {
+.appShell[data-theme="dark"] .infoCard p,
+.appShell[data-theme="dark"] .activityCard p,
+.appShell[data-theme="dark"] .benefitCard p,
+.appShell[data-theme="dark"] .faqCard p,
+.appShell[data-theme="dark"] .introCard p,
+.appShell[data-theme="dark"] .animalPreview,
+.appShell[data-theme="dark"] .modalDescription p {
     color: var(--dm-muted);
 }
 
-:root[data-theme="dark"] .infoItem strong {
+.appShell[data-theme="dark"] .infoItem strong {
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .formGroup label,
-:root[data-theme="dark"] .login-header h1,
-:root[data-theme="dark"] .signup-header h1,
-:root[data-theme="dark"] .form-group label {
+.appShell[data-theme="dark"] .formGroup label,
+.appShell[data-theme="dark"] .login-header h1,
+.appShell[data-theme="dark"] .signup-header h1,
+.appShell[data-theme="dark"] .form-group label {
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .checkboxLabel span,
-:root[data-theme="dark"] .checkbox-group label {
+.appShell[data-theme="dark"] .checkboxLabel span,
+.appShell[data-theme="dark"] .checkbox-group label {
     color: var(--dm-muted);
 }
 
-:root[data-theme="dark"] .checkboxLabel {
+.appShell[data-theme="dark"] .checkboxLabel {
     background: var(--dm-surface);
     border-color: var(--dm-border);
 }
 
-:root[data-theme="dark"] .checkboxLabel:hover {
+.appShell[data-theme="dark"] .checkboxLabel:hover {
     background: var(--dm-surface-strong);
 }
 
-:root[data-theme="dark"] .checkboxLabel span {
+.appShell[data-theme="dark"] .checkboxLabel span {
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .successMessage {
+.appShell[data-theme="dark"] .successMessage {
     background: rgba(46, 92, 64, 0.35);
     color: #c8f5d8;
     border-color: rgba(46, 92, 64, 0.45);
 }
 
-:root[data-theme="dark"] .nfWrap {
+.appShell[data-theme="dark"] .nfWrap {
     background: radial-gradient(circle at top, rgba(203, 176, 234, 0.12) 0%, #15121a 50%, #121019 100%);
 }
 
-:root[data-theme="dark"] .nfBtn.primary {
+.appShell[data-theme="dark"] .nfBtn.primary {
     background: var(--dm-accent-strong);
     color: #1a1424;
 }
 
-:root[data-theme="dark"] .quizCard::before,
-:root[data-theme="dark"] .quizCard::after,
-:root[data-theme="dark"] .quizResult::before,
-:root[data-theme="dark"] .quizResult::after {
+.appShell[data-theme="dark"] .quizCard::before,
+.appShell[data-theme="dark"] .quizCard::after,
+.appShell[data-theme="dark"] .quizResult::before,
+.appShell[data-theme="dark"] .quizResult::after {
     opacity: 0.12;
 }
 
-:root[data-theme="dark"] .blogSearchInput {
+.appShell[data-theme="dark"] .blogSearchInput {
     border-color: var(--dm-border);
     box-shadow: none;
 }
 
-:root[data-theme="dark"] .blogSearchInput:focus {
+.appShell[data-theme="dark"] .blogSearchInput:focus {
     border-color: var(--dm-accent-strong);
     box-shadow: 0 0 0 3px rgba(200, 170, 240, 0.2);
 }
 
-:root[data-theme="dark"] .blogCategoryBtn {
+.appShell[data-theme="dark"] .blogCategoryBtn {
     border-color: var(--dm-border);
 }
 
-:root[data-theme="dark"] .blogReadBtn {
+.appShell[data-theme="dark"] .blogReadBtn {
     border-color: var(--dm-accent-strong);
     color: var(--dm-accent);
 }
 
-:root[data-theme="dark"] .blogReadBtn:hover {
+.appShell[data-theme="dark"] .blogReadBtn:hover {
     background: var(--dm-accent-strong);
     color: #1a1424;
 }
 
-:root[data-theme="dark"] .blogNoResults p {
+.appShell[data-theme="dark"] .blogNoResults p {
     color: var(--dm-muted);
 }
 
-:root[data-theme="dark"] .answers button {
+.appShell[data-theme="dark"] .answers button {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .answers button:hover {
+.appShell[data-theme="dark"] .answers button:hover {
     background: var(--dm-accent-soft);
     box-shadow: var(--dm-shadow);
 }
 
-:root[data-theme="dark"] .resultActions .btn.primary,
-:root[data-theme="dark"] .resultActions .btn.secondary,
-:root[data-theme="dark"] .btnPrimary,
-:root[data-theme="dark"] .btnContact,
-:root[data-theme="dark"] .btnDetails,
-:root[data-theme="dark"] .donBtn,
-:root[data-theme="dark"] .salesBtn,
-:root[data-theme="dark"] .cartOrderBtn,
-:root[data-theme="dark"] .btnLearnMore,
-:root[data-theme="dark"] .btnSubmit,
-:root[data-theme="dark"] .login-button,
-:root[data-theme="dark"] .signup-button {
+.appShell[data-theme="dark"] .resultActions .btn.primary,
+.appShell[data-theme="dark"] .resultActions .btn.secondary,
+.appShell[data-theme="dark"] .btnPrimary,
+.appShell[data-theme="dark"] .btnContact,
+.appShell[data-theme="dark"] .btnDetails,
+.appShell[data-theme="dark"] .donBtn,
+.appShell[data-theme="dark"] .salesBtn,
+.appShell[data-theme="dark"] .cartOrderBtn,
+.appShell[data-theme="dark"] .btnLearnMore,
+.appShell[data-theme="dark"] .btnSubmit,
+.appShell[data-theme="dark"] .login-button,
+.appShell[data-theme="dark"] .signup-button {
     box-shadow: var(--dm-shadow);
 }
 
-:root[data-theme="dark"] .modalHeader,
-:root[data-theme="dark"] .searchSection {
+.appShell[data-theme="dark"] .modalHeader,
+.appShell[data-theme="dark"] .searchSection {
     border-color: var(--dm-border);
 }
 
-:root[data-theme="dark"] .modalClose {
+.appShell[data-theme="dark"] .modalClose {
     background: var(--dm-surface-strong);
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .modalClose:hover {
+.appShell[data-theme="dark"] .modalClose:hover {
     background: var(--dm-accent-soft);
 }
 
 /* Cart page */
-:root[data-theme="dark"] .cartHero {
+.appShell[data-theme="dark"] .cartHero {
     background: var(--dm-hero);
 }
 
-:root[data-theme="dark"] .cartHero::before {
+.appShell[data-theme="dark"] .cartHero::before {
     background: var(--dm-hero-radial);
 }
 
-:root[data-theme="dark"] .cartCloud {
+.appShell[data-theme="dark"] .cartCloud {
     background: var(--hero-cloud);
     filter: var(--hero-cloud-shadow);
 }
 
-:root[data-theme="dark"] .cartCloud::before,
-:root[data-theme="dark"] .cartCloud::after {
+.appShell[data-theme="dark"] .cartCloud::before,
+.appShell[data-theme="dark"] .cartCloud::after {
     background: var(--hero-cloud);
 }
 
-:root[data-theme="dark"] .cartItemPrice,
-:root[data-theme="dark"] .cartTotalAmount {
+.appShell[data-theme="dark"] .cartItemPrice,
+.appShell[data-theme="dark"] .cartTotalAmount {
     color: var(--dm-accent);
 }
 
-:root[data-theme="dark"] .cartTotalLabel {
+.appShell[data-theme="dark"] .cartTotalLabel {
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .cartBackBtn {
+.appShell[data-theme="dark"] .cartBackBtn {
     box-shadow: none;
 }
 
-:root[data-theme="dark"] .cartBackBtn:hover {
+.appShell[data-theme="dark"] .cartBackBtn:hover {
     background: var(--dm-accent-soft);
 }
 
-:root[data-theme="dark"] .cartOrderBtn {
+.appShell[data-theme="dark"] .cartOrderBtn {
     background: var(--dm-accent-strong);
     color: #1a1424;
 }
 
-:root[data-theme="dark"] .cartOrderBtn:hover {
+.appShell[data-theme="dark"] .cartOrderBtn:hover {
     box-shadow: var(--dm-shadow-strong);
 }
 
-:root[data-theme="dark"] .cartItemRemove {
+.appShell[data-theme="dark"] .cartItemRemove {
     color: rgba(241, 234, 249, 0.45);
 }
 
-:root[data-theme="dark"] .cartItemRemove:hover {
+.appShell[data-theme="dark"] .cartItemRemove:hover {
     background: rgba(255, 71, 87, 0.14);
     color: #ff9ca8;
 }
 
-:root[data-theme="dark"] .infoItem {
+.appShell[data-theme="dark"] .infoItem {
     border-bottom-color: var(--dm-border-soft);
 }
 
-:root[data-theme="dark"] .med-guide ::-webkit-scrollbar-track {
+.appShell[data-theme="dark"] .med-guide ::-webkit-scrollbar-track {
     background: #1b1622;
 }
 
-:root[data-theme="dark"] .med-guide ::-webkit-scrollbar-thumb {
+.appShell[data-theme="dark"] .med-guide ::-webkit-scrollbar-thumb {
     background: var(--dm-accent-strong);
 }
 /* ── Profile page ── */
-:root[data-theme="dark"] .profile-sidebar,
-:root[data-theme="dark"] .profile-content {
+.appShell[data-theme="dark"] .profile-sidebar,
+.appShell[data-theme="dark"] .profile-content {
     background: var(--dm-surface);
     border-color: var(--dm-border);
     box-shadow: var(--dm-shadow);
 }
 
-:root[data-theme="dark"] .profile-name {
+.appShell[data-theme="dark"] .profile-name {
     color: var(--dm-accent);
 }
 
-:root[data-theme="dark"] .profile-role,
-:root[data-theme="dark"] .profile-joined,
-:root[data-theme="dark"] .profile-empty {
+.appShell[data-theme="dark"] .profile-role,
+.appShell[data-theme="dark"] .profile-joined,
+.appShell[data-theme="dark"] .profile-empty {
     color: var(--dm-muted);
 }
 
-:root[data-theme="dark"] .profile-nav-btn {
+.appShell[data-theme="dark"] .profile-nav-btn {
     color: var(--dm-muted);
 }
 
-:root[data-theme="dark"] .profile-nav-btn:hover {
+.appShell[data-theme="dark"] .profile-nav-btn:hover {
     background: var(--dm-accent-soft);
     color: var(--dm-accent);
 }
 
-:root[data-theme="dark"] .profile-nav-btn.active {
+.appShell[data-theme="dark"] .profile-nav-btn.active {
     background: var(--dm-accent-strong);
     color: #1a1424;
 }
 
-:root[data-theme="dark"] .profile-section-title {
+.appShell[data-theme="dark"] .profile-section-title {
     color: var(--dm-text);
     border-bottom-color: var(--dm-border);
 }
 
-:root[data-theme="dark"] .profile-field label {
+.appShell[data-theme="dark"] .profile-field label {
     color: var(--dm-muted);
 }
 
-:root[data-theme="dark"] .profile-field p {
+.appShell[data-theme="dark"] .profile-field p {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .pet-card {
+.appShell[data-theme="dark"] .pet-card {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
 }
 
-:root[data-theme="dark"] .pet-card-info h4 {
+.appShell[data-theme="dark"] .pet-card-info h4 {
     color: var(--dm-accent);
 }
 
-:root[data-theme="dark"] .pet-card-info p,
-:root[data-theme="dark"] .pet-card-date {
+.appShell[data-theme="dark"] .pet-card-info p,
+.appShell[data-theme="dark"] .pet-card-date {
     color: var(--dm-muted);
 }
 
-:root[data-theme="dark"] .activity-item {
+.appShell[data-theme="dark"] .activity-item {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
 }
 
-:root[data-theme="dark"] .activity-info p {
+.appShell[data-theme="dark"] .activity-info p {
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .activity-info span {
+.appShell[data-theme="dark"] .activity-info span {
     color: var(--dm-muted);
 }
 
-:root[data-theme="dark"] .profile-form-group label {
+.appShell[data-theme="dark"] .profile-form-group label {
     color: var(--dm-accent);
 }
 
-:root[data-theme="dark"] .security-block-title {
+.appShell[data-theme="dark"] .security-block-title {
     color: var(--dm-accent);
 }
 
-:root[data-theme="dark"] .security-divider {
+.appShell[data-theme="dark"] .security-divider {
     background: var(--dm-border);
 }
 
-:root[data-theme="dark"] .input-disabled {
+.appShell[data-theme="dark"] .input-disabled {
     background: var(--dm-surface-strong) !important;
     opacity: 0.5;
 }
 
-:root[data-theme="dark"] .security-message--success {
+.appShell[data-theme="dark"] .security-message--success {
     color: var(--dm-accent);
 }
 
-:root[data-theme="dark"] .security-submit-btn:disabled {
+.appShell[data-theme="dark"] .security-submit-btn:disabled {
     background: var(--dm-surface-strong);
     color: var(--dm-muted);
     box-shadow: none;
 }
 
-:root[data-theme="dark"] .password-match-hint.match {
+.appShell[data-theme="dark"] .password-match-hint.match {
     color: var(--dm-accent);
 }
 
 /* ── Adoption page dark (filtre) ── */
-:root[data-theme="dark"] .filterInput,
-:root[data-theme="dark"] .filterSelect {
+.appShell[data-theme="dark"] .filterInput,
+.appShell[data-theme="dark"] .filterSelect {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .filterInput::placeholder {
+.appShell[data-theme="dark"] .filterInput::placeholder {
     color: rgba(241, 234, 249, 0.5);
 }
 
-:root[data-theme="dark"] .filterCheck {
+.appShell[data-theme="dark"] .filterCheck {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     color: var(--dm-muted);
 }
 
-:root[data-theme="dark"] .emptyNotice {
+.appShell[data-theme="dark"] .emptyNotice {
     background: var(--dm-surface);
     border-color: var(--dm-border);
     color: var(--dm-muted);
 }
 /* ── MedGuide page ── */
-:root[data-theme="dark"] .med-guide .medFilters {
+.appShell[data-theme="dark"] .med-guide .medFilters {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     box-shadow: var(--dm-shadow);
 }
 
-:root[data-theme="dark"] .med-guide .medFilterInput {
+.appShell[data-theme="dark"] .med-guide .medFilterInput {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .med-guide .medFilterInput::placeholder {
+.appShell[data-theme="dark"] .med-guide .medFilterInput::placeholder {
     color: rgba(241, 234, 249, 0.5);
 }
 
-:root[data-theme="dark"] .med-guide .medBtnReset {
+.appShell[data-theme="dark"] .med-guide .medBtnReset {
     background: var(--dm-surface-strong);
     color: var(--dm-accent);
     border: 1px solid var(--dm-border);
     box-shadow: none;
 }
 
-:root[data-theme="dark"] .med-guide .medBtnReset:hover {
+.appShell[data-theme="dark"] .med-guide .medBtnReset:hover {
     background: var(--dm-accent-soft);
 }
 /* ── Sitters page ── */
-:root[data-theme="dark"] .pet-sitting-page .filters {
+.appShell[data-theme="dark"] .pet-sitting-page .filters {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     box-shadow: var(--dm-shadow);
 }
 
-:root[data-theme="dark"] .pet-sitting-page .filters input {
+.appShell[data-theme="dark"] .pet-sitting-page .filters input {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     color: var(--dm-text);
 }
 
-:root[data-theme="dark"] .pet-sitting-page .filters input::placeholder {
+.appShell[data-theme="dark"] .pet-sitting-page .filters input::placeholder {
     color: rgba(241, 234, 249, 0.5);
 }
 
-:root[data-theme="dark"] .pet-sitting-page .filters input:focus {
+.appShell[data-theme="dark"] .pet-sitting-page .filters input:focus {
     border-color: var(--dm-accent-strong);
     box-shadow: 0 0 0 3px rgba(200, 170, 240, 0.2);
 }
 /* ── Login & Signup background ── */
-:root[data-theme="dark"] .login-container,
-:root[data-theme="dark"] .signup-container {
+.appShell[data-theme="dark"] .login-container,
+.appShell[data-theme="dark"] .signup-container {
     background: var(--dm-bg);
 }
 /* ===================================================== */
@@ -857,8 +850,8 @@
 /* ===================================================== */
 
 /* ── 1. Săgeata dropdown (Toate orașele) ── */
-:root[data-theme="dark"] select,
-:root[data-theme="dark"] .filterSelect {
+.appShell[data-theme="dark"] select,
+.appShell[data-theme="dark"] .filterSelect {
     appearance: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -873,16 +866,16 @@
 }
 
 /* elimină săgeata default (Edge/IE) */
-:root[data-theme="dark"] select::-ms-expand {
+.appShell[data-theme="dark"] select::-ms-expand {
     display: none;
 }
 
-:root[data-theme="dark"] .vetCard .petCity,
-:root[data-theme="dark"] .vetCard .vetCity,
-:root[data-theme="dark"] .vetCard .eventsDate,
-:root[data-theme="dark"] .vetCard p,
-:root[data-theme="dark"] .vetCard span,
-:root[data-theme="dark"] .vetCard a {
+.appShell[data-theme="dark"] .vetCard .petCity,
+.appShell[data-theme="dark"] .vetCard .vetCity,
+.appShell[data-theme="dark"] .vetCard .eventsDate,
+.appShell[data-theme="dark"] .vetCard p,
+.appShell[data-theme="dark"] .vetCard span,
+.appShell[data-theme="dark"] .vetCard a {
     color: var(--dm-text) !important;
     opacity: 1 !important;
 }

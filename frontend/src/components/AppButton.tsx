@@ -44,8 +44,6 @@ export const AppButton: React.FC<AppButtonProps> = ({
   disabled,
   style,
   className,
-  onMouseEnter,
-  onMouseLeave,
   ...rest
 }) => {
   const mergedClassName = ["appBtn", className].filter(Boolean).join(" ");
@@ -61,6 +59,7 @@ export const AppButton: React.FC<AppButtonProps> = ({
     lineHeight: 1,
     cursor: disabled ? "not-allowed" : "pointer",
     opacity: disabled ? 0.6 : 1,
+    transform: "translateY(0)",
     transition:
       "transform var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast)",
     width: fullWidth ? "100%" : undefined,
@@ -74,15 +73,6 @@ export const AppButton: React.FC<AppButtonProps> = ({
       className={mergedClassName}
       style={baseStyle}
       disabled={disabled}
-      onMouseEnter={(e) => {
-        if (disabled) return;
-        (e.currentTarget as HTMLElement).style.transform = "translateY(-1px)";
-        onMouseEnter?.(e);
-      }}
-      onMouseLeave={(e) => {
-        (e.currentTarget as HTMLElement).style.transform = "translateY(0)";
-        onMouseLeave?.(e);
-      }}
       {...rest}
     />
   );

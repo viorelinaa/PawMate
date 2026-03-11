@@ -9,16 +9,17 @@ import { ShieldUserIcon } from "../components/ShieldUserIcon";
 import { LogoutIcon } from "../components/LogoutIcon";
 import { paths } from "../routes/paths";
 
-export default function Navbar() {
+type Theme = "light" | "dark";
+
+interface NavbarProps {
+    theme: Theme;
+    onToggleTheme: () => void;
+}
+
+export default function Navbar({ theme, onToggleTheme }: NavbarProps) {
     const { currentUser, logout } = useAuth();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false);
-    const [theme, setTheme] = useState(() => {
-        if (typeof window === "undefined") return "light";
-        const saved = window.localStorage.getItem("theme");
-        if (saved === "light" || saved === "dark") return saved;
-        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-    });
 
     useEffect(() => {
         const onResize = () => {
@@ -27,11 +28,6 @@ export default function Navbar() {
         window.addEventListener("resize", onResize);
         return () => window.removeEventListener("resize", onResize);
     }, []);
-
-    useEffect(() => {
-        document.documentElement.setAttribute("data-theme", theme);
-        window.localStorage.setItem("theme", theme);
-    }, [theme]);
 
     const isDark = theme === "dark";
     const toggleLabel = isDark ? "Activează modul luminos" : "Activează modul întunecat";
@@ -109,7 +105,7 @@ export default function Navbar() {
                 <button
                     type="button"
                     className="themeToggle"
-                    onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
+                    onClick={onToggleTheme}
                     aria-label={toggleLabel}
                     title={toggleLabel}
                 >
