@@ -6,9 +6,20 @@ namespace PawMate.Api.Controllers;
 [Route("api/health")]
 public class HealthController : ControllerBase
 {
-    [HttpGet("test")]
+    [HttpGet]
     public IActionResult Get()
     {
-        return Ok("Test");
+        return Ok(new
+        {
+            status = "ok",
+            service = "PawMate.Api",
+            timestamp = DateTime.UtcNow
+        });
+    }
+
+    [HttpGet("test")]
+    public IActionResult GetTest()
+    {
+        return Get();
     }
 }

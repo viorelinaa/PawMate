@@ -61,6 +61,12 @@
     transition: transform var(--transition-fast), background var(--transition-fast);
 }
 
+.nfBtn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
 .nfBtn:hover { transform: translateY(-1px); background: var(--color-primary-border); }
 
 .nfBtn.primary {

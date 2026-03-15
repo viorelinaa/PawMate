@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import AppRoutes from "./routes/AppRoutes";
 import Navbar from "./layouts/Navbar";
 import { AuthProvider } from "./context/AuthContext";
+import { ApiProvider } from "./axios/ApiProvider";
 
 type Theme = "light" | "dark";
 
@@ -52,10 +53,12 @@ export default function App() {
     return (
         <AuthProvider>
             <BrowserRouter>
-                <AppShell
-                    theme={theme}
-                    onToggleTheme={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
-                />
+                <ApiProvider>
+                    <AppShell
+                        theme={theme}
+                        onToggleTheme={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
+                    />
+                </ApiProvider>
             </BrowserRouter>
         </AuthProvider>
     );

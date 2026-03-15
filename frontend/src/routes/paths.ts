@@ -2,6 +2,7 @@ export const paths = {
     home: "/",
     unauthorized: "/401",
     forbidden: "/403",
+    serverError: "/500",
     adoptie: "/adoptie",
     pierdute: "/pierdute",
     veterinari: "/veterinari",
