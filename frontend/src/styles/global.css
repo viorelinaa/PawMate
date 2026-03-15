@@ -97,6 +97,33 @@ body {
   color: var(--color-text);
 }
 
+.appBoot {
+  min-height: 100vh;
+  min-height: 100svh;
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--color-bg);
+}
+
+.appBootCard {
+  width: min(480px, 100%);
+  padding: 28px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-primary-border);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+
+.appBootLabel {
+  color: var(--color-primary);
+  font-size: var(--font-size-md);
+  font-weight: 800;
+}
+
 /* ── Global hero look ─────────────────────────────────────── */
 .hero,
 .adoptionHero,

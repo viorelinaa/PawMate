@@ -12,6 +12,7 @@ import { paths } from "./paths";
 import NotFound from "../pages/NotFound";
 import Unauthorized from "../pages/Unauthorized";
 import Forbidden from "../pages/Forbidden";
+import ServerError from "../pages/ServerError";
 import Veterinari from "../pages/Veterinari";
 import Voluntariat from "../pages/Voluntariat";
 import Wiki from "../pages/Wiki";
@@ -50,6 +51,7 @@ export default function AppRoutes() {
                     <Route path={paths.profile} element={<Profile />} />
                     <Route path={paths.unauthorized} element={<Unauthorized />} />
                     <Route path={paths.forbidden} element={<Forbidden />} />
+                    <Route path={paths.serverError} element={<ServerError />} />
                     <Route
                         path={paths.adminStatistici}
                         element={
