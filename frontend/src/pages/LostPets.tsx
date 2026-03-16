@@ -4,6 +4,7 @@ import { UserOnly } from "../components/UserOnly";
 import { SearchIcon } from "../components/SearchIcon";
 import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
+import { FilterSelect } from "../components/FilterSelect";
 
 interface LostAd {
     id: string;
@@ -152,20 +153,20 @@ export default function LostPets() {
                                 onChange={(e) => setQuery(e.target.value)}
                             />
                         </div>
-                        <select className="lostSelect" value={species} onChange={(e) => setSpecies(e.target.value)}>
+                        <FilterSelect className="lostSelect" value={species} onChange={(e) => setSpecies(e.target.value)}>
                             <option value="ALL">Toate speciile</option>
                             <option value="Câine">Câine</option>
                             <option value="Pisică">Pisică</option>
                             <option value="Pasăre">Pasăre</option>
                             <option value="Rozător">Rozător</option>
                             <option value="Altul">Altul</option>
-                        </select>
-                        <select className="lostSelect" value={city} onChange={(e) => setCity(e.target.value)}>
+                        </FilterSelect>
+                        <FilterSelect className="lostSelect" value={city} onChange={(e) => setCity(e.target.value)}>
                             <option value="ALL">Toate orașele</option>
                             {allCities.map((c) => (
                                 <option key={c} value={c}>{c}</option>
                             ))}
-                        </select>
+                        </FilterSelect>
                         <AppButton className="lostBtnReset" variant="ghost" onClick={resetFilters}>
                             Reset
                         </AppButton>

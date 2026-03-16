@@ -1,0 +1,135 @@
+.fs-dropdown {
+    position: relative;
+    width: 100%;
+    /* reset any select-specific styles inherited from page CSS classes */
+    height: auto !important;
+    padding: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    appearance: none;
+    box-shadow: none !important;
+}
+
+.fs-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    width: 100%;
+    height: var(--filter-h, 46px);
+    padding: 0 16px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-primary-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.fs-btn:focus-visible {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-faint);
+}
+
+.fs-btn-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    text-align: left;
+}
+
+.fs-chevron {
+    flex-shrink: 0;
+    transition: transform var(--transition-fast);
+    color: var(--color-primary);
+}
+
+.fs-chevron--open {
+    transform: rotate(180deg);
+}
+
+.fs-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-card);
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 100;
+}
+
+.fs-option {
+    appearance: none;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--color-text);
+    border-radius: var(--radius-sm);
+    padding: 0 12px;
+    font-weight: 600;
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    cursor: pointer;
+    height: 38px;
+    text-align: left;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.fs-option:hover {
+    background: var(--color-primary-faint);
+    border-color: var(--color-primary-border);
+}
+
+.fs-option--active {
+    background: var(--color-primary-faint);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+/* Dark mode */
+.appShell[data-theme="dark"] .fs-btn {
+    background: var(--dm-surface-strong, #241f2f);
+    border-color: var(--dm-border, rgba(200,170,240,0.2));
+    color: var(--dm-text, #f1eaf9);
+}
+
+.appShell[data-theme="dark"] .fs-btn .fs-chevron {
+    color: var(--dm-text-muted, #d8c4f1);
+}
+
+.appShell[data-theme="dark"] .fs-menu {
+    background: var(--dm-surface-strong, #241f2f);
+    border-color: var(--dm-border, rgba(200,170,240,0.2));
+}
+
+.appShell[data-theme="dark"] .fs-option {
+    color: var(--dm-text, #f1eaf9);
+}
+
+.appShell[data-theme="dark"] .fs-option:hover {
+    background: rgba(200,170,240,0.12);
+    border-color: var(--dm-border, rgba(200,170,240,0.2));
+}
+
+.appShell[data-theme="dark"] .fs-option--active {
+    background: rgba(200,170,240,0.18);
+    border-color: var(--dm-text-muted, #d8c4f1);
+    color: var(--dm-text, #f1eaf9);
+}

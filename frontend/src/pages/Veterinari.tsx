@@ -4,6 +4,7 @@ import { AdminOnly } from "../components/AdminOnly";
 import { SearchIcon } from "../components/SearchIcon";
 import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
+import { FilterSelect } from "../components/FilterSelect";
 
 interface Veterinar {
     id: string;
@@ -161,14 +162,14 @@ export default function Veterinari() {
                                 onChange={(e) => setQuery(e.target.value)}
                             />
                         </div>
-                        <select className="filterSelect" value={city} onChange={(e) => setCity(e.target.value)}>
+                        <FilterSelect className="filterSelect" value={city} onChange={(e) => setCity(e.target.value)}>
                             <option value="ALL">Toate orașele</option>
                             {allCities.map((c) => (
                                 <option key={c} value={c}>
                                     {c}
                                 </option>
                             ))}
-                        </select>
+                        </FilterSelect>
                         <label className="filterCheck">
                             <input
                                 type="checkbox"
