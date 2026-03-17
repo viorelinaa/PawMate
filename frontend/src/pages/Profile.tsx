@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { paths } from '../routes/paths';
@@ -27,20 +27,21 @@ const Profile: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [activeTab, setActiveTab] = useState<Tab>('personal');
+  const passwordFormRef = useRef<HTMLFormElement | null>(null);
+  const emailFormRef = useRef<HTMLFormElement | null>(null);
+  const phoneFormRef = useRef<HTMLFormElement | null>(null);
 
   // ── Parolă ──
-  const [passwords, setPasswords] = useState({ current: '', newPass: '', confirm: '' });
+  const [passwordDraft, setPasswordDraft] = useState({ newPassword: '', confirmPassword: '' });
   const [pwMessage, setPwMessage] = useState<Message>(null);
   const [pwFieldErrors, setPwFieldErrors] = useState<Record<string, string>>({});
-  const passwordValidation = usePasswordValidation(passwords.newPass);
+  const passwordValidation = usePasswordValidation(passwordDraft.newPassword);
 
   // ── Email ──
-  const [emailData, setEmailData] = useState({ newEmail: '', confirmEmail: '' });
   const [emailMessage, setEmailMessage] = useState<Message>(null);
   const [emailFieldErrors, setEmailFieldErrors] = useState<Record<string, string>>({});
 
   // ── Telefon ──
-  const [phoneData, setPhoneData] = useState({ newPhone: '', confirmPhone: '' });
   const [phoneMessage, setPhoneMessage] = useState<Message>(null);
   const [phoneFieldErrors, setPhoneFieldErrors] = useState<Record<string, string>>({});
 
@@ -50,26 +51,26 @@ const Profile: React.FC = () => {
 
   const initials = `${currentUser.firstName[0]}${currentUser.lastName[0]}`.toUpperCase();
 
-  const handlePasswordInputChange = (field: 'current' | 'newPass' | 'confirm') =>
+  const handlePasswordFieldBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setPwFieldErrors((prev) => updateSingleFieldError(e.target, prev));
+    if (pwMessage) setPwMessage(null);
+  };
+
+  const handlePasswordInputChange = (field: 'newPassword' | 'confirmPassword') =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setPasswords({ ...passwords, [field]: e.target.value });
-      setPwFieldErrors((prev) => updateSingleFieldError(e.target, prev));
+      setPasswordDraft((prev) => ({ ...prev, [field]: e.target.value }));
       if (pwMessage) setPwMessage(null);
     };
 
-  const handleEmailInputChange = (field: 'newEmail' | 'confirmEmail') =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setEmailData({ ...emailData, [field]: e.target.value });
-      setEmailFieldErrors((prev) => updateSingleFieldError(e.target, prev));
-      if (emailMessage) setEmailMessage(null);
-    };
+  const handleEmailFieldBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setEmailFieldErrors((prev) => updateSingleFieldError(e.target, prev));
+    if (emailMessage) setEmailMessage(null);
+  };
 
-  const handlePhoneInputChange = (field: 'newPhone' | 'confirmPhone') =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setPhoneData({ ...phoneData, [field]: e.target.value });
-      setPhoneFieldErrors((prev) => updateSingleFieldError(e.target, prev));
-      if (phoneMessage) setPhoneMessage(null);
-    };
+  const handlePhoneFieldBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setPhoneFieldErrors((prev) => updateSingleFieldError(e.target, prev));
+    if (phoneMessage) setPhoneMessage(null);
+  };
 
   const handlePasswordChange = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -80,20 +81,25 @@ const Profile: React.FC = () => {
       firstInvalidElement.focus();
       return;
     }
+    const submittedData = new FormData(e.currentTarget);
+    const currentPassword = String(submittedData.get('currentPassword') ?? '');
+    const newPassword = String(submittedData.get('newPassword') ?? '');
+    const confirmPassword = String(submittedData.get('confirmPassword') ?? '');
     if (!passwordValidation.isValid) {
       setPwMessage({ type: 'error', text: 'Parola nouă nu respectă cerințele de securitate.' });
       return;
     }
-    if (passwords.newPass !== passwords.confirm) {
+    if (newPassword !== confirmPassword) {
       setPwMessage({ type: 'error', text: 'Parolele nu coincid.' });
       return;
     }
-    if (passwords.current !== currentUser.password) {
+    if (currentPassword !== currentUser.password) {
       setPwMessage({ type: 'error', text: 'Parola curentă este incorectă.' });
       return;
     }
     setPwMessage({ type: 'success', text: '✓ Parola a fost schimbată cu succes!' });
-    setPasswords({ current: '', newPass: '', confirm: '' });
+    passwordFormRef.current?.reset();
+    setPasswordDraft({ newPassword: '', confirmPassword: '' });
     setPwFieldErrors({});
   };
 
@@ -106,16 +112,20 @@ const Profile: React.FC = () => {
       firstInvalidElement.focus();
       return;
     }
-    if (emailData.newEmail !== emailData.confirmEmail) {
+    const submittedData = new FormData(e.currentTarget);
+    const newEmail = String(submittedData.get('newEmail') ?? '');
+    const confirmEmail = String(submittedData.get('confirmEmail') ?? '');
+
+    if (newEmail !== confirmEmail) {
       setEmailMessage({ type: 'error', text: 'Emailurile nu coincid.' });
       return;
     }
-    if (emailData.newEmail === currentUser.username) {
+    if (newEmail === currentUser.username) {
       setEmailMessage({ type: 'error', text: 'Noul email este același cu cel curent.' });
       return;
     }
     setEmailMessage({ type: 'success', text: '✓ Emailul a fost actualizat cu succes!' });
-    setEmailData({ newEmail: '', confirmEmail: '' });
+    emailFormRef.current?.reset();
     setEmailFieldErrors({});
   };
 
@@ -128,16 +138,20 @@ const Profile: React.FC = () => {
       firstInvalidElement.focus();
       return;
     }
-    if (phoneData.newPhone !== phoneData.confirmPhone) {
+    const submittedData = new FormData(e.currentTarget);
+    const newPhone = String(submittedData.get('newPhone') ?? '');
+    const confirmPhone = String(submittedData.get('confirmPhone') ?? '');
+
+    if (newPhone !== confirmPhone) {
       setPhoneMessage({ type: 'error', text: 'Numerele nu coincid.' });
       return;
     }
-    if (phoneData.newPhone === currentUser.phone) {
+    if (newPhone === currentUser.phone) {
       setPhoneMessage({ type: 'error', text: 'Noul număr este același cu cel curent.' });
       return;
     }
     setPhoneMessage({ type: 'success', text: '✓ Numărul a fost actualizat cu succes!' });
-    setPhoneData({ newPhone: '', confirmPhone: '' });
+    phoneFormRef.current?.reset();
     setPhoneFieldErrors({});
   };
 
@@ -271,15 +285,15 @@ const Profile: React.FC = () => {
             {/* ── Schimbare parolă ── */}
             <div className="security-block">
               <h4 className="security-block-title">🔒 Schimbare parolă</h4>
-              <form className="security-form" onSubmit={handlePasswordChange} noValidate>
+              <form ref={passwordFormRef} className="security-form" onSubmit={handlePasswordChange} noValidate>
                 <div className="profile-form-group">
                   <label htmlFor="currentPassword">Parola curentă</label>
                   <input
                     id="currentPassword"
                     name="currentPassword"
                     type="password"
-                    value={passwords.current}
-                    onChange={handlePasswordInputChange('current')}
+                    defaultValue=""
+                    onBlur={handlePasswordFieldBlur}
                     placeholder="Introdu parola curentă"
                     required
                     className={pwFieldErrors.currentPassword ? 'field-invalid' : ''}
@@ -298,8 +312,9 @@ const Profile: React.FC = () => {
                     id="newPassword"
                     name="newPassword"
                     type="password"
-                    value={passwords.newPass}
-                    onChange={handlePasswordInputChange('newPass')}
+                    value={passwordDraft.newPassword}
+                    onChange={handlePasswordInputChange('newPassword')}
+                    onBlur={handlePasswordFieldBlur}
                     placeholder="Min. 8 caractere"
                     required
                     className={pwFieldErrors.newPassword ? 'field-invalid' : ''}
@@ -313,7 +328,7 @@ const Profile: React.FC = () => {
                   )}
                   <PasswordStrengthBar
                     validation={passwordValidation}
-                    password={passwords.newPass}
+                    password={passwordDraft.newPassword}
                   />
                 </div>
                 <div className="profile-form-group">
@@ -322,8 +337,9 @@ const Profile: React.FC = () => {
                     id="confirmPassword"
                     name="confirmPassword"
                     type="password"
-                    value={passwords.confirm}
-                    onChange={handlePasswordInputChange('confirm')}
+                    value={passwordDraft.confirmPassword}
+                    onChange={handlePasswordInputChange('confirmPassword')}
+                    onBlur={handlePasswordFieldBlur}
                     placeholder="Repetă parola nouă"
                     required
                     className={pwFieldErrors.confirmPassword ? 'field-invalid' : ''}
@@ -335,9 +351,15 @@ const Profile: React.FC = () => {
                       {pwFieldErrors.confirmPassword}
                     </p>
                   )}
-                  {passwords.confirm && (
-                    <p className={`password-match-hint ${passwords.newPass === passwords.confirm ? 'match' : 'no-match'}`}>
-                      {passwords.newPass === passwords.confirm ? '✓ Parolele coincid' : '✗ Parolele nu coincid'}
+                  {passwordDraft.confirmPassword && (
+                    <p
+                      className={`password-match-hint ${
+                        passwordDraft.newPassword === passwordDraft.confirmPassword ? 'match' : 'no-match'
+                      }`}
+                    >
+                      {passwordDraft.newPassword === passwordDraft.confirmPassword
+                        ? '✓ Parolele coincid'
+                        : '✗ Parolele nu coincid'}
                     </p>
                   )}
                 </div>
@@ -350,9 +372,8 @@ const Profile: React.FC = () => {
                   type="submit"
                   className="security-submit-btn"
                   disabled={
-                    !passwords.current ||
                     !passwordValidation.isValid ||
-                    passwords.newPass !== passwords.confirm
+                    passwordDraft.newPassword !== passwordDraft.confirmPassword
                   }
                 >
                   Salvează parola
@@ -365,7 +386,7 @@ const Profile: React.FC = () => {
             {/* ── Schimbare email ── */}
             <div className="security-block">
               <h4 className="security-block-title">✉️ Schimbare email</h4>
-              <form className="security-form" onSubmit={handleEmailChange} noValidate>
+              <form ref={emailFormRef} className="security-form" onSubmit={handleEmailChange} noValidate>
                 <div className="profile-form-group">
                   <label htmlFor="currentEmail">Email curent</label>
                   <input
@@ -382,8 +403,8 @@ const Profile: React.FC = () => {
                     id="newEmail"
                     name="newEmail"
                     type="email"
-                    value={emailData.newEmail}
-                    onChange={handleEmailInputChange('newEmail')}
+                    defaultValue=""
+                    onBlur={handleEmailFieldBlur}
                     placeholder="email_nou@exemplu.com"
                     required
                     className={emailFieldErrors.newEmail ? 'field-invalid' : ''}
@@ -400,8 +421,8 @@ const Profile: React.FC = () => {
                     id="confirmEmail"
                     name="confirmEmail"
                     type="email"
-                    value={emailData.confirmEmail}
-                    onChange={handleEmailInputChange('confirmEmail')}
+                    defaultValue=""
+                    onBlur={handleEmailFieldBlur}
                     placeholder="Repetă emailul nou"
                     required
                     className={emailFieldErrors.confirmEmail ? 'field-invalid' : ''}
@@ -410,11 +431,6 @@ const Profile: React.FC = () => {
                   />
                   {emailFieldErrors.confirmEmail && (
                     <p className="validation-error" id="profile-confirmEmail-error">{emailFieldErrors.confirmEmail}</p>
-                  )}
-                  {emailData.confirmEmail && (
-                    <p className={`password-match-hint ${emailData.newEmail === emailData.confirmEmail ? 'match' : 'no-match'}`}>
-                      {emailData.newEmail === emailData.confirmEmail ? '✓ Emailurile coincid' : '✗ Emailurile nu coincid'}
-                    </p>
                   )}
                 </div>
                 {emailMessage && (
@@ -425,11 +441,6 @@ const Profile: React.FC = () => {
                 <button
                   type="submit"
                   className="security-submit-btn"
-                  disabled={
-                    !emailData.newEmail ||
-                    emailData.newEmail !== emailData.confirmEmail ||
-                    emailData.newEmail === currentUser.username
-                  }
                 >
                   Salvează emailul
                 </button>
@@ -441,7 +452,7 @@ const Profile: React.FC = () => {
             {/* ── Schimbare telefon ── */}
             <div className="security-block">
               <h4 className="security-block-title">📱 Schimbare număr de telefon</h4>
-              <form className="security-form" onSubmit={handlePhoneChange} noValidate>
+              <form ref={phoneFormRef} className="security-form" onSubmit={handlePhoneChange} noValidate>
                 <div className="profile-form-group">
                   <label htmlFor="currentPhone">Număr curent</label>
                   <input
@@ -458,8 +469,8 @@ const Profile: React.FC = () => {
                     id="newPhone"
                     name="newPhone"
                     type="tel"
-                    value={phoneData.newPhone}
-                    onChange={handlePhoneInputChange('newPhone')}
+                    defaultValue=""
+                    onBlur={handlePhoneFieldBlur}
                     placeholder="+373 69 000 000"
                     required
                     pattern={PHONE_PATTERN}
@@ -480,8 +491,8 @@ const Profile: React.FC = () => {
                     id="confirmPhone"
                     name="confirmPhone"
                     type="tel"
-                    value={phoneData.confirmPhone}
-                    onChange={handlePhoneInputChange('confirmPhone')}
+                    defaultValue=""
+                    onBlur={handlePhoneFieldBlur}
                     placeholder="Repetă numărul"
                     required
                     pattern={PHONE_PATTERN}
@@ -495,11 +506,6 @@ const Profile: React.FC = () => {
                   {phoneFieldErrors.confirmPhone && (
                     <p className="validation-error" id="profile-confirmPhone-error">{phoneFieldErrors.confirmPhone}</p>
                   )}
-                  {phoneData.confirmPhone && (
-                    <p className={`password-match-hint ${phoneData.newPhone === phoneData.confirmPhone ? 'match' : 'no-match'}`}>
-                      {phoneData.newPhone === phoneData.confirmPhone ? '✓ Numerele coincid' : '✗ Numerele nu coincid'}
-                    </p>
-                  )}
                 </div>
                 {phoneMessage && (
                   <p className={`security-message security-message--${phoneMessage.type}`}>
@@ -509,11 +515,6 @@ const Profile: React.FC = () => {
                 <button
                   type="submit"
                   className="security-submit-btn"
-                  disabled={
-                    !phoneData.newPhone ||
-                    phoneData.newPhone !== phoneData.confirmPhone ||
-                    phoneData.newPhone === currentUser.phone
-                  }
                 >
                   Salvează numărul
                 </button>

@@ -20,17 +20,19 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const [selectedRole, setSelectedRole] = useState<'user' | 'admin'>('user');
-  const [email, setEmail]       = useState(DEMO.user.username);
-  const [password, setPassword] = useState(DEMO.user.password);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError]       = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const handleRoleSwitch = (role: 'user' | 'admin') => {
     setSelectedRole(role);
-    setEmail(DEMO[role].username);
-    setPassword(DEMO[role].password);
     setError('');
+    setFieldErrors({});
+  };
+
+  const handleFieldBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    setFieldErrors((prev) => updateSingleFieldError(e.target, prev));
+    if (error) setError('');
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -42,24 +44,17 @@ const Login: React.FC = () => {
       firstInvalidElement.focus();
       return;
     }
+
+    const formData = new FormData(e.currentTarget);
+    const email = String(formData.get('email') ?? '');
+    const password = String(formData.get('password') ?? '');
+
     const ok = login(email, password);
     if (ok) {
       navigate(selectedRole === 'admin' ? paths.adminStatistici : paths.home);
     } else {
       setError('Email sau parolă incorecte.');
     }
-  };
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
-    setFieldErrors((prev) => updateSingleFieldError(e.target, prev));
-    if (error) setError('');
-  };
-
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPassword(e.target.value);
-    setFieldErrors((prev) => updateSingleFieldError(e.target, prev));
-    if (error) setError('');
   };
 
   return (
@@ -104,15 +99,15 @@ const Login: React.FC = () => {
           <p><strong>Parolă:</strong> {DEMO[selectedRole].password}</p>
         </div>
 
-        <form className="login-form" onSubmit={handleSubmit} noValidate>
+        <form key={selectedRole} className="login-form" onSubmit={handleSubmit} noValidate>
           <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
               type="email"
               id="email"
               name="email"
-              value={email}
-              onChange={handleEmailChange}
+              defaultValue={DEMO[selectedRole].username}
+              onBlur={handleFieldBlur}
               placeholder="email@example.com"
               required
               className={fieldErrors.email ? 'field-invalid' : ''}
@@ -131,8 +126,8 @@ const Login: React.FC = () => {
                 type={showPassword ? "text" : "password"}
                 id="password"
                 name="password"
-                value={password}
-                onChange={handlePasswordChange}
+                defaultValue={DEMO[selectedRole].password}
+                onBlur={handleFieldBlur}
                 placeholder="********"
                 required
                 className={fieldErrors.password ? 'field-invalid' : ''}

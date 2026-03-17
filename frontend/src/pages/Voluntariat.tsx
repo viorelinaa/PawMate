@@ -1,5 +1,5 @@
-import { useState } from "react";
-import type { FormEvent, ChangeEvent } from "react";
+import { useRef, useState } from "react";
+import type { FormEvent } from "react";
 import "../styles/Voluntariat.css";
 import { AppButton } from "../components/AppButton";
 import {
@@ -9,18 +9,7 @@ import {
     updateSingleFieldError
 } from "../utils/formValidation";
 export default function Voluntariat() {
-    const [formData, setFormData] = useState({
-        nume: "",
-        prenume: "",
-        email: "",
-        telefon: "",
-        varsta: "",
-        experienta: "",
-        disponibilitate: "",
-        activitati: [] as string[],
-        mesaj: ""
-    });
-
+    const formRef = useRef<HTMLFormElement | null>(null);
     const [submitted, setSubmitted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -36,19 +25,10 @@ export default function Voluntariat() {
         "Educație comunitate"
     ];
 
-    const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+    const handleFieldBlur = (
+        e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
         setFieldErrors(prev => updateSingleFieldError(e.target, prev));
-    };
-
-    const handleCheckboxChange = (activitate: string) => {
-        setFormData(prev => ({
-            ...prev,
-            activitati: prev.activitati.includes(activitate)
-                ? prev.activitati.filter(a => a !== activitate)
-                : [...prev.activitati, activitate]
-        }));
     };
 
     const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -62,24 +42,27 @@ export default function Voluntariat() {
         setIsLoading(true);
 
         try {
-            console.log("Form submitted:", formData);
+            const submittedData = new FormData(e.currentTarget);
+            const payload = {
+                nume: String(submittedData.get("nume") ?? ""),
+                prenume: String(submittedData.get("prenume") ?? ""),
+                email: String(submittedData.get("email") ?? ""),
+                telefon: String(submittedData.get("telefon") ?? ""),
+                varsta: String(submittedData.get("varsta") ?? ""),
+                experienta: String(submittedData.get("experienta") ?? ""),
+                disponibilitate: String(submittedData.get("disponibilitate") ?? ""),
+                activitati: submittedData.getAll("activitati").map(String),
+                mesaj: String(submittedData.get("mesaj") ?? "")
+            };
+
+            console.log("Form submitted:", payload);
             await new Promise(resolve => setTimeout(resolve, 1000));
             
             setSubmitted(true);
             
             setTimeout(() => {
                 setSubmitted(false);
-                setFormData({
-                    nume: "",
-                    prenume: "",
-                    email: "",
-                    telefon: "",
-                    varsta: "",
-                    experienta: "",
-                    disponibilitate: "",
-                    activitati: [],
-                    mesaj: ""
-                });
+                formRef.current?.reset();
                 setFieldErrors({});
             }, 3000);
         } catch (error) {
@@ -91,17 +74,7 @@ export default function Voluntariat() {
     };
 
     const resetForm = () => {
-        setFormData({
-            nume: "",
-            prenume: "",
-            email: "",
-            telefon: "",
-            varsta: "",
-            experienta: "",
-            disponibilitate: "",
-            activitati: [],
-            mesaj: ""
-        });
+        formRef.current?.reset();
         setFieldErrors({});
     };
 
@@ -266,7 +239,7 @@ export default function Voluntariat() {
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="volunteerForm" noValidate>
+                <form ref={formRef} onSubmit={handleSubmit} className="volunteerForm" noValidate>
                     <div className="formGrid">
                         <div className="formGroup">
                             <label htmlFor="nume">Nume *</label>
@@ -274,8 +247,8 @@ export default function Voluntariat() {
                                 type="text"
                                 id="nume"
                                 name="nume"
-                                value={formData.nume}
-                                onChange={handleInputChange}
+                                defaultValue=""
+                                onBlur={handleFieldBlur}
                                 required
                                 placeholder="Popescu"
                                 disabled={isLoading}
@@ -294,8 +267,8 @@ export default function Voluntariat() {
                                 type="text"
                                 id="prenume"
                                 name="prenume"
-                                value={formData.prenume}
-                                onChange={handleInputChange}
+                                defaultValue=""
+                                onBlur={handleFieldBlur}
                                 required
                                 placeholder="Ion"
                                 disabled={isLoading}
@@ -314,8 +287,8 @@ export default function Voluntariat() {
                                 type="email"
                                 id="email"
                                 name="email"
-                                value={formData.email}
-                                onChange={handleInputChange}
+                                defaultValue=""
+                                onBlur={handleFieldBlur}
                                 required
                                 placeholder="ion.popescu@email.com"
                                 disabled={isLoading}
@@ -334,8 +307,8 @@ export default function Voluntariat() {
                                 type="tel"
                                 id="telefon"
                                 name="telefon"
-                                value={formData.telefon}
-                                onChange={handleInputChange}
+                                defaultValue=""
+                                onBlur={handleFieldBlur}
                                 required
                                 placeholder="060000000"
                                 pattern={PHONE_PATTERN}
@@ -358,8 +331,8 @@ export default function Voluntariat() {
                                 type="number"
                                 id="varsta"
                                 name="varsta"
-                                value={formData.varsta}
-                                onChange={handleInputChange}
+                                defaultValue=""
+                                onBlur={handleFieldBlur}
                                 required
                                 min="16"
                                 placeholder="18"
@@ -375,11 +348,11 @@ export default function Voluntariat() {
 
                         <div className="formGroup">
                             <label htmlFor="disponibilitate">Disponibilitate *</label>
-                            <select
+                                <select
                                 id="disponibilitate"
                                 name="disponibilitate"
-                                value={formData.disponibilitate}
-                                onChange={handleInputChange}
+                                defaultValue=""
+                                onBlur={handleFieldBlur}
                                 required
                                 disabled={isLoading}
                                 className={`formSelect ${fieldErrors.disponibilitate ? "field-invalid" : ""}`}
@@ -405,8 +378,8 @@ export default function Voluntariat() {
                         <select
                             id="experienta"
                             name="experienta"
-                            value={formData.experienta}
-                            onChange={handleInputChange}
+                            defaultValue=""
+                            onBlur={handleFieldBlur}
                             disabled={isLoading}
                             className="formSelect"
                         >
@@ -426,8 +399,9 @@ export default function Voluntariat() {
                                 <label key={act} className="checkboxLabel">
                                     <input
                                         type="checkbox"
-                                        checked={formData.activitati.includes(act)}
-                                        onChange={() => handleCheckboxChange(act)}
+                                        name="activitati"
+                                        value={act}
+                                        defaultChecked={false}
                                         disabled={isLoading}
                                     />
                                     <span>{act}</span>
@@ -441,8 +415,8 @@ export default function Voluntariat() {
                         <textarea
                             id="mesaj"
                             name="mesaj"
-                            value={formData.mesaj}
-                            onChange={handleInputChange}
+                            defaultValue=""
+                            onBlur={handleFieldBlur}
                             rows={4}
                             placeholder="De ce vrei să devii voluntar? Ce te motivează?"
                             disabled={isLoading}
