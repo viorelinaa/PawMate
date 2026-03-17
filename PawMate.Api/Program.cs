@@ -18,6 +18,18 @@ builder.Services.AddCors(options =>
             .AllowAnyMethod();
     });
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("LocalhostPolicy", policy =>
+    {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+            
+    });
+});
 //AddScoped
 //AddSingleton
 //AddDbContext
