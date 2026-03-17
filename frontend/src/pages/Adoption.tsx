@@ -4,6 +4,7 @@ import { UserOnly } from "../components/UserOnly";
 import { SearchIcon } from "../components/SearchIcon";
 import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
+import { FilterSelect } from "../components/FilterSelect";
 
 interface Pet {
     id: string;
@@ -142,36 +143,36 @@ export default function Adoption() {
                             onChange={(e) => setQuery(e.target.value)}
                         />
                     </div>
-                    <select className="filterSelect" value={city} onChange={(e) => setCity(e.target.value)}>
+                    <FilterSelect className="filterSelect" value={city} onChange={(e) => setCity(e.target.value)}>
                         <option value="ALL">Toate orașele</option>
                         {allCities.map((c) => (
                             <option key={c} value={c}>{c}</option>
                         ))}
-                    </select>
-                    <select className="filterSelect" value={species} onChange={(e) => setSpecies(e.target.value)}>
+                    </FilterSelect>
+                    <FilterSelect className="filterSelect" value={species} onChange={(e) => setSpecies(e.target.value)}>
                         <option value="ALL">Toate speciile</option>
                         <option value="Câine">Câine</option>
                         <option value="Pisică">Pisică</option>
                         <option value="Pasăre">Pasăre</option>
                         <option value="Rozător">Rozător</option>
                         <option value="Altul">Altul</option>
-                    </select>
+                    </FilterSelect>
                     <AppButton className="btnReset" variant="ghost" onClick={resetFilters}>
                         Reset filtre
                     </AppButton>
 
-                    <select className="filterSelect" value={age} onChange={(e) => setAge(e.target.value)}>
+                    <FilterSelect className="filterSelect" value={age} onChange={(e) => setAge(e.target.value)}>
                         <option value="ALL">Toate vârstele</option>
                         <option value="Pui">Pui</option>
                         <option value="Adult">Adult</option>
                         <option value="Senior">Senior</option>
-                    </select>
-                    <select className="filterSelect" value={size} onChange={(e) => setSize(e.target.value)}>
+                    </FilterSelect>
+                    <FilterSelect className="filterSelect" value={size} onChange={(e) => setSize(e.target.value)}>
                         <option value="ALL">Toate taliile</option>
                         <option value="Mic">Mic</option>
                         <option value="Mediu">Mediu</option>
                         <option value="Mare">Mare</option>
-                    </select>
+                    </FilterSelect>
                     <label className="filterCheck">
                         <input type="checkbox" checked={onlyVacc} onChange={(e) => setOnlyVacc(e.target.checked)} />
                         Vaccinat

@@ -5,6 +5,7 @@ import { AdminOnly } from "../components/AdminOnly";
 import { SearchIcon } from "../components/SearchIcon";
 import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
+import { FilterSelect } from "../components/FilterSelect";
 
 type EventItem = {
     id: string;
@@ -197,7 +198,7 @@ export default function Evenimente() {
                                 onChange={(event) => setQuery(event.target.value)}
                             />
                         </div>
-                        <select
+                        <FilterSelect
                             className="filterSelect"
                             value={city}
                             onChange={(event) => setCity(event.target.value)}
@@ -208,8 +209,8 @@ export default function Evenimente() {
                                     {entry}
                                 </option>
                             ))}
-                        </select>
-                        <select
+                        </FilterSelect>
+                        <FilterSelect
                             className="filterSelect"
                             value={eventType}
                             onChange={(event) => setEventType(event.target.value)}
@@ -220,7 +221,7 @@ export default function Evenimente() {
                                     {entry}
                                 </option>
                             ))}
-                        </select>
+                        </FilterSelect>
                         <AppButton className="btnReset" variant="ghost" onClick={resetFilters}>
                             Reset filtre
                         </AppButton>

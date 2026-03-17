@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using PawMate.DataAccessLayer.Context;
+using PawMate.Domain.Entities.Event;
 using PawMate.Domain.Models.Event;
 using PawMate.Domain.Models.Service;
 
@@ -15,16 +17,106 @@ public class EventActions
 
     public ServiceResponse CreateEventAction(EventCreateDto evt)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var entity = new EventEntity
+            {
+                Title = evt.Title,
+                Description = evt.Description,
+                Location = evt.Location,
+                Date = evt.Date
+            };
+
+            _context.Events.Add(entity);
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Evenimentul a fost creat cu succes.",
+                Data = entity.Id
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A apărut o eroare la crearea evenimentului: {ex.Message}"
+            };
+        }
     }
 
     public ServiceResponse GetEventByIdAction(int id)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var entity = _context.Events.FirstOrDefault(e => e.Id == id);
+
+            if (entity == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Evenimentul nu a fost găsit."
+                };
+            }
+
+            var dto = new EventInfoDto
+            {
+                Id = entity.Id,
+                Title = entity.Title,
+                Description = entity.Description,
+                Location = entity.Location,
+                Date = entity.Date
+            };
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Evenimentul a fost găsit.",
+                Data = dto
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A apărut o eroare la obținerea evenimentului: {ex.Message}"
+            };
+        }
     }
 
     public ServiceResponse GetEventListAction()
     {
-        throw new NotImplementedException();
+        try
+        {
+            var list = _context.Events
+                .Select(e => new EventInfoDto
+                {
+                    Id = e.Id,
+                    Title = e.Title,
+                    Description = e.Description,
+                    Location = e.Location,
+                    Date = e.Date
+                })
+                .ToList();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Lista evenimentelor a fost obținută cu succes.",
+                Data = list
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A apărut o eroare la obținerea listei de evenimente: {ex.Message}"
+            };
+        }
     }
 }

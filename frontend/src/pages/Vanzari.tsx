@@ -7,6 +7,7 @@ import { SearchIcon } from "../components/SearchIcon";
 import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
 import { ShoppingCartIcon } from "../components/ShoppingCartIcon";
+import { FilterSelect } from "../components/FilterSelect";
 
 type Product = {
     id: string;
@@ -204,7 +205,7 @@ export default function Vanzari() {
                                 onChange={(event) => setQuery(event.target.value)}
                             />
                         </div>
-                        <select
+                        <FilterSelect
                             className="filterSelect"
                             value={category}
                             onChange={(event) => setCategory(event.target.value)}
@@ -215,7 +216,7 @@ export default function Vanzari() {
                                     {entry}
                                 </option>
                             ))}
-                        </select>
+                        </FilterSelect>
                         <AppButton className="btnReset" variant="ghost" onClick={resetFilters}>
                             Reset filtre
                         </AppButton>
