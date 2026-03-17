@@ -16,29 +16,32 @@ type UserType = 'adopter' | 'sitter';
 
 const Signup: React.FC = () => {
   const [userType, setUserType] = useState<UserType>('adopter');
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    password: '',
-    confirmPassword: '',
-    address: '',
-    acceptTerms: false,
-  });
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [acceptTerms, setAcceptTerms] = useState(false);
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  const passwordValidation = usePasswordValidation(formData.password);
+  const passwordValidation = usePasswordValidation(password);
 
   const passwordsMatch =
-    formData.confirmPassword === '' || formData.password === formData.confirmPassword;
+    confirmPassword === '' || password === confirmPassword;
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+  const handleFieldBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setFieldErrors((prev) => updateSingleFieldError(e.target, prev));
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
+  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setConfirmPassword(e.target.value);
+  };
+
+  const handleAcceptTermsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAcceptTerms(e.target.checked);
     setFieldErrors((prev) => updateSingleFieldError(e.target, prev));
   };
 
@@ -51,7 +54,17 @@ const Signup: React.FC = () => {
       return;
     }
 
-    if (formData.password !== formData.confirmPassword) {
+    const submittedData = new FormData(e.currentTarget);
+    const firstName = String(submittedData.get('firstName') ?? '');
+    const lastName = String(submittedData.get('lastName') ?? '');
+    const email = String(submittedData.get('email') ?? '');
+    const phone = String(submittedData.get('phone') ?? '');
+    const submittedPassword = String(submittedData.get('password') ?? '');
+    const submittedConfirmPassword = String(submittedData.get('confirmPassword') ?? '');
+    const address = String(submittedData.get('address') ?? '');
+    const acceptedTerms = submittedData.get('acceptTerms') === 'on';
+
+    if (submittedPassword !== submittedConfirmPassword) {
       alert('Parolele nu coincid!');
       return;
     }
@@ -61,12 +74,22 @@ const Signup: React.FC = () => {
       return;
     }
 
-    if (!formData.acceptTerms) {
+    if (!acceptedTerms) {
       alert('Trebuie să accepți termenii și condițiile');
       return;
     }
 
-    console.log('Signup data:', { ...formData, userType });
+    console.log('Signup data:', {
+      firstName,
+      lastName,
+      email,
+      phone,
+      password: submittedPassword,
+      confirmPassword: submittedConfirmPassword,
+      address,
+      acceptTerms: acceptedTerms,
+      userType,
+    });
     // Aici vei adăuga logica de înregistrare
   };
 
@@ -103,8 +126,8 @@ const Signup: React.FC = () => {
                 type="text"
                 id="firstName"
                 name="firstName"
-                value={formData.firstName}
-                onChange={handleInputChange}
+                defaultValue=""
+                onBlur={handleFieldBlur}
                 placeholder="Ion"
                 required
                 className={fieldErrors.firstName ? 'field-invalid' : ''}
@@ -122,8 +145,8 @@ const Signup: React.FC = () => {
                 type="text"
                 id="lastName"
                 name="lastName"
-                value={formData.lastName}
-                onChange={handleInputChange}
+                defaultValue=""
+                onBlur={handleFieldBlur}
                 placeholder="Popescu"
                 required
                 className={fieldErrors.lastName ? 'field-invalid' : ''}
@@ -142,8 +165,8 @@ const Signup: React.FC = () => {
               type="email"
               id="email"
               name="email"
-              value={formData.email}
-              onChange={handleInputChange}
+              defaultValue=""
+              onBlur={handleFieldBlur}
               placeholder="email@example.com"
               required
               className={fieldErrors.email ? 'field-invalid' : ''}
@@ -161,8 +184,8 @@ const Signup: React.FC = () => {
               type="tel"
               id="phone"
               name="phone"
-              value={formData.phone}
-              onChange={handleInputChange}
+              defaultValue=""
+              onBlur={handleFieldBlur}
               placeholder="+373 69 123 456"
               required
               pattern={PHONE_PATTERN}
@@ -184,8 +207,8 @@ const Signup: React.FC = () => {
               type="text"
               id="address"
               name="address"
-              value={formData.address}
-              onChange={handleInputChange}
+              defaultValue=""
+              onBlur={handleFieldBlur}
               placeholder="Chișinău, str. Exemple 1"
               required
               className={fieldErrors.address ? 'field-invalid' : ''}
@@ -204,8 +227,9 @@ const Signup: React.FC = () => {
                 type="password"
                 id="password"
                 name="password"
-                value={formData.password}
-                onChange={handleInputChange}
+                value={password}
+                onChange={handlePasswordChange}
+                onBlur={handleFieldBlur}
                 placeholder="Min. 8 caractere"
                 required
                 className={fieldErrors.password ? 'field-invalid' : ''}
@@ -217,7 +241,7 @@ const Signup: React.FC = () => {
               )}
               <PasswordStrengthBar
                 validation={passwordValidation}
-                password={formData.password}
+                password={password}
               />
             </div>
 
@@ -227,8 +251,9 @@ const Signup: React.FC = () => {
                 type="password"
                 id="confirmPassword"
                 name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
+                onBlur={handleFieldBlur}
                 placeholder="Reintroduci parola"
                 required
                 className={fieldErrors.confirmPassword ? 'field-invalid' : ''}
@@ -238,7 +263,7 @@ const Signup: React.FC = () => {
               {fieldErrors.confirmPassword && (
                 <p className="validation-error" id="signup-confirmPassword-error">{fieldErrors.confirmPassword}</p>
               )}
-              {formData.confirmPassword && (
+              {confirmPassword && (
                 <p className={`password-match-hint ${passwordsMatch ? 'match' : 'no-match'}`}>
                   {passwordsMatch ? '✓ Parolele coincid' : '✗ Parolele nu coincid'}
                 </p>
@@ -251,8 +276,8 @@ const Signup: React.FC = () => {
               type="checkbox"
               id="acceptTerms"
               name="acceptTerms"
-              checked={formData.acceptTerms}
-              onChange={handleInputChange}
+              checked={acceptTerms}
+              onChange={handleAcceptTermsChange}
               required
             />
             <label htmlFor="acceptTerms">
@@ -269,9 +294,9 @@ const Signup: React.FC = () => {
             variant="primary"
             fullWidth
             disabled={
-              !formData.acceptTerms ||
+              !acceptTerms ||
               !passwordValidation.isValid ||
-              formData.password !== formData.confirmPassword
+              password !== confirmPassword
             }
           >
             Creează cont
