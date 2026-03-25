@@ -46,4 +46,9 @@ public class BusinessLogic
     {
         return new VolunteerLogic();
     }
+
+    public IUserAuthLogic GetUserAuthLogic()
+    {
+        return new UserAuthLogic();
+    }
 }
