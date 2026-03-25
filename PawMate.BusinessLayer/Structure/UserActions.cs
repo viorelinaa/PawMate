@@ -117,4 +117,39 @@ public class UserActions
             };
         }
     }
+
+    public ServiceResponse LoginUserAction(UserLoginDto loginData)
+    {
+        try
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Email == loginData.Email && u.Password == loginData.Password);
+
+            if (user == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Email sau parolă incorectă."
+                };
+            }
+
+            var tokenService = new TokenService();
+            var token = tokenService.GenerateToken();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Autentificare reușită.",
+                Data = new { Token = token, UserId = user.Id, Role = user.Role, Name = user.Name }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A apărut o eroare la autentificare: {ex.Message}"
+            };
+        }
+    }
 }

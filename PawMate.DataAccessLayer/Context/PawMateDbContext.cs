@@ -12,6 +12,9 @@ namespace PawMate.DataAccessLayer.Context;
 
 public sealed class PawMateDbContext : DbContext
 {
+    public PawMateDbContext() { }
+    public PawMateDbContext(DbContextOptions<PawMateDbContext> options) : base(options) { }
+
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<PetEntity> Pets { get; set; }
     public DbSet<AdoptionEntity> Adoptions { get; set; }
