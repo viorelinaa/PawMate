@@ -1,3 +1,8 @@
+using PawMate.Domain.Entities.Adoption;
+using PawMate.Domain.Entities.BlogPost;
+using PawMate.Domain.Entities.LostPet;
+using PawMate.Domain.Entities.Marketplace;
+
 namespace PawMate.Domain.Entities.User;
 
 public class UserEntity
@@ -7,4 +12,9 @@ public class UserEntity
     public string Email { get; set; }
     public string Password { get; set; }
     public string Role { get; set; }
+
+    public ICollection<AdoptionEntity> Adoptions { get; set; } = new List<AdoptionEntity>();
+    public ICollection<BlogPostEntity> BlogPosts { get; set; } = new List<BlogPostEntity>();
+    public ICollection<LostPetEntity> LostPets { get; set; } = new List<LostPetEntity>();
+    public ICollection<MarketplaceEntity> MarketplaceListings { get; set; } = new List<MarketplaceEntity>();
 }

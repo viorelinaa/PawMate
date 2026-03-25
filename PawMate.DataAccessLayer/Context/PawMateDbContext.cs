@@ -12,9 +12,6 @@ namespace PawMate.DataAccessLayer.Context;
 
 public sealed class PawMateDbContext : DbContext
 {
-    public PawMateDbContext() { }
-    public PawMateDbContext(DbContextOptions<PawMateDbContext> options) : base(options) { }
-
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<PetEntity> Pets { get; set; }
     public DbSet<AdoptionEntity> Adoptions { get; set; }
@@ -26,9 +23,47 @@ public sealed class PawMateDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        if (!optionsBuilder.IsConfigured)
-        {
-            optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=pawmatedb;Username=postgres;Password=postgres");
-        }
+        optionsBuilder.UseNpgsql(DbSession.ConnectionString);
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<AdoptionEntity>()
+            .HasOne(a => a.Pet)
+            .WithMany(p => p.Adoptions)
+            .HasForeignKey(a => a.PetId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<AdoptionEntity>()
+            .HasOne(a => a.User)
+            .WithMany(u => u.Adoptions)
+            .HasForeignKey(a => a.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<LostPetEntity>()
+            .HasOne(lp => lp.Pet)
+            .WithMany(p => p.LostPets)
+            .HasForeignKey(lp => lp.PetId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<LostPetEntity>()
+            .HasOne(lp => lp.User)
+            .WithMany(u => u.LostPets)
+            .HasForeignKey(lp => lp.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<BlogPostEntity>()
+            .HasOne(b => b.Author)
+            .WithMany(u => u.BlogPosts)
+            .HasForeignKey(b => b.AuthorId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<MarketplaceEntity>()
+            .HasOne(m => m.Seller)
+            .WithMany(u => u.MarketplaceListings)
+            .HasForeignKey(m => m.SellerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        base.OnModelCreating(modelBuilder);
     }
 }

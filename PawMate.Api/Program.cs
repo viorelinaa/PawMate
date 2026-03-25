@@ -1,14 +1,14 @@
-using Microsoft.EntityFrameworkCore;
-using PawMate.DataAccessLayer.Context;
+using PawMate.DataAccessLayer;
 
 var builder = WebApplication.CreateBuilder(args);
 const string FrontendCorsPolicy = "FrontendCorsPolicy";
 
+DbSession.ConnectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<PawMateDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(FrontendCorsPolicy, policy =>
@@ -35,9 +35,6 @@ builder.Services.AddCors(options =>
             
     });
 });
-//AddScoped
-//AddSingleton
-//AddDbContext
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
