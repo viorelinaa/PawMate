@@ -1,3 +1,5 @@
+using PawMate.Domain.Entities.User;
+
 namespace PawMate.Domain.Entities.Marketplace;
 
 public class MarketplaceEntity
@@ -7,4 +9,6 @@ public class MarketplaceEntity
     public string Description { get; set; }
     public decimal Price { get; set; }
     public int SellerId { get; set; }
+
+    public UserEntity Seller { get; set; } = null!;
 }
