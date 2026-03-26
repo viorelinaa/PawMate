@@ -46,4 +46,24 @@ public class PetController : ControllerBase
 
         return Ok(response.Message);
     }
+
+    [HttpPut("{id}")]
+    public IActionResult UpdatePet([FromRoute] int id, [FromBody] PetUpdateDto pet)
+    {
+        var response = _petLogic.UpdatePet(id, pet);
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+
+        return Ok(response.Message);
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeletePet([FromRoute] int id)
+    {
+        var response = _petLogic.DeletePet(id);
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+
+        return Ok(response.Message);
+    }
 }

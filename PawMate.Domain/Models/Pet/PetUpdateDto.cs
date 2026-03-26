@@ -1,6 +1,6 @@
 namespace PawMate.Domain.Models.Pet;
 
-public class PetCreateDto
+public class PetUpdateDto
 {
     public string Name { get; set; }
     public string Species { get; set; }

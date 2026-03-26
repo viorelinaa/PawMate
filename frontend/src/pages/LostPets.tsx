@@ -6,6 +6,129 @@ import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
 import { FilterSelect } from "../components/FilterSelect";
 
+interface AddLostForm {
+    species: string;
+    city: string;
+    date: string;
+    contact: string;
+    description: string;
+}
+
+const emptyLostForm: AddLostForm = {
+    species: "", city: "", date: "", contact: "", description: "",
+};
+
+function AddLostModal({ onClose }: { onClose: () => void }) {
+    const [form, setForm] = useState<AddLostForm>(emptyLostForm);
+    const [errors, setErrors] = useState<Partial<Record<keyof AddLostForm, string>>>({});
+
+    function validate() {
+        const e: Partial<Record<keyof AddLostForm, string>> = {};
+        if (!form.species) e.species = "Selectează specia.";
+        if (!form.city.trim()) e.city = "Orașul este obligatoriu.";
+        if (!form.date) e.date = "Data este obligatorie.";
+        if (!form.contact.trim()) e.contact = "Contactul este obligatoriu.";
+        return e;
+    }
+
+    function handleSubmit(ev: React.FormEvent) {
+        ev.preventDefault();
+        const errs = validate();
+        if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+        alert("Anunțul a fost adăugat cu succes! (mock)");
+        onClose();
+    }
+
+    function set(field: keyof AddLostForm, value: string) {
+        setForm(prev => ({ ...prev, [field]: value }));
+        setErrors(prev => ({ ...prev, [field]: undefined }));
+    }
+
+    return (
+        <div className="lostModalOverlay" onClick={onClose}>
+            <div className="lostModalBox" onClick={e => e.stopPropagation()}>
+                <div className="lostModalHeader">
+                    <h2 className="lostModalTitle">Adaugă anunț animal pierdut</h2>
+                    <button className="lostModalClose" onClick={onClose} aria-label="Închide">✕</button>
+                </div>
+                <form className="lostModalForm" onSubmit={handleSubmit} noValidate>
+                    <div className="lostModalRow">
+                        <div className="lostModalField">
+                            <label className="lostModalLabel">Specie *</label>
+                            <FilterSelect
+                                className={errors.species ? "fs-error" : ""}
+                                value={form.species}
+                                onChange={e => set("species", e.target.value)}
+                            >
+                                <option value="">Selectează specia</option>
+                                <option value="Câine">Câine</option>
+                                <option value="Pisică">Pisică</option>
+                                <option value="Pasăre">Pasăre</option>
+                                <option value="Rozător">Rozător</option>
+                                <option value="Altul">Altul</option>
+                            </FilterSelect>
+                            {errors.species && <span className="lostFieldError">{errors.species}</span>}
+                        </div>
+                        <div className="lostModalField">
+                            <label className="lostModalLabel">Oraș *</label>
+                            <input
+                                className={`lostModalInput${errors.city ? " lostInputError" : ""}`}
+                                placeholder="ex. Chișinău"
+                                value={form.city}
+                                onChange={e => set("city", e.target.value)}
+                            />
+                            {errors.city && <span className="lostFieldError">{errors.city}</span>}
+                        </div>
+                    </div>
+
+                    <div className="lostModalRow">
+                        <div className="lostModalField">
+                            <label className="lostModalLabel">Data pierderii *</label>
+                            <input
+                                type="date"
+                                className={`lostModalInput${errors.date ? " lostInputError" : ""}`}
+                                value={form.date}
+                                onChange={e => set("date", e.target.value)}
+                            />
+                            {errors.date && <span className="lostFieldError">{errors.date}</span>}
+                        </div>
+                        <div className="lostModalField">
+                            <label className="lostModalLabel">Contact *</label>
+                            <input
+                                className={`lostModalInput${errors.contact ? " lostInputError" : ""}`}
+                                placeholder="ex. +373 6xx xxx xxx"
+                                value={form.contact}
+                                onChange={e => set("contact", e.target.value)}
+                            />
+                            {errors.contact && <span className="lostFieldError">{errors.contact}</span>}
+                        </div>
+                    </div>
+
+                    <div className="lostModalField">
+                        <label className="lostModalLabel">Descriere</label>
+                        <textarea
+                            className="lostModalTextarea"
+                            placeholder="Descrie animalul: culoare, semne distinctive, zona unde a fost văzut ultima dată..."
+                            value={form.description}
+                            onChange={e => set("description", e.target.value)}
+                            rows={3}
+                        />
+                    </div>
+
+                    <div className="lostModalActions">
+                        <AppButton type="button" variant="ghost" onClick={onClose}>
+                            Anulează
+                        </AppButton>
+                        <AppButton type="submit" variant="primary">
+                            Adaugă anunț
+                        </AppButton>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
+
 interface LostAd {
     id: string;
     species: string;
@@ -84,6 +207,7 @@ function LostPetCard({ a }: { a: LostAd }) {
 }
 
 export default function LostPets() {
+    const [showAddModal, setShowAddModal] = useState(false);
     const [query, setQuery] = useState("");
     const [species, setSpecies] = useState("ALL");
     const [city, setCity] = useState("ALL");
@@ -136,10 +260,12 @@ export default function LostPets() {
                 <div className="roleActionBar">
                     <AddActionButton
                         label="Adaugă anunț animal pierdut"
-                        onClick={() => alert("Formular adăugare anunț — în curând!")}
+                        onClick={() => setShowAddModal(true)}
                     />
                 </div>
             </UserOnly>
+
+            {showAddModal && <AddLostModal onClose={() => setShowAddModal(false)} />}
 
             <div className="lostContent">
                 <div className="lostFilters">
