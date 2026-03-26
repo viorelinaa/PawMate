@@ -6,6 +6,174 @@ import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
 import { FilterSelect } from "../components/FilterSelect";
 
+interface AddPetForm {
+    name: string;
+    species: string;
+    city: string;
+    age: string;
+    size: string;
+    vaccinated: boolean;
+    sterilized: boolean;
+    description: string;
+}
+
+const emptyForm: AddPetForm = {
+    name: "", species: "", city: "", age: "", size: "",
+    vaccinated: false, sterilized: false, description: "",
+};
+
+function AddPetModal({ onClose }: { onClose: () => void }) {
+    const [form, setForm] = useState<AddPetForm>(emptyForm);
+    const [errors, setErrors] = useState<Partial<Record<keyof AddPetForm, string>>>({});
+
+    function validate() {
+        const e: Partial<Record<keyof AddPetForm, string>> = {};
+        if (!form.name.trim()) e.name = "Numele este obligatoriu.";
+        if (!form.species) e.species = "Selectează specia.";
+        if (!form.city.trim()) e.city = "Orașul este obligatoriu.";
+        if (!form.age) e.age = "Selectează vârsta.";
+        if (!form.size) e.size = "Selectează talia.";
+        return e;
+    }
+
+    function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        const errs = validate();
+        if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+        // TODO: connect to backend
+        alert("Animalul a fost adăugat cu succes! (mock)");
+        onClose();
+    }
+
+    function set(field: keyof AddPetForm, value: string | boolean) {
+        setForm(prev => ({ ...prev, [field]: value }));
+        setErrors(prev => ({ ...prev, [field]: undefined }));
+    }
+
+    return (
+        <div className="modalOverlay" onClick={onClose}>
+            <div className="modalBox" onClick={e => e.stopPropagation()}>
+                <div className="modalHeader">
+                    <h2 className="modalTitle">Adaugă animal pentru adopție</h2>
+                    <button className="modalClose" onClick={onClose} aria-label="Închide">✕</button>
+                </div>
+                <form className="modalForm" onSubmit={handleSubmit} noValidate>
+                    <div className="modalRow">
+                        <div className="modalField">
+                            <label className="modalLabel">Nume animal *</label>
+                            <input
+                                className={`modalInput${errors.name ? " inputError" : ""}`}
+                                placeholder="ex. Buddy"
+                                value={form.name}
+                                onChange={e => set("name", e.target.value)}
+                            />
+                            {errors.name && <span className="fieldError">{errors.name}</span>}
+                        </div>
+                        <div className="modalField">
+                            <label className="modalLabel">Tip / Specie *</label>
+                            <FilterSelect
+                                className={errors.species ? "fs-error" : ""}
+                                value={form.species}
+                                onChange={e => set("species", e.target.value)}
+                            >
+                                <option value="">Selectează specia</option>
+                                <option value="Câine">Câine</option>
+                                <option value="Pisică">Pisică</option>
+                                <option value="Pasăre">Pasăre</option>
+                                <option value="Rozător">Rozător</option>
+                                <option value="Altul">Altul</option>
+                            </FilterSelect>
+                            {errors.species && <span className="fieldError">{errors.species}</span>}
+                        </div>
+                    </div>
+
+                    <div className="modalRow">
+                        <div className="modalField">
+                            <label className="modalLabel">Oraș *</label>
+                            <input
+                                className={`modalInput${errors.city ? " inputError" : ""}`}
+                                placeholder="ex. Chișinău"
+                                value={form.city}
+                                onChange={e => set("city", e.target.value)}
+                            />
+                            {errors.city && <span className="fieldError">{errors.city}</span>}
+                        </div>
+                        <div className="modalField">
+                            <label className="modalLabel">Vârstă *</label>
+                            <FilterSelect
+                                className={errors.age ? "fs-error" : ""}
+                                value={form.age}
+                                onChange={e => set("age", e.target.value)}
+                            >
+                                <option value="">Selectează vârsta</option>
+                                <option value="Pui">Pui</option>
+                                <option value="Adult">Adult</option>
+                                <option value="Senior">Senior</option>
+                            </FilterSelect>
+                            {errors.age && <span className="fieldError">{errors.age}</span>}
+                        </div>
+                    </div>
+
+                    <div className="modalRow">
+                        <div className="modalField">
+                            <label className="modalLabel">Talie *</label>
+                            <FilterSelect
+                                className={errors.size ? "fs-error" : ""}
+                                value={form.size}
+                                onChange={e => set("size", e.target.value)}
+                            >
+                                <option value="">Selectează talia</option>
+                                <option value="Mic">Mic</option>
+                                <option value="Mediu">Mediu</option>
+                                <option value="Mare">Mare</option>
+                            </FilterSelect>
+                            {errors.size && <span className="fieldError">{errors.size}</span>}
+                        </div>
+                        <div className="modalField modalCheckboxes">
+                            <label className="modalCheckLabel">
+                                <input
+                                    type="checkbox"
+                                    checked={form.vaccinated}
+                                    onChange={e => set("vaccinated", e.target.checked)}
+                                />
+                                Vaccinat
+                            </label>
+                            <label className="modalCheckLabel">
+                                <input
+                                    type="checkbox"
+                                    checked={form.sterilized}
+                                    onChange={e => set("sterilized", e.target.checked)}
+                                />
+                                Sterilizat
+                            </label>
+                        </div>
+                    </div>
+
+                    <div className="modalField">
+                        <label className="modalLabel">Descriere</label>
+                        <textarea
+                            className="modalTextarea"
+                            placeholder="Descrie comportamentul, nevoile sau alte detalii..."
+                            value={form.description}
+                            onChange={e => set("description", e.target.value)}
+                            rows={3}
+                        />
+                    </div>
+
+                    <div className="modalActions">
+                        <AppButton type="button" variant="ghost" onClick={onClose}>
+                            Anulează
+                        </AppButton>
+                        <AppButton type="submit" variant="primary">
+                            Adaugă animal
+                        </AppButton>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
+
 interface Pet {
     id: string;
     name: string;
@@ -63,6 +231,7 @@ function PetCard({ p }: { p: Pet }) {
 }
 
 export default function Adoption() {
+    const [showAddModal, setShowAddModal] = useState(false);
     const [query, setQuery] = useState("");
     const [city, setCity] = useState("ALL");
     const [species, setSpecies] = useState("ALL");
@@ -126,10 +295,12 @@ export default function Adoption() {
                 <div className="roleActionBar">
                     <AddActionButton
                         label="Adaugă animal pentru adopție"
-                        onClick={() => alert("Formular adăugare animal — în curând!")}
+                        onClick={() => setShowAddModal(true)}
                     />
                 </div>
             </UserOnly>
+
+            {showAddModal && <AddPetModal onClose={() => setShowAddModal(false)} />}
 
             <div className="adoptionContent">
             <div className="filters">

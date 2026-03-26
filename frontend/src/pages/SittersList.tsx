@@ -4,6 +4,134 @@ import { UserOnly } from "../components/UserOnly";
 import { SearchIcon } from "../components/SearchIcon";
 import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
+import { FilterSelect } from "../components/FilterSelect";
+
+interface AddSitterForm {
+    name: string;
+    city: string;
+    services: string;
+    pricePerDay: string;
+    description: string;
+}
+
+const emptySitterForm: AddSitterForm = {
+    name: "", city: "", services: "", pricePerDay: "", description: "",
+};
+
+function AddSitterModal({ onClose }: { onClose: () => void }) {
+    const [form, setForm] = useState<AddSitterForm>(emptySitterForm);
+    const [errors, setErrors] = useState<Partial<Record<keyof AddSitterForm, string>>>({});
+
+    function validate() {
+        const e: Partial<Record<keyof AddSitterForm, string>> = {};
+        if (!form.name.trim()) e.name = "Numele este obligatoriu.";
+        if (!form.city.trim()) e.city = "Orașul este obligatoriu.";
+        if (!form.services) e.services = "Selectează tipul de serviciu.";
+        if (!form.pricePerDay.trim()) e.pricePerDay = "Prețul este obligatoriu.";
+        else if (isNaN(Number(form.pricePerDay)) || Number(form.pricePerDay) <= 0)
+            e.pricePerDay = "Introdu un preț valid.";
+        return e;
+    }
+
+    function handleSubmit(ev: React.FormEvent) {
+        ev.preventDefault();
+        const errs = validate();
+        if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+        alert("Profilul sitter a fost adăugat cu succes! (mock)");
+        onClose();
+    }
+
+    function set(field: keyof AddSitterForm, value: string) {
+        setForm(prev => ({ ...prev, [field]: value }));
+        setErrors(prev => ({ ...prev, [field]: undefined }));
+    }
+
+    return (
+        <div className="sitterModalOverlay" onClick={onClose}>
+            <div className="sitterModalBox" onClick={e => e.stopPropagation()}>
+                <div className="sitterModalHeader">
+                    <h2 className="sitterModalTitle">Adaugă profil sitter</h2>
+                    <button className="sitterModalClose" onClick={onClose} aria-label="Închide">✕</button>
+                </div>
+                <form className="sitterModalForm" onSubmit={handleSubmit} noValidate>
+                    <div className="sitterModalRow">
+                        <div className="sitterModalField">
+                            <label className="sitterModalLabel">Nume *</label>
+                            <input
+                                className={`sitterModalInput${errors.name ? " sitterInputError" : ""}`}
+                                placeholder="ex. Ana"
+                                value={form.name}
+                                onChange={e => set("name", e.target.value)}
+                            />
+                            {errors.name && <span className="sitterFieldError">{errors.name}</span>}
+                        </div>
+                        <div className="sitterModalField">
+                            <label className="sitterModalLabel">Oraș *</label>
+                            <input
+                                className={`sitterModalInput${errors.city ? " sitterInputError" : ""}`}
+                                placeholder="ex. Chișinău"
+                                value={form.city}
+                                onChange={e => set("city", e.target.value)}
+                            />
+                            {errors.city && <span className="sitterFieldError">{errors.city}</span>}
+                        </div>
+                    </div>
+
+                    <div className="sitterModalRow">
+                        <div className="sitterModalField">
+                            <label className="sitterModalLabel">Tip serviciu *</label>
+                            <FilterSelect
+                                className={errors.services ? "fs-error" : ""}
+                                value={form.services}
+                                onChange={e => set("services", e.target.value)}
+                            >
+                                <option value="">Selectează serviciul</option>
+                                <option value="Plimbări">Plimbări</option>
+                                <option value="Îngrijire la domiciliu">Îngrijire la domiciliu</option>
+                                <option value="Pet sitting">Pet sitting</option>
+                                <option value="Hrănire">Hrănire</option>
+                                <option value="Altul">Altul</option>
+                            </FilterSelect>
+                            {errors.services && <span className="sitterFieldError">{errors.services}</span>}
+                        </div>
+                        <div className="sitterModalField">
+                            <label className="sitterModalLabel">Preț / zi (MDL) *</label>
+                            <input
+                                type="number"
+                                min="1"
+                                className={`sitterModalInput${errors.pricePerDay ? " sitterInputError" : ""}`}
+                                placeholder="ex. 250"
+                                value={form.pricePerDay}
+                                onChange={e => set("pricePerDay", e.target.value)}
+                            />
+                            {errors.pricePerDay && <span className="sitterFieldError">{errors.pricePerDay}</span>}
+                        </div>
+                    </div>
+
+                    <div className="sitterModalField">
+                        <label className="sitterModalLabel">Descriere</label>
+                        <textarea
+                            className="sitterModalTextarea"
+                            placeholder="Descrie experiența, animalele acceptate, programul disponibil..."
+                            value={form.description}
+                            onChange={e => set("description", e.target.value)}
+                            rows={3}
+                        />
+                    </div>
+
+                    <div className="sitterModalActions">
+                        <AppButton type="button" variant="ghost" onClick={onClose}>
+                            Anulează
+                        </AppButton>
+                        <AppButton type="submit" variant="primary">
+                            Adaugă profil
+                        </AppButton>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
 
 type Sitter = {
     id: number;
@@ -38,6 +166,7 @@ function SitterCard({ s }: { s: Sitter }) {
 }
 
 export default function SittersList() {
+    const [showAddModal, setShowAddModal] = useState(false);
     const [query, setQuery] = useState("");
     const [onlyTopRated, setOnlyTopRated] = useState(false);
     const [priceSort, setPriceSort] = useState<"none" | "asc" | "desc">("none");
@@ -106,10 +235,12 @@ export default function SittersList() {
                 <div className="roleActionBar">
                     <AddActionButton
                         label="Adaugă profil sitter"
-                        onClick={() => alert("Formular adăugare profil sitter — în curând!")}
+                        onClick={() => setShowAddModal(true)}
                     />
                 </div>
             </UserOnly>
+
+            {showAddModal && <AddSitterModal onClose={() => setShowAddModal(false)} />}
 
             {/* ── Content ── */}
             <div className="sitters-content">

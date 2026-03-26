@@ -233,3 +233,152 @@
     font-weight: 700;
     font-family: var(--font-family);
 }
+
+/* ── Add Lost Pet Modal ─────────────────────────────────── */
+.lostModalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+}
+
+.lostModalBox {
+    background: var(--color-surface);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.18);
+    width: 100%;
+    max-width: 580px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 28px 28px 24px;
+    --filter-h: 44px;
+}
+
+.lostModalHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+.lostModalTitle {
+    margin: 0;
+    font-size: var(--font-size-lg);
+    font-weight: 800;
+    color: var(--color-primary);
+    font-family: var(--font-family);
+}
+
+.lostModalClose {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: var(--color-text-muted);
+    line-height: 1;
+    padding: 4px;
+    border-radius: var(--radius-full);
+    transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.lostModalClose:hover {
+    color: var(--color-primary);
+    background: var(--color-primary-faint);
+}
+
+.lostModalForm {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.lostModalRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 520px) {
+    .lostModalRow { grid-template-columns: 1fr; }
+}
+
+.lostModalField {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.lostModalLabel {
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    color: var(--color-text-muted);
+    font-family: var(--font-family);
+}
+
+.lostModalInput {
+    height: 44px;
+    padding: 0 14px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-primary-border);
+    outline: none;
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--color-text);
+    background: #fff;
+    font-family: var(--font-family);
+    box-sizing: border-box;
+    width: 100%;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.lostModalInput:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-faint);
+}
+
+.lostModalInput.lostInputError {
+    border-color: #e05252;
+}
+
+.lostModalBox .fs-error .fs-btn {
+    border-color: #e05252;
+}
+
+.lostModalTextarea {
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-primary-border);
+    outline: none;
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    color: var(--color-text);
+    background: #fff;
+    font-family: var(--font-family);
+    resize: vertical;
+    width: 100%;
+    box-sizing: border-box;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.lostModalTextarea:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-faint);
+}
+
+.lostFieldError {
+    font-size: var(--font-size-xs);
+    color: #e05252;
+    font-weight: 600;
+    font-family: var(--font-family);
+}
+
+.lostModalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 6px;
+}
