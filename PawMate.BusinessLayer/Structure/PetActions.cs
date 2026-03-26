@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using PawMate.DataAccessLayer.Context;
 using PawMate.Domain.Entities.Pet;
 using PawMate.Domain.Models.Pet;
@@ -23,9 +22,11 @@ public class PetActions
             {
                 Name = pet.Name,
                 Species = pet.Species,
-                Breed = pet.Breed,
+                City = pet.City,
                 Age = pet.Age,
-                Gender = pet.Gender,
+                Size = pet.Size,
+                Vaccinated = pet.Vaccinated,
+                Sterilized = pet.Sterilized,
                 Description = pet.Description
             };
 
@@ -69,9 +70,11 @@ public class PetActions
                 Id = entity.Id,
                 Name = entity.Name,
                 Species = entity.Species,
-                Breed = entity.Breed,
+                City = entity.City,
                 Age = entity.Age,
-                Gender = entity.Gender,
+                Size = entity.Size,
+                Vaccinated = entity.Vaccinated,
+                Sterilized = entity.Sterilized,
                 Description = entity.Description
             };
 
@@ -102,9 +105,11 @@ public class PetActions
                     Id = p.Id,
                     Name = p.Name,
                     Species = p.Species,
-                    Breed = p.Breed,
+                    City = p.City,
                     Age = p.Age,
-                    Gender = p.Gender,
+                    Size = p.Size,
+                    Vaccinated = p.Vaccinated,
+                    Sterilized = p.Sterilized,
                     Description = p.Description
                 })
                 .ToList();
@@ -122,6 +127,82 @@ public class PetActions
             {
                 IsSuccess = false,
                 Message = $"A apărut o eroare la obținerea listei de animale: {ex.Message}"
+            };
+        }
+    }
+
+    public ServiceResponse UpdatePetAction(int id, PetUpdateDto pet)
+    {
+        try
+        {
+            var entity = _context.Pets.FirstOrDefault(p => p.Id == id);
+
+            if (entity == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Animalul de companie nu a fost găsit."
+                };
+            }
+
+            entity.Name = pet.Name;
+            entity.Species = pet.Species;
+            entity.City = pet.City;
+            entity.Age = pet.Age;
+            entity.Size = pet.Size;
+            entity.Vaccinated = pet.Vaccinated;
+            entity.Sterilized = pet.Sterilized;
+            entity.Description = pet.Description;
+
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Animalul de companie a fost actualizat cu succes."
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A apărut o eroare la actualizarea animalului: {ex.Message}"
+            };
+        }
+    }
+
+    public ServiceResponse DeletePetAction(int id)
+    {
+        try
+        {
+            var entity = _context.Pets.FirstOrDefault(p => p.Id == id);
+
+            if (entity == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Animalul de companie nu a fost găsit."
+                };
+            }
+
+            _context.Pets.Remove(entity);
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Animalul de companie a fost șters cu succes."
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A apărut o eroare la ștergerea animalului: {ex.Message}"
             };
         }
     }

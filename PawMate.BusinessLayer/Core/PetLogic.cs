@@ -21,4 +21,14 @@ public class PetLogic : PetActions, IPetLogic
     {
         return GetPetListAction();
     }
+
+    public ServiceResponse UpdatePet(int id, PetUpdateDto pet)
+    {
+        return UpdatePetAction(id, pet);
+    }
+
+    public ServiceResponse DeletePet(int id)
+    {
+        return DeletePetAction(id);
+    }
 }

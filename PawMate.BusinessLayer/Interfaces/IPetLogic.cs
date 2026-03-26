@@ -8,4 +8,6 @@ public interface IPetLogic
     ServiceResponse CreatePet(PetCreateDto pet);
     ServiceResponse GetPetById(int id);
     ServiceResponse GetPetList();
+    ServiceResponse UpdatePet(int id, PetUpdateDto pet);
+    ServiceResponse DeletePet(int id);
 }
