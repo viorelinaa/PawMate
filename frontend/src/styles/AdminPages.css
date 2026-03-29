@@ -153,6 +153,29 @@
     color: #fff;
 }
 
+/* ── Lista animale în cardul Adopție ─────────────────── */
+.adminPetList {
+    margin-top: 8px;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 16px;
+}
+
+.adminPetList .petCards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.adminPetList .petCard {
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 0.85rem;
+}
+
+[data-theme="dark"] .adminPetList {
+    border-top-color: #2e2e40;
+}
+
 /* ── Responsive ─────────────────────────────────────── */
 @media (max-width: 1024px) {
     .adminPagesGrid {
