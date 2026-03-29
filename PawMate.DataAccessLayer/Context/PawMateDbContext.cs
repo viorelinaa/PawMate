@@ -40,18 +40,6 @@ public sealed class PawMateDbContext : DbContext
             .HasForeignKey(a => a.UserId)
             .OnDelete(DeleteBehavior.Restrict);
 
-        modelBuilder.Entity<LostPetEntity>()
-            .HasOne(lp => lp.Pet)
-            .WithMany(p => p.LostPets)
-            .HasForeignKey(lp => lp.PetId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<LostPetEntity>()
-            .HasOne(lp => lp.User)
-            .WithMany(u => u.LostPets)
-            .HasForeignKey(lp => lp.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
-
         modelBuilder.Entity<BlogPostEntity>()
             .HasOne(b => b.Author)
             .WithMany(u => u.BlogPosts)

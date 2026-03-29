@@ -382,3 +382,12 @@
     gap: 12px;
     margin-top: 6px;
 }
+
+.lostModalCheckLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    cursor: pointer;
+}
