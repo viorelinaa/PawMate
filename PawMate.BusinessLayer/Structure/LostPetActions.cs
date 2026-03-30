@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using PawMate.DataAccessLayer.Context;
 using PawMate.Domain.Entities.LostPet;
 using PawMate.Domain.Models.LostPet;
@@ -21,10 +20,11 @@ public class LostPetActions
         {
             var entity = new LostPetEntity
             {
-                PetId = lostPet.PetId,
-                UserId = lostPet.UserId,
-                Location = lostPet.Location,
-                LostDate = lostPet.LostDate,
+                Species = lostPet.Species,
+                City = lostPet.City,
+                LostDate = DateTime.SpecifyKind(DateTime.Parse(lostPet.LostDate), DateTimeKind.Utc),
+                Contact = lostPet.Contact,
+                Description = lostPet.Description,
                 IsFound = false
             };
 
@@ -55,38 +55,18 @@ public class LostPetActions
             var entity = _context.LostPets.FirstOrDefault(lp => lp.Id == id);
 
             if (entity == null)
-            {
-                return new ServiceResponse
-                {
-                    IsSuccess = false,
-                    Message = "Anunțul pentru animalul pierdut nu a fost găsit."
-                };
-            }
-
-            var dto = new LostPetInfoDto
-            {
-                Id = entity.Id,
-                PetId = entity.PetId,
-                UserId = entity.UserId,
-                Location = entity.Location,
-                LostDate = entity.LostDate,
-                IsFound = entity.IsFound
-            };
+                return new ServiceResponse { IsSuccess = false, Message = "Anunțul nu a fost găsit." };
 
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Anunțul pentru animalul pierdut a fost găsit.",
-                Data = dto
+                Message = "Anunțul a fost găsit.",
+                Data = ToDto(entity)
             };
         }
         catch (Exception ex)
         {
-            return new ServiceResponse
-            {
-                IsSuccess = false,
-                Message = $"A apărut o eroare la obținerea anunțului: {ex.Message}"
-            };
+            return new ServiceResponse { IsSuccess = false, Message = $"Eroare: {ex.Message}" };
         }
     }
 
@@ -98,10 +78,11 @@ public class LostPetActions
                 .Select(lp => new LostPetInfoDto
                 {
                     Id = lp.Id,
-                    PetId = lp.PetId,
-                    UserId = lp.UserId,
-                    Location = lp.Location,
-                    LostDate = lp.LostDate,
+                    Species = lp.Species,
+                    City = lp.City,
+                    LostDate = lp.LostDate.ToString("yyyy-MM-dd"),
+                    Contact = lp.Contact,
+                    Description = lp.Description,
                     IsFound = lp.IsFound
                 })
                 .ToList();
@@ -115,11 +96,64 @@ public class LostPetActions
         }
         catch (Exception ex)
         {
-            return new ServiceResponse
-            {
-                IsSuccess = false,
-                Message = $"A apărut o eroare la obținerea listei de animale pierdute: {ex.Message}"
-            };
+            return new ServiceResponse { IsSuccess = false, Message = $"Eroare: {ex.Message}" };
         }
     }
+
+    public ServiceResponse UpdateLostPetAction(int id, LostPetUpdateDto lostPet)
+    {
+        try
+        {
+            var entity = _context.LostPets.FirstOrDefault(lp => lp.Id == id);
+
+            if (entity == null)
+                return new ServiceResponse { IsSuccess = false, Message = "Anunțul nu a fost găsit." };
+
+            entity.Species = lostPet.Species;
+            entity.City = lostPet.City;
+            entity.LostDate = DateTime.SpecifyKind(DateTime.Parse(lostPet.LostDate), DateTimeKind.Utc);
+            entity.Contact = lostPet.Contact;
+            entity.Description = lostPet.Description;
+            entity.IsFound = lostPet.IsFound;
+
+            _context.SaveChanges();
+
+            return new ServiceResponse { IsSuccess = true, Message = "Anunțul a fost actualizat cu succes." };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse { IsSuccess = false, Message = $"Eroare: {ex.Message}" };
+        }
+    }
+
+    public ServiceResponse DeleteLostPetAction(int id)
+    {
+        try
+        {
+            var entity = _context.LostPets.FirstOrDefault(lp => lp.Id == id);
+
+            if (entity == null)
+                return new ServiceResponse { IsSuccess = false, Message = "Anunțul nu a fost găsit." };
+
+            _context.LostPets.Remove(entity);
+            _context.SaveChanges();
+
+            return new ServiceResponse { IsSuccess = true, Message = "Anunțul a fost șters cu succes." };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse { IsSuccess = false, Message = $"Eroare: {ex.Message}" };
+        }
+    }
+
+    private static LostPetInfoDto ToDto(LostPetEntity lp) => new()
+    {
+        Id = lp.Id,
+        Species = lp.Species,
+        City = lp.City,
+        LostDate = lp.LostDate.ToString("yyyy-MM-dd"),
+        Contact = lp.Contact,
+        Description = lp.Description,
+        IsFound = lp.IsFound
+    };
 }

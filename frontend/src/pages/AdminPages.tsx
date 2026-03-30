@@ -1,143 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { paths } from '../routes/paths';
 import { AddActionButton } from '../components/AddActionButton';
+import { AddPetModal, EditPetModal, DeleteConfirmModal } from '../components/PetModals';
+import { AddLostPetModal, EditLostPetModal, DeleteLostPetModal } from '../components/LostPetModals';
+import type { Pet } from '../services/petService';
+import type { LostPet } from '../services/lostPetService';
 import '../styles/AdminPages.css';
-
-interface AdminPageCard {
-    id: string;
-    title: string;
-    icon: string;
-    description: string;
-    path: string;
-    actions: {
-        label: string;
-        onClick: () => void;
-    }[];
-}
+import '../styles/Adoption.css';
+import '../styles/LostPets.css';
 
 const AdminPages: React.FC = () => {
     const navigate = useNavigate();
 
-    const pages: AdminPageCard[] = [
-        {
-            id: 'adoptie',
-            title: 'Adopție',
-            icon: '🐾',
-            description: 'Gestionează animalele disponibile pentru adopție.',
-            path: paths.adoptie,
-            actions: [
-                {
-                    label: 'Adaugă animal pentru adopție',
-                    onClick: () => alert('Formular adăugare animal — în curând!'),
-                },
-            ],
-        },
-        {
-            id: 'pierdute',
-            title: 'Animale Pierdute',
-            icon: '🔍',
-            description: 'Administrează anunțurile de animale pierdute.',
-            path: paths.pierdute,
-            actions: [
-                {
-                    label: 'Adaugă anunț animal pierdut',
-                    onClick: () => alert('Formular adăugare anunț — în curând!'),
-                },
-            ],
-        },
-        {
-            id: 'veterinari',
-            title: 'Veterinari',
-            icon: '🏥',
-            description: 'Gestionează clinicile și cabinetele veterinare.',
-            path: paths.veterinari,
-            actions: [
-                {
-                    label: 'Adaugă clinică',
-                    onClick: () => alert('Formular adăugare clinică — în curând!'),
-                },
-            ],
-        },
-        {
-            id: 'donatii',
-            title: 'Donații',
-            icon: '💜',
-            description: 'Administrează ONG-urile și campaniile de donații.',
-            path: paths.donatii,
-            actions: [
-                {
-                    label: 'Adaugă ONG',
-                    onClick: () => alert('Formular adăugare ONG — în curând!'),
-                },
-            ],
-        },
-        {
-            id: 'blog',
-            title: 'Blog',
-            icon: '📝',
-            description: 'Publică și gestionează articolele de pe blog.',
-            path: paths.blog,
-            actions: [
-                {
-                    label: 'Adaugă articol',
-                    onClick: () => alert('Formular adăugare articol — în curând!'),
-                },
-            ],
-        },
-        {
-            id: 'evenimente',
-            title: 'Evenimente',
-            icon: '📅',
-            description: 'Creează și administrează evenimentele platformei.',
-            path: paths.evenimente,
-            actions: [
-                {
-                    label: 'Adaugă eveniment',
-                    onClick: () => alert('Formular adăugare eveniment — în curând!'),
-                },
-            ],
-        },
-        {
-            id: 'sitters',
-            title: 'Sitters',
-            icon: '🏠',
-            description: 'Gestionează profilurile îngrijitorilor de animale.',
-            path: paths.sitters,
-            actions: [
-                {
-                    label: 'Adaugă profil sitter',
-                    onClick: () => alert('Formular adăugare profil sitter — în curând!'),
-                },
-            ],
-        },
-        {
-            id: 'vanzari',
-            title: 'Vânzări',
-            icon: '🛒',
-            description: 'Administrează produsele și anunțurile din marketplace.',
-            path: paths.vanzari,
-            actions: [
-                {
-                    label: 'Adaugă produs/anunț',
-                    onClick: () => alert('Formular adăugare produs — în curând!'),
-                },
-            ],
-        },
-        {
-            id: 'quiz',
-            title: 'Quiz',
-            icon: '🧩',
-            description: 'Gestionează întrebările și răspunsurile din quiz.',
-            path: paths.quiz,
-            actions: [
-                {
-                    label: 'Adaugă întrebare',
-                    onClick: () => alert('Formular adăugare întrebare — în curând!'),
-                },
-            ],
-        },
-    ];
+    // ── Adopție CRUD state ────────────────────────────────────────────────────
+    const [showAddPet, setShowAddPet] = useState(false);
+    const [editPet, setEditPet] = useState<Pet | null>(null);
+    const [deletePetTarget, setDeletePetTarget] = useState<Pet | null>(null);
+
+    // ── Pierdute CRUD state ───────────────────────────────────────────────────
+    const [showAddLost, setShowAddLost] = useState(false);
+    const [editLost, setEditLost] = useState<LostPet | null>(null);
+    const [deleteLost, setDeleteLost] = useState<LostPet | null>(null);
 
     return (
         <div className="adminPages">
@@ -145,8 +29,63 @@ const AdminPages: React.FC = () => {
                 <h1>Pagini administrate</h1>
                 <p>Selectează o pagină pentru a o vizualiza sau adaugă conținut nou.</p>
             </div>
+
+            {/* Modals Adopție */}
+            {showAddPet && (
+                <AddPetModal onClose={() => setShowAddPet(false)} onAdded={() => {}} />
+            )}
+            {editPet && (
+                <EditPetModal pet={editPet} onClose={() => setEditPet(null)} onUpdated={() => {}} />
+            )}
+            {deletePetTarget && (
+                <DeleteConfirmModal pet={deletePetTarget} onClose={() => setDeletePetTarget(null)} onDeleted={() => {}} />
+            )}
+
+            {/* Modals Pierdute */}
+            {showAddLost && (
+                <AddLostPetModal onClose={() => setShowAddLost(false)} onAdded={() => {}} />
+            )}
+            {editLost && (
+                <EditLostPetModal ad={editLost} onClose={() => setEditLost(null)} onUpdated={() => {}} />
+            )}
+            {deleteLost && (
+                <DeleteLostPetModal ad={deleteLost} onClose={() => setDeleteLost(null)} onDeleted={() => {}} />
+            )}
+
             <div className="adminPagesGrid">
-                {pages.map((page) => (
+
+                {/* ── Card Adopție cu CRUD complet ── */}
+                <div className="adminPageCard">
+                    <div className="adminPageCardTop">
+                        <span className="adminPageCardIcon">🐾</span>
+                        <h2 className="adminPageCardTitle">Adopție</h2>
+                    </div>
+                    <p className="adminPageCardDesc">Gestionează animalele disponibile pentru adopție.</p>
+                    <div className="adminPageCardActions">
+                        <AddActionButton
+                            label="Adaugă animal pentru adopție"
+                            onClick={() => setShowAddPet(true)}
+                        />
+                        <button
+                            className="adminPageCardViewBtn"
+                            onClick={() => navigate(paths.adoptie)}
+                        >
+                            Vezi pagina
+                        </button>
+                    </div>
+                </div>
+
+                {/* ── Restul cardurilor ── */}
+                {[
+                    { id: 'pierdute', title: 'Animale Pierdute', icon: '🔍', description: 'Administrează anunțurile de animale pierdute.', path: paths.pierdute, label: 'Adaugă anunț animal pierdut', onAdd: () => setShowAddLost(true) },
+                    { id: 'veterinari', title: 'Veterinari', icon: '🏥', description: 'Gestionează clinicile și cabinetele veterinare.', path: paths.veterinari, label: 'Adaugă clinică' },
+                    { id: 'donatii', title: 'Donații', icon: '💜', description: 'Administrează ONG-urile și campaniile de donații.', path: paths.donatii, label: 'Adaugă ONG' },
+                    { id: 'blog', title: 'Blog', icon: '📝', description: 'Publică și gestionează articolele de pe blog.', path: paths.blog, label: 'Adaugă articol' },
+                    { id: 'evenimente', title: 'Evenimente', icon: '📅', description: 'Creează și administrează evenimentele platformei.', path: paths.evenimente, label: 'Adaugă eveniment' },
+                    { id: 'sitters', title: 'Sitters', icon: '🏠', description: 'Gestionează profilurile îngrijitorilor de animale.', path: paths.sitters, label: 'Adaugă profil sitter' },
+                    { id: 'vanzari', title: 'Vânzări', icon: '🛒', description: 'Administrează produsele și anunțurile din marketplace.', path: paths.vanzari, label: 'Adaugă produs/anunț' },
+                    { id: 'quiz', title: 'Quiz', icon: '🧩', description: 'Gestionează întrebările și răspunsurile din quiz.', path: paths.quiz, label: 'Adaugă întrebare' },
+                ].map((page) => (
                     <div key={page.id} className="adminPageCard">
                         <div className="adminPageCardTop">
                             <span className="adminPageCardIcon">{page.icon}</span>
@@ -154,13 +93,10 @@ const AdminPages: React.FC = () => {
                         </div>
                         <p className="adminPageCardDesc">{page.description}</p>
                         <div className="adminPageCardActions">
-                            {page.actions.map((action) => (
-                                <AddActionButton
-                                    key={action.label}
-                                    label={action.label}
-                                    onClick={action.onClick}
-                                />
-                            ))}
+                            <AddActionButton
+                                label={page.label}
+                                onClick={'onAdd' in page && page.onAdd ? page.onAdd : () => alert(`${page.label} — în curând!`)}
+                            />
                             <button
                                 className="adminPageCardViewBtn"
                                 onClick={() => navigate(page.path)}

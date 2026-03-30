@@ -21,9 +21,7 @@ public class LostPetController : ControllerBase
     public IActionResult GetLostPetList()
     {
         var response = _lostPetLogic.GetLostPetList();
-        if (!response.IsSuccess)
-            return BadRequest(response.Message);
-
+        if (!response.IsSuccess) return BadRequest(response.Message);
         return Ok(response.Data);
     }
 
@@ -31,9 +29,7 @@ public class LostPetController : ControllerBase
     public IActionResult GetLostPet([FromRoute] int id)
     {
         var response = _lostPetLogic.GetLostPetById(id);
-        if (!response.IsSuccess)
-            return BadRequest(response.Message);
-
+        if (!response.IsSuccess) return BadRequest(response.Message);
         return Ok(response.Data);
     }
 
@@ -41,9 +37,23 @@ public class LostPetController : ControllerBase
     public IActionResult CreateLostPet([FromBody] LostPetCreateDto lostPet)
     {
         var response = _lostPetLogic.CreateLostPet(lostPet);
-        if (!response.IsSuccess)
-            return BadRequest(response.Message);
+        if (!response.IsSuccess) return BadRequest(response.Message);
+        return Ok(response.Message);
+    }
 
+    [HttpPut("{id}")]
+    public IActionResult UpdateLostPet([FromRoute] int id, [FromBody] LostPetUpdateDto lostPet)
+    {
+        var response = _lostPetLogic.UpdateLostPet(id, lostPet);
+        if (!response.IsSuccess) return BadRequest(response.Message);
+        return Ok(response.Message);
+    }
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteLostPet([FromRoute] int id)
+    {
+        var response = _lostPetLogic.DeleteLostPet(id);
+        if (!response.IsSuccess) return BadRequest(response.Message);
         return Ok(response.Message);
     }
 }
