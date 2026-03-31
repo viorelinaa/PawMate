@@ -51,4 +51,9 @@ public class BusinessLogic
     {
         return new UserAuthLogic();
     }
+
+    public ISitterLogic GetSitterLogic()
+    {
+        return new SitterLogic();
+    }
 }

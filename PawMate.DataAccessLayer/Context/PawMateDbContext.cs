@@ -5,6 +5,7 @@ using PawMate.Domain.Entities.Event;
 using PawMate.Domain.Entities.LostPet;
 using PawMate.Domain.Entities.Marketplace;
 using PawMate.Domain.Entities.Pet;
+using PawMate.Domain.Entities.Sitter;
 using PawMate.Domain.Entities.User;
 using PawMate.Domain.Entities.Volunteer;
 
@@ -20,6 +21,7 @@ public sealed class PawMateDbContext : DbContext
     public DbSet<BlogPostEntity> BlogPosts { get; set; }
     public DbSet<MarketplaceEntity> MarketplaceListings { get; set; }
     public DbSet<VolunteerEntity> VolunteerOpportunities { get; set; }
+    public DbSet<SitterEntity> Sitters { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
