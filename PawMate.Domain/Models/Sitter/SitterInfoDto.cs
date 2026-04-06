@@ -8,5 +8,4 @@ public class SitterInfoDto
     public string Services { get; set; } = string.Empty;
     public decimal PricePerDay { get; set; }
     public string Description { get; set; } = string.Empty;
-    public decimal Rating { get; set; }
 }
