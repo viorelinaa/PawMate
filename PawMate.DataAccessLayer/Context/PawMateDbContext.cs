@@ -54,6 +54,14 @@ public sealed class PawMateDbContext : DbContext
             .HasForeignKey(m => m.SellerId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<UserEntity>()
+            .Property(u => u.Address)
+            .HasDefaultValue(string.Empty);
+
+        modelBuilder.Entity<UserEntity>()
+            .Property(u => u.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+
         base.OnModelCreating(modelBuilder);
     }
 }
