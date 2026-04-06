@@ -15,6 +15,8 @@ public class UserEntity
     public string Phone { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string Bio { get; set; } = string.Empty;
+    public string Address { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
 
     public ICollection<AdoptionEntity> Adoptions { get; set; } = new List<AdoptionEntity>();
     public ICollection<BlogPostEntity> BlogPosts { get; set; } = new List<BlogPostEntity>();

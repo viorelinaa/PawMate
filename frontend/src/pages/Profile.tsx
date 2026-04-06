@@ -1,532 +1,502 @@
-import React, { useRef, useState } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { paths } from '../routes/paths';
-import { usePasswordValidation } from '../hooks/usePasswordValidation';
-import { PasswordStrengthBar } from '../design-system/components/PasswordStrengthBar';
-import '../styles/Profile.css';
+import { useEffect, useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import {
-  PHONE_HINT,
-  PHONE_PATTERN,
-  collectFormValidationErrors,
-  updateSingleFieldError
-} from '../utils/formValidation';
 
-type Tab = 'personal' | 'animale' | 'activitate' | 'securitate';
-type Message = { type: 'success' | 'error'; text: string } | null;
+    getProfile,
+    updateProfile,
+    type UpdateUserProfilePayload,
+    type UserProfile,
+} from "../services/profileService";
 
-const ACTIVITY_ICONS: Record<string, string> = {
-  adoptie:     '🐾',
-  donatie:     '💜',
-  voluntariat: '🤝',
-  postare:     '📝',
+const emptyForm: UpdateUserProfilePayload = {
+    name: "",
+    email: "",
+    phone: "",
+    city: "",
+    bio: "",
 };
 
-const Profile: React.FC = () => {
-  const { currentUser, logout } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const [activeTab, setActiveTab] = useState<Tab>('personal');
-  const passwordFormRef = useRef<HTMLFormElement | null>(null);
-  const emailFormRef = useRef<HTMLFormElement | null>(null);
-  const phoneFormRef = useRef<HTMLFormElement | null>(null);
+export default function Profile() {
+    const navigate = useNavigate();
+    const { currentUser, isAuthenticated, logout, updateProfileBasics } = useAuth();
 
-  // ── Parolă ──
-  const [passwordDraft, setPasswordDraft] = useState({ newPassword: '', confirmPassword: '' });
-  const [pwMessage, setPwMessage] = useState<Message>(null);
-  const [pwFieldErrors, setPwFieldErrors] = useState<Record<string, string>>({});
-  const passwordValidation = usePasswordValidation(passwordDraft.newPassword);
+    const [profile, setProfile] = useState<UserProfile | null>(null);
+    const [form, setForm] = useState<UpdateUserProfilePayload>(emptyForm);
+    const [isEditing, setIsEditing] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSaving, setIsSaving] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
 
-  // ── Email ──
-  const [emailMessage, setEmailMessage] = useState<Message>(null);
-  const [emailFieldErrors, setEmailFieldErrors] = useState<Record<string, string>>({});
-
-  // ── Telefon ──
-  const [phoneMessage, setPhoneMessage] = useState<Message>(null);
-  const [phoneFieldErrors, setPhoneFieldErrors] = useState<Record<string, string>>({});
-
-  if (!currentUser) {
-    return <Navigate to={paths.unauthorized} replace state={{ from: location.pathname }} />;
-  }
-
-  const initials = `${currentUser.firstName[0]}${currentUser.lastName[0]}`.toUpperCase();
-
-  const handlePasswordFieldBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    setPwFieldErrors((prev) => updateSingleFieldError(e.target, prev));
-    if (pwMessage) setPwMessage(null);
-  };
-
-  const handlePasswordInputChange = (field: 'newPassword' | 'confirmPassword') =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setPasswordDraft((prev) => ({ ...prev, [field]: e.target.value }));
-      if (pwMessage) setPwMessage(null);
-    };
-
-  const handleEmailFieldBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    setEmailFieldErrors((prev) => updateSingleFieldError(e.target, prev));
-    if (emailMessage) setEmailMessage(null);
-  };
-
-  const handlePhoneFieldBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    setPhoneFieldErrors((prev) => updateSingleFieldError(e.target, prev));
-    if (phoneMessage) setPhoneMessage(null);
-  };
-
-  const handlePasswordChange = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const { errors, firstInvalidElement } = collectFormValidationErrors(e.currentTarget);
-    setPwFieldErrors(errors);
-    if (firstInvalidElement) {
-      setPwMessage(null);
-      firstInvalidElement.focus();
-      return;
+ useEffect(() => {
+    if (!isAuthenticated || !currentUser) {
+        setIsLoading(false);
+        return;
     }
-    const submittedData = new FormData(e.currentTarget);
-    const currentPassword = String(submittedData.get('currentPassword') ?? '');
-    const newPassword = String(submittedData.get('newPassword') ?? '');
-    const confirmPassword = String(submittedData.get('confirmPassword') ?? '');
-    if (!passwordValidation.isValid) {
-      setPwMessage({ type: 'error', text: 'Parola nouă nu respectă cerințele de securitate.' });
-      return;
-    }
-    if (newPassword !== confirmPassword) {
-      setPwMessage({ type: 'error', text: 'Parolele nu coincid.' });
-      return;
-    }
-    if (currentPassword !== currentUser.password) {
-      setPwMessage({ type: 'error', text: 'Parola curentă este incorectă.' });
-      return;
-    }
-    setPwMessage({ type: 'success', text: '✓ Parola a fost schimbată cu succes!' });
-    passwordFormRef.current?.reset();
-    setPasswordDraft({ newPassword: '', confirmPassword: '' });
-    setPwFieldErrors({});
-  };
 
-  const handleEmailChange = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const { errors, firstInvalidElement } = collectFormValidationErrors(e.currentTarget);
-    setEmailFieldErrors(errors);
-    if (firstInvalidElement) {
-      setEmailMessage(null);
-      firstInvalidElement.focus();
-      return;
-    }
-    const submittedData = new FormData(e.currentTarget);
-    const newEmail = String(submittedData.get('newEmail') ?? '');
-    const confirmEmail = String(submittedData.get('confirmEmail') ?? '');
+    const userId = currentUser.id;
 
-    if (newEmail !== confirmEmail) {
-      setEmailMessage({ type: 'error', text: 'Emailurile nu coincid.' });
-      return;
+    async function loadProfile() {
+        try {
+            setIsLoading(true);
+            const data = await getProfile(userId);
+            setProfile(data);
+            setForm({
+                name: data.name,
+                email: data.email,
+                phone: data.phone,
+                city: data.city,
+                bio: data.bio,
+            });
+            setError(null);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Nu s-a putut incarca profilul.");
+        } finally {
+            setIsLoading(false);
+        }
     }
-    if (newEmail === currentUser.username) {
-      setEmailMessage({ type: 'error', text: 'Noul email este același cu cel curent.' });
-      return;
-    }
-    setEmailMessage({ type: 'success', text: '✓ Emailul a fost actualizat cu succes!' });
-    emailFormRef.current?.reset();
-    setEmailFieldErrors({});
-  };
 
-  const handlePhoneChange = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const { errors, firstInvalidElement } = collectFormValidationErrors(e.currentTarget);
-    setPhoneFieldErrors(errors);
-    if (firstInvalidElement) {
-      setPhoneMessage(null);
-      firstInvalidElement.focus();
-      return;
-    }
-    const submittedData = new FormData(e.currentTarget);
-    const newPhone = String(submittedData.get('newPhone') ?? '');
-    const confirmPhone = String(submittedData.get('confirmPhone') ?? '');
+    void loadProfile();
+}, [currentUser, isAuthenticated]);
 
-    if (newPhone !== confirmPhone) {
-      setPhoneMessage({ type: 'error', text: 'Numerele nu coincid.' });
-      return;
+    function setField(field: keyof UpdateUserProfilePayload, value: string) {
+        setForm((prev) => ({ ...prev, [field]: value }));
+        setError(null);
+        setSuccess(null);
     }
-    if (newPhone === currentUser.phone) {
-      setPhoneMessage({ type: 'error', text: 'Noul număr este același cu cel curent.' });
-      return;
+
+    async function handleSave(ev: FormEvent<HTMLFormElement>) {
+        ev.preventDefault();
+
+        if (!currentUser) {
+            return;
+        }
+
+        if (!form.name.trim() || !form.email.trim()) {
+            setError("Numele si emailul sunt obligatorii.");
+            return;
+        }
+
+        try {
+            setIsSaving(true);
+            const updated = await updateProfile(currentUser.id, {
+                name: form.name.trim(),
+                email: form.email.trim(),
+                phone: form.phone.trim(),
+                city: form.city.trim(),
+                bio: form.bio.trim(),
+            });
+
+            setProfile(updated);
+            setForm({
+                name: updated.name,
+                email: updated.email,
+                phone: updated.phone,
+                city: updated.city,
+                bio: updated.bio,
+            });
+            updateProfileBasics(updated.name, updated.email);
+            setIsEditing(false);
+            setSuccess("Profilul a fost actualizat cu succes.");
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Nu s-a putut salva profilul.");
+        } finally {
+            setIsSaving(false);
+        }
     }
-    setPhoneMessage({ type: 'success', text: '✓ Numărul a fost actualizat cu succes!' });
-    phoneFormRef.current?.reset();
-    setPhoneFieldErrors({});
-  };
 
-  return (
-    <div className="profile-container">
+    if (!isAuthenticated || !currentUser) {
+        return (
+            <div style={styles.page}>
+                <div style={styles.card}>
+                    <h1 style={styles.title}>Profil</h1>
+                    <p style={styles.muted}>Trebuie sa fii autentificat pentru a vedea profilul.</p>
+                    <button style={styles.primaryButton} onClick={() => navigate("/login")}>
+                        Mergi la login
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
-      {/* ── Sidebar ── */}
-      <aside className="profile-sidebar">
-        <div className="profile-avatar">
-          <span className="profile-avatar-initials">{initials}</span>
+    if (isLoading) {
+        return (
+            <div style={styles.page}>
+                <div style={styles.card}>
+                    <h1 style={styles.title}>Profil</h1>
+                    <p style={styles.muted}>Se incarca profilul...</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!profile) {
+        return (
+            <div style={styles.page}>
+                <div style={styles.card}>
+                    <h1 style={styles.title}>Profil</h1>
+                    <p style={styles.errorBox}>{error ?? "Profilul nu a putut fi incarcat."}</p>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div style={styles.page}>
+            <div style={styles.wrapper}>
+                <div style={styles.heroCard}>
+                    <div style={styles.avatar}>
+                        {profile.name.trim().slice(0, 1).toUpperCase() || "U"}
+                    </div>
+
+                    <div style={styles.heroText}>
+                        <h1 style={styles.title}>Profilul meu</h1>
+                        <p style={styles.heroName}>{profile.name}</p>
+                        <p style={styles.heroSub}>
+                            {profile.role === "admin" ? "Administrator" : "Utilizator"} · {profile.email}
+                        </p>
+                    </div>
+                </div>
+
+                {error && <div style={styles.errorBox}>{error}</div>}
+                {success && <div style={styles.successBox}>{success}</div>}
+
+                <div style={styles.contentGrid}>
+                    <div style={styles.infoCard}>
+                        <div style={styles.sectionHeader}>
+                            <h2 style={styles.sectionTitle}>Informatii profil</h2>
+                            {!isEditing && (
+                                <button style={styles.primaryButton} onClick={() => setIsEditing(true)}>
+                                    Editeaza
+                                </button>
+                            )}
+                        </div>
+
+                        {!isEditing ? (
+                            <div style={styles.infoList}>
+                                <div style={styles.infoRow}>
+                                    <span style={styles.infoLabel}>Nume</span>
+                                    <span style={styles.infoValue}>{profile.name || "-"}</span>
+                                </div>
+                                <div style={styles.infoRow}>
+                                    <span style={styles.infoLabel}>Email</span>
+                                    <span style={styles.infoValue}>{profile.email || "-"}</span>
+                                </div>
+                                <div style={styles.infoRow}>
+                                    <span style={styles.infoLabel}>Telefon</span>
+                                    <span style={styles.infoValue}>{profile.phone || "Nu este completat"}</span>
+                                </div>
+                                <div style={styles.infoRow}>
+                                    <span style={styles.infoLabel}>Oras</span>
+                                    <span style={styles.infoValue}>{profile.city || "Nu este completat"}</span>
+                                </div>
+                                <div style={styles.infoRow}>
+                                    <span style={styles.infoLabel}>Rol</span>
+                                    <span style={styles.infoValue}>{profile.role}</span>
+                                </div>
+                            </div>
+                        ) : (
+                            <form onSubmit={handleSave} style={styles.form}>
+                                <label style={styles.label}>
+                                    Nume
+                                    <input
+                                        style={styles.input}
+                                        value={form.name}
+                                        onChange={(e) => setField("name", e.target.value)}
+                                    />
+                                </label>
+
+                                <label style={styles.label}>
+                                    Email
+                                    <input
+                                        type="email"
+                                        style={styles.input}
+                                        value={form.email}
+                                        onChange={(e) => setField("email", e.target.value)}
+                                    />
+                                </label>
+
+                                <label style={styles.label}>
+                                    Telefon
+                                    <input
+                                        style={styles.input}
+                                        value={form.phone}
+                                        onChange={(e) => setField("phone", e.target.value)}
+                                    />
+                                </label>
+
+                                <label style={styles.label}>
+                                    Oras
+                                    <input
+                                        style={styles.input}
+                                        value={form.city}
+                                        onChange={(e) => setField("city", e.target.value)}
+                                    />
+                                </label>
+
+                                <label style={styles.label}>
+                                    Despre mine
+                                    <textarea
+                                        style={styles.textarea}
+                                        rows={5}
+                                        value={form.bio}
+                                        onChange={(e) => setField("bio", e.target.value)}
+                                    />
+                                </label>
+
+                                <div style={styles.actions}>
+                                    <button type="button" style={styles.secondaryButton} onClick={() => {
+                                        setIsEditing(false);
+                                        setForm({
+                                            name: profile.name,
+                                            email: profile.email,
+                                            phone: profile.phone,
+                                            city: profile.city,
+                                            bio: profile.bio,
+                                        });
+                                        setError(null);
+                                        setSuccess(null);
+                                    }}>
+                                        Anuleaza
+                                    </button>
+                                    <button type="submit" style={styles.primaryButton} disabled={isSaving}>
+                                        {isSaving ? "Se salveaza..." : "Salveaza"}
+                                    </button>
+                                </div>
+                            </form>
+                        )}
+                    </div>
+
+                    <div style={styles.bioCard}>
+                        <h2 style={styles.sectionTitle}>Despre mine</h2>
+                        <p style={styles.bioText}>
+                            {profile.bio || "Nu ai completat inca o descriere pentru profilul tau."}
+                        </p>
+
+                        <div style={styles.sideActions}>
+                            <button style={styles.secondaryButton} onClick={() => navigate("/")}>
+                                Inapoi acasa
+                            </button>
+                            <button
+                                style={styles.logoutButton}
+                                onClick={() => {
+                                    logout();
+                                    navigate("/login");
+                                }}
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <h2 className="profile-name">{currentUser.firstName} {currentUser.lastName}</h2>
-        <p className="profile-role">{currentUser.role === 'admin' ? '🛡 Administrator' : '🐾 Adoptator'}</p>
-        <p className="profile-joined">
-          Membru din {new Date(currentUser.joinedAt).toLocaleDateString('ro-RO', { month: 'long', year: 'numeric' })}
-        </p>
+    );
+}
 
-        <nav className="profile-nav">
-          {(['personal', 'animale', 'activitate', 'securitate'] as Tab[]).map((tab) => (
-            <button
-              key={tab}
-              className={`profile-nav-btn ${activeTab === tab ? 'active' : ''}`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab === 'personal'   && '👤 Date personale'}
-              {tab === 'animale'    && '🐶 Animalele mele'}
-              {tab === 'activitate' && '📋 Activitate'}
-              {tab === 'securitate' && '🔒 Securitate'}
-            </button>
-          ))}
-        </nav>
-
-        <button
-          className="profile-logout-btn"
-          onClick={() => { logout(); navigate(paths.login); }}
-        >
-          Deconectare
-        </button>
-      </aside>
-
-      {/* ── Content ── */}
-      <main className="profile-content">
-
-        {/* TAB: Date personale */}
-        {activeTab === 'personal' && (
-          <section className="profile-section">
-            <h3 className="profile-section-title">Date personale</h3>
-            <div className="profile-fields">
-              <div className="profile-field">
-                <label>Prenume</label>
-                <p>{currentUser.firstName}</p>
-              </div>
-              <div className="profile-field">
-                <label>Nume</label>
-                <p>{currentUser.lastName}</p>
-              </div>
-              <div className="profile-field">
-                <label>Email</label>
-                <p>{currentUser.username}</p>
-              </div>
-              <div className="profile-field">
-                <label>Telefon</label>
-                <p>{currentUser.phone}</p>
-              </div>
-              <div className="profile-field profile-field--full">
-                <label>Adresă</label>
-                <p>{currentUser.address}</p>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* TAB: Animale */}
-        {activeTab === 'animale' && (
-          <section className="profile-section">
-            <h3 className="profile-section-title">Animalele mele adoptate</h3>
-            {currentUser.adoptedPets.length === 0 ? (
-              <p className="profile-empty">Nu ai adoptat niciun animal încă. 🐾</p>
-            ) : (
-              <div className="pets-grid">
-                {currentUser.adoptedPets.map((pet) => (
-                  <div key={pet.id} className="pet-card">
-                    <div className="pet-card-avatar">
-                      {pet.species === 'câine' ? '🐶' : pet.species === 'pisică' ? '🐱' : '🐾'}
-                    </div>
-                    <div className="pet-card-info">
-                      <h4>{pet.name}</h4>
-                      <p>{pet.breed}</p>
-                      <span className="pet-card-date">
-                        Adoptat {new Date(pet.adoptedDate).toLocaleDateString('ro-RO')}
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </section>
-        )}
-
-        {/* TAB: Activitate */}
-        {activeTab === 'activitate' && (
-          <section className="profile-section">
-            <h3 className="profile-section-title">Istoricul activității</h3>
-            {currentUser.activityLog.length === 0 ? (
-              <p className="profile-empty">Nicio activitate înregistrată.</p>
-            ) : (
-              <ul className="activity-list">
-                {currentUser.activityLog.map((item) => (
-                  <li key={item.id} className="activity-item">
-                    <span className="activity-icon">{ACTIVITY_ICONS[item.type] ?? '📌'}</span>
-                    <div className="activity-info">
-                      <p>{item.description}</p>
-                      <span>
-                        {new Date(item.date).toLocaleDateString('ro-RO', {
-                          day: 'numeric', month: 'long', year: 'numeric',
-                        })}
-                      </span>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-        )}
-
-        {/* TAB: Securitate */}
-        {activeTab === 'securitate' && (
-          <section className="profile-section">
-            <h3 className="profile-section-title">Securitate</h3>
-
-            {/* ── Schimbare parolă ── */}
-            <div className="security-block">
-              <h4 className="security-block-title">🔒 Schimbare parolă</h4>
-              <form ref={passwordFormRef} className="security-form" onSubmit={handlePasswordChange} noValidate>
-                <div className="profile-form-group">
-                  <label htmlFor="currentPassword">Parola curentă</label>
-                  <input
-                    id="currentPassword"
-                    name="currentPassword"
-                    type="password"
-                    defaultValue=""
-                    onBlur={handlePasswordFieldBlur}
-                    placeholder="Introdu parola curentă"
-                    required
-                    className={pwFieldErrors.currentPassword ? 'field-invalid' : ''}
-                    aria-invalid={Boolean(pwFieldErrors.currentPassword)}
-                    aria-describedby={pwFieldErrors.currentPassword ? 'profile-currentPassword-error' : undefined}
-                  />
-                  {pwFieldErrors.currentPassword && (
-                    <p className="validation-error" id="profile-currentPassword-error">
-                      {pwFieldErrors.currentPassword}
-                    </p>
-                  )}
-                </div>
-                <div className="profile-form-group">
-                  <label htmlFor="newPassword">Parola nouă</label>
-                  <input
-                    id="newPassword"
-                    name="newPassword"
-                    type="password"
-                    value={passwordDraft.newPassword}
-                    onChange={handlePasswordInputChange('newPassword')}
-                    onBlur={handlePasswordFieldBlur}
-                    placeholder="Min. 8 caractere"
-                    required
-                    className={pwFieldErrors.newPassword ? 'field-invalid' : ''}
-                    aria-invalid={Boolean(pwFieldErrors.newPassword)}
-                    aria-describedby={pwFieldErrors.newPassword ? 'profile-newPassword-error' : undefined}
-                  />
-                  {pwFieldErrors.newPassword && (
-                    <p className="validation-error" id="profile-newPassword-error">
-                      {pwFieldErrors.newPassword}
-                    </p>
-                  )}
-                  <PasswordStrengthBar
-                    validation={passwordValidation}
-                    password={passwordDraft.newPassword}
-                  />
-                </div>
-                <div className="profile-form-group">
-                  <label htmlFor="confirmPassword">Confirmă parola nouă</label>
-                  <input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type="password"
-                    value={passwordDraft.confirmPassword}
-                    onChange={handlePasswordInputChange('confirmPassword')}
-                    onBlur={handlePasswordFieldBlur}
-                    placeholder="Repetă parola nouă"
-                    required
-                    className={pwFieldErrors.confirmPassword ? 'field-invalid' : ''}
-                    aria-invalid={Boolean(pwFieldErrors.confirmPassword)}
-                    aria-describedby={pwFieldErrors.confirmPassword ? 'profile-confirmPassword-error' : undefined}
-                  />
-                  {pwFieldErrors.confirmPassword && (
-                    <p className="validation-error" id="profile-confirmPassword-error">
-                      {pwFieldErrors.confirmPassword}
-                    </p>
-                  )}
-                  {passwordDraft.confirmPassword && (
-                    <p
-                      className={`password-match-hint ${
-                        passwordDraft.newPassword === passwordDraft.confirmPassword ? 'match' : 'no-match'
-                      }`}
-                    >
-                      {passwordDraft.newPassword === passwordDraft.confirmPassword
-                        ? '✓ Parolele coincid'
-                        : '✗ Parolele nu coincid'}
-                    </p>
-                  )}
-                </div>
-                {pwMessage && (
-                  <p className={`security-message security-message--${pwMessage.type}`}>
-                    {pwMessage.text}
-                  </p>
-                )}
-                <button
-                  type="submit"
-                  className="security-submit-btn"
-                  disabled={
-                    !passwordValidation.isValid ||
-                    passwordDraft.newPassword !== passwordDraft.confirmPassword
-                  }
-                >
-                  Salvează parola
-                </button>
-              </form>
-            </div>
-
-            <div className="security-divider" />
-
-            {/* ── Schimbare email ── */}
-            <div className="security-block">
-              <h4 className="security-block-title">✉️ Schimbare email</h4>
-              <form ref={emailFormRef} className="security-form" onSubmit={handleEmailChange} noValidate>
-                <div className="profile-form-group">
-                  <label htmlFor="currentEmail">Email curent</label>
-                  <input
-                    id="currentEmail"
-                    type="text"
-                    value={currentUser.username}
-                    disabled
-                    className="input-disabled"
-                  />
-                </div>
-                <div className="profile-form-group">
-                  <label htmlFor="newEmail">Email nou</label>
-                  <input
-                    id="newEmail"
-                    name="newEmail"
-                    type="email"
-                    defaultValue=""
-                    onBlur={handleEmailFieldBlur}
-                    placeholder="email_nou@exemplu.com"
-                    required
-                    className={emailFieldErrors.newEmail ? 'field-invalid' : ''}
-                    aria-invalid={Boolean(emailFieldErrors.newEmail)}
-                    aria-describedby={emailFieldErrors.newEmail ? 'profile-newEmail-error' : undefined}
-                  />
-                  {emailFieldErrors.newEmail && (
-                    <p className="validation-error" id="profile-newEmail-error">{emailFieldErrors.newEmail}</p>
-                  )}
-                </div>
-                <div className="profile-form-group">
-                  <label htmlFor="confirmEmail">Confirmă emailul nou</label>
-                  <input
-                    id="confirmEmail"
-                    name="confirmEmail"
-                    type="email"
-                    defaultValue=""
-                    onBlur={handleEmailFieldBlur}
-                    placeholder="Repetă emailul nou"
-                    required
-                    className={emailFieldErrors.confirmEmail ? 'field-invalid' : ''}
-                    aria-invalid={Boolean(emailFieldErrors.confirmEmail)}
-                    aria-describedby={emailFieldErrors.confirmEmail ? 'profile-confirmEmail-error' : undefined}
-                  />
-                  {emailFieldErrors.confirmEmail && (
-                    <p className="validation-error" id="profile-confirmEmail-error">{emailFieldErrors.confirmEmail}</p>
-                  )}
-                </div>
-                {emailMessage && (
-                  <p className={`security-message security-message--${emailMessage.type}`}>
-                    {emailMessage.text}
-                  </p>
-                )}
-                <button
-                  type="submit"
-                  className="security-submit-btn"
-                >
-                  Salvează emailul
-                </button>
-              </form>
-            </div>
-
-            <div className="security-divider" />
-
-            {/* ── Schimbare telefon ── */}
-            <div className="security-block">
-              <h4 className="security-block-title">📱 Schimbare număr de telefon</h4>
-              <form ref={phoneFormRef} className="security-form" onSubmit={handlePhoneChange} noValidate>
-                <div className="profile-form-group">
-                  <label htmlFor="currentPhone">Număr curent</label>
-                  <input
-                    id="currentPhone"
-                    type="text"
-                    value={currentUser.phone}
-                    disabled
-                    className="input-disabled"
-                  />
-                </div>
-                <div className="profile-form-group">
-                  <label htmlFor="newPhone">Număr nou</label>
-                  <input
-                    id="newPhone"
-                    name="newPhone"
-                    type="tel"
-                    defaultValue=""
-                    onBlur={handlePhoneFieldBlur}
-                    placeholder="+373 69 000 000"
-                    required
-                    pattern={PHONE_PATTERN}
-                    title={PHONE_HINT}
-                    inputMode="numeric"
-                    autoComplete="tel"
-                    className={phoneFieldErrors.newPhone ? 'field-invalid' : ''}
-                    aria-invalid={Boolean(phoneFieldErrors.newPhone)}
-                    aria-describedby={phoneFieldErrors.newPhone ? 'profile-newPhone-error' : undefined}
-                  />
-                  {phoneFieldErrors.newPhone && (
-                    <p className="validation-error" id="profile-newPhone-error">{phoneFieldErrors.newPhone}</p>
-                  )}
-                </div>
-                <div className="profile-form-group">
-                  <label htmlFor="confirmPhone">Confirmă numărul nou</label>
-                  <input
-                    id="confirmPhone"
-                    name="confirmPhone"
-                    type="tel"
-                    defaultValue=""
-                    onBlur={handlePhoneFieldBlur}
-                    placeholder="Repetă numărul"
-                    required
-                    pattern={PHONE_PATTERN}
-                    title={PHONE_HINT}
-                    inputMode="numeric"
-                    autoComplete="tel"
-                    className={phoneFieldErrors.confirmPhone ? 'field-invalid' : ''}
-                    aria-invalid={Boolean(phoneFieldErrors.confirmPhone)}
-                    aria-describedby={phoneFieldErrors.confirmPhone ? 'profile-confirmPhone-error' : undefined}
-                  />
-                  {phoneFieldErrors.confirmPhone && (
-                    <p className="validation-error" id="profile-confirmPhone-error">{phoneFieldErrors.confirmPhone}</p>
-                  )}
-                </div>
-                {phoneMessage && (
-                  <p className={`security-message security-message--${phoneMessage.type}`}>
-                    {phoneMessage.text}
-                  </p>
-                )}
-                <button
-                  type="submit"
-                  className="security-submit-btn"
-                >
-                  Salvează numărul
-                </button>
-              </form>
-            </div>
-
-          </section>
-        )}
-
-      </main>
-    </div>
-  );
+const styles: Record<string, React.CSSProperties> = {
+    page: {
+        minHeight: "100vh",
+        padding: "32px 20px",
+        background: "linear-gradient(180deg, #f7f4ff 0%, #efe8ff 100%)",
+    },
+    wrapper: {
+        maxWidth: "1100px",
+        margin: "0 auto",
+        display: "flex",
+        flexDirection: "column",
+        gap: "24px",
+    },
+    heroCard: {
+        display: "flex",
+        gap: "20px",
+        alignItems: "center",
+        background: "#ffffff",
+        borderRadius: "24px",
+        padding: "24px",
+        boxShadow: "0 18px 45px rgba(61, 38, 102, 0.10)",
+    },
+    avatar: {
+        width: "88px",
+        height: "88px",
+        borderRadius: "50%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        fontSize: "2rem",
+        fontWeight: 800,
+        color: "#fff",
+        background: "#6b4ea0",
+    },
+    heroText: {
+        display: "flex",
+        flexDirection: "column",
+        gap: "6px",
+    },
+    title: {
+        margin: 0,
+        color: "#6b4ea0",
+        fontSize: "2rem",
+        fontWeight: 800,
+    },
+    heroName: {
+        margin: 0,
+        fontSize: "1.25rem",
+        fontWeight: 700,
+        color: "#35244f",
+    },
+    heroSub: {
+        margin: 0,
+        color: "#6f6781",
+    },
+    contentGrid: {
+        display: "grid",
+        gridTemplateColumns: "2fr 1fr",
+        gap: "24px",
+    },
+    infoCard: {
+        background: "#ffffff",
+        borderRadius: "24px",
+        padding: "24px",
+        boxShadow: "0 18px 45px rgba(61, 38, 102, 0.10)",
+    },
+    bioCard: {
+        background: "#ffffff",
+        borderRadius: "24px",
+        padding: "24px",
+        boxShadow: "0 18px 45px rgba(61, 38, 102, 0.10)",
+        display: "flex",
+        flexDirection: "column",
+        gap: "18px",
+    },
+    sectionHeader: {
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: "20px",
+    },
+    sectionTitle: {
+        margin: 0,
+        color: "#4c3575",
+        fontSize: "1.2rem",
+        fontWeight: 800,
+    },
+    infoList: {
+        display: "flex",
+        flexDirection: "column",
+        gap: "14px",
+    },
+    infoRow: {
+        display: "flex",
+        justifyContent: "space-between",
+        gap: "16px",
+        paddingBottom: "12px",
+        borderBottom: "1px solid #ede7f8",
+    },
+    infoLabel: {
+        color: "#7a7291",
+        fontWeight: 600,
+    },
+    infoValue: {
+        color: "#2f2146",
+        fontWeight: 600,
+        textAlign: "right",
+    },
+    bioText: {
+        margin: 0,
+        color: "#4c4460",
+        lineHeight: 1.6,
+    },
+    form: {
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+    },
+    label: {
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
+        color: "#4c3575",
+        fontWeight: 700,
+    },
+    input: {
+        height: "46px",
+        borderRadius: "12px",
+        border: "1px solid #d9d2eb",
+        padding: "0 14px",
+        fontSize: "1rem",
+        outline: "none",
+    },
+    textarea: {
+        borderRadius: "12px",
+        border: "1px solid #d9d2eb",
+        padding: "12px 14px",
+        fontSize: "1rem",
+        outline: "none",
+        resize: "vertical",
+    },
+    actions: {
+        display: "flex",
+        gap: "12px",
+        marginTop: "8px",
+    },
+    sideActions: {
+        display: "flex",
+        flexDirection: "column",
+        gap: "12px",
+        marginTop: "auto",
+    },
+    primaryButton: {
+        border: "none",
+        borderRadius: "12px",
+        background: "#6b4ea0",
+        color: "#fff",
+        padding: "12px 18px",
+        fontWeight: 700,
+        cursor: "pointer",
+    },
+    secondaryButton: {
+        border: "1px solid #d7d1e9",
+        borderRadius: "12px",
+        background: "#fff",
+        color: "#4c3575",
+        padding: "12px 18px",
+        fontWeight: 700,
+        cursor: "pointer",
+    },
+    logoutButton: {
+        border: "none",
+        borderRadius: "12px",
+        background: "#b33939",
+        color: "#fff",
+        padding: "12px 18px",
+        fontWeight: 700,
+        cursor: "pointer",
+    },
+    errorBox: {
+        borderRadius: "14px",
+        background: "#ffe7e7",
+        color: "#b3261e",
+        padding: "14px 16px",
+    },
+    successBox: {
+        borderRadius: "14px",
+        background: "#e8f7ee",
+        color: "#1d7f49",
+        padding: "14px 16px",
+    },
+    muted: {
+        color: "#6f6781",
+    },
+    card: {
+        width: "100%",
+        maxWidth: "520px",
+        margin: "80px auto",
+        background: "#ffffff",
+        borderRadius: "24px",
+        padding: "28px",
+        boxShadow: "0 18px 45px rgba(61, 38, 102, 0.10)",
+        textAlign: "center",
+    },
 };
-
-export default Profile;
