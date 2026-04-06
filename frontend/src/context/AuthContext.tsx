@@ -14,6 +14,7 @@ type AuthContextType = {
     login: (email: string, password: string) => Promise<AuthRole>;
     logout: () => void;
     isAdmin: () => boolean;
+    updateProfileBasics: (name: string, email: string) => void;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -72,6 +73,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return currentUser?.role === "admin";
     }
 
+    function updateProfileBasics(name: string, email: string) {
+        sessionStorage.setItem("pawmate_name", name);
+        sessionStorage.setItem("pawmate_email", email);
+
+        setCurrentUser((prev) =>
+            prev
+                ? {
+                      ...prev,
+                      name,
+                      email,
+                  }
+                : prev
+        );
+    }
+
     return (
         <AuthContext.Provider
             value={{
@@ -80,6 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 login,
                 logout,
                 isAdmin,
+                updateProfileBasics,
             }}
         >
             {children}
