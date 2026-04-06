@@ -4,6 +4,7 @@ using PawMate.Domain.Entities.Marketplace;
 
 namespace PawMate.Domain.Entities.User;
 
+
 public class UserEntity
 {
     public int Id { get; set; }
