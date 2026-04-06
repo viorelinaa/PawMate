@@ -8,6 +8,7 @@ export interface Sitter {
     services: string;
     pricePerDay: number;
     description: string;
+    rating: number;
 }
 
 export interface SitterCreatePayload {

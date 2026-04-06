@@ -24,7 +24,8 @@ public class SitterActions
                 City = sitter.City,
                 Services = sitter.Services,
                 PricePerDay = sitter.PricePerDay,
-                Description = sitter.Description
+                Description = sitter.Description,
+                Rating = 0
             };
 
             _context.Sitters.Add(entity);
@@ -69,7 +70,8 @@ public class SitterActions
                 City = entity.City,
                 Services = entity.Services,
                 PricePerDay = entity.PricePerDay,
-                Description = entity.Description
+                Description = entity.Description,
+                Rating = entity.Rating
             };
 
             return new ServiceResponse
@@ -101,7 +103,8 @@ public class SitterActions
                     City = s.City,
                     Services = s.Services,
                     PricePerDay = s.PricePerDay,
-                    Description = s.Description
+                    Description = s.Description,
+                    Rating = s.Rating
                 })
                 .ToList();
 
@@ -142,6 +145,7 @@ public class SitterActions
             entity.Services = sitter.Services;
             entity.PricePerDay = sitter.PricePerDay;
             entity.Description = sitter.Description;
+            entity.Rating = sitter.Rating;
 
             _context.SaveChanges();
 

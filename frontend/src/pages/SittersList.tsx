@@ -182,10 +182,12 @@ function AddSitterModal({
         </div>
     );
 }
-
 function SitterCard({ s }: { s: Sitter }) {
     return (
         <div className="sitter-card">
+            <div className="rating">
+                {s.rating > 0 ? `⭐ ${s.rating.toFixed(1)}` : "Nou"}
+            </div>
             <h3>{s.name}</h3>
             <p className="city">{s.city}</p>
             <p><strong>Servicii:</strong> {s.services}</p>
@@ -197,7 +199,6 @@ function SitterCard({ s }: { s: Sitter }) {
         </div>
     );
 }
-
 export default function SittersList() {
     const [showAddModal, setShowAddModal] = useState(false);
     const [sitters, setSitters] = useState<Sitter[]>([]);
