@@ -182,6 +182,7 @@ function AddSitterModal({
         </div>
     );
 }
+
 function SitterCard({ s }: { s: Sitter }) {
     return (
         <div className="sitter-card">
@@ -199,14 +200,17 @@ function SitterCard({ s }: { s: Sitter }) {
         </div>
     );
 }
+
 export default function SittersList() {
     const [showAddModal, setShowAddModal] = useState(false);
     const [sitters, setSitters] = useState<Sitter[]>([]);
     const [loadError, setLoadError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [query, setQuery] = useState("");
+    const [onlyTopRated, setOnlyTopRated] = useState(false);
     const [priceSort, setPriceSort] = useState<"none" | "asc" | "desc">("none");
     const [priceMenuOpen, setPriceMenuOpen] = useState(false);
+    const ratingThreshold = 4.7;
 
     async function loadSitters() {
         try {
@@ -247,7 +251,11 @@ export default function SittersList() {
         );
     });
 
-    const sorted = [...filtered].sort((a, b) => {
+    const rated = onlyTopRated
+        ? filtered.filter((s) => s.rating >= ratingThreshold)
+        : filtered;
+
+    const sorted = [...rated].sort((a, b) => {
         if (priceSort === "asc") return a.pricePerDay - b.pricePerDay;
         if (priceSort === "desc") return b.pricePerDay - a.pricePerDay;
         return 0;
@@ -259,6 +267,8 @@ export default function SittersList() {
             : priceSort === "desc"
               ? "Pret / zi ↓"
               : "Pret / zi";
+
+    const ratingLabel = `⭐ rating ${ratingThreshold}+`;
 
     return (
         <div className="pet-sitting-page">
@@ -324,11 +334,22 @@ export default function SittersList() {
                         className="filter-reset filter-btn"
                         onClick={() => {
                             setQuery("");
+                            setOnlyTopRated(false);
                             setPriceSort("none");
                             setPriceMenuOpen(false);
                         }}
                     >
                         Reset
+                    </AppButton>
+
+                    <AppButton
+                        type="button"
+                        variant={onlyTopRated ? "primary" : "ghost"}
+                        className="filter-rating filter-btn"
+                        aria-pressed={onlyTopRated}
+                        onClick={() => setOnlyTopRated((prev) => !prev)}
+                    >
+                        {ratingLabel}
                     </AppButton>
 
                     <div
