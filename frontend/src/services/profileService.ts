@@ -11,6 +11,8 @@ export interface UserProfile {
     phone: string;
     city: string;
     bio: string;
+    address: string;
+    createdAt: string;
 }
 
 export interface UpdateUserProfilePayload {
@@ -19,6 +21,7 @@ export interface UpdateUserProfilePayload {
     phone: string;
     city: string;
     bio: string;
+    address: string;
 }
 
 function handleError(err: unknown, fallback: string): never {

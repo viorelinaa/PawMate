@@ -2,19 +2,72 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
-
     getProfile,
     updateProfile,
     type UpdateUserProfilePayload,
     type UserProfile,
 } from "../services/profileService";
+import "../styles/profile.css";
 
-const emptyForm: UpdateUserProfilePayload = {
-    name: "",
+type ProfileSection = "personal" | "pets" | "activity" | "security";
+
+type ProfileFormState = {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    address: string;
+};
+
+function splitFullName(fullName: string) {
+    const parts = fullName.trim().split(/\s+/).filter(Boolean);
+
+    if (parts.length === 0) {
+        return { firstName: "", lastName: "" };
+    }
+
+    if (parts.length === 1) {
+        return { firstName: parts[0], lastName: "" };
+    }
+
+    return {
+        firstName: parts[0],
+        lastName: parts.slice(1).join(" "),
+    };
+}
+
+function buildInitials(firstName: string, lastName: string) {
+    const first = firstName.trim().charAt(0).toUpperCase();
+    const last = lastName.trim().charAt(0).toUpperCase();
+    return `${first}${last}`.trim() || "U";
+}
+
+function formatMemberSince(createdAt: string) {
+    if (!createdAt) {
+        return "recent";
+    }
+
+    const date = new Date(createdAt);
+    if (Number.isNaN(date.getTime())) {
+        return "recent";
+    }
+
+    return new Intl.DateTimeFormat("ro-RO", {
+        month: "long",
+        year: "numeric",
+    }).format(date);
+}
+
+function roleLabel(role: string) {
+    return role === "admin" ? "Administrator" : "Adoptator";
+}
+
+const emptyForm: ProfileFormState = {
+    firstName: "",
+    lastName: "",
     email: "",
     phone: "",
-    city: "",
-    bio: "",
+    address: "",
 };
 
 export default function Profile() {
@@ -22,45 +75,47 @@ export default function Profile() {
     const { currentUser, isAuthenticated, logout, updateProfileBasics } = useAuth();
 
     const [profile, setProfile] = useState<UserProfile | null>(null);
-    const [form, setForm] = useState<UpdateUserProfilePayload>(emptyForm);
-    const [isEditing, setIsEditing] = useState(false);
+    const [form, setForm] = useState<ProfileFormState>(emptyForm);
+    const [activeSection, setActiveSection] = useState<ProfileSection>("personal");
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
- useEffect(() => {
-    if (!isAuthenticated || !currentUser) {
-        setIsLoading(false);
-        return;
-    }
-
-    const userId = currentUser.id;
-
-    async function loadProfile() {
-        try {
-            setIsLoading(true);
-            const data = await getProfile(userId);
-            setProfile(data);
-            setForm({
-                name: data.name,
-                email: data.email,
-                phone: data.phone,
-                city: data.city,
-                bio: data.bio,
-            });
-            setError(null);
-        } catch (err) {
-            setError(err instanceof Error ? err.message : "Nu s-a putut incarca profilul.");
-        } finally {
+    useEffect(() => {
+        if (!isAuthenticated || !currentUser) {
             setIsLoading(false);
+            return;
         }
-    }
 
-    void loadProfile();
-}, [currentUser, isAuthenticated]);
+        const userId = currentUser.id;
 
-    function setField(field: keyof UpdateUserProfilePayload, value: string) {
+        async function loadProfile() {
+            try {
+                setIsLoading(true);
+                const data = await getProfile(userId);
+                const nameParts = splitFullName(data.name);
+
+                setProfile(data);
+                setForm({
+                    firstName: nameParts.firstName,
+                    lastName: nameParts.lastName,
+                    email: data.email,
+                    phone: data.phone,
+                    address: data.address,
+                });
+                setError(null);
+            } catch (err) {
+                setError(err instanceof Error ? err.message : "Nu s-a putut incarca profilul.");
+            } finally {
+                setIsLoading(false);
+            }
+        }
+
+        void loadProfile();
+    }, [currentUser, isAuthenticated]);
+
+    function setField(field: keyof ProfileFormState, value: string) {
         setForm((prev) => ({ ...prev, [field]: value }));
         setError(null);
         setSuccess(null);
@@ -69,38 +124,45 @@ export default function Profile() {
     async function handleSave(ev: FormEvent<HTMLFormElement>) {
         ev.preventDefault();
 
-        if (!currentUser) {
+        if (!currentUser || !profile) {
             return;
         }
 
-        if (!form.name.trim() || !form.email.trim()) {
-            setError("Numele si emailul sunt obligatorii.");
+        if (!form.firstName.trim() || !form.email.trim()) {
+            setError("Prenumele si emailul sunt obligatorii.");
             return;
         }
+
+        const fullName = `${form.firstName.trim()} ${form.lastName.trim()}`.trim();
 
         try {
             setIsSaving(true);
-            const updated = await updateProfile(currentUser.id, {
-                name: form.name.trim(),
+
+            const payload: UpdateUserProfilePayload = {
+                name: fullName,
                 email: form.email.trim(),
                 phone: form.phone.trim(),
-                city: form.city.trim(),
-                bio: form.bio.trim(),
-            });
+                address: form.address.trim(),
+                city: profile.city ?? "",
+                bio: profile.bio ?? "",
+            };
+
+            const updated = await updateProfile(currentUser.id, payload);
+            const updatedNameParts = splitFullName(updated.name);
 
             setProfile(updated);
             setForm({
-                name: updated.name,
+                firstName: updatedNameParts.firstName,
+                lastName: updatedNameParts.lastName,
                 email: updated.email,
                 phone: updated.phone,
-                city: updated.city,
-                bio: updated.bio,
+                address: updated.address,
             });
+
             updateProfileBasics(updated.name, updated.email);
-            setIsEditing(false);
-            setSuccess("Profilul a fost actualizat cu succes.");
+            setSuccess("Datele personale au fost actualizate cu succes.");
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Nu s-a putut salva profilul.");
+            setError(err instanceof Error ? err.message : "Nu s-au putut salva modificarile.");
         } finally {
             setIsSaving(false);
         }
@@ -108,13 +170,19 @@ export default function Profile() {
 
     if (!isAuthenticated || !currentUser) {
         return (
-            <div style={styles.page}>
-                <div style={styles.card}>
-                    <h1 style={styles.title}>Profil</h1>
-                    <p style={styles.muted}>Trebuie sa fii autentificat pentru a vedea profilul.</p>
-                    <button style={styles.primaryButton} onClick={() => navigate("/login")}>
-                        Mergi la login
-                    </button>
+            <div className="profile-page">
+                <div className="profile-shell">
+                    <div className="profile-main-card">
+                        <h1 className="profile-main-title">Profilul meu</h1>
+                        <div className="profile-feedback error">
+                            Trebuie sa fii autentificat pentru a vedea profilul.
+                        </div>
+                        <div className="profile-actions">
+                            <button className="profile-primary-btn" onClick={() => navigate("/login")}>
+                                Mergi la login
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         );
@@ -122,10 +190,12 @@ export default function Profile() {
 
     if (isLoading) {
         return (
-            <div style={styles.page}>
-                <div style={styles.card}>
-                    <h1 style={styles.title}>Profil</h1>
-                    <p style={styles.muted}>Se incarca profilul...</p>
+            <div className="profile-page">
+                <div className="profile-shell">
+                    <div className="profile-main-card">
+                        <h1 className="profile-main-title">Profilul meu</h1>
+                        <p className="profile-placeholder">Se incarca profilul...</p>
+                    </div>
                 </div>
             </div>
         );
@@ -133,370 +203,173 @@ export default function Profile() {
 
     if (!profile) {
         return (
-            <div style={styles.page}>
-                <div style={styles.card}>
-                    <h1 style={styles.title}>Profil</h1>
-                    <p style={styles.errorBox}>{error ?? "Profilul nu a putut fi incarcat."}</p>
+            <div className="profile-page">
+                <div className="profile-shell">
+                    <div className="profile-main-card">
+                        <h1 className="profile-main-title">Profilul meu</h1>
+                        <div className="profile-feedback error">
+                            {error ?? "Profilul nu a putut fi incarcat."}
+                        </div>
+                    </div>
                 </div>
             </div>
         );
     }
 
+    const initials = buildInitials(form.firstName, form.lastName);
+    const memberSince = formatMemberSince(profile.createdAt);
+
     return (
-        <div style={styles.page}>
-            <div style={styles.wrapper}>
-                <div style={styles.heroCard}>
-                    <div style={styles.avatar}>
-                        {profile.name.trim().slice(0, 1).toUpperCase() || "U"}
-                    </div>
+        <div className="profile-page">
+            <div className="profile-shell">
+                <div className="profile-layout">
+                    <aside className="profile-sidebar">
+                        <div className="profile-avatar">{initials}</div>
+                        <h2 className="profile-user-name">
+                            {[form.firstName, form.lastName].filter(Boolean).join(" ") || profile.name}
+                        </h2>
+                        <p className="profile-user-role">{roleLabel(profile.role)}</p>
+                        <p className="profile-member-date">Membru din {memberSince}</p>
 
-                    <div style={styles.heroText}>
-                        <h1 style={styles.title}>Profilul meu</h1>
-                        <p style={styles.heroName}>{profile.name}</p>
-                        <p style={styles.heroSub}>
-                            {profile.role === "admin" ? "Administrator" : "Utilizator"} · {profile.email}
-                        </p>
-                    </div>
-                </div>
-
-                {error && <div style={styles.errorBox}>{error}</div>}
-                {success && <div style={styles.successBox}>{success}</div>}
-
-                <div style={styles.contentGrid}>
-                    <div style={styles.infoCard}>
-                        <div style={styles.sectionHeader}>
-                            <h2 style={styles.sectionTitle}>Informatii profil</h2>
-                            {!isEditing && (
-                                <button style={styles.primaryButton} onClick={() => setIsEditing(true)}>
-                                    Editeaza
-                                </button>
-                            )}
-                        </div>
-
-                        {!isEditing ? (
-                            <div style={styles.infoList}>
-                                <div style={styles.infoRow}>
-                                    <span style={styles.infoLabel}>Nume</span>
-                                    <span style={styles.infoValue}>{profile.name || "-"}</span>
-                                </div>
-                                <div style={styles.infoRow}>
-                                    <span style={styles.infoLabel}>Email</span>
-                                    <span style={styles.infoValue}>{profile.email || "-"}</span>
-                                </div>
-                                <div style={styles.infoRow}>
-                                    <span style={styles.infoLabel}>Telefon</span>
-                                    <span style={styles.infoValue}>{profile.phone || "Nu este completat"}</span>
-                                </div>
-                                <div style={styles.infoRow}>
-                                    <span style={styles.infoLabel}>Oras</span>
-                                    <span style={styles.infoValue}>{profile.city || "Nu este completat"}</span>
-                                </div>
-                                <div style={styles.infoRow}>
-                                    <span style={styles.infoLabel}>Rol</span>
-                                    <span style={styles.infoValue}>{profile.role}</span>
-                                </div>
-                            </div>
-                        ) : (
-                            <form onSubmit={handleSave} style={styles.form}>
-                                <label style={styles.label}>
-                                    Nume
-                                    <input
-                                        style={styles.input}
-                                        value={form.name}
-                                        onChange={(e) => setField("name", e.target.value)}
-                                    />
-                                </label>
-
-                                <label style={styles.label}>
-                                    Email
-                                    <input
-                                        type="email"
-                                        style={styles.input}
-                                        value={form.email}
-                                        onChange={(e) => setField("email", e.target.value)}
-                                    />
-                                </label>
-
-                                <label style={styles.label}>
-                                    Telefon
-                                    <input
-                                        style={styles.input}
-                                        value={form.phone}
-                                        onChange={(e) => setField("phone", e.target.value)}
-                                    />
-                                </label>
-
-                                <label style={styles.label}>
-                                    Oras
-                                    <input
-                                        style={styles.input}
-                                        value={form.city}
-                                        onChange={(e) => setField("city", e.target.value)}
-                                    />
-                                </label>
-
-                                <label style={styles.label}>
-                                    Despre mine
-                                    <textarea
-                                        style={styles.textarea}
-                                        rows={5}
-                                        value={form.bio}
-                                        onChange={(e) => setField("bio", e.target.value)}
-                                    />
-                                </label>
-
-                                <div style={styles.actions}>
-                                    <button type="button" style={styles.secondaryButton} onClick={() => {
-                                        setIsEditing(false);
-                                        setForm({
-                                            name: profile.name,
-                                            email: profile.email,
-                                            phone: profile.phone,
-                                            city: profile.city,
-                                            bio: profile.bio,
-                                        });
-                                        setError(null);
-                                        setSuccess(null);
-                                    }}>
-                                        Anuleaza
-                                    </button>
-                                    <button type="submit" style={styles.primaryButton} disabled={isSaving}>
-                                        {isSaving ? "Se salveaza..." : "Salveaza"}
-                                    </button>
-                                </div>
-                            </form>
-                        )}
-                    </div>
-
-                    <div style={styles.bioCard}>
-                        <h2 style={styles.sectionTitle}>Despre mine</h2>
-                        <p style={styles.bioText}>
-                            {profile.bio || "Nu ai completat inca o descriere pentru profilul tau."}
-                        </p>
-
-                        <div style={styles.sideActions}>
-                            <button style={styles.secondaryButton} onClick={() => navigate("/")}>
-                                Inapoi acasa
+                        <div className="profile-sidebar-nav">
+                            <button
+                                className={`profile-nav-button ${activeSection === "personal" ? "active" : ""}`}
+                                onClick={() => setActiveSection("personal")}
+                                type="button"
+                            >
+                                Date personale
                             </button>
                             <button
-                                style={styles.logoutButton}
-                                onClick={() => {
-                                    logout();
-                                    navigate("/login");
-                                }}
+                                className={`profile-nav-button ${activeSection === "pets" ? "active" : ""}`}
+                                onClick={() => setActiveSection("pets")}
+                                type="button"
                             >
-                                Logout
+                                Animalele mele
+                            </button>
+                            <button
+                                className={`profile-nav-button ${activeSection === "activity" ? "active" : ""}`}
+                                onClick={() => setActiveSection("activity")}
+                                type="button"
+                            >
+                                Activitate
+                            </button>
+                            <button
+                                className={`profile-nav-button ${activeSection === "security" ? "active" : ""}`}
+                                onClick={() => setActiveSection("security")}
+                                type="button"
+                            >
+                                Securitate
                             </button>
                         </div>
-                    </div>
+
+                        <button
+                            className="profile-logout"
+                            type="button"
+                            onClick={() => {
+                                logout();
+                                navigate("/login");
+                            }}
+                        >
+                            Deconectare
+                        </button>
+                    </aside>
+
+                    <main className="profile-main-card">
+                        {error && <div className="profile-feedback error">{error}</div>}
+                        {success && <div className="profile-feedback success">{success}</div>}
+
+                        {activeSection === "personal" ? (
+                            <>
+                                <h1 className="profile-main-title">Date personale</h1>
+                                <hr className="profile-main-divider" />
+
+                                <form onSubmit={handleSave}>
+                                    <div className="profile-form-grid">
+                                        <div className="profile-field">
+                                            <label className="profile-label">Prenume</label>
+                                            <input
+                                                className="profile-input"
+                                                value={form.firstName}
+                                                onChange={(e) => setField("firstName", e.target.value)}
+                                                placeholder="Prenume"
+                                            />
+                                        </div>
+
+                                        <div className="profile-field">
+                                            <label className="profile-label">Nume</label>
+                                            <input
+                                                className="profile-input"
+                                                value={form.lastName}
+                                                onChange={(e) => setField("lastName", e.target.value)}
+                                                placeholder="Nume"
+                                            />
+                                        </div>
+
+                                        <div className="profile-field">
+                                            <label className="profile-label">Email</label>
+                                            <input
+                                                type="email"
+                                                className="profile-input"
+                                                value={form.email}
+                                                onChange={(e) => setField("email", e.target.value)}
+                                                placeholder="Email"
+                                            />
+                                        </div>
+
+                                        <div className="profile-field">
+                                            <label className="profile-label">Telefon</label>
+                                            <input
+                                                className="profile-input"
+                                                value={form.phone}
+                                                onChange={(e) => setField("phone", e.target.value)}
+                                                placeholder="+373..."
+                                            />
+                                        </div>
+
+                                        <div className="profile-field full">
+                                            <label className="profile-label">Adresa</label>
+                                            <input
+                                                className="profile-input"
+                                                value={form.address}
+                                                onChange={(e) => setField("address", e.target.value)}
+                                                placeholder="Chisinau, str. Exemplu 1"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="profile-actions">
+                                        <button className="profile-primary-btn" type="submit" disabled={isSaving}>
+                                            {isSaving ? "Se salveaza..." : "Salveaza modificarile"}
+                                        </button>
+                                        <button
+                                            className="profile-secondary-btn"
+                                            type="button"
+                                            onClick={() => navigate("/")}
+                                        >
+                                            Inapoi acasa
+                                        </button>
+                                    </div>
+                                </form>
+                            </>
+                        ) : (
+                            <>
+                                <h1 className="profile-main-title">
+                                    {activeSection === "pets"
+                                        ? "Animalele mele"
+                                        : activeSection === "activity"
+                                          ? "Activitate"
+                                          : "Securitate"}
+                                </h1>
+                                <hr className="profile-main-divider" />
+                                <p className="profile-placeholder">
+                                    Aceasta sectiune poate fi facuta ulterior. Acum profilul real functioneaza pe
+                                    "Date personale".
+                                </p>
+                            </>
+                        )}
+                    </main>
                 </div>
             </div>
         </div>
     );
 }
-
-const styles: Record<string, React.CSSProperties> = {
-    page: {
-        minHeight: "100vh",
-        padding: "32px 20px",
-        background: "linear-gradient(180deg, #f7f4ff 0%, #efe8ff 100%)",
-    },
-    wrapper: {
-        maxWidth: "1100px",
-        margin: "0 auto",
-        display: "flex",
-        flexDirection: "column",
-        gap: "24px",
-    },
-    heroCard: {
-        display: "flex",
-        gap: "20px",
-        alignItems: "center",
-        background: "#ffffff",
-        borderRadius: "24px",
-        padding: "24px",
-        boxShadow: "0 18px 45px rgba(61, 38, 102, 0.10)",
-    },
-    avatar: {
-        width: "88px",
-        height: "88px",
-        borderRadius: "50%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: "2rem",
-        fontWeight: 800,
-        color: "#fff",
-        background: "#6b4ea0",
-    },
-    heroText: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "6px",
-    },
-    title: {
-        margin: 0,
-        color: "#6b4ea0",
-        fontSize: "2rem",
-        fontWeight: 800,
-    },
-    heroName: {
-        margin: 0,
-        fontSize: "1.25rem",
-        fontWeight: 700,
-        color: "#35244f",
-    },
-    heroSub: {
-        margin: 0,
-        color: "#6f6781",
-    },
-    contentGrid: {
-        display: "grid",
-        gridTemplateColumns: "2fr 1fr",
-        gap: "24px",
-    },
-    infoCard: {
-        background: "#ffffff",
-        borderRadius: "24px",
-        padding: "24px",
-        boxShadow: "0 18px 45px rgba(61, 38, 102, 0.10)",
-    },
-    bioCard: {
-        background: "#ffffff",
-        borderRadius: "24px",
-        padding: "24px",
-        boxShadow: "0 18px 45px rgba(61, 38, 102, 0.10)",
-        display: "flex",
-        flexDirection: "column",
-        gap: "18px",
-    },
-    sectionHeader: {
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: "20px",
-    },
-    sectionTitle: {
-        margin: 0,
-        color: "#4c3575",
-        fontSize: "1.2rem",
-        fontWeight: 800,
-    },
-    infoList: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "14px",
-    },
-    infoRow: {
-        display: "flex",
-        justifyContent: "space-between",
-        gap: "16px",
-        paddingBottom: "12px",
-        borderBottom: "1px solid #ede7f8",
-    },
-    infoLabel: {
-        color: "#7a7291",
-        fontWeight: 600,
-    },
-    infoValue: {
-        color: "#2f2146",
-        fontWeight: 600,
-        textAlign: "right",
-    },
-    bioText: {
-        margin: 0,
-        color: "#4c4460",
-        lineHeight: 1.6,
-    },
-    form: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "16px",
-    },
-    label: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "8px",
-        color: "#4c3575",
-        fontWeight: 700,
-    },
-    input: {
-        height: "46px",
-        borderRadius: "12px",
-        border: "1px solid #d9d2eb",
-        padding: "0 14px",
-        fontSize: "1rem",
-        outline: "none",
-    },
-    textarea: {
-        borderRadius: "12px",
-        border: "1px solid #d9d2eb",
-        padding: "12px 14px",
-        fontSize: "1rem",
-        outline: "none",
-        resize: "vertical",
-    },
-    actions: {
-        display: "flex",
-        gap: "12px",
-        marginTop: "8px",
-    },
-    sideActions: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "12px",
-        marginTop: "auto",
-    },
-    primaryButton: {
-        border: "none",
-        borderRadius: "12px",
-        background: "#6b4ea0",
-        color: "#fff",
-        padding: "12px 18px",
-        fontWeight: 700,
-        cursor: "pointer",
-    },
-    secondaryButton: {
-        border: "1px solid #d7d1e9",
-        borderRadius: "12px",
-        background: "#fff",
-        color: "#4c3575",
-        padding: "12px 18px",
-        fontWeight: 700,
-        cursor: "pointer",
-    },
-    logoutButton: {
-        border: "none",
-        borderRadius: "12px",
-        background: "#b33939",
-        color: "#fff",
-        padding: "12px 18px",
-        fontWeight: 700,
-        cursor: "pointer",
-    },
-    errorBox: {
-        borderRadius: "14px",
-        background: "#ffe7e7",
-        color: "#b3261e",
-        padding: "14px 16px",
-    },
-    successBox: {
-        borderRadius: "14px",
-        background: "#e8f7ee",
-        color: "#1d7f49",
-        padding: "14px 16px",
-    },
-    muted: {
-        color: "#6f6781",
-    },
-    card: {
-        width: "100%",
-        maxWidth: "520px",
-        margin: "80px auto",
-        background: "#ffffff",
-        borderRadius: "24px",
-        padding: "28px",
-        boxShadow: "0 18px 45px rgba(61, 38, 102, 0.10)",
-        textAlign: "center",
-    },
-};
