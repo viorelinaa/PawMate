@@ -1,4 +1,5 @@
-const API_BASE = "http://localhost:5088/api/pets";
+import axios from "axios";
+import { apiClient } from "../axios/apiClient";
 
 export interface PetCreatePayload {
   name: string;
@@ -25,42 +26,48 @@ export interface Pet {
   description: string;
 }
 
+function handleError(err: unknown, fallback: string): never {
+  if (axios.isAxiosError(err)) {
+    const message =
+      typeof err.response?.data === "string"
+        ? err.response.data
+        : fallback;
+
+    throw new Error(message);
+  }
+
+  throw new Error(fallback);
+}
+
 export async function getPets(): Promise<Pet[]> {
-  const res = await fetch(`${API_BASE}/list`);
-  if (!res.ok) throw new Error("Nu s-au putut încărca animalele.");
-  return res.json();
+  try {
+    const { data } = await apiClient.get<Pet[]>("/pets/list");
+    return data;
+  } catch (err) {
+    handleError(err, "Nu s-au putut încărca animalele.");
+  }
 }
 
 export async function createPet(data: PetCreatePayload): Promise<void> {
-  const res = await fetch(`${API_BASE}/create`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) {
-    const msg = await res.text();
-    throw new Error(msg || "Eroare la adăugarea animalului.");
+  try {
+    await apiClient.post("/pets/create", data);
+  } catch (err) {
+    handleError(err, "Eroare la adăugarea animalului.");
   }
 }
 
 export async function updatePet(id: number, data: PetUpdatePayload): Promise<void> {
-  const res = await fetch(`${API_BASE}/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) {
-    const msg = await res.text();
-    throw new Error(msg || "Eroare la actualizarea animalului.");
+  try {
+    await apiClient.put(`/pets/${id}`, data);
+  } catch (err) {
+    handleError(err, "Eroare la actualizarea animalului.");
   }
 }
 
 export async function deletePet(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE}/${id}`, {
-    method: "DELETE",
-  });
-  if (!res.ok) {
-    const msg = await res.text();
-    throw new Error(msg || "Eroare la ștergerea animalului.");
+  try {
+    await apiClient.delete(`/pets/${id}`);
+  } catch (err) {
+    handleError(err, "Eroare la ștergerea animalului.");
   }
 }
