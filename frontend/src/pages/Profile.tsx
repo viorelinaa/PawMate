@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { AppButton } from "../components/AppButton";
 import {
     getProfile,
     updateProfile,
@@ -9,7 +10,7 @@ import {
 } from "../services/profileService";
 import "../styles/profile.css";
 
-type ProfileSection = "personal" | "pets" | "activity" | "security";
+type ProfileSection = "personal" | "pets" | "activity";
 
 type ProfileFormState = {
     firstName: string;
@@ -178,9 +179,14 @@ export default function Profile() {
                             Trebuie sa fii autentificat pentru a vedea profilul.
                         </div>
                         <div className="profile-actions">
-                            <button className="profile-primary-btn" onClick={() => navigate("/login")}>
+                            <AppButton
+                                variant="primary"
+                                size="md"
+                                className="profile-btn profile-btn-primary"
+                                onClick={() => navigate("/login")}
+                            >
                                 Mergi la login
-                            </button>
+                            </AppButton>
                         </div>
                     </div>
                 </div>
@@ -253,25 +259,21 @@ export default function Profile() {
                             >
                                 Activitate
                             </button>
-                            <button
-                                className={`profile-nav-button ${activeSection === "security" ? "active" : ""}`}
-                                onClick={() => setActiveSection("security")}
-                                type="button"
-                            >
-                                Securitate
-                            </button>
                         </div>
 
-                        <button
-                            className="profile-logout"
+                        <AppButton
                             type="button"
+                            variant="outline"
+                            size="md"
+                            fullWidth
+                            className="profile-btn profile-btn-logout"
                             onClick={() => {
                                 logout();
                                 navigate("/login");
                             }}
                         >
                             Deconectare
-                        </button>
+                        </AppButton>
                     </aside>
 
                     <main className="profile-main-card">
@@ -338,32 +340,42 @@ export default function Profile() {
                                     </div>
 
                                     <div className="profile-actions">
-                                        <button className="profile-primary-btn" type="submit" disabled={isSaving}>
+                                        <AppButton
+                                            type="submit"
+                                            variant="primary"
+                                            size="md"
+                                            className="profile-btn profile-btn-primary"
+                                            disabled={isSaving}
+                                        >
                                             {isSaving ? "Se salveaza..." : "Salveaza modificarile"}
-                                        </button>
-                                        <button
-                                            className="profile-secondary-btn"
+                                        </AppButton>
+
+                                        <AppButton
                                             type="button"
+                                            variant="ghost"
+                                            size="md"
+                                            className="profile-btn profile-btn-secondary"
                                             onClick={() => navigate("/")}
                                         >
                                             Inapoi acasa
-                                        </button>
+                                        </AppButton>
                                     </div>
                                 </form>
                             </>
-                        ) : (
+                        ) : activeSection === "pets" ? (
                             <>
-                                <h1 className="profile-main-title">
-                                    {activeSection === "pets"
-                                        ? "Animalele mele"
-                                        : activeSection === "activity"
-                                          ? "Activitate"
-                                          : "Securitate"}
-                                </h1>
+                                <h1 className="profile-main-title">Animalele mele</h1>
                                 <hr className="profile-main-divider" />
                                 <p className="profile-placeholder">
-                                    Aceasta sectiune poate fi facuta ulterior. Acum profilul real functioneaza pe
-                                    "Date personale".
+                                    Momentan nu ai animale adaugate in profil.
+                                </p>
+                            </>
+                        ) : (
+                            <>
+                                <h1 className="profile-main-title">Activitate</h1>
+                                <hr className="profile-main-divider" />
+                                <p className="profile-placeholder">
+                                    Momentan nu exista activitate afisata in profil.
                                 </p>
                             </>
                         )}
