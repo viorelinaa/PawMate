@@ -216,4 +216,75 @@ public class UserActions
             };
         }
     }
+    public ServiceResponse GetUserByIdAction(int id)
+    {
+        try
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+
+            if (user == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Utilizatorul nu a fost gasit."
+                };
+            }
+
+            var dto = new UserInfoDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user"
+            };
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Utilizatorul a fost gasit.",
+                Data = dto
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la obtinerea utilizatorului: {ex.Message}"
+            };
+        }
+    }
+
+    public ServiceResponse GetUserListAction()
+    {
+        try
+        {
+            var users = _context.Users
+                .Select(user => new UserInfoDto
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user"
+                })
+                .ToList();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Lista utilizatorilor a fost obtinuta cu succes.",
+                Data = users
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la obtinerea listei de utilizatori: {ex.Message}"
+            };
+        }
+    }
+
 }
