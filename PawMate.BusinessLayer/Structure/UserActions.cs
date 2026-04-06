@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using PawMate.DataAccessLayer.Context;
 using PawMate.Domain.Entities.User;
 using PawMate.Domain.Models.Service;
@@ -19,12 +18,27 @@ public class UserActions
     {
         try
         {
+            var email = user.Email.Trim().ToLower();
+
+            var existingUser = _context.Users.FirstOrDefault(u => u.Email.ToLower() == email);
+            if (existingUser != null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Exista deja un cont cu acest email."
+                };
+            }
+
             var entity = new UserEntity
             {
-                Name = user.Name,
-                Email = user.Email,
+                Name = user.Name.Trim(),
+                Email = email,
                 Password = user.Password,
-                Role = "user"
+                Role = "user",
+                Phone = string.Empty,
+                City = string.Empty,
+                Bio = string.Empty
             };
 
             _context.Users.Add(entity);
@@ -33,8 +47,7 @@ public class UserActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Utilizatorul a fost creat cu succes.",
-                Data = entity.Id
+                Message = "Contul a fost creat cu succes."
             };
         }
         catch (Exception ex)
@@ -42,78 +55,7 @@ public class UserActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apărut o eroare la crearea utilizatorului: {ex.Message}"
-            };
-        }
-    }
-
-    public ServiceResponse GetUserByIdAction(int id)
-    {
-        try
-        {
-            var entity = _context.Users.FirstOrDefault(u => u.Id == id);
-
-            if (entity == null)
-            {
-                return new ServiceResponse
-                {
-                    IsSuccess = false,
-                    Message = "Utilizatorul nu a fost găsit."
-                };
-            }
-
-            var dto = new UserInfoDto
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                Email = entity.Email,
-                Role = entity.Role
-            };
-
-            return new ServiceResponse
-            {
-                IsSuccess = true,
-                Message = "Utilizatorul a fost găsit.",
-                Data = dto
-            };
-        }
-        catch (Exception ex)
-        {
-            return new ServiceResponse
-            {
-                IsSuccess = false,
-                Message = $"A apărut o eroare la obținerea utilizatorului: {ex.Message}"
-            };
-        }
-    }
-
-    public ServiceResponse GetUserListAction()
-    {
-        try
-        {
-            var list = _context.Users
-                .Select(u => new UserInfoDto
-                {
-                    Id = u.Id,
-                    Name = u.Name,
-                    Email = u.Email,
-                    Role = u.Role
-                })
-                .ToList();
-
-            return new ServiceResponse
-            {
-                IsSuccess = true,
-                Message = "Lista utilizatorilor a fost obținută cu succes.",
-                Data = list
-            };
-        }
-        catch (Exception ex)
-        {
-            return new ServiceResponse
-            {
-                IsSuccess = false,
-                Message = $"A apărut o eroare la obținerea listei de utilizatori: {ex.Message}"
+                Message = $"A aparut o eroare la inregistrare: {ex.Message}"
             };
         }
     }
@@ -122,25 +64,39 @@ public class UserActions
     {
         try
         {
-            var user = _context.Users.FirstOrDefault(u => u.Email == loginData.Email && u.Password == loginData.Password);
+            var email = loginData.Email.Trim().ToLower();
+
+            var user = _context.Users.FirstOrDefault(u =>
+                u.Email.ToLower() == email &&
+                u.Password == loginData.Password);
 
             if (user == null)
             {
                 return new ServiceResponse
                 {
                     IsSuccess = false,
-                    Message = "Email sau parolă incorectă."
+                    Message = "Email sau parola invalida."
                 };
             }
 
-            var tokenService = new TokenService();
-            var token = tokenService.GenerateToken();
+            var normalizedRole = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase)
+                ? "admin"
+                : "user";
+
+            var token = new TokenService().GenerateToken();
 
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Autentificare reușită.",
-                Data = new { Token = token, UserId = user.Id, Role = user.Role, Name = user.Name }
+                Message = "Autentificare reusita.",
+                Data = new
+                {
+                    Token = token,
+                    UserId = user.Id,
+                    Role = normalizedRole,
+                    Name = user.Name,
+                    Email = user.Email
+                }
             };
         }
         catch (Exception ex)
@@ -148,7 +104,115 @@ public class UserActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apărut o eroare la autentificare: {ex.Message}"
+                Message = $"A aparut o eroare la autentificare: {ex.Message}"
+            };
+        }
+    }
+
+    public ServiceResponse GetUserProfileAction(int id)
+    {
+        try
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+
+            if (user == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Profilul nu a fost gasit."
+                };
+            }
+
+            var dto = new UserProfileDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
+                Phone = user.Phone,
+                City = user.City,
+                Bio = user.Bio
+            };
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Profilul a fost obtinut cu succes.",
+                Data = dto
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la obtinerea profilului: {ex.Message}"
+            };
+        }
+    }
+
+    public ServiceResponse UpdateUserProfileAction(int id, UserProfileUpdateDto profile)
+    {
+        try
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+
+            if (user == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Profilul nu a fost gasit."
+                };
+            }
+
+            var normalizedEmail = profile.Email.Trim().ToLower();
+
+            var existingUserWithEmail = _context.Users.FirstOrDefault(u =>
+                u.Email.ToLower() == normalizedEmail && u.Id != id);
+
+            if (existingUserWithEmail != null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Exista deja un alt cont cu acest email."
+                };
+            }
+
+            user.Name = profile.Name.Trim();
+            user.Email = normalizedEmail;
+            user.Phone = profile.Phone.Trim();
+            user.City = profile.City.Trim();
+            user.Bio = profile.Bio.Trim();
+
+            _context.SaveChanges();
+
+            var dto = new UserProfileDto
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
+                Phone = user.Phone,
+                City = user.City,
+                Bio = user.Bio
+            };
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Profilul a fost actualizat cu succes.",
+                Data = dto
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la actualizarea profilului: {ex.Message}"
             };
         }
     }
