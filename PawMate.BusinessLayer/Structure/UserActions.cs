@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using PawMate.DataAccessLayer.Context;
 using PawMate.Domain.Entities.User;
 using PawMate.Domain.Models.Service;
@@ -8,10 +10,12 @@ namespace PawMate.BusinessLayer.Structure;
 public class UserActions
 {
     private readonly PawMateDbContext _context;
+    private readonly PasswordSecurityService _passwordSecurityService;
 
     public UserActions()
     {
         _context = new PawMateDbContext();
+        _passwordSecurityService = new PasswordSecurityService();
     }
 
     public ServiceResponse CreateUserAction(UserCreateDto user)
@@ -30,11 +34,21 @@ public class UserActions
                 };
             }
 
+            var passwordValidation = _passwordSecurityService.ValidatePassword(user.Password);
+            if (!passwordValidation.IsValid)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = passwordValidation.ErrorMessage
+                };
+            }
+
             var entity = new UserEntity
             {
                 Name = user.Name.Trim(),
                 Email = email,
-                Password = user.Password,
+                Password = _passwordSecurityService.HashPassword(user.Password),
                 Role = "user",
                 Phone = string.Empty,
                 City = string.Empty,
@@ -68,9 +82,7 @@ public class UserActions
         {
             var email = loginData.Email.Trim().ToLower();
 
-            var user = _context.Users.FirstOrDefault(u =>
-                u.Email.ToLower() == email &&
-                u.Password == loginData.Password);
+            var user = _context.Users.FirstOrDefault(u => u.Email.ToLower() == email);
 
             if (user == null)
             {
@@ -79,6 +91,23 @@ public class UserActions
                     IsSuccess = false,
                     Message = "Email sau parola invalida."
                 };
+            }
+
+            var isPasswordValid = _passwordSecurityService.VerifyPassword(loginData.Password, user.Password);
+
+            if (!isPasswordValid)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Email sau parola invalida."
+                };
+            }
+
+            if (_passwordSecurityService.NeedsRehash(user.Password))
+            {
+                user.Password = _passwordSecurityService.HashPassword(loginData.Password);
+                _context.SaveChanges();
             }
 
             var normalizedRole = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase)

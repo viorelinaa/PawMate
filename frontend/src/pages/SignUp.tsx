@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService";
+import { usePasswordValidation } from "../hooks/usePasswordValidation";
+import { PasswordStrengthBar } from "../design-system/components/PasswordStrengthBar";
 
 export default function SignUp() {
     const navigate = useNavigate();
@@ -13,6 +15,8 @@ export default function SignUp() {
     const [success, setSuccess] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const passwordValidation = usePasswordValidation(password);
+
     async function handleSubmit(ev: FormEvent<HTMLFormElement>) {
         ev.preventDefault();
         setError(null);
@@ -20,6 +24,11 @@ export default function SignUp() {
 
         if (!name.trim() || !email.trim() || !password.trim() || !confirmPassword.trim()) {
             setError("Completeaza toate campurile.");
+            return;
+        }
+
+        if (!passwordValidation.isValid) {
+            setError("Parola nu respecta toate cerintele.");
             return;
         }
 
@@ -89,6 +98,8 @@ export default function SignUp() {
                         />
                     </label>
 
+                    <PasswordStrengthBar validation={passwordValidation} password={password} />
+
                     <label style={styles.label}>
                         Confirma parola
                         <input
@@ -99,6 +110,10 @@ export default function SignUp() {
                             style={styles.input}
                         />
                     </label>
+
+                    {confirmPassword && password !== confirmPassword && (
+                        <div style={styles.error}>Parolele nu coincid.</div>
+                    )}
 
                     {error && <div style={styles.error}>{error}</div>}
                     {success && <div style={styles.success}>{success}</div>}
