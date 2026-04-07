@@ -1,171 +1,157 @@
-import React, { useState } from 'react';
+import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { paths } from "../routes/paths";
-import { useAuth } from '../context/AuthContext';
-import '../styles/Login.css';
-import { UserRoundIcon } from "../components/UserRoundIcon";
-import { ShieldUserIcon } from "../components/ShieldUserIcon";
-import { EyeIcon } from "../components/EyeIcon";
-import { EyeOffIcon } from "../components/EyeOffIcon";
-import { AppButton } from "../components/AppButton";
-import { collectFormValidationErrors, updateSingleFieldError } from "../utils/formValidation";
+import { useAuth } from "../context/AuthContext";
 
-const DEMO = {
-  user:  { username: 'user@pawmate.ro',  password: 'User1234!'  },
-  admin: { username: 'admin@pawmate.ro', password: 'Admin1234!' },
-};
+export default function Login() {
+    const navigate = useNavigate();
+    const { login } = useAuth();
 
-const Login: React.FC = () => {
-  const { login } = useAuth();
-  const navigate = useNavigate();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [selectedRole, setSelectedRole] = useState<'user' | 'admin'>('user');
-  const [showPassword, setShowPassword] = useState(false);
-  const [error, setError]       = useState('');
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+    async function handleSubmit(ev: FormEvent<HTMLFormElement>) {
+        ev.preventDefault();
+        setError(null);
 
-  const handleRoleSwitch = (role: 'user' | 'admin') => {
-    setSelectedRole(role);
-    setError('');
-    setFieldErrors({});
-  };
+        if (!email.trim() || !password.trim()) {
+            setError("Completeaza emailul si parola.");
+            return;
+        }
 
-  const handleFieldBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    setFieldErrors((prev) => updateSingleFieldError(e.target, prev));
-    if (error) setError('');
-  };
+        try {
+            setIsSubmitting(true);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const { errors, firstInvalidElement } = collectFormValidationErrors(e.currentTarget);
-    setFieldErrors(errors);
-    if (firstInvalidElement) {
-      setError('');
-      firstInvalidElement.focus();
-      return;
+            const role = await login(email.trim(), password);
+
+            if (role === "admin") {
+                navigate("/");
+            } else {
+                navigate("/");
+            }
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Autentificare esuata.");
+        } finally {
+            setIsSubmitting(false);
+        }
     }
 
-    const formData = new FormData(e.currentTarget);
-    const email = String(formData.get('email') ?? '');
-    const password = String(formData.get('password') ?? '');
+    return (
+        <div style={styles.page}>
+            <div style={styles.card}>
+                <h1 style={styles.title}>Login</h1>
+                <p style={styles.subtitle}>Autentifica-te in contul tau PawMate.</p>
 
-    const ok = login(email, password);
-    if (ok) {
-      navigate(selectedRole === 'admin' ? paths.adminStatistici : paths.home);
-    } else {
-      setError('Email sau parolă incorecte.');
-    }
-  };
+                <form onSubmit={handleSubmit} style={styles.form}>
+                    <label style={styles.label}>
+                        Email
+                        <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="ex. ana@email.com"
+                            style={styles.input}
+                        />
+                    </label>
 
-  return (
-    <div className="login-container">
-      <div className="login-box">
-        <div className="login-header">
-          <h1>PawMate Login</h1>
-          <p>Bine ai revenit!</p>
-        </div>
+                    <label style={styles.label}>
+                        Parola
+                        <input
+                            type="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Introdu parola"
+                            style={styles.input}
+                        />
+                    </label>
 
-        <div className="role-tabs">
-          <AppButton
-            type="button"
-            className={`role-tab ${selectedRole === "user" ? "isSelected" : ""}`}
-            variant="ghost"
-            aria-pressed={selectedRole === "user"}
-            onClick={() => handleRoleSwitch('user')}
-          >
-            <span className="role-tab-icon" aria-hidden="true">
-              <UserRoundIcon size={18} />
-            </span>
-            <span>Utilizator</span>
-          </AppButton>
-          <AppButton
-            type="button"
-            className={`role-tab ${selectedRole === "admin" ? "isSelected" : ""}`}
-            variant="ghost"
-            aria-pressed={selectedRole === "admin"}
-            onClick={() => handleRoleSwitch('admin')}
-          >
-            <span className="role-tab-icon" aria-hidden="true">
-              <ShieldUserIcon size={18} />
-            </span>
-            <span>Admin</span>
-          </AppButton>
-        </div>
-        <p className="role-selected">Ai ales: {selectedRole === "admin" ? "Admin" : "Utilizator"}</p>
+                    {error && <div style={styles.error}>{error}</div>}
 
-        <div className="demo-card">
-          <span className="demo-label">Date demo {selectedRole === 'admin' ? 'Admin' : 'Utilizator'}</span>
-          <p><strong>Email:</strong> {DEMO[selectedRole].username}</p>
-          <p><strong>Parolă:</strong> {DEMO[selectedRole].password}</p>
-        </div>
+                    <button type="submit" disabled={isSubmitting} style={styles.button}>
+                        {isSubmitting ? "Se autentifica..." : "Login"}
+                    </button>
+                </form>
 
-        <form key={selectedRole} className="login-form" onSubmit={handleSubmit} noValidate>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              defaultValue={DEMO[selectedRole].username}
-              onBlur={handleFieldBlur}
-              placeholder="email@example.com"
-              required
-              className={fieldErrors.email ? 'field-invalid' : ''}
-              aria-invalid={Boolean(fieldErrors.email)}
-              aria-describedby={fieldErrors.email ? 'login-email-error' : undefined}
-            />
-            {fieldErrors.email && (
-              <p className="validation-error" id="login-email-error">{fieldErrors.email}</p>
-            )}
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="password">Parolă</label>
-            <div className="password-field">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                name="password"
-                defaultValue={DEMO[selectedRole].password}
-                onBlur={handleFieldBlur}
-                placeholder="********"
-                required
-                className={fieldErrors.password ? 'field-invalid' : ''}
-                aria-invalid={Boolean(fieldErrors.password)}
-                aria-describedby={fieldErrors.password ? 'login-password-error' : undefined}
-              />
-              <button
-                type="button"
-                className="password-toggle"
-                onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? "Ascunde parola" : "Arată parola"}
-                title={showPassword ? "Ascunde parola" : "Arată parola"}
-              >
-                {showPassword ? (
-                  <EyeOffIcon size={18} aria-hidden="true" />
-                ) : (
-                  <EyeIcon size={18} aria-hidden="true" />
-                )}
-              </button>
+                <p style={styles.footerText}>
+                    Nu ai cont? <Link to="/signup">Creeaza unul</Link>
+                </p>
             </div>
-            {fieldErrors.password && (
-              <p className="validation-error" id="login-password-error">{fieldErrors.password}</p>
-            )}
-          </div>
-
-          {error && <p className="login-error">{error}</p>}
-
-          <AppButton type="submit" className="login-button" variant="primary" fullWidth>
-            Autentificare
-          </AppButton>
-        </form>
-
-        <div className="signup-link">
-          Nu ai cont? <Link to={paths.signup}>Înregistrează-te</Link>
         </div>
-      </div>
-    </div>
-  );
-};
+    );
+}
 
-export default Login;
+const styles: Record<string, React.CSSProperties> = {
+    page: {
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: "24px",
+        background: "#f6f3ff",
+    },
+    card: {
+        width: "100%",
+        maxWidth: "420px",
+        background: "#ffffff",
+        borderRadius: "20px",
+        padding: "32px",
+        boxShadow: "0 20px 50px rgba(61, 38, 102, 0.12)",
+    },
+    title: {
+        margin: 0,
+        marginBottom: "10px",
+        textAlign: "center",
+        color: "#6b4ea0",
+        fontSize: "2rem",
+        fontWeight: 800,
+    },
+    subtitle: {
+        margin: 0,
+        marginBottom: "24px",
+        textAlign: "center",
+        color: "#6b6b7a",
+    },
+    form: {
+        display: "flex",
+        flexDirection: "column",
+        gap: "16px",
+    },
+    label: {
+        display: "flex",
+        flexDirection: "column",
+        gap: "8px",
+        fontWeight: 600,
+        color: "#4d3a72",
+    },
+    input: {
+        height: "46px",
+        borderRadius: "12px",
+        border: "1px solid #d8d2eb",
+        padding: "0 14px",
+        fontSize: "1rem",
+        outline: "none",
+    },
+    button: {
+        height: "48px",
+        border: "none",
+        borderRadius: "14px",
+        background: "#6b4ea0",
+        color: "#fff",
+        fontWeight: 700,
+        fontSize: "1rem",
+        cursor: "pointer",
+    },
+    error: {
+        borderRadius: "12px",
+        background: "#ffe5e5",
+        color: "#c62828",
+        padding: "12px",
+        fontSize: "0.95rem",
+    },
+    footerText: {
+        marginTop: "18px",
+        textAlign: "center",
+        color: "#6b6b7a",
+    },
+};

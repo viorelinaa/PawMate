@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using PawMate.BusinessLayer;
-using PawMate.BusinessLayer.Interfaces;
+using PawMate.BusinessLayer.Structure;
 using PawMate.Domain.Models.User;
 
 namespace PawMate.Api.Controllers;
@@ -9,20 +8,17 @@ namespace PawMate.Api.Controllers;
 [Route("api/session")]
 public class AuthController : ControllerBase
 {
-    private readonly IUserAuthLogic _userAuthLogic;
-
-    public AuthController()
-    {
-        var bl = new BusinessLogic();
-        _userAuthLogic = bl.GetUserAuthLogic();
-    }
+    private readonly UserActions _userActions = new();
 
     [HttpPost("auth")]
-    public IActionResult Auth([FromBody] UserLoginDto loginData)
+    public IActionResult Login([FromBody] UserLoginDto loginData)
     {
-        var response = _userAuthLogic.Login(loginData);
+        var response = _userActions.LoginUserAction(loginData);
+
         if (!response.IsSuccess)
-            return Unauthorized(response.Message);
+        {
+            return BadRequest(response.Message);
+        }
 
         return Ok(response.Data);
     }
