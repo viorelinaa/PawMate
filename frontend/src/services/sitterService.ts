@@ -41,10 +41,35 @@ export async function getSitters(): Promise<Sitter[]> {
     }
 }
 
+export interface SitterUpdatePayload {
+    name: string;
+    city: string;
+    services: string;
+    pricePerDay: number;
+    description: string;
+    rating: number;
+}
+
 export async function createSitter(payload: SitterCreatePayload): Promise<void> {
     try {
         await apiClient.post("/sitters/create", payload);
     } catch (err) {
         handleError(err, "Nu s-a putut adăuga profilul sitter.");
+    }
+}
+
+export async function updateSitter(id: number, payload: SitterUpdatePayload): Promise<void> {
+    try {
+        await apiClient.put(`/sitters/${id}`, payload);
+    } catch (err) {
+        handleError(err, "Nu s-a putut actualiza profilul sitter.");
+    }
+}
+
+export async function deleteSitter(id: number): Promise<void> {
+    try {
+        await apiClient.delete(`/sitters/${id}`);
+    } catch (err) {
+        handleError(err, "Nu s-a putut șterge profilul sitter.");
     }
 }

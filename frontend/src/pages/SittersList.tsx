@@ -1,208 +1,22 @@
-import { useEffect, useState, type FocusEvent, type FormEvent } from "react";
+import { useEffect, useState, type FocusEvent } from "react";
 import "../styles/petSitting.css";
 import { UserOnly } from "../components/UserOnly";
 import { SearchIcon } from "../components/SearchIcon";
 import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
-import { FilterSelect } from "../components/FilterSelect";
-import { createSitter, getSitters, type Sitter } from "../services/sitterService";
-
-interface AddSitterForm {
-    name: string;
-    city: string;
-    services: string;
-    pricePerDay: string;
-    description: string;
-}
-
-const emptySitterForm: AddSitterForm = {
-    name: "",
-    city: "",
-    services: "",
-    pricePerDay: "",
-    description: "",
-};
-
-function AddSitterModal({
-    onClose,
-    onAdded,
-}: {
-    onClose: () => void;
-    onAdded: () => Promise<void> | void;
-}) {
-    const [form, setForm] = useState<AddSitterForm>(emptySitterForm);
-    const [errors, setErrors] = useState<Partial<Record<keyof AddSitterForm, string>>>({});
-    const [submitError, setSubmitError] = useState<string | null>(null);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
-    function validate() {
-        const e: Partial<Record<keyof AddSitterForm, string>> = {};
-
-        if (!form.name.trim()) e.name = "Numele este obligatoriu.";
-        if (!form.city.trim()) e.city = "Orasul este obligatoriu.";
-        if (!form.services) e.services = "Selecteaza tipul de serviciu.";
-        if (!form.pricePerDay.trim()) e.pricePerDay = "Pretul este obligatoriu.";
-        else if (isNaN(Number(form.pricePerDay)) || Number(form.pricePerDay) <= 0) {
-            e.pricePerDay = "Introdu un pret valid.";
-        }
-
-        return e;
-    }
-
-    async function handleSubmit(ev: FormEvent<HTMLFormElement>) {
-        ev.preventDefault();
-
-        const errs = validate();
-        if (Object.keys(errs).length > 0) {
-            setErrors(errs);
-            return;
-        }
-
-        try {
-            setIsSubmitting(true);
-            setSubmitError(null);
-
-            await createSitter({
-                name: form.name.trim(),
-                city: form.city.trim(),
-                services: form.services,
-                pricePerDay: Number(form.pricePerDay),
-                description: form.description.trim(),
-            });
-
-            await onAdded();
-            onClose();
-        } catch (error) {
-            setSubmitError(
-                error instanceof Error
-                    ? error.message
-                    : "A aparut o eroare la salvarea profilului."
-            );
-        } finally {
-            setIsSubmitting(false);
-        }
-    }
-
-    function set(field: keyof AddSitterForm, value: string) {
-        setForm((prev) => ({ ...prev, [field]: value }));
-        setErrors((prev) => ({ ...prev, [field]: undefined }));
-        setSubmitError(null);
-    }
-
-    return (
-        <div className="sitterModalOverlay" onClick={onClose}>
-            <div className="sitterModalBox" onClick={(e) => e.stopPropagation()}>
-                <div className="sitterModalHeader">
-                    <h2 className="sitterModalTitle">Adauga profil sitter</h2>
-                    <button className="sitterModalClose" onClick={onClose} aria-label="Inchide">
-                        ×
-                    </button>
-                </div>
-
-                <form className="sitterModalForm" onSubmit={handleSubmit} noValidate>
-                    <div className="sitterModalRow">
-                        <div className="sitterModalField">
-                            <label className="sitterModalLabel">Nume *</label>
-                            <input
-                                className={`sitterModalInput${errors.name ? " sitterInputError" : ""}`}
-                                placeholder="ex. Ana"
-                                value={form.name}
-                                onChange={(e) => set("name", e.target.value)}
-                            />
-                            {errors.name && <span className="sitterFieldError">{errors.name}</span>}
-                        </div>
-
-                        <div className="sitterModalField">
-                            <label className="sitterModalLabel">Oras *</label>
-                            <input
-                                className={`sitterModalInput${errors.city ? " sitterInputError" : ""}`}
-                                placeholder="ex. Chisinau"
-                                value={form.city}
-                                onChange={(e) => set("city", e.target.value)}
-                            />
-                            {errors.city && <span className="sitterFieldError">{errors.city}</span>}
-                        </div>
-                    </div>
-
-                    <div className="sitterModalRow">
-                        <div className="sitterModalField">
-                            <label className="sitterModalLabel">Tip serviciu *</label>
-                            <FilterSelect
-                                className={errors.services ? "fs-error" : ""}
-                                value={form.services}
-                                onChange={(e) => set("services", e.target.value)}
-                            >
-                                <option value="">Selecteaza serviciul</option>
-                                <option value="Plimbari">Plimbari</option>
-                                <option value="Ingrijire la domiciliu">Ingrijire la domiciliu</option>
-                                <option value="Pet sitting">Pet sitting</option>
-                                <option value="Hranire">Hranire</option>
-                                <option value="Altul">Altul</option>
-                            </FilterSelect>
-                            {errors.services && <span className="sitterFieldError">{errors.services}</span>}
-                        </div>
-
-                        <div className="sitterModalField">
-                            <label className="sitterModalLabel">Pret / zi (MDL) *</label>
-                            <input
-                                type="number"
-                                min="1"
-                                className={`sitterModalInput${errors.pricePerDay ? " sitterInputError" : ""}`}
-                                placeholder="ex. 250"
-                                value={form.pricePerDay}
-                                onChange={(e) => set("pricePerDay", e.target.value)}
-                            />
-                            {errors.pricePerDay && <span className="sitterFieldError">{errors.pricePerDay}</span>}
-                        </div>
-                    </div>
-
-                    <div className="sitterModalField">
-                        <label className="sitterModalLabel">Descriere</label>
-                        <textarea
-                            className="sitterModalTextarea"
-                            placeholder="Descrie experienta, animalele acceptate si programul disponibil..."
-                            value={form.description}
-                            onChange={(e) => set("description", e.target.value)}
-                            rows={3}
-                        />
-                    </div>
-
-                    {submitError && <div className="sitterFieldError">{submitError}</div>}
-
-                    <div className="sitterModalActions">
-                        <AppButton type="button" variant="ghost" onClick={onClose}>
-                            Anuleaza
-                        </AppButton>
-                        <AppButton type="submit" variant="primary">
-                            {isSubmitting ? "Se salveaza..." : "Adauga profil"}
-                        </AppButton>
-                    </div>
-                </form>
-            </div>
-        </div>
-    );
-}
-
-function SitterCard({ s }: { s: Sitter }) {
-    return (
-        <div className="sitter-card">
-            <div className="rating">
-                {s.rating > 0 ? `⭐ ${s.rating.toFixed(1)}` : "Nou"}
-            </div>
-            <h3>{s.name}</h3>
-            <p className="city">{s.city}</p>
-            <p><strong>Servicii:</strong> {s.services}</p>
-            <p>{s.description}</p>
-            <div className="card-footer">
-                <strong>{s.pricePerDay} MDL / zi</strong>
-                <AppButton variant="primary">Rezerva</AppButton>
-            </div>
-        </div>
-    );
-}
+import {
+    getSitters,
+    AddSitterModal,
+    EditSitterModal,
+    DeleteSitterConfirmModal,
+    SitterCard,
+} from "../components/SitterModals";
+import type { Sitter } from "../services/sitterService";
 
 export default function SittersList() {
     const [showAddModal, setShowAddModal] = useState(false);
+    const [editSitter, setEditSitter] = useState<Sitter | null>(null);
+    const [deleteSitterTarget, setDeleteSitterTarget] = useState<Sitter | null>(null);
     const [sitters, setSitters] = useState<Sitter[]>([]);
     const [loadError, setLoadError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -242,7 +56,6 @@ export default function SittersList() {
     const filtered = sitters.filter((s) => {
         const q = query.trim().toLowerCase();
         if (!q) return true;
-
         return (
             s.name.toLowerCase().includes(q) ||
             s.city.toLowerCase().includes(q) ||
@@ -315,6 +128,20 @@ export default function SittersList() {
                     onAdded={loadSitters}
                 />
             )}
+            {editSitter && (
+                <EditSitterModal
+                    sitter={editSitter}
+                    onClose={() => setEditSitter(null)}
+                    onUpdated={loadSitters}
+                />
+            )}
+            {deleteSitterTarget && (
+                <DeleteSitterConfirmModal
+                    sitter={deleteSitterTarget}
+                    onClose={() => setDeleteSitterTarget(null)}
+                    onDeleted={loadSitters}
+                />
+            )}
 
             <div className="sitters-content">
                 <div className="filters">
@@ -378,10 +205,7 @@ export default function SittersList() {
                                 <AppButton
                                     type="button"
                                     variant={priceSort === "none" ? "primary" : "ghost"}
-                                    onClick={() => {
-                                        setPriceSort("none");
-                                        setPriceMenuOpen(false);
-                                    }}
+                                    onClick={() => { setPriceSort("none"); setPriceMenuOpen(false); }}
                                     role="menuitem"
                                 >
                                     Fara sortare
@@ -389,10 +213,7 @@ export default function SittersList() {
                                 <AppButton
                                     type="button"
                                     variant={priceSort === "asc" ? "primary" : "ghost"}
-                                    onClick={() => {
-                                        setPriceSort("asc");
-                                        setPriceMenuOpen(false);
-                                    }}
+                                    onClick={() => { setPriceSort("asc"); setPriceMenuOpen(false); }}
                                     role="menuitem"
                                 >
                                     Crescator
@@ -400,10 +221,7 @@ export default function SittersList() {
                                 <AppButton
                                     type="button"
                                     variant={priceSort === "desc" ? "primary" : "ghost"}
-                                    onClick={() => {
-                                        setPriceSort("desc");
-                                        setPriceMenuOpen(false);
-                                    }}
+                                    onClick={() => { setPriceSort("desc"); setPriceMenuOpen(false); }}
                                     role="menuitem"
                                 >
                                     Descrescator
@@ -423,7 +241,12 @@ export default function SittersList() {
                 {!isLoading && !loadError && sorted.length > 0 && (
                     <div className="sitters-grid">
                         {sorted.map((s) => (
-                            <SitterCard key={s.id} s={s} />
+                            <SitterCard
+                                key={s.id}
+                                s={s}
+                                onEdit={setEditSitter}
+                                onDelete={setDeleteSitterTarget}
+                            />
                         ))}
                     </div>
                 )}
