@@ -1,147 +1,125 @@
-import React, { useState } from 'react';
-import { mockUsers } from '../data/mockUsers';
-import '../styles/AdminUsers.css';
+import { useEffect, useState } from "react";
+import { getUsers, type AdminUser } from "../services/userService";
+import "../styles/AdminUsers.css";
 
-const ACTIVITY_ICONS: Record<string, string> = {
-    adoptie: '🐾',
-    donatie: '💜',
-    voluntariat: '🤝',
-    postare: '📝',
-};
+function buildInitials(name: string) {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
 
-const AdminUsers: React.FC = () => {
-    const [bannedIds, setBannedIds] = useState<Set<string>>(new Set());
-    const [confirmId, setConfirmId] = useState<string | null>(null);
+    if (parts.length === 0) {
+        return "U";
+    }
 
-    const users = mockUsers.filter((u) => u.role === 'user');
+    if (parts.length === 1) {
+        return parts[0].slice(0, 2).toUpperCase();
+    }
 
-    const toggleBan = (id: string) => {
-        setBannedIds((prev) => {
-            const next = new Set(prev);
-            if (next.has(id)) {
-                next.delete(id);
-            } else {
-                next.add(id);
+    return `${parts[0][0] ?? ""}${parts[parts.length - 1][0] ?? ""}`.toUpperCase();
+}
+
+function formatJoinDate(createdAt: string) {
+    const date = new Date(createdAt);
+
+    if (Number.isNaN(date.getTime())) {
+        return "data indisponibila";
+    }
+
+    return date.toLocaleDateString("ro-RO", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+}
+
+export default function AdminUsers() {
+    const [users, setUsers] = useState<AdminUser[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        async function loadUsers() {
+            try {
+                setIsLoading(true);
+                const loadedUsers = await getUsers();
+                setUsers(loadedUsers.filter((user) => user.role === "user"));
+                setError(null);
+            } catch (err) {
+                setError(err instanceof Error ? err.message : "Nu s-a putut incarca lista de utilizatori.");
+            } finally {
+                setIsLoading(false);
             }
-            return next;
-        });
-        setConfirmId(null);
-    };
+        }
+
+        void loadUsers();
+    }, []);
 
     return (
         <div className="adminUsers">
             <div className="adminUsersHeader">
                 <h1>Utilizatori înregistrați</h1>
                 <p>
-                    {users.length} utilizatori · {bannedIds.size} ban
+                    {isLoading
+                        ? "Se incarca utilizatorii din baza de date..."
+                        : `${users.length} utilizatori incarcati din baza de date`}
                 </p>
             </div>
 
-            <div className="adminUsersGrid">
-                {users.map((user) => {
-                    const isBanned = bannedIds.has(user.id);
-                    const initials = `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
-                    const joinDate = new Date(user.joinedAt).toLocaleDateString('ro-RO', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                    });
+            {error ? <div className="adminUsersState adminUsersState--error">{error}</div> : null}
 
-                    return (
-                        <div
-                            key={user.id}
-                            className={`adminUserCard ${isBanned ? 'adminUserCard--banned' : ''}`}
-                        >
-                            {/* Avatar + identitate */}
+            {isLoading ? (
+                <div className="adminUsersState">Se incarca lista de utilizatori...</div>
+            ) : users.length === 0 ? (
+                <div className="adminUsersState">Nu exista utilizatori inregistrati in baza de date.</div>
+            ) : (
+                <div className="adminUsersGrid">
+                    {users.map((user) => (
+                        <article key={user.id} className="adminUserCard">
                             <div className="adminUserCardTop">
-                                <div className={`adminUserAvatar ${isBanned ? 'adminUserAvatar--banned' : ''}`}>
-                                    {initials}
+                                <div className="adminUserAvatar">
+                                    {user.selectedAvatar ? (
+                                        <img
+                                            className="adminUserAvatarImage"
+                                            src={user.selectedAvatar.imageUrl}
+                                            alt={user.selectedAvatar.title || `Avatar ${user.name}`}
+                                        />
+                                    ) : (
+                                        buildInitials(user.name)
+                                    )}
                                 </div>
                                 <div className="adminUserInfo">
-                                    <p className="adminUserName">
-                                        {user.firstName} {user.lastName}
-                                    </p>
-                                    <p className="adminUserEmail">{user.username}</p>
+                                    <p className="adminUserName">{user.name}</p>
+                                    <p className="adminUserEmail">{user.email}</p>
                                 </div>
-                                <span className={`adminUserBadge ${isBanned ? 'adminUserBadge--banned' : 'adminUserBadge--active'}`}>
-                                    {isBanned ? 'Banat' : 'Activ'}
-                                </span>
+                                <span className="adminUserBadge adminUserBadge--active">Activ</span>
                             </div>
 
-                            {/* Detalii */}
                             <div className="adminUserDetails">
                                 <div className="adminUserDetail">
                                     <span className="adminUserDetailIcon">📅</span>
-                                    <span>Membru din {joinDate}</span>
+                                    <span>Membru din {formatJoinDate(user.createdAt)}</span>
                                 </div>
                                 <div className="adminUserDetail">
-                                    <span className="adminUserDetailIcon">🐾</span>
-                                    <span>
-                                        {user.adoptedPets.length === 0
-                                            ? 'Niciun animal adoptat'
-                                            : `${user.adoptedPets.length} animal${user.adoptedPets.length > 1 ? 'e adoptate' : ' adoptat'}`}
-                                    </span>
+                                    <span className="adminUserDetailIcon">🆔</span>
+                                    <span>ID utilizator: {user.id}</span>
                                 </div>
                                 <div className="adminUserDetail">
-                                    <span className="adminUserDetailIcon">📋</span>
-                                    <span>{user.activityLog.length} acțiuni în istoricul activității</span>
+                                    <span className="adminUserDetailIcon">👤</span>
+                                    <span>Rol salvat in baza de date: {user.role}</span>
                                 </div>
                             </div>
 
-                            {/* Activitate recentă */}
-                            {user.activityLog.length > 0 && (
-                                <div className="adminUserActivity">
-                                    <p className="adminUserActivityLabel">Activitate recentă</p>
-                                    <ul className="adminUserActivityList">
-                                        {user.activityLog.slice(0, 2).map((item) => (
-                                            <li key={item.id} className="adminUserActivityItem">
-                                                <span>{ACTIVITY_ICONS[item.type] ?? '📌'}</span>
-                                                <span>{item.description}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-
-                            {/* Acțiuni */}
-                            <div className="adminUserActions">
-                                {confirmId === user.id ? (
-                                    <div className="adminUserConfirm">
-                                        <p className="adminUserConfirmText">
-                                            {isBanned
-                                                ? 'Confirmi deblocarea contului?'
-                                                : 'Confirmi blocarea contului?'}
-                                        </p>
-                                        <div className="adminUserConfirmBtns">
-                                            <button
-                                                className={`adminUserConfirmYes ${isBanned ? 'adminUserConfirmYes--unban' : 'adminUserConfirmYes--ban'}`}
-                                                onClick={() => toggleBan(user.id)}
-                                            >
-                                                {isBanned ? 'Da, deblochează' : 'Da, blochează'}
-                                            </button>
-                                            <button
-                                                className="adminUserConfirmNo"
-                                                onClick={() => setConfirmId(null)}
-                                            >
-                                                Anulează
-                                            </button>
-                                        </div>
-                                    </div>
-                                ) : (
-                                    <button
-                                        className={`adminUserBanBtn ${isBanned ? 'adminUserBanBtn--unban' : 'adminUserBanBtn--ban'}`}
-                                        onClick={() => setConfirmId(user.id)}
-                                    >
-                                        {isBanned ? '✓ Deblochează cont' : '⛔ Blochează cont'}
-                                    </button>
-                                )}
+                            <div className="adminUserActivity">
+                                <p className="adminUserActivityLabel">Sursa</p>
+                                <ul className="adminUserActivityList">
+                                    <li className="adminUserActivityItem">
+                                        <span>💾</span>
+                                        <span>Datele de pe acest card vin din tabela de utilizatori din baza de date.</span>
+                                    </li>
+                                </ul>
                             </div>
-                        </div>
-                    );
-                })}
-            </div>
+                        </article>
+                    ))}
+                </div>
+            )}
         </div>
     );
-};
-
-export default AdminUsers;
+}

@@ -149,9 +149,27 @@ public class UserActions
     {
         try
         {
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            var dto = _context.Users
+                .Where(user => user.Id == id)
+                .Select(user => new UserInfoDto
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Email = user.Email,
+                    Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
+                    CreatedAt = user.CreatedAt,
+                    SelectedAvatar = user.ProfileAvatarId == null
+                        ? null
+                        : new ProfileAvatarInfoDto
+                        {
+                            Id = user.ProfileAvatar!.Id,
+                            Title = user.ProfileAvatar.Title,
+                            ImageUrl = user.ProfileAvatar.ImageUrl
+                        }
+                })
+                .FirstOrDefault();
 
-            if (user == null)
+            if (dto == null)
             {
                 return new ServiceResponse
                 {
@@ -159,14 +177,6 @@ public class UserActions
                     Message = "Utilizatorul nu a fost gasit."
                 };
             }
-
-            var dto = new UserInfoDto
-            {
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email,
-                Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user"
-            };
 
             return new ServiceResponse
             {
@@ -195,7 +205,16 @@ public class UserActions
                     Id = user.Id,
                     Name = user.Name,
                     Email = user.Email,
-                    Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user"
+                    Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
+                    CreatedAt = user.CreatedAt,
+                    SelectedAvatar = user.ProfileAvatarId == null
+                        ? null
+                        : new ProfileAvatarInfoDto
+                        {
+                            Id = user.ProfileAvatar!.Id,
+                            Title = user.ProfileAvatar.Title,
+                            ImageUrl = user.ProfileAvatar.ImageUrl
+                        }
                 })
                 .ToList();
 
