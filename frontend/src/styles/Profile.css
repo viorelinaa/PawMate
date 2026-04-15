@@ -50,6 +50,26 @@
     box-shadow: var(--shadow-btn-primary);
 }
 
+.profile-avatar-button {
+    border: 0;
+    cursor: pointer;
+    transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast);
+}
+
+.profile-avatar-button:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-card);
+}
+
+.profile-avatar-button:focus-visible {
+    outline: 0;
+    box-shadow:
+        0 0 0 4px var(--color-primary-faint),
+        var(--shadow-btn-primary);
+}
+
 .profile-avatar-image {
     width: 100%;
     height: 100%;
@@ -336,6 +356,11 @@
     gap: 18px;
 }
 
+.profile-avatar-stack {
+    display: grid;
+    gap: 18px;
+}
+
 .profile-avatar-card,
 .profile-avatar-form-card {
     border: 1px solid var(--color-primary-border);
@@ -343,6 +368,36 @@
     border-radius: var(--radius-lg);
     padding: 22px;
     box-shadow: var(--shadow-card);
+}
+
+.profile-avatar-current-trigger {
+    width: 100%;
+    text-align: center;
+    cursor: pointer;
+    transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        transform var(--transition-fast),
+        background var(--transition-fast);
+}
+
+.profile-avatar-current-trigger:hover {
+    transform: translateY(-1px);
+    border-color: var(--color-primary);
+    box-shadow: var(--shadow-btn-primary);
+}
+
+.profile-avatar-current-trigger:focus-visible {
+    outline: 0;
+    border-color: var(--color-primary);
+    box-shadow:
+        0 0 0 4px var(--color-primary-faint),
+        var(--shadow-btn-primary);
+}
+
+.profile-avatar-current-trigger.is-open {
+    border-color: var(--color-primary);
+    background: var(--color-primary-faint);
 }
 
 .profile-avatar-card-label {
@@ -400,6 +455,18 @@
     color: var(--color-text-soft);
     font-size: var(--font-size-md);
     line-height: 1.7;
+}
+
+.profile-avatar-current-action {
+    display: inline-flex;
+    margin-top: 16px;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .profile-avatar-grid {
