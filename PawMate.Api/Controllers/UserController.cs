@@ -46,4 +46,14 @@ public class UserController : ControllerBase
 
         return Ok(response.Message);
     }
+
+    [HttpPut("{id}/status")]
+    public IActionResult UpdateUserStatus([FromRoute] int id, [FromBody] UserStatusUpdateDto statusData)
+    {
+        var response = _userLogic.UpdateUserStatus(id, statusData);
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+
+        return Ok(response.Data);
+    }
 }

@@ -21,4 +21,9 @@ public class UserLogic : UserActions, IUserLogic
     {
         return GetUserListAction();
     }
+
+    public ServiceResponse UpdateUserStatus(int id, UserStatusUpdateDto statusData)
+    {
+        return UpdateUserStatusAction(id, statusData);
+    }
 }

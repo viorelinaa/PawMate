@@ -147,6 +147,11 @@
     color: #065f46;
 }
 
+.adminUserBadge--offline {
+    background: #e5e7eb;
+    color: #374151;
+}
+
 .adminUserBadge--banned {
     background: #fee2e2;
     color: #991b1b;
@@ -228,6 +233,12 @@
     transform: translateY(-1px);
 }
 
+.adminUserBanBtn:disabled {
+    cursor: wait;
+    opacity: 0.7;
+    transform: none;
+}
+
 .adminUserBanBtn--ban {
     background: #fee2e2;
     color: #991b1b;
@@ -244,6 +255,14 @@
 
 .adminUserBanBtn--unban:hover {
     background: #a7f3d0;
+}
+
+.adminUserStatusHint {
+    margin: 10px 0 0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: #6b7280;
+    font-weight: 600;
 }
 
 /* Confirm dialog */
@@ -315,6 +334,10 @@
     background: #2a1a1a;
     border-color: #5a2020;
     color: #fecaca;
+}
+
+[data-theme="dark"] .adminUserStatusHint {
+    color: #cbd5e1;
 }
 
 [data-theme="dark"] .adminUserCard {

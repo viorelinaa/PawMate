@@ -8,4 +8,5 @@ public interface IUserLogic
     ServiceResponse CreateUser(UserCreateDto user);
     ServiceResponse GetUserById(int id);
     ServiceResponse GetUserList();
+    ServiceResponse UpdateUserStatus(int id, UserStatusUpdateDto statusData);
 }

@@ -6,7 +6,7 @@ function normalizeBaseUrl(baseUrl: string) {
     return baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
 }
 
-const apiBaseUrl = normalizeBaseUrl(import.meta.env.VITE_API_BASE_URL ?? defaultApiBaseUrl);
+export const apiBaseUrl = normalizeBaseUrl(import.meta.env.VITE_API_BASE_URL ?? defaultApiBaseUrl);
 
 export const apiClient = axios.create({
     baseURL: apiBaseUrl,

@@ -14,6 +14,10 @@ namespace PawMate.BusinessLayer.Structure;
 
 public class UserActions
 {
+    private const string ActiveStatus = "active";
+    private const string OfflineStatus = "offline";
+    private const string BannedStatus = "banned";
+
     private readonly PawMateDbContext _context;
     private readonly PasswordSecurityService _passwordSecurityService;
 
@@ -55,6 +59,7 @@ public class UserActions
                 Email = email,
                 Password = _passwordSecurityService.HashPassword(user.Password),
                 Role = "user",
+                Status = OfflineStatus,
                 Phone = string.Empty,
                 City = string.Empty,
                 Bio = string.Empty,
@@ -109,9 +114,32 @@ public class UserActions
                 };
             }
 
+            var normalizedStatus = NormalizeStoredStatus(user.Status);
+            if (normalizedStatus == BannedStatus)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Contul este blocat. Contacteaza un administrator."
+                };
+            }
+
+            var shouldSave = false;
+
             if (_passwordSecurityService.NeedsRehash(user.Password))
             {
                 user.Password = _passwordSecurityService.HashPassword(loginData.Password);
+                shouldSave = true;
+            }
+
+            if (normalizedStatus != ActiveStatus)
+            {
+                user.Status = ActiveStatus;
+                shouldSave = true;
+            }
+
+            if (shouldSave)
+            {
                 _context.SaveChanges();
             }
 
@@ -157,6 +185,11 @@ public class UserActions
                     Name = user.Name,
                     Email = user.Email,
                     Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
+                    Status = user.Status == BannedStatus
+                        ? BannedStatus
+                        : user.Status == ActiveStatus
+                            ? ActiveStatus
+                            : OfflineStatus,
                     CreatedAt = user.CreatedAt,
                     SelectedAvatar = user.ProfileAvatarId == null
                         ? null
@@ -206,6 +239,11 @@ public class UserActions
                     Name = user.Name,
                     Email = user.Email,
                     Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
+                    Status = user.Status == BannedStatus
+                        ? BannedStatus
+                        : user.Status == ActiveStatus
+                            ? ActiveStatus
+                            : OfflineStatus,
                     CreatedAt = user.CreatedAt,
                     SelectedAvatar = user.ProfileAvatarId == null
                         ? null
@@ -322,6 +360,139 @@ public class UserActions
             {
                 IsSuccess = false,
                 Message = $"A aparut o eroare la actualizarea profilului: {ex.Message}"
+            };
+        }
+    }
+
+    public ServiceResponse UpdateUserStatusAction(int id, UserStatusUpdateDto statusData)
+    {
+        try
+        {
+            var normalizedStatus = NormalizeRequestedStatus(statusData.Status);
+            if (normalizedStatus == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Statutul este invalid. Valorile permise sunt active, offline sau banned."
+                };
+            }
+
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Utilizatorul nu a fost gasit."
+                };
+            }
+
+            user.Status = normalizedStatus;
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Statutul utilizatorului a fost actualizat.",
+                Data = BuildUserInfoDto(user)
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la actualizarea statutului: {ex.Message}"
+            };
+        }
+    }
+
+    public ServiceResponse MarkUserActiveAction(int userId)
+    {
+        try
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Utilizatorul nu a fost gasit."
+                };
+            }
+
+            if (NormalizeStoredStatus(user.Status) == BannedStatus)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Contul este blocat. Contacteaza un administrator."
+                };
+            }
+
+            if (NormalizeStoredStatus(user.Status) != ActiveStatus)
+            {
+                user.Status = ActiveStatus;
+                _context.SaveChanges();
+            }
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Sesiunea utilizatorului a fost marcata ca activa.",
+                Data = BuildUserInfoDto(user)
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la activarea sesiunii: {ex.Message}"
+            };
+        }
+    }
+
+    public ServiceResponse MarkUserOfflineAction(int userId)
+    {
+        try
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Utilizatorul nu a fost gasit."
+                };
+            }
+
+            var normalizedStatus = NormalizeStoredStatus(user.Status);
+            if (normalizedStatus != BannedStatus && normalizedStatus != OfflineStatus)
+            {
+                user.Status = OfflineStatus;
+                _context.SaveChanges();
+            }
+            else if (string.IsNullOrWhiteSpace(user.Status))
+            {
+                user.Status = OfflineStatus;
+                _context.SaveChanges();
+            }
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Sesiunea utilizatorului a fost inchisa.",
+                Data = BuildUserInfoDto(user)
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la inchiderea sesiunii: {ex.Message}"
             };
         }
     }
@@ -495,6 +666,7 @@ public class UserActions
             Name = user.Name,
             Email = user.Email,
             Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
+            Status = NormalizeStoredStatus(user.Status),
             Phone = user.Phone,
             City = user.City,
             Bio = user.Bio,
@@ -503,6 +675,53 @@ public class UserActions
             SelectedAvatar = selectedAvatar,
             LatestQuizResult = latestQuizResult,
             QuizResults = quizResults
+        };
+    }
+
+    private UserInfoDto BuildUserInfoDto(UserEntity user)
+    {
+        var selectedAvatar = user.ProfileAvatarId == null
+            ? null
+            : _context.ProfileAvatars
+                .Where(avatar => avatar.Id == user.ProfileAvatarId)
+                .Select(avatar => new ProfileAvatarInfoDto
+                {
+                    Id = avatar.Id,
+                    Title = avatar.Title,
+                    ImageUrl = avatar.ImageUrl
+                })
+                .FirstOrDefault();
+
+        return new UserInfoDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
+            Status = NormalizeStoredStatus(user.Status),
+            CreatedAt = user.CreatedAt,
+            SelectedAvatar = selectedAvatar
+        };
+    }
+
+    private static string NormalizeStoredStatus(string? status)
+    {
+        return status?.Trim().ToLower() switch
+        {
+            ActiveStatus => ActiveStatus,
+            BannedStatus => BannedStatus,
+            _ => OfflineStatus
+        };
+    }
+
+    private static string? NormalizeRequestedStatus(string? status)
+    {
+        return status?.Trim().ToLower() switch
+        {
+            ActiveStatus => ActiveStatus,
+            OfflineStatus => OfflineStatus,
+            BannedStatus => BannedStatus,
+            _ => null
         };
     }
 
