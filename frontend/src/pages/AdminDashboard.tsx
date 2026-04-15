@@ -43,13 +43,14 @@ const pageStats = [
 const AdminDashboard: React.FC = () => {
     const { currentUser } = useAuth();
     if (!currentUser) return null;
+    const firstName = currentUser.name.split(/\s+/).filter(Boolean)[0] ?? currentUser.name;
 
     return (
         <div className="adminDash">
             {/* Header */}
             <div className="adminDashHeader">
                 <div className="adminDashWelcome">
-                    <h1>Bun venit, {currentUser.firstName}! 👋</h1>
+                    <h1>Bun venit, {firstName}! 👋</h1>
                     <p>Iată un rezumat al activității platformei PawMate.</p>
                 </div>
                 <div className="adminDashDate">
