@@ -1,6 +1,7 @@
 using PawMate.Domain.Entities.Adoption;
 using PawMate.Domain.Entities.BlogPost;
 using PawMate.Domain.Entities.Marketplace;
+using PawMate.Domain.Entities.ProfileAvatar;
 using PawMate.Domain.Entities.QuizResult;
 
 namespace PawMate.Domain.Entities.User;
@@ -17,7 +18,10 @@ public class UserEntity
     public string City { get; set; } = string.Empty;
     public string Bio { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
+    public int? ProfileAvatarId { get; set; }
     public DateTime CreatedAt { get; set; }
+
+    public ProfileAvatarEntity? ProfileAvatar { get; set; }
 
     public ICollection<AdoptionEntity> Adoptions { get; set; } = new List<AdoptionEntity>();
     public ICollection<BlogPostEntity> BlogPosts { get; set; } = new List<BlogPostEntity>();

@@ -1,8 +1,11 @@
 using System;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using PawMate.Domain.Entities.ProfileAvatar;
 using PawMate.DataAccessLayer.Context;
 using PawMate.Domain.Entities.QuizResult;
 using PawMate.Domain.Entities.User;
+using PawMate.Domain.Models.ProfileAvatar;
 using PawMate.Domain.Models.Quiz;
 using PawMate.Domain.Models.Service;
 using PawMate.Domain.Models.User;
@@ -304,8 +307,152 @@ public class UserActions
         }
     }
 
+    public ServiceResponse GetProfileAvatarOptionsAction()
+    {
+        try
+        {
+            var avatars = _context.ProfileAvatars
+                .OrderByDescending(avatar => avatar.CreatedAt)
+                .ThenByDescending(avatar => avatar.Id)
+                .Select(avatar => new ProfileAvatarInfoDto
+                {
+                    Id = avatar.Id,
+                    Title = avatar.Title,
+                    ImageUrl = avatar.ImageUrl
+                })
+                .ToList();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Avatarurile disponibile au fost obtinute cu succes.",
+                Data = avatars
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la obtinerea avatarurilor: {ex.Message}"
+            };
+        }
+    }
+
+    public ServiceResponse CreateProfileAvatarOptionAction(ProfileAvatarCreateDto avatarData)
+    {
+        try
+        {
+            var imageUrl = avatarData.ImageUrl.Trim();
+            if (!Uri.TryCreate(imageUrl, UriKind.Absolute, out var avatarUri) ||
+                (avatarUri.Scheme != Uri.UriSchemeHttp && avatarUri.Scheme != Uri.UriSchemeHttps))
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "URL-ul imaginii nu este valid."
+                };
+            }
+
+            var normalizedUrl = avatarUri.ToString();
+            var existingAvatar = _context.ProfileAvatars.FirstOrDefault(avatar => avatar.ImageUrl == normalizedUrl);
+            if (existingAvatar != null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = true,
+                    Message = "Avatarul exista deja.",
+                    Data = MapProfileAvatar(existingAvatar)
+                };
+            }
+
+            var avatar = new ProfileAvatarEntity
+            {
+                Title = string.IsNullOrWhiteSpace(avatarData.Title)
+                    ? $"Avatar {DateTime.UtcNow:yyyyMMddHHmmss}"
+                    : avatarData.Title.Trim(),
+                ImageUrl = normalizedUrl,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.ProfileAvatars.Add(avatar);
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Avatarul a fost adaugat cu succes.",
+                Data = MapProfileAvatar(avatar)
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la adaugarea avatarului: {ex.Message}"
+            };
+        }
+    }
+
+    public ServiceResponse SetUserProfileAvatarAction(int userId, UserProfileAvatarUpdateDto avatarData)
+    {
+        try
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+            if (user == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Profilul nu a fost gasit."
+                };
+            }
+
+            var avatar = _context.ProfileAvatars.FirstOrDefault(a => a.Id == avatarData.AvatarId);
+            if (avatar == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Avatarul selectat nu exista."
+                };
+            }
+
+            user.ProfileAvatarId = avatar.Id;
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Poza de profil a fost actualizata cu succes.",
+                Data = BuildUserProfileDto(user)
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la actualizarea pozei de profil: {ex.Message}"
+            };
+        }
+    }
+
     private UserProfileDto BuildUserProfileDto(UserEntity user)
     {
+        var selectedAvatar = user.ProfileAvatarId == null
+            ? null
+            : _context.ProfileAvatars
+                .Where(avatar => avatar.Id == user.ProfileAvatarId)
+                .Select(avatar => new ProfileAvatarInfoDto
+                {
+                    Id = avatar.Id,
+                    Title = avatar.Title,
+                    ImageUrl = avatar.ImageUrl
+                })
+                .FirstOrDefault();
+
         var quizResults = _context.QuizResults
             .Where(quizResult => quizResult.UserId == user.Id)
             .OrderByDescending(quizResult => quizResult.CompletedAt)
@@ -334,8 +481,19 @@ public class UserActions
             Bio = user.Bio,
             Address = user.Address,
             CreatedAt = user.CreatedAt,
+            SelectedAvatar = selectedAvatar,
             LatestQuizResult = latestQuizResult,
             QuizResults = quizResults
+        };
+    }
+
+    private static ProfileAvatarInfoDto MapProfileAvatar(ProfileAvatarEntity avatar)
+    {
+        return new ProfileAvatarInfoDto
+        {
+            Id = avatar.Id,
+            Title = avatar.Title,
+            ImageUrl = avatar.ImageUrl
         };
     }
 }

@@ -3,14 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { AppButton } from "../components/AppButton";
 import {
+    createProfileAvatarOption,
     getProfile,
+    getProfileAvatarOptions,
+    updateProfileAvatar,
     updateProfile,
+    type ProfileAvatarOption,
     type UpdateUserProfilePayload,
     type UserProfile,
 } from "../services/profileService";
 import "../styles/profile.css";
 
-type ProfileSection = "personal" | "pets" | "activity";
+type ProfileSection = "personal" | "avatar" | "pets" | "activity";
 
 type ProfileFormState = {
     firstName: string;
@@ -105,10 +109,15 @@ export default function Profile() {
     const { currentUser, isAuthenticated, logout, updateProfileBasics } = useAuth();
 
     const [profile, setProfile] = useState<UserProfile | null>(null);
+    const [avatarOptions, setAvatarOptions] = useState<ProfileAvatarOption[]>([]);
+    const [avatarTitle, setAvatarTitle] = useState("");
+    const [avatarUrl, setAvatarUrl] = useState("");
     const [form, setForm] = useState<ProfileFormState>(emptyForm);
     const [activeSection, setActiveSection] = useState<ProfileSection>("personal");
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
+    const [isAddingAvatar, setIsAddingAvatar] = useState(false);
+    const [avatarSelectionInFlight, setAvatarSelectionInFlight] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
@@ -123,16 +132,20 @@ export default function Profile() {
         async function loadProfile() {
             try {
                 setIsLoading(true);
-                const data = await getProfile(userId);
-                const nameParts = splitFullName(data.name);
+                const [profileData, avatarData] = await Promise.all([
+                    getProfile(userId),
+                    getProfileAvatarOptions(),
+                ]);
+                const nameParts = splitFullName(profileData.name);
 
-                setProfile(data);
+                setProfile(profileData);
+                setAvatarOptions(avatarData);
                 setForm({
                     firstName: nameParts.firstName,
                     lastName: nameParts.lastName,
-                    email: data.email,
-                    phone: data.phone,
-                    address: data.address,
+                    email: profileData.email,
+                    phone: profileData.phone,
+                    address: profileData.address,
                 });
                 setError(null);
             } catch (err) {
@@ -198,6 +211,54 @@ export default function Profile() {
         }
     }
 
+    async function handleAddAvatar(ev: FormEvent<HTMLFormElement>) {
+        ev.preventDefault();
+
+        if (!avatarUrl.trim()) {
+            setError("Introdu un URL valid pentru avatar.");
+            return;
+        }
+
+        try {
+            setIsAddingAvatar(true);
+            const createdAvatar = await createProfileAvatarOption({
+                title: avatarTitle.trim(),
+                imageUrl: avatarUrl.trim(),
+            });
+
+            setAvatarOptions((prev) => {
+                const filtered = prev.filter((avatar) => avatar.id !== createdAvatar.id);
+                return [createdAvatar, ...filtered];
+            });
+            setAvatarTitle("");
+            setAvatarUrl("");
+            setError(null);
+            setSuccess("Avatarul a fost adaugat in biblioteca. Il poti selecta imediat.");
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Nu s-a putut adauga avatarul.");
+        } finally {
+            setIsAddingAvatar(false);
+        }
+    }
+
+    async function handleSelectAvatar(avatarId: number) {
+        if (!currentUser) {
+            return;
+        }
+
+        try {
+            setAvatarSelectionInFlight(avatarId);
+            const updatedProfile = await updateProfileAvatar(currentUser.id, avatarId);
+            setProfile(updatedProfile);
+            setError(null);
+            setSuccess("Poza de profil a fost actualizata cu succes.");
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Nu s-a putut actualiza poza de profil.");
+        } finally {
+            setAvatarSelectionInFlight(null);
+        }
+    }
+
     if (!isAuthenticated || !currentUser) {
         return (
             <div className="profile-page">
@@ -255,13 +316,24 @@ export default function Profile() {
     const memberSince = formatMemberSince(profile.createdAt);
     const quizResults = profile.quizResults ?? [];
     const latestQuizResult = profile.latestQuizResult ?? quizResults[0] ?? null;
+    const selectedAvatarId = profile.selectedAvatar?.id ?? null;
 
     return (
         <div className="profile-page">
             <div className="profile-shell">
                 <div className="profile-layout">
                     <aside className="profile-sidebar">
-                        <div className="profile-avatar">{initials}</div>
+                        <div className="profile-avatar">
+                            {profile.selectedAvatar ? (
+                                <img
+                                    className="profile-avatar-image"
+                                    src={profile.selectedAvatar.imageUrl}
+                                    alt={profile.selectedAvatar.title || "Poza de profil"}
+                                />
+                            ) : (
+                                initials
+                            )}
+                        </div>
                         <h2 className="profile-user-name">
                             {[form.firstName, form.lastName].filter(Boolean).join(" ") || profile.name}
                         </h2>
@@ -295,6 +367,13 @@ export default function Profile() {
                                 type="button"
                             >
                                 Date personale
+                            </button>
+                            <button
+                                className={`profile-nav-button ${activeSection === "avatar" ? "active" : ""}`}
+                                onClick={() => setActiveSection("avatar")}
+                                type="button"
+                            >
+                                Avatar
                             </button>
                             <button
                                 className={`profile-nav-button ${activeSection === "pets" ? "active" : ""}`}
@@ -412,6 +491,117 @@ export default function Profile() {
                                         </AppButton>
                                     </div>
                                 </form>
+                            </>
+                        ) : activeSection === "avatar" ? (
+                            <>
+                                <h1 className="profile-main-title">Poza de profil</h1>
+                                <hr className="profile-main-divider" />
+
+                                <div className="profile-avatar-layout">
+                                    <section className="profile-avatar-card">
+                                        <p className="profile-avatar-card-label">Avatar curent</p>
+                                        <div className="profile-avatar-preview">
+                                            {profile.selectedAvatar ? (
+                                                <img
+                                                    className="profile-avatar-preview-image"
+                                                    src={profile.selectedAvatar.imageUrl}
+                                                    alt={profile.selectedAvatar.title || "Avatar selectat"}
+                                                />
+                                            ) : (
+                                                <div className="profile-avatar-preview-fallback">{initials}</div>
+                                            )}
+                                        </div>
+                                        <h2 className="profile-avatar-card-title">
+                                            {profile.selectedAvatar?.title || "Nu ai selectat inca un avatar"}
+                                        </h2>
+                                        <p className="profile-avatar-card-copy">
+                                            Alege unul dintre avatarurile salvate in baza de date sau adauga un URL nou.
+                                        </p>
+                                    </section>
+
+                                    <section className="profile-avatar-card">
+                                        <p className="profile-avatar-card-label">Biblioteca de avataruri</p>
+                                        {avatarOptions.length > 0 ? (
+                                            <div className="profile-avatar-grid">
+                                                {avatarOptions.map((avatar) => (
+                                                    <button
+                                                        key={avatar.id}
+                                                        type="button"
+                                                        className={`profile-avatar-option ${
+                                                            selectedAvatarId === avatar.id ? "is-selected" : ""
+                                                        }`}
+                                                        onClick={() => handleSelectAvatar(avatar.id)}
+                                                        disabled={avatarSelectionInFlight === avatar.id}
+                                                    >
+                                                        <img
+                                                            className="profile-avatar-option-image"
+                                                            src={avatar.imageUrl}
+                                                            alt={avatar.title}
+                                                        />
+                                                        <span className="profile-avatar-option-title">
+                                                            {avatar.title}
+                                                        </span>
+                                                        <span className="profile-avatar-option-action">
+                                                            {selectedAvatarId === avatar.id
+                                                                ? "Selectat"
+                                                                : avatarSelectionInFlight === avatar.id
+                                                                    ? "Se salveaza..."
+                                                                    : "Alege"}
+                                                        </span>
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p className="profile-placeholder">
+                                                Nu exista avataruri disponibile inca.
+                                            </p>
+                                        )}
+                                    </section>
+                                </div>
+
+                                <section className="profile-avatar-form-card">
+                                    <h2 className="profile-avatar-form-title">Adauga un URL nou</h2>
+                                    <p className="profile-placeholder">
+                                        URL-ul va fi salvat in baza de date si va deveni disponibil pentru selectie.
+                                    </p>
+
+                                    <form onSubmit={handleAddAvatar}>
+                                        <div className="profile-form-grid">
+                                            <div className="profile-field">
+                                                <label className="profile-label">Titlu avatar</label>
+                                                <input
+                                                    className="profile-input"
+                                                    value={avatarTitle}
+                                                    onChange={(e) => setAvatarTitle(e.target.value)}
+                                                    placeholder="Ex. Pisica pastel"
+                                                />
+                                            </div>
+
+                                            <div className="profile-field full">
+                                                <label className="profile-label">URL imagine</label>
+                                                <input
+                                                    className="profile-input"
+                                                    type="url"
+                                                    value={avatarUrl}
+                                                    onChange={(e) => setAvatarUrl(e.target.value)}
+                                                    placeholder="https://exemplu.com/avatar.png"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="profile-actions">
+                                            <AppButton
+                                                type="submit"
+                                                variant="primary"
+                                                size="md"
+                                                className="profile-btn profile-btn-primary"
+                                                disabled={isAddingAvatar}
+                                            >
+                                                {isAddingAvatar ? "Se adauga..." : "Adauga avatar"}
+                                            </AppButton>
+                                        </div>
+                                    </form>
+                                </section>
                             </>
                         ) : activeSection === "pets" ? (
                             <>

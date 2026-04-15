@@ -5,6 +5,7 @@ using PawMate.Domain.Entities.Event;
 using PawMate.Domain.Entities.LostPet;
 using PawMate.Domain.Entities.Marketplace;
 using PawMate.Domain.Entities.Pet;
+using PawMate.Domain.Entities.ProfileAvatar;
 using PawMate.Domain.Entities.QuizResult;
 using PawMate.Domain.Entities.Sitter;
 using PawMate.Domain.Entities.User;
@@ -23,6 +24,7 @@ public sealed class PawMateDbContext : DbContext
     public DbSet<MarketplaceEntity> MarketplaceListings { get; set; }
     public DbSet<VolunteerEntity> VolunteerOpportunities { get; set; }
     public DbSet<SitterEntity> Sitters { get; set; }
+    public DbSet<ProfileAvatarEntity> ProfileAvatars { get; set; }
     public DbSet<QuizResultEntity> QuizResults { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -63,8 +65,18 @@ public sealed class PawMateDbContext : DbContext
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<UserEntity>()
+            .HasOne(u => u.ProfileAvatar)
+            .WithMany(a => a.Users)
+            .HasForeignKey(u => u.ProfileAvatarId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<UserEntity>()
             .Property(u => u.Address)
             .HasDefaultValue(string.Empty);
+
+        modelBuilder.Entity<ProfileAvatarEntity>()
+            .Property(a => a.CreatedAt)
+            .HasDefaultValueSql("NOW()");
 
         modelBuilder.Entity<QuizResultEntity>()
             .Property(q => q.CompletedAt)
