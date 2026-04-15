@@ -1,7 +1,9 @@
 using System;
 using System.Linq;
 using PawMate.DataAccessLayer.Context;
+using PawMate.Domain.Entities.QuizResult;
 using PawMate.Domain.Entities.User;
+using PawMate.Domain.Models.Quiz;
 using PawMate.Domain.Models.Service;
 using PawMate.Domain.Models.User;
 
@@ -226,18 +228,7 @@ public class UserActions
                 };
             }
 
-            var dto = new UserProfileDto
-            {
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email,
-                Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
-                Phone = user.Phone,
-                City = user.City,
-                Bio = user.Bio,
-                Address = user.Address,
-                CreatedAt = user.CreatedAt
-            };
+            var dto = BuildUserProfileDto(user);
 
             return new ServiceResponse
             {
@@ -294,18 +285,7 @@ public class UserActions
 
             _context.SaveChanges();
 
-            var dto = new UserProfileDto
-            {
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email,
-                Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
-                Phone = user.Phone,
-                City = user.City,
-                Bio = user.Bio,
-                Address = user.Address,
-                CreatedAt = user.CreatedAt
-            };
+            var dto = BuildUserProfileDto(user);
 
             return new ServiceResponse
             {
@@ -322,5 +302,40 @@ public class UserActions
                 Message = $"A aparut o eroare la actualizarea profilului: {ex.Message}"
             };
         }
+    }
+
+    private UserProfileDto BuildUserProfileDto(UserEntity user)
+    {
+        var quizResults = _context.QuizResults
+            .Where(quizResult => quizResult.UserId == user.Id)
+            .OrderByDescending(quizResult => quizResult.CompletedAt)
+            .ThenByDescending(quizResult => quizResult.Id)
+            .Select(quizResult => new QuizResultInfoDto
+            {
+                Id = quizResult.Id,
+                AnimalKey = quizResult.AnimalKey,
+                AnimalName = quizResult.AnimalName,
+                Score = quizResult.Score,
+                TotalQuestions = quizResult.TotalQuestions,
+                CompletedAt = quizResult.CompletedAt
+            })
+            .ToList();
+
+        var latestQuizResult = quizResults.FirstOrDefault();
+
+        return new UserProfileDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
+            Phone = user.Phone,
+            City = user.City,
+            Bio = user.Bio,
+            Address = user.Address,
+            CreatedAt = user.CreatedAt,
+            LatestQuizResult = latestQuizResult,
+            QuizResults = quizResults
+        };
     }
 }

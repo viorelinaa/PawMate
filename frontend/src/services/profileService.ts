@@ -1,5 +1,6 @@
 import axios from "axios";
 import { apiClient } from "../axios/apiClient";
+import type { QuizResultSummary } from "./quizService";
 
 export type ProfileRole = "user" | "admin";
 
@@ -13,6 +14,8 @@ export interface UserProfile {
     bio: string;
     address: string;
     createdAt: string;
+    latestQuizResult: QuizResultSummary | null;
+    quizResults: QuizResultSummary[];
 }
 
 export interface UpdateUserProfilePayload {
@@ -43,6 +46,8 @@ export async function getProfile(userId: number): Promise<UserProfile> {
         return {
             ...data,
             role: data.role === "admin" ? "admin" : "user",
+            latestQuizResult: data.latestQuizResult ?? null,
+            quizResults: data.quizResults ?? [],
         };
     } catch (err) {
         handleError(err, "Nu s-a putut incarca profilul.");
@@ -58,6 +63,8 @@ export async function updateProfile(
         return {
             ...data,
             role: data.role === "admin" ? "admin" : "user",
+            latestQuizResult: data.latestQuizResult ?? null,
+            quizResults: data.quizResults ?? [],
         };
     } catch (err) {
         handleError(err, "Nu s-a putut actualiza profilul.");

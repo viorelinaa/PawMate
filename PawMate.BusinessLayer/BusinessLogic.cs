@@ -52,6 +52,11 @@ public class BusinessLogic
         return new UserAuthLogic();
     }
 
+    public IQuizResultLogic GetQuizResultLogic()
+    {
+        return new QuizResultLogic();
+    }
+
     public ISitterLogic GetSitterLogic()
     {
         return new SitterLogic();

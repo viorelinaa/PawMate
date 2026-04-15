@@ -63,6 +63,22 @@ function roleLabel(role: string) {
     return role === "admin" ? "Administrator" : "Adoptator";
 }
 
+function formatQuizCompletedAt(completedAt: string) {
+    if (!completedAt) {
+        return "recent";
+    }
+
+    const date = new Date(completedAt);
+    if (Number.isNaN(date.getTime())) {
+        return "recent";
+    }
+
+    return new Intl.DateTimeFormat("ro-RO", {
+        dateStyle: "long",
+        timeStyle: "short",
+    }).format(date);
+}
+
 const emptyForm: ProfileFormState = {
     firstName: "",
     lastName: "",
@@ -224,6 +240,8 @@ export default function Profile() {
 
     const initials = buildInitials(form.firstName, form.lastName);
     const memberSince = formatMemberSince(profile.createdAt);
+    const quizResults = profile.quizResults ?? [];
+    const latestQuizResult = profile.latestQuizResult ?? quizResults[0] ?? null;
 
     return (
         <div className="profile-page">
@@ -236,6 +254,26 @@ export default function Profile() {
                         </h2>
                         <p className="profile-user-role">{roleLabel(profile.role)}</p>
                         <p className="profile-member-date">Membru din {memberSince}</p>
+                        <div className="profile-quiz-summary">
+                            <span className="profile-quiz-summary-label">Ultimul quiz</span>
+                            {latestQuizResult ? (
+                                <>
+                                    <strong className="profile-quiz-summary-name">
+                                        {latestQuizResult.animalName}
+                                    </strong>
+                                    <span className="profile-quiz-summary-meta">
+                                        Scor de compatibilitate: {latestQuizResult.score}/{latestQuizResult.totalQuestions}
+                                    </span>
+                                    <span className="profile-quiz-summary-date">
+                                        {formatQuizCompletedAt(latestQuizResult.completedAt)}
+                                    </span>
+                                </>
+                            ) : (
+                                <span className="profile-quiz-summary-empty">
+                                    Inca nu ai rezultate salvate.
+                                </span>
+                            )}
+                        </div>
 
                         <div className="profile-sidebar-nav">
                             <button
@@ -374,9 +412,54 @@ export default function Profile() {
                             <>
                                 <h1 className="profile-main-title">Activitate</h1>
                                 <hr className="profile-main-divider" />
-                                <p className="profile-placeholder">
-                                    Momentan nu exista activitate afisata in profil.
-                                </p>
+                                {quizResults.length > 0 ? (
+                                    <div className="profile-activity-list">
+                                        {quizResults.map((quizResult, index) => (
+                                            <article key={quizResult.id} className="profile-activity-card">
+                                                <p className="profile-activity-label">
+                                                    {index === 0 ? "Cel mai recent rezultat" : `Rezultatul #${quizResults.length - index}`}
+                                                </p>
+                                                <h2 className="profile-activity-title">{quizResult.animalName}</h2>
+                                                <p className="profile-activity-copy">
+                                                    Scor de compatibilitate {quizResult.score}/{quizResult.totalQuestions}.
+                                                    Rezultatul a fost salvat automat dupa finalizarea quiz-ului.
+                                                </p>
+                                                <p className="profile-activity-meta">
+                                                    Salvat la {formatQuizCompletedAt(quizResult.completedAt)}
+                                                </p>
+                                            </article>
+                                        ))}
+
+                                        <div className="profile-actions">
+                                            <AppButton
+                                                type="button"
+                                                variant="primary"
+                                                size="md"
+                                                className="profile-btn profile-btn-primary"
+                                                onClick={() => navigate("/quiz")}
+                                            >
+                                                Refa quiz-ul
+                                            </AppButton>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <p className="profile-placeholder">
+                                            Inca nu ai niciun rezultat de quiz salvat.
+                                        </p>
+                                        <div className="profile-actions">
+                                            <AppButton
+                                                type="button"
+                                                variant="primary"
+                                                size="md"
+                                                className="profile-btn profile-btn-primary"
+                                                onClick={() => navigate("/quiz")}
+                                            >
+                                                Mergi la quiz
+                                            </AppButton>
+                                        </div>
+                                    </>
+                                )}
                             </>
                         )}
                     </main>

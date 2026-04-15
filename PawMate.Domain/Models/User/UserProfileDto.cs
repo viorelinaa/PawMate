@@ -1,4 +1,6 @@
-﻿namespace PawMate.Domain.Models.User;
+﻿using PawMate.Domain.Models.Quiz;
+
+namespace PawMate.Domain.Models.User;
 
 public class UserProfileDto
 {
@@ -11,4 +13,6 @@ public class UserProfileDto
     public string Bio { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
+    public QuizResultInfoDto? LatestQuizResult { get; set; }
+    public List<QuizResultInfoDto> QuizResults { get; set; } = new();
 }

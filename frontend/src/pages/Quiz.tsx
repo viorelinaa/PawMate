@@ -1,9 +1,11 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import "../styles/Quiz.css";
 import { AdminOnly } from "../components/AdminOnly";
 import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
+import { useAuth } from "../context/AuthContext";
+import { saveQuizResult } from "../services/quizService";
 
 type AnimalKey =
     | "dog"
@@ -173,6 +175,8 @@ const QUESTIONS: Question[] = [
     },
 ];
 
+const ANIMAL_ORDER = Object.keys(ANIMALS) as AnimalKey[];
+
 function AnswerButton({ answer, onPick }: { answer: Answer; onPick: (v: AnimalKey) => void }) {
     return (
         <AppButton variant="ghost" onClick={() => onPick(answer.value)}>
@@ -191,8 +195,13 @@ function OtherAnimalItem({ animalKey, score }: { animalKey: AnimalKey; score: nu
 }
 
 export default function Quiz() {
+    const { currentUser, isAuthenticated } = useAuth();
     const [index, setIndex] = useState(0);
     const [picked, setPicked] = useState<AnimalKey[]>([]);
+    const [completionId, setCompletionId] = useState(0);
+    const [savedResultKey, setSavedResultKey] = useState<string | null>(null);
+    const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error" | "login_required">("idle");
+    const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
     const finished = index >= QUESTIONS.length;
 
@@ -215,26 +224,108 @@ export default function Quiz() {
         return base;
     }, [picked]);
 
-    // tie-breaker random: ca să poată ieși oricine la egalitate
     const bestAnimal = useMemo(() => {
-        const keys = Object.keys(scores) as AnimalKey[];
-        const max = Math.max(...keys.map((k) => scores[k]));
-        const top = keys.filter((k) => scores[k] === max);
-        return top[Math.floor(Math.random() * top.length)] ?? "cat";
+        const max = Math.max(...ANIMAL_ORDER.map((animalKey) => scores[animalKey]));
+        return ANIMAL_ORDER.find((animalKey) => scores[animalKey] === max) ?? "cat";
     }, [scores]);
+
+    const resultSummary = useMemo(() => {
+        if (!finished) {
+            return null;
+        }
+
+        return {
+            animalKey: bestAnimal,
+            animalName: ANIMALS[bestAnimal].name,
+            score: scores[bestAnimal],
+            totalQuestions: QUESTIONS.length,
+        };
+    }, [bestAnimal, finished, scores]);
+
+    const currentSaveKey = currentUser ? `${completionId}:${currentUser.id}` : null;
 
     const progress = Math.round(
         (Math.min(index, QUESTIONS.length) / QUESTIONS.length) * 100
     );
 
+    useEffect(() => {
+        if (!finished || !resultSummary || completionId === 0) {
+            return;
+        }
+
+        if (!isAuthenticated || !currentUser) {
+            setSaveState("login_required");
+            setSaveMessage("Autentifica-te ca sa salvam rezultatul quizului in profil.");
+            return;
+        }
+
+        if (currentSaveKey !== null && savedResultKey === currentSaveKey) {
+            return;
+        }
+
+        const authenticatedUser = currentUser;
+        const summary = resultSummary;
+        let isCancelled = false;
+
+        async function persistResult() {
+            const userId = authenticatedUser.id;
+            const { animalKey, animalName, score, totalQuestions } = summary;
+
+            try {
+                setSaveState("saving");
+                setSaveMessage("Se salveaza rezultatul quizului in profil...");
+
+                await saveQuizResult({
+                    userId,
+                    animalKey,
+                    animalName,
+                    score,
+                    totalQuestions,
+                });
+
+                if (isCancelled || currentSaveKey === null) {
+                    return;
+                }
+
+                setSavedResultKey(currentSaveKey);
+                setSaveState("saved");
+                setSaveMessage("Ultimul rezultat al quizului a fost salvat in profil.");
+            } catch (err) {
+                if (isCancelled) {
+                    return;
+                }
+
+                setSaveState("error");
+                setSaveMessage(
+                    err instanceof Error
+                        ? err.message
+                        : "Nu s-a putut salva rezultatul quizului."
+                );
+            }
+        }
+
+        void persistResult();
+
+        return () => {
+            isCancelled = true;
+        };
+    }, [completionId, currentSaveKey, currentUser, finished, isAuthenticated, resultSummary, savedResultKey]);
+
     const handlePick = (v: AnimalKey) => {
+        const nextIndex = index + 1;
         setPicked((prev) => [...prev, v]);
-        setIndex((prev) => prev + 1);
+        setIndex(nextIndex);
+
+        if (nextIndex >= QUESTIONS.length) {
+            setCompletionId((prev) => prev + 1);
+        }
     };
 
     const restart = () => {
         setIndex(0);
         setPicked([]);
+        setSaveState("idle");
+        setSaveMessage(null);
     };
 
     const otherAnimalsSorted = (Object.keys(ANIMALS) as AnimalKey[])
@@ -289,7 +380,18 @@ export default function Quiz() {
                             Ți se potrivește {ANIMALS[bestAnimal].name}!
                         </h3>
                         <p className="winnerDesc">{ANIMALS[bestAnimal].desc}</p>
+                        {resultSummary && (
+                            <p className="winnerScore">
+                                Scor de compatibilitate: {resultSummary.score}/{resultSummary.totalQuestions}
+                            </p>
+                        )}
                     </div>
+
+                    {saveMessage && (
+                        <div className={`quizSaveNotice ${saveState === "saved" ? "success" : ""} ${saveState === "error" ? "error" : ""}`}>
+                            {saveMessage}
+                        </div>
+                    )}
 
                     {/* OTHERS SMALL */}
                     <div className="otherResults">

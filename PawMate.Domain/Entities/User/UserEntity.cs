@@ -1,6 +1,7 @@
 using PawMate.Domain.Entities.Adoption;
 using PawMate.Domain.Entities.BlogPost;
 using PawMate.Domain.Entities.Marketplace;
+using PawMate.Domain.Entities.QuizResult;
 
 namespace PawMate.Domain.Entities.User;
 
@@ -21,4 +22,5 @@ public class UserEntity
     public ICollection<AdoptionEntity> Adoptions { get; set; } = new List<AdoptionEntity>();
     public ICollection<BlogPostEntity> BlogPosts { get; set; } = new List<BlogPostEntity>();
     public ICollection<MarketplaceEntity> MarketplaceListings { get; set; } = new List<MarketplaceEntity>();
+    public ICollection<QuizResultEntity> QuizResults { get; set; } = new List<QuizResultEntity>();
 }
