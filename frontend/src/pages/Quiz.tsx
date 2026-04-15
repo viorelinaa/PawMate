@@ -21,13 +21,25 @@ type AnimalKey =
     | "gecko"
     | "axolotl";
 
+type TraitKey =
+    | "energy"
+    | "careTime"
+    | "sociability"
+    | "livingSetup"
+    | "affection"
+    | "homeAtmosphere"
+    | "exoticLevel";
+
+type TraitProfile = Record<TraitKey, number>;
+
 type Answer = {
     text: string;
-    value: AnimalKey;
+    score: number;
 };
 
 type Question = {
     question: string;
+    trait: TraitKey;
     answers: Answer[];
 };
 
@@ -103,93 +115,212 @@ const ANIMALS: Record<
     },
     axolotl: {
         name: "Axolotl",
-        emoji: "🦎",
+        emoji: "🫧",
         adoptPath: "/adoptie?animal=axolotl",
         desc: "Unic(ă) și special(ă). Îți place să ieși din tipare.",
     },
 };
 
+const ANIMAL_PROFILES: Record<AnimalKey, TraitProfile> = {
+    dog: {
+        energy: 4,
+        careTime: 4,
+        sociability: 4,
+        livingSetup: 4,
+        affection: 4,
+        homeAtmosphere: 3,
+        exoticLevel: 0,
+    },
+    cat: {
+        energy: 1,
+        careTime: 2,
+        sociability: 1,
+        livingSetup: 2,
+        affection: 2,
+        homeAtmosphere: 0,
+        exoticLevel: 0,
+    },
+    rabbit: {
+        energy: 2,
+        careTime: 2,
+        sociability: 2,
+        livingSetup: 1,
+        affection: 2,
+        homeAtmosphere: 2,
+        exoticLevel: 1,
+    },
+    hamster: {
+        energy: 1,
+        careTime: 1,
+        sociability: 0,
+        livingSetup: 1,
+        affection: 1,
+        homeAtmosphere: 1,
+        exoticLevel: 1,
+    },
+    parrot: {
+        energy: 3,
+        careTime: 3,
+        sociability: 4,
+        livingSetup: 2,
+        affection: 3,
+        homeAtmosphere: 4,
+        exoticLevel: 2,
+    },
+    turtle: {
+        energy: 0,
+        careTime: 1,
+        sociability: 0,
+        livingSetup: 0,
+        affection: 0,
+        homeAtmosphere: 0,
+        exoticLevel: 2,
+    },
+    snake: {
+        energy: 0,
+        careTime: 0,
+        sociability: 0,
+        livingSetup: 0,
+        affection: 0,
+        homeAtmosphere: 0,
+        exoticLevel: 4,
+    },
+    lizard: {
+        energy: 1,
+        careTime: 1,
+        sociability: 0,
+        livingSetup: 0,
+        affection: 0,
+        homeAtmosphere: 1,
+        exoticLevel: 3,
+    },
+    ferret: {
+        energy: 4,
+        careTime: 3,
+        sociability: 3,
+        livingSetup: 2,
+        affection: 3,
+        homeAtmosphere: 2,
+        exoticLevel: 2,
+    },
+    hedgehog: {
+        energy: 1,
+        careTime: 1,
+        sociability: 0,
+        livingSetup: 1,
+        affection: 1,
+        homeAtmosphere: 0,
+        exoticLevel: 2,
+    },
+    gecko: {
+        energy: 1,
+        careTime: 1,
+        sociability: 0,
+        livingSetup: 0,
+        affection: 0,
+        homeAtmosphere: 1,
+        exoticLevel: 3,
+    },
+    axolotl: {
+        energy: 0,
+        careTime: 1,
+        sociability: 0,
+        livingSetup: 0,
+        affection: 0,
+        homeAtmosphere: 1,
+        exoticLevel: 4,
+    },
+};
+
 const QUESTIONS: Question[] = [
     {
+        trait: "energy",
         question: "Cum îți place energia în viața de zi cu zi?",
         answers: [
-            { text: "Multă energie, mereu în mișcare", value: "dog" },
-            { text: "Echilibrat(ă), depinde de zi", value: "ferret" },
-            { text: "Liniște și calm", value: "cat" },
-            { text: "Foarte calm, fără grabă", value: "turtle" },
+            { text: "Multă energie, mereu în mișcare", score: 4 },
+            { text: "Echilibrat(ă), depinde de zi", score: 3 },
+            { text: "Liniște și calm", score: 1 },
+            { text: "Foarte calm, fără grabă", score: 0 },
         ],
     },
     {
+        trait: "careTime",
         question: "Cât timp poți dedica îngrijirii zilnice?",
         answers: [
-            { text: "Mult (60+ min)", value: "dog" },
-            { text: "Mediu (30–60 min)", value: "cat" },
-            { text: "Puțin (10–30 min)", value: "hamster" },
-            { text: "Minim (5–10 min)", value: "snake" },
+            { text: "Mult (60+ min)", score: 4 },
+            { text: "Mediu (30–60 min)", score: 3 },
+            { text: "Puțin (10–30 min)", score: 1 },
+            { text: "Minim (5–10 min)", score: 0 },
         ],
     },
     {
+        trait: "sociability",
         question: "Ce tip de personalitate te descrie cel mai bine?",
         answers: [
-            { text: "Sociabil(ă) și loial(ă)", value: "dog" },
-            { text: "Independent(ă) și cool", value: "cat" },
-            { text: "Blând(ă) și sensibil(ă)", value: "rabbit" },
-            { text: "Curios(oasă) și jucăuș(ă)", value: "ferret" },
+            { text: "Sociabil(ă) și loial(ă)", score: 4 },
+            { text: "Independent(ă) și cool", score: 1 },
+            { text: "Blând(ă) și sensibil(ă)", score: 2 },
+            { text: "Curios(oasă) și jucăuș(ă)", score: 3 },
         ],
     },
     {
-        question: "Ce spațiu ai acasă?",
+        trait: "livingSetup",
+        question: "Ce spațiu sau tip de habitat ai disponibil acasă?",
         answers: [
-            { text: "Casă cu curte", value: "dog" },
-            { text: "Apartament normal", value: "cat" },
-            { text: "Spațiu mic / cameră", value: "hamster" },
-            { text: "Terariu / habitat special", value: "gecko" },
+            { text: "Casă cu curte", score: 4 },
+            { text: "Apartament normal", score: 2 },
+            { text: "Spațiu mic / cameră", score: 1 },
+            { text: "Terariu / habitat special", score: 0 },
         ],
     },
     {
+        trait: "affection",
         question: "Ce te atrage mai mult la un animal?",
         answers: [
-            { text: "Companie și afecțiune", value: "dog" },
-            { text: "Vibe cozy și liniște", value: "cat" },
-            { text: "Drăgălășenie discretă", value: "hedgehog" },
-            { text: "Ceva rar / wow", value: "axolotl" },
+            { text: "Companie și afecțiune", score: 4 },
+            { text: "Vibe cozy și liniște", score: 2 },
+            { text: "Drăgălășenie discretă", score: 1 },
+            { text: "Ceva rar / wow", score: 0 },
         ],
     },
     {
+        trait: "homeAtmosphere",
         question: "Ce fel de atmosferă preferi acasă?",
         answers: [
-            { text: "Îmi place comunicarea / sunetele", value: "parrot" },
-            { text: "Mai bine liniște", value: "cat" },
-            { text: "Nu contează, mă adaptez", value: "rabbit" },
-            { text: "Chill total", value: "turtle" },
+            { text: "Îmi place comunicarea / sunetele", score: 4 },
+            { text: "Mai bine liniște", score: 0 },
+            { text: "Nu contează, mă adaptez", score: 2 },
+            { text: "Chill total", score: 1 },
         ],
     },
     {
+        trait: "exoticLevel",
         question: "Cât de exotic vrei să fie animalul?",
         answers: [
-            { text: "Clasic", value: "dog" },
-            { text: "Ușor diferit", value: "rabbit" },
-            { text: "Exotic, dar ușor", value: "lizard" },
-            { text: "Foarte exotic", value: "snake" },
+            { text: "Clasic", score: 0 },
+            { text: "Ușor diferit", score: 1 },
+            { text: "Exotic, dar ușor", score: 3 },
+            { text: "Foarte exotic", score: 4 },
         ],
     },
 ];
 
 const ANIMAL_ORDER = Object.keys(ANIMALS) as AnimalKey[];
+const MAX_TRAIT_SCORE = 4;
 
-function AnswerButton({ answer, onPick }: { answer: Answer; onPick: (v: AnimalKey) => void }) {
+function AnswerButton({ answer, onPick }: { answer: Answer; onPick: (score: number) => void }) {
     return (
-        <AppButton variant="ghost" onClick={() => onPick(answer.value)}>
+        <AppButton variant="ghost" onClick={() => onPick(answer.score)}>
             {answer.text}
         </AppButton>
     );
 }
 
-function OtherAnimalItem({ animalKey, score }: { animalKey: AnimalKey; score: number }) {
+function OtherAnimalItem({ animalKey, percent }: { animalKey: AnimalKey; percent: number }) {
     return (
         <div className="otherAnimal">
             <span>{ANIMALS[animalKey].emoji} {ANIMALS[animalKey].name}</span>
-            <strong>{score}</strong>
+            <strong>{percent}%</strong>
         </div>
     );
 }
@@ -197,7 +328,7 @@ function OtherAnimalItem({ animalKey, score }: { animalKey: AnimalKey; score: nu
 export default function Quiz() {
     const { currentUser, isAuthenticated } = useAuth();
     const [index, setIndex] = useState(0);
-    const [picked, setPicked] = useState<AnimalKey[]>([]);
+    const [picked, setPicked] = useState<number[]>([]);
     const [completionId, setCompletionId] = useState(0);
     const [savedResultKey, setSavedResultKey] = useState<string | null>(null);
     const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error" | "login_required">("idle");
@@ -205,7 +336,7 @@ export default function Quiz() {
 
     const finished = index >= QUESTIONS.length;
 
-    const scores = useMemo(() => {
+    const compatibilityScoresRaw = useMemo(() => {
         const base: Record<AnimalKey, number> = {
             dog: 0,
             cat: 0,
@@ -220,14 +351,56 @@ export default function Quiz() {
             gecko: 0,
             axolotl: 0,
         };
-        picked.forEach((k) => (base[k] += 1));
+
+        picked.forEach((answerScore, questionIndex) => {
+            const question = QUESTIONS[questionIndex];
+            if (!question) {
+                return;
+            }
+
+            ANIMAL_ORDER.forEach((animalKey) => {
+                const animalPreference = ANIMAL_PROFILES[animalKey][question.trait];
+                base[animalKey] += MAX_TRAIT_SCORE - Math.abs(answerScore - animalPreference);
+            });
+        });
+
         return base;
     }, [picked]);
 
+    const compatibilityScores = useMemo(() => {
+        const maxPossibleScore = picked.length * MAX_TRAIT_SCORE;
+
+        return ANIMAL_ORDER.reduce<Record<AnimalKey, number>>((acc, animalKey) => {
+            acc[animalKey] =
+                maxPossibleScore === 0
+                    ? 0
+                    : Math.round((compatibilityScoresRaw[animalKey] / maxPossibleScore) * 100);
+            return acc;
+        }, {
+            dog: 0,
+            cat: 0,
+            rabbit: 0,
+            hamster: 0,
+            parrot: 0,
+            turtle: 0,
+            snake: 0,
+            lizard: 0,
+            ferret: 0,
+            hedgehog: 0,
+            gecko: 0,
+            axolotl: 0,
+        });
+    }, [compatibilityScoresRaw, picked.length]);
+
     const bestAnimal = useMemo(() => {
-        const max = Math.max(...ANIMAL_ORDER.map((animalKey) => scores[animalKey]));
-        return ANIMAL_ORDER.find((animalKey) => scores[animalKey] === max) ?? "cat";
-    }, [scores]);
+        return ANIMAL_ORDER.reduce((currentBest, animalKey) => {
+            if (compatibilityScores[animalKey] > compatibilityScores[currentBest]) {
+                return animalKey;
+            }
+
+            return currentBest;
+        }, "cat" as AnimalKey);
+    }, [compatibilityScores]);
 
     const resultSummary = useMemo(() => {
         if (!finished) {
@@ -237,10 +410,10 @@ export default function Quiz() {
         return {
             animalKey: bestAnimal,
             animalName: ANIMALS[bestAnimal].name,
-            score: scores[bestAnimal],
-            totalQuestions: QUESTIONS.length,
+            score: compatibilityScores[bestAnimal],
+            totalQuestions: 100,
         };
-    }, [bestAnimal, finished, scores]);
+    }, [bestAnimal, compatibilityScores, finished]);
 
     const currentSaveKey = currentUser ? `${completionId}:${currentUser.id}` : null;
 
@@ -255,7 +428,7 @@ export default function Quiz() {
 
         if (!isAuthenticated || !currentUser) {
             setSaveState("login_required");
-            setSaveMessage("Autentifica-te ca sa salvam rezultatul quizului in profil.");
+            setSaveMessage("Autentifică-te ca să salvăm rezultatul quizului în profil.");
             return;
         }
 
@@ -273,7 +446,7 @@ export default function Quiz() {
 
             try {
                 setSaveState("saving");
-                setSaveMessage("Se salveaza rezultatul quizului in profil...");
+                setSaveMessage("Se salvează rezultatul quizului în profil...");
 
                 await saveQuizResult({
                     userId,
@@ -289,7 +462,7 @@ export default function Quiz() {
 
                 setSavedResultKey(currentSaveKey);
                 setSaveState("saved");
-                setSaveMessage("Ultimul rezultat al quizului a fost salvat in profil.");
+                setSaveMessage("Ultimul rezultat al quizului a fost salvat în profil.");
             } catch (err) {
                 if (isCancelled) {
                     return;
@@ -311,9 +484,9 @@ export default function Quiz() {
         };
     }, [completionId, currentSaveKey, currentUser, finished, isAuthenticated, resultSummary, savedResultKey]);
 
-    const handlePick = (v: AnimalKey) => {
+    const handlePick = (answerScore: number) => {
         const nextIndex = index + 1;
-        setPicked((prev) => [...prev, v]);
+        setPicked((prev) => [...prev, answerScore]);
         setIndex(nextIndex);
 
         if (nextIndex >= QUESTIONS.length) {
@@ -328,9 +501,9 @@ export default function Quiz() {
         setSaveMessage(null);
     };
 
-    const otherAnimalsSorted = (Object.keys(ANIMALS) as AnimalKey[])
-        .filter((k) => k !== bestAnimal)
-        .sort((a, b) => scores[b] - scores[a]);
+    const otherAnimalsSorted = ANIMAL_ORDER
+        .filter((animalKey) => animalKey !== bestAnimal)
+        .sort((left, right) => compatibilityScores[right] - compatibilityScores[left]);
 
     return (
         <div className="quizPage">
@@ -343,13 +516,12 @@ export default function Quiz() {
                     />
                 </div>
             </AdminOnly>
-            {/* PROGRESS */}
+
             <div className="quizProgress">
                 <div className="quizProgressHeader">
-          <span>
-            Întrebarea {Math.min(index + 1, QUESTIONS.length)} /{" "}
-              {QUESTIONS.length}
-          </span>
+                    <span>
+                        Întrebarea {Math.min(index + 1, QUESTIONS.length)} / {QUESTIONS.length}
+                    </span>
                     <span>{progress}%</span>
                 </div>
 
@@ -364,8 +536,8 @@ export default function Quiz() {
                     <h2 className="quizTitle">{QUESTIONS[index].question}</h2>
 
                     <div className="answers">
-                        {QUESTIONS[index].answers.map((a) => (
-                            <AnswerButton key={a.text} answer={a} onPick={handlePick} />
+                        {QUESTIONS[index].answers.map((answer) => (
+                            <AnswerButton key={answer.text} answer={answer} onPick={handlePick} />
                         ))}
                     </div>
                 </div>
@@ -373,7 +545,6 @@ export default function Quiz() {
                 <div className="quizResult">
                     <div className="quizBadge">Rezultat</div>
 
-                    {/* WINNER BIG */}
                     <div className="winner">
                         <div className="winnerEmoji">{ANIMALS[bestAnimal].emoji}</div>
                         <h3 className="winnerName">
@@ -382,7 +553,7 @@ export default function Quiz() {
                         <p className="winnerDesc">{ANIMALS[bestAnimal].desc}</p>
                         {resultSummary && (
                             <p className="winnerScore">
-                                Scor de compatibilitate: {resultSummary.score}/{resultSummary.totalQuestions}
+                                Compatibilitate estimată: {resultSummary.score}%
                             </p>
                         )}
                     </div>
@@ -393,10 +564,13 @@ export default function Quiz() {
                         </div>
                     )}
 
-                    {/* OTHERS SMALL */}
                     <div className="otherResults">
-                        {otherAnimalsSorted.map((k) => (
-                            <OtherAnimalItem key={k} animalKey={k} score={scores[k]} />
+                        {otherAnimalsSorted.map((animalKey) => (
+                            <OtherAnimalItem
+                                key={animalKey}
+                                animalKey={animalKey}
+                                percent={compatibilityScores[animalKey]}
+                            />
                         ))}
                     </div>
 

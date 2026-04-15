@@ -79,6 +79,19 @@ function formatQuizCompletedAt(completedAt: string) {
     }).format(date);
 }
 
+function formatQuizCompatibility(score: number, totalQuestions: number) {
+    if (totalQuestions <= 0) {
+        return "Compatibilitate indisponibilă";
+    }
+
+    const percent =
+        totalQuestions === 100
+            ? score
+            : Math.round((score / totalQuestions) * 100);
+
+    return `${percent}% compatibilitate`;
+}
+
 const emptyForm: ProfileFormState = {
     firstName: "",
     lastName: "",
@@ -262,7 +275,7 @@ export default function Profile() {
                                         {latestQuizResult.animalName}
                                     </strong>
                                     <span className="profile-quiz-summary-meta">
-                                        Scor de compatibilitate: {latestQuizResult.score}/{latestQuizResult.totalQuestions}
+                                        {formatQuizCompatibility(latestQuizResult.score, latestQuizResult.totalQuestions)}
                                     </span>
                                     <span className="profile-quiz-summary-date">
                                         {formatQuizCompletedAt(latestQuizResult.completedAt)}
@@ -421,7 +434,7 @@ export default function Profile() {
                                                 </p>
                                                 <h2 className="profile-activity-title">{quizResult.animalName}</h2>
                                                 <p className="profile-activity-copy">
-                                                    Scor de compatibilitate {quizResult.score}/{quizResult.totalQuestions}.
+                                                    {formatQuizCompatibility(quizResult.score, quizResult.totalQuestions)}.
                                                     Rezultatul a fost salvat automat dupa finalizarea quiz-ului.
                                                 </p>
                                                 <p className="profile-activity-meta">
