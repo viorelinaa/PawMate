@@ -23,6 +23,23 @@
     font-weight: 500;
 }
 
+.adminUsersState {
+    padding: 18px 20px;
+    border-radius: 14px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    color: #4b5563;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.adminUsersState--error {
+    margin-bottom: 18px;
+    background: #fff5f5;
+    border-color: #fecaca;
+    color: #b91c1c;
+}
+
 /* Grid */
 .adminUsersGrid {
     display: grid;
@@ -79,6 +96,14 @@
     letter-spacing: 0.5px;
 }
 
+.adminUserAvatarImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+}
+
 .adminUserAvatar--banned {
     background: linear-gradient(135deg, #9ca3af, #d1d5db);
 }
@@ -120,6 +145,11 @@
 .adminUserBadge--active {
     background: #d1fae5;
     color: #065f46;
+}
+
+.adminUserBadge--offline {
+    background: #e5e7eb;
+    color: #374151;
 }
 
 .adminUserBadge--banned {
@@ -203,6 +233,12 @@
     transform: translateY(-1px);
 }
 
+.adminUserBanBtn:disabled {
+    cursor: wait;
+    opacity: 0.7;
+    transform: none;
+}
+
 .adminUserBanBtn--ban {
     background: #fee2e2;
     color: #991b1b;
@@ -219,6 +255,95 @@
 
 .adminUserBanBtn--unban:hover {
     background: #a7f3d0;
+}
+
+.adminUserStatusHint {
+    margin: 10px 0 0;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.adminUserMoreBtn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: inherit;
+    border: 1px solid #d8c9f7;
+    background: #f6f0ff;
+    color: #5b3f91;
+    transition: background 0.18s ease, transform 0.12s ease, border-color 0.18s ease;
+}
+
+.adminUserMoreBtn:hover {
+    background: #efe4ff;
+    border-color: #c9b3f2;
+    transform: translateY(-1px);
+}
+
+.adminUserMoreInfo {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #ece6fb;
+    display: grid;
+    gap: 14px;
+}
+
+.adminUserMoreSection {
+    background: #faf8ff;
+    border: 1px solid #ece6fb;
+    border-radius: 14px;
+    padding: 14px 16px;
+}
+
+.adminUserMoreTitle {
+    margin: 0 0 12px;
+    color: #46306f;
+    font-size: 0.95rem;
+    font-weight: 800;
+}
+
+.adminUserActionChipList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.adminUserActionChip {
+    display: inline-flex;
+    align-items: center;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: #fff;
+    border: 1px solid #ddd4f7;
+    color: #5a4780;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.adminUserInfoList {
+    display: grid;
+    gap: 8px;
+}
+
+.adminUserInfoRow {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 0.82rem;
+    color: #4b5563;
+    line-height: 1.45;
+}
+
+.adminUserInfoRow strong {
+    color: #1f2937;
+    text-align: right;
 }
 
 /* Confirm dialog */
@@ -280,6 +405,56 @@
     color: #f0f0f0;
 }
 
+[data-theme="dark"] .adminUsersState {
+    background: #1e1e2e;
+    border-color: #2e2e40;
+    color: #d1d5db;
+}
+
+[data-theme="dark"] .adminUsersState--error {
+    background: #2a1a1a;
+    border-color: #5a2020;
+    color: #fecaca;
+}
+
+[data-theme="dark"] .adminUserStatusHint {
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .adminUserMoreBtn {
+    background: #2a2238;
+    border-color: #4a3c68;
+    color: #e8defd;
+}
+
+[data-theme="dark"] .adminUserMoreBtn:hover {
+    background: #332946;
+}
+
+[data-theme="dark"] .adminUserMoreInfo {
+    border-top-color: #3a314f;
+}
+
+[data-theme="dark"] .adminUserMoreSection {
+    background: #231d31;
+    border-color: #3a314f;
+}
+
+[data-theme="dark"] .adminUserMoreTitle,
+[data-theme="dark"] .adminUserInfoRow strong {
+    color: #f3f0ff;
+}
+
+[data-theme="dark"] .adminUserActionChip {
+    background: #1b1627;
+    border-color: #4a3c68;
+    color: #ddd6f6;
+}
+
+[data-theme="dark"] .adminUserInfoRow {
+    color: #d1d5db;
+}
+
 [data-theme="dark"] .adminUserCard {
     background: #1e1e2e;
     border-color: #2e2e40;
@@ -327,5 +502,13 @@
 
     .adminUsersHeader h1 {
         font-size: 1.4rem;
+    }
+
+    .adminUserInfoRow {
+        flex-direction: column;
+    }
+
+    .adminUserInfoRow strong {
+        text-align: left;
     }
 }

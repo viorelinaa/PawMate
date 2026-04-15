@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PawMate.DataAccessLayer.Context;
@@ -11,9 +12,11 @@ using PawMate.DataAccessLayer.Context;
 namespace PawMate.DataAccessLayer.Migrations
 {
     [DbContext(typeof(PawMateDbContext))]
-    partial class PawMateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260415150525_AddQuizResults")]
+    partial class AddQuizResults
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,32 +219,6 @@ namespace PawMate.DataAccessLayer.Migrations
                     b.ToTable("Pets");
                 });
 
-            modelBuilder.Entity("PawMate.Domain.Entities.ProfileAvatar.ProfileAvatarEntity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("NOW()");
-
-                    b.Property<string>("ImageUrl")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProfileAvatars");
-                });
-
             modelBuilder.Entity("PawMate.Domain.Entities.QuizResult.QuizResultEntity", b =>
                 {
                     b.Property<int>("Id")
@@ -345,19 +322,6 @@ namespace PawMate.DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsEmailVerified")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("boolean")
-                        .HasDefaultValue(false);
-
-                    b.Property<DateTime?>("LastLoginAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<int>("LoginCount")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasDefaultValue(0);
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
@@ -370,22 +334,11 @@ namespace PawMate.DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("ProfileAvatarId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("text")
-                        .HasDefaultValue("offline");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ProfileAvatarId");
 
                     b.ToTable("Users");
                 });
@@ -470,24 +423,9 @@ namespace PawMate.DataAccessLayer.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("PawMate.Domain.Entities.User.UserEntity", b =>
-                {
-                    b.HasOne("PawMate.Domain.Entities.ProfileAvatar.ProfileAvatarEntity", "ProfileAvatar")
-                        .WithMany("Users")
-                        .HasForeignKey("ProfileAvatarId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("ProfileAvatar");
-                });
-
             modelBuilder.Entity("PawMate.Domain.Entities.Pet.PetEntity", b =>
                 {
                     b.Navigation("Adoptions");
-                });
-
-            modelBuilder.Entity("PawMate.Domain.Entities.ProfileAvatar.ProfileAvatarEntity", b =>
-                {
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("PawMate.Domain.Entities.User.UserEntity", b =>

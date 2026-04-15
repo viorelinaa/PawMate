@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer.Structure;
+using PawMate.Domain.Models.ProfileAvatar;
 using PawMate.Domain.Models.User;
 
 namespace PawMate.Api.Controllers;
@@ -28,6 +29,42 @@ public class ProfileController : ControllerBase
     {
         var response = _userActions.UpdateUserProfileAction(id, profileData);
 
+        if (!response.IsSuccess)
+        {
+            return BadRequest(response.Message);
+        }
+
+        return Ok(response.Data);
+    }
+
+    [HttpGet("avatars")]
+    public IActionResult GetAvatarOptions()
+    {
+        var response = _userActions.GetProfileAvatarOptionsAction();
+        if (!response.IsSuccess)
+        {
+            return BadRequest(response.Message);
+        }
+
+        return Ok(response.Data);
+    }
+
+    [HttpPost("avatars")]
+    public IActionResult CreateAvatarOption([FromBody] ProfileAvatarCreateDto avatarData)
+    {
+        var response = _userActions.CreateProfileAvatarOptionAction(avatarData);
+        if (!response.IsSuccess)
+        {
+            return BadRequest(response.Message);
+        }
+
+        return Ok(response.Data);
+    }
+
+    [HttpPut("{id}/avatar")]
+    public IActionResult UpdateProfileAvatar(int id, [FromBody] UserProfileAvatarUpdateDto avatarData)
+    {
+        var response = _userActions.SetUserProfileAvatarAction(id, avatarData);
         if (!response.IsSuccess)
         {
             return BadRequest(response.Message);

@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../services/authService";
 import { usePasswordValidation } from "../hooks/usePasswordValidation";
 import { PasswordStrengthBar } from "../design-system/components/PasswordStrengthBar";
+import { PasswordField } from "../components/PasswordField";
 
 export default function SignUp() {
     const navigate = useNavigate();
@@ -87,29 +88,25 @@ export default function SignUp() {
                         />
                     </label>
 
-                    <label style={styles.label}>
-                        Parola
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Introdu parola"
-                            style={styles.input}
-                        />
-                    </label>
+                    <PasswordField
+                        label="Parola"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Introdu parola"
+                        inputStyle={styles.input}
+                        labelStyle={styles.label}
+                    />
 
                     <PasswordStrengthBar validation={passwordValidation} password={password} />
 
-                    <label style={styles.label}>
-                        Confirma parola
-                        <input
-                            type="password"
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            placeholder="Confirma parola"
-                            style={styles.input}
-                        />
-                    </label>
+                    <PasswordField
+                        label="Confirma parola"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        placeholder="Confirma parola"
+                        inputStyle={styles.input}
+                        labelStyle={styles.label}
+                    />
 
                     {confirmPassword && password !== confirmPassword && (
                         <div style={styles.error}>Parolele nu coincid.</div>

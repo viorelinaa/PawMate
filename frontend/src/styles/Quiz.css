@@ -171,6 +171,34 @@
     font-weight: 500;
 }
 
+.winnerScore {
+    margin: 12px 0 0;
+    color: #6a4a83;
+    font-weight: 700;
+}
+
+.quizSaveNotice {
+    margin: 0 0 22px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: #f4efff;
+    border: 1px solid rgba(106, 74, 131, 0.14);
+    color: #5c4a73;
+    font-weight: 700;
+}
+
+.quizSaveNotice.success {
+    background: rgba(46, 204, 113, 0.12);
+    border-color: rgba(46, 204, 113, 0.24);
+    color: #1d7f49;
+}
+
+.quizSaveNotice.error {
+    background: rgba(255, 71, 87, 0.12);
+    border-color: rgba(255, 71, 87, 0.24);
+    color: #b3261e;
+}
+
 /* OTHER SMALL */
 .otherResults {
     display: grid;

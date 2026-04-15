@@ -1,147 +1,324 @@
-import React, { useState } from 'react';
-import { mockUsers } from '../data/mockUsers';
-import '../styles/AdminUsers.css';
+import { useEffect, useState } from "react";
+import {
+    getUsers,
+    updateUserStatus,
+    type AdminUser,
+    type AdminUserStatus,
+} from "../services/userService";
+import "../styles/AdminUsers.css";
 
-const ACTIVITY_ICONS: Record<string, string> = {
-    adoptie: '🐾',
-    donatie: '💜',
-    voluntariat: '🤝',
-    postare: '📝',
-};
+function buildInitials(name: string) {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
 
-const AdminUsers: React.FC = () => {
-    const [bannedIds, setBannedIds] = useState<Set<string>>(new Set());
-    const [confirmId, setConfirmId] = useState<string | null>(null);
+    if (parts.length === 0) {
+        return "U";
+    }
 
-    const users = mockUsers.filter((u) => u.role === 'user');
+    if (parts.length === 1) {
+        return parts[0].slice(0, 2).toUpperCase();
+    }
 
-    const toggleBan = (id: string) => {
-        setBannedIds((prev) => {
-            const next = new Set(prev);
-            if (next.has(id)) {
-                next.delete(id);
-            } else {
-                next.add(id);
+    return `${parts[0][0] ?? ""}${parts[parts.length - 1][0] ?? ""}`.toUpperCase();
+}
+
+function formatJoinDate(createdAt: string) {
+    const date = new Date(createdAt);
+
+    if (Number.isNaN(date.getTime())) {
+        return "data indisponibila";
+    }
+
+    return date.toLocaleDateString("ro-RO", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+    });
+}
+
+function formatDateTime(value: string | null) {
+    if (!value) {
+        return "Indisponibil";
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "Indisponibil";
+    }
+
+    return date.toLocaleString("ro-RO", {
+        dateStyle: "long",
+        timeStyle: "short",
+    });
+}
+
+function formatAvailability(value: boolean) {
+    return value ? "Completat" : "Necompletat";
+}
+
+function formatEmailStatus(value: boolean) {
+    return value ? "Verificat" : "Neverificat";
+}
+
+function formatMetric(value: number | null, fallback = "Nu este urmarit inca") {
+    return value ?? fallback;
+}
+
+function statusLabel(status: AdminUserStatus) {
+    switch (status) {
+        case "active":
+            return "Activ";
+        case "banned":
+            return "Banat";
+        default:
+            return "Offline";
+    }
+}
+
+function statusBadgeClass(status: AdminUserStatus) {
+    switch (status) {
+        case "active":
+            return "adminUserBadge--active";
+        case "banned":
+            return "adminUserBadge--banned";
+        default:
+            return "adminUserBadge--offline";
+    }
+}
+
+function statusHint(status: AdminUserStatus) {
+    switch (status) {
+        case "active":
+            return "Utilizatorul este conectat acum.";
+        case "banned":
+            return "Contul este blocat si nu se poate autentifica.";
+        default:
+            return "Utilizatorul va deveni activ la urmatorul login.";
+    }
+}
+
+export default function AdminUsers() {
+    const [users, setUsers] = useState<AdminUser[]>([]);
+    const [expandedUserId, setExpandedUserId] = useState<number | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [pendingUserId, setPendingUserId] = useState<number | null>(null);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        async function loadUsers() {
+            try {
+                setIsLoading(true);
+                const loadedUsers = await getUsers();
+                setUsers(loadedUsers.filter((user) => user.role === "user"));
+                setError(null);
+            } catch (err) {
+                setError(err instanceof Error ? err.message : "Nu s-a putut incarca lista de utilizatori.");
+            } finally {
+                setIsLoading(false);
             }
-            return next;
-        });
-        setConfirmId(null);
-    };
+        }
+
+        void loadUsers();
+    }, []);
+
+    async function handleStatusChange(userId: number, status: AdminUserStatus) {
+        try {
+            setPendingUserId(userId);
+            const updatedUser = await updateUserStatus(userId, status);
+
+            setUsers((prev) =>
+                prev.map((user) => (user.id === updatedUser.id ? updatedUser : user))
+            );
+            setError(null);
+        } catch (err) {
+            setError(
+                err instanceof Error
+                    ? err.message
+                    : "Nu s-a putut actualiza statutul utilizatorului."
+            );
+        } finally {
+            setPendingUserId(null);
+        }
+    }
+
+    function toggleMoreInfo(userId: number) {
+        setExpandedUserId((prev) => (prev === userId ? null : userId));
+    }
 
     return (
         <div className="adminUsers">
             <div className="adminUsersHeader">
                 <h1>Utilizatori înregistrați</h1>
                 <p>
-                    {users.length} utilizatori · {bannedIds.size} ban
+                    {isLoading
+                        ? "Se incarca utilizatorii din baza de date..."
+                        : `${users.length} utilizatori incarcati din baza de date`}
                 </p>
             </div>
 
-            <div className="adminUsersGrid">
-                {users.map((user) => {
-                    const isBanned = bannedIds.has(user.id);
-                    const initials = `${user.firstName[0]}${user.lastName[0]}`.toUpperCase();
-                    const joinDate = new Date(user.joinedAt).toLocaleDateString('ro-RO', {
-                        day: 'numeric',
-                        month: 'long',
-                        year: 'numeric',
-                    });
+            {error ? <div className="adminUsersState adminUsersState--error">{error}</div> : null}
 
-                    return (
-                        <div
-                            key={user.id}
-                            className={`adminUserCard ${isBanned ? 'adminUserCard--banned' : ''}`}
-                        >
-                            {/* Avatar + identitate */}
-                            <div className="adminUserCardTop">
-                                <div className={`adminUserAvatar ${isBanned ? 'adminUserAvatar--banned' : ''}`}>
-                                    {initials}
-                                </div>
-                                <div className="adminUserInfo">
-                                    <p className="adminUserName">
-                                        {user.firstName} {user.lastName}
-                                    </p>
-                                    <p className="adminUserEmail">{user.username}</p>
-                                </div>
-                                <span className={`adminUserBadge ${isBanned ? 'adminUserBadge--banned' : 'adminUserBadge--active'}`}>
-                                    {isBanned ? 'Banat' : 'Activ'}
-                                </span>
-                            </div>
+            {isLoading ? (
+                <div className="adminUsersState">Se incarca lista de utilizatori...</div>
+            ) : users.length === 0 ? (
+                <div className="adminUsersState">Nu exista utilizatori inregistrati in baza de date.</div>
+            ) : (
+                <div className="adminUsersGrid">
+                    {users.map((user) => {
+                        const isPending = pendingUserId === user.id;
+                        const isExpanded = expandedUserId === user.id;
 
-                            {/* Detalii */}
-                            <div className="adminUserDetails">
-                                <div className="adminUserDetail">
-                                    <span className="adminUserDetailIcon">📅</span>
-                                    <span>Membru din {joinDate}</span>
-                                </div>
-                                <div className="adminUserDetail">
-                                    <span className="adminUserDetailIcon">🐾</span>
-                                    <span>
-                                        {user.adoptedPets.length === 0
-                                            ? 'Niciun animal adoptat'
-                                            : `${user.adoptedPets.length} animal${user.adoptedPets.length > 1 ? 'e adoptate' : ' adoptat'}`}
+                        return (
+                            <article key={user.id} className="adminUserCard">
+                                <div className="adminUserCardTop">
+                                    <div className="adminUserAvatar">
+                                        {user.selectedAvatar ? (
+                                            <img
+                                                className="adminUserAvatarImage"
+                                                src={user.selectedAvatar.imageUrl}
+                                                alt={user.selectedAvatar.title || `Avatar ${user.name}`}
+                                            />
+                                        ) : (
+                                            buildInitials(user.name)
+                                        )}
+                                    </div>
+                                    <div className="adminUserInfo">
+                                        <p className="adminUserName">{user.name}</p>
+                                        <p className="adminUserEmail">{user.email}</p>
+                                    </div>
+                                    <span className={`adminUserBadge ${statusBadgeClass(user.status)}`}>
+                                        {statusLabel(user.status)}
                                     </span>
                                 </div>
-                                <div className="adminUserDetail">
-                                    <span className="adminUserDetailIcon">📋</span>
-                                    <span>{user.activityLog.length} acțiuni în istoricul activității</span>
-                                </div>
-                            </div>
 
-                            {/* Activitate recentă */}
-                            {user.activityLog.length > 0 && (
+                                <div className="adminUserDetails">
+                                    <div className="adminUserDetail">
+                                        <span className="adminUserDetailIcon">📅</span>
+                                        <span>Membru din {formatJoinDate(user.createdAt)}</span>
+                                    </div>
+                                    <div className="adminUserDetail">
+                                        <span className="adminUserDetailIcon">🆔</span>
+                                        <span>ID utilizator: {user.id}</span>
+                                    </div>
+                                    <div className="adminUserDetail">
+                                        <span className="adminUserDetailIcon">👤</span>
+                                        <span>Rol salvat in baza de date: {user.role}</span>
+                                    </div>
+                                    <div className="adminUserDetail">
+                                        <span className="adminUserDetailIcon">📡</span>
+                                        <span>Statut cont: {statusLabel(user.status).toLowerCase()}</span>
+                                    </div>
+                                </div>
+
                                 <div className="adminUserActivity">
-                                    <p className="adminUserActivityLabel">Activitate recentă</p>
+                                    <p className="adminUserActivityLabel">Sursa</p>
                                     <ul className="adminUserActivityList">
-                                        {user.activityLog.slice(0, 2).map((item) => (
-                                            <li key={item.id} className="adminUserActivityItem">
-                                                <span>{ACTIVITY_ICONS[item.type] ?? '📌'}</span>
-                                                <span>{item.description}</span>
-                                            </li>
-                                        ))}
+                                        <li className="adminUserActivityItem">
+                                            <span>💾</span>
+                                            <span>Datele de pe acest card vin din tabela de utilizatori din baza de date.</span>
+                                        </li>
                                     </ul>
                                 </div>
-                            )}
 
-                            {/* Acțiuni */}
-                            <div className="adminUserActions">
-                                {confirmId === user.id ? (
-                                    <div className="adminUserConfirm">
-                                        <p className="adminUserConfirmText">
-                                            {isBanned
-                                                ? 'Confirmi deblocarea contului?'
-                                                : 'Confirmi blocarea contului?'}
-                                        </p>
-                                        <div className="adminUserConfirmBtns">
-                                            <button
-                                                className={`adminUserConfirmYes ${isBanned ? 'adminUserConfirmYes--unban' : 'adminUserConfirmYes--ban'}`}
-                                                onClick={() => toggleBan(user.id)}
-                                            >
-                                                {isBanned ? 'Da, deblochează' : 'Da, blochează'}
-                                            </button>
-                                            <button
-                                                className="adminUserConfirmNo"
-                                                onClick={() => setConfirmId(null)}
-                                            >
-                                                Anulează
-                                            </button>
-                                        </div>
-                                    </div>
-                                ) : (
+                                <div className="adminUserActions">
+                                    {user.status === "banned" ? (
+                                        <button
+                                            className="adminUserBanBtn adminUserBanBtn--unban"
+                                            onClick={() => handleStatusChange(user.id, "offline")}
+                                            disabled={isPending}
+                                        >
+                                            {isPending ? "Se actualizeaza..." : "Deblocheaza contul"}
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className="adminUserBanBtn adminUserBanBtn--ban"
+                                            onClick={() => handleStatusChange(user.id, "banned")}
+                                            disabled={isPending}
+                                        >
+                                            {isPending ? "Se actualizeaza..." : "Blocheaza contul"}
+                                        </button>
+                                    )}
                                     <button
-                                        className={`adminUserBanBtn ${isBanned ? 'adminUserBanBtn--unban' : 'adminUserBanBtn--ban'}`}
-                                        onClick={() => setConfirmId(user.id)}
+                                        type="button"
+                                        className="adminUserMoreBtn"
+                                        onClick={() => toggleMoreInfo(user.id)}
                                     >
-                                        {isBanned ? '✓ Deblochează cont' : '⛔ Blochează cont'}
+                                        {isExpanded ? "Ascunde informatiile" : "Vezi mai multe informatii"}
                                     </button>
-                                )}
-                            </div>
-                        </div>
-                    );
-                })}
-            </div>
+                                    <p className="adminUserStatusHint">{statusHint(user.status)}</p>
+                                </div>
+
+                                {isExpanded ? (
+                                    <div className="adminUserMoreInfo">
+                                        <section className="adminUserMoreSection">
+                                            <h2 className="adminUserMoreTitle">Butoane de actiune</h2>
+                                            <div className="adminUserActionChipList">
+                                                <span className="adminUserActionChip">Vezi profil</span>
+                                                <span className="adminUserActionChip">Editeaza</span>
+                                                <span className="adminUserActionChip">Schimba rolul</span>
+                                                <span className="adminUserActionChip">Dezactiveaza / Activeaza</span>
+                                                <span className="adminUserActionChip">Sterge</span>
+                                            </div>
+                                        </section>
+
+                                        <section className="adminUserMoreSection">
+                                            <h2 className="adminUserMoreTitle">Date utile pentru admin</h2>
+                                            <div className="adminUserInfoList">
+                                                <div className="adminUserInfoRow">
+                                                    <span>Data ultimei autentificari</span>
+                                                    <strong>{formatDateTime(user.lastLoginAt)}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Numarul de logari</span>
+                                                    <strong>{user.loginCount}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Status email</span>
+                                                    <strong>{formatEmailStatus(user.isEmailVerified)}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Telefon completat</span>
+                                                    <strong>{formatAvailability(user.hasPhone)}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Oras completat</span>
+                                                    <strong>{formatAvailability(user.hasCity)}</strong>
+                                                </div>
+                                            </div>
+                                        </section>
+
+                                        <section className="adminUserMoreSection">
+                                            <h2 className="adminUserMoreTitle">Informatii despre activitate</h2>
+                                            <div className="adminUserInfoList">
+                                                <div className="adminUserInfoRow">
+                                                    <span>Cate postari are</span>
+                                                    <strong>{user.blogPostsCount}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Cate animale a adaugat</span>
+                                                    <strong>{formatMetric(user.petsAddedCount)}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Cate anunturi lost pets a publicat</span>
+                                                    <strong>{formatMetric(user.lostPetsPublishedCount)}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Cate programari / cereri are</span>
+                                                    <strong>{user.adoptionRequestsCount}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Ultima activitate in aplicatie</span>
+                                                    <strong>{formatDateTime(user.lastActivityAt)}</strong>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
+                                ) : null}
+                            </article>
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
-};
-
-export default AdminUsers;
+}

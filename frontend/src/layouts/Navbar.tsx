@@ -80,7 +80,7 @@ export default function Navbar({ theme, onToggleTheme }: NavbarProps) {
                             <span className="navUserEmoji">
                                 {currentUser.role === 'admin' ? '🔑' : '👤'}
                             </span>
-                            <span className="navUserName">{currentUser.displayName}</span>
+                            <span className="navUserName">{currentUser.name}</span>
                             <span className="navUserIcon" aria-hidden="true">
                                 {currentUser.role === 'admin' ? (
                                     <ShieldUserIcon size={16} />

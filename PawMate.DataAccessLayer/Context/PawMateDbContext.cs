@@ -5,6 +5,8 @@ using PawMate.Domain.Entities.Event;
 using PawMate.Domain.Entities.LostPet;
 using PawMate.Domain.Entities.Marketplace;
 using PawMate.Domain.Entities.Pet;
+using PawMate.Domain.Entities.ProfileAvatar;
+using PawMate.Domain.Entities.QuizResult;
 using PawMate.Domain.Entities.Sitter;
 using PawMate.Domain.Entities.User;
 using PawMate.Domain.Entities.Volunteer;
@@ -22,6 +24,8 @@ public sealed class PawMateDbContext : DbContext
     public DbSet<MarketplaceEntity> MarketplaceListings { get; set; }
     public DbSet<VolunteerEntity> VolunteerOpportunities { get; set; }
     public DbSet<SitterEntity> Sitters { get; set; }
+    public DbSet<ProfileAvatarEntity> ProfileAvatars { get; set; }
+    public DbSet<QuizResultEntity> QuizResults { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -54,9 +58,41 @@ public sealed class PawMateDbContext : DbContext
             .HasForeignKey(m => m.SellerId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<QuizResultEntity>()
+            .HasOne(q => q.User)
+            .WithMany(u => u.QuizResults)
+            .HasForeignKey(q => q.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<UserEntity>()
+            .HasOne(u => u.ProfileAvatar)
+            .WithMany(a => a.Users)
+            .HasForeignKey(u => u.ProfileAvatarId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         modelBuilder.Entity<UserEntity>()
             .Property(u => u.Address)
             .HasDefaultValue(string.Empty);
+
+        modelBuilder.Entity<UserEntity>()
+            .Property(u => u.Status)
+            .HasDefaultValue("offline");
+
+        modelBuilder.Entity<UserEntity>()
+            .Property(u => u.LoginCount)
+            .HasDefaultValue(0);
+
+        modelBuilder.Entity<UserEntity>()
+            .Property(u => u.IsEmailVerified)
+            .HasDefaultValue(false);
+
+        modelBuilder.Entity<ProfileAvatarEntity>()
+            .Property(a => a.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        modelBuilder.Entity<QuizResultEntity>()
+            .Property(q => q.CompletedAt)
+            .HasDefaultValueSql("NOW()");
 
         modelBuilder.Entity<UserEntity>()
             .Property(u => u.CreatedAt)

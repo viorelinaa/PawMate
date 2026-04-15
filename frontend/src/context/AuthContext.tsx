@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, type ReactNode } from "react";
-import { loginUser, type AuthRole } from "../services/authService";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { apiBaseUrl } from "../axios/apiClient";
+import { loginUser, logoutUser, markSessionActive, type AuthRole } from "../services/authService";
 
 type AuthUser = {
     id: number;
@@ -18,6 +19,14 @@ type AuthContextType = {
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+function clearStoredUser() {
+    sessionStorage.removeItem("pawmate_token");
+    sessionStorage.removeItem("pawmate_uid");
+    sessionStorage.removeItem("pawmate_role");
+    sessionStorage.removeItem("pawmate_name");
+    sessionStorage.removeItem("pawmate_email");
+}
 
 function readStoredUser(): AuthUser | null {
     const id = sessionStorage.getItem("pawmate_uid");
@@ -40,6 +49,43 @@ function readStoredUser(): AuthUser | null {
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [currentUser, setCurrentUser] = useState<AuthUser | null>(() => readStoredUser());
 
+    useEffect(() => {
+        if (!currentUser) {
+            return;
+        }
+
+        let isCancelled = false;
+        const userId = currentUser.id;
+
+        void markSessionActive(userId).catch(() => {
+            clearStoredUser();
+            if (!isCancelled) {
+                setCurrentUser(null);
+            }
+        });
+
+        function handleBeforeUnload() {
+            const url = `${apiBaseUrl}/session/logout/${userId}`;
+
+            if (navigator.sendBeacon) {
+                navigator.sendBeacon(url);
+                return;
+            }
+
+            void fetch(url, {
+                method: "POST",
+                keepalive: true,
+            });
+        }
+
+        window.addEventListener("beforeunload", handleBeforeUnload);
+
+        return () => {
+            isCancelled = true;
+            window.removeEventListener("beforeunload", handleBeforeUnload);
+        };
+    }, [currentUser?.id]);
+
     async function login(email: string, password: string): Promise<AuthRole> {
         const response = await loginUser({ email, password });
 
@@ -61,12 +107,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     function logout() {
-        sessionStorage.removeItem("pawmate_token");
-        sessionStorage.removeItem("pawmate_uid");
-        sessionStorage.removeItem("pawmate_role");
-        sessionStorage.removeItem("pawmate_name");
-        sessionStorage.removeItem("pawmate_email");
+        const userId = currentUser?.id ?? Number(sessionStorage.getItem("pawmate_uid"));
+
+        clearStoredUser();
         setCurrentUser(null);
+
+        if (Number.isFinite(userId) && userId > 0) {
+            void logoutUser(userId).catch(() => {});
+        }
     }
 
     function isAdmin() {
