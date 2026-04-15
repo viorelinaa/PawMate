@@ -35,6 +35,35 @@ function formatJoinDate(createdAt: string) {
     });
 }
 
+function formatDateTime(value: string | null) {
+    if (!value) {
+        return "Indisponibil";
+    }
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) {
+        return "Indisponibil";
+    }
+
+    return date.toLocaleString("ro-RO", {
+        dateStyle: "long",
+        timeStyle: "short",
+    });
+}
+
+function formatAvailability(value: boolean) {
+    return value ? "Completat" : "Necompletat";
+}
+
+function formatEmailStatus(value: boolean) {
+    return value ? "Verificat" : "Neverificat";
+}
+
+function formatMetric(value: number | null, fallback = "Nu este urmarit inca") {
+    return value ?? fallback;
+}
+
 function statusLabel(status: AdminUserStatus) {
     switch (status) {
         case "active":
@@ -70,6 +99,7 @@ function statusHint(status: AdminUserStatus) {
 
 export default function AdminUsers() {
     const [users, setUsers] = useState<AdminUser[]>([]);
+    const [expandedUserId, setExpandedUserId] = useState<number | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [pendingUserId, setPendingUserId] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -111,6 +141,10 @@ export default function AdminUsers() {
         }
     }
 
+    function toggleMoreInfo(userId: number) {
+        setExpandedUserId((prev) => (prev === userId ? null : userId));
+    }
+
     return (
         <div className="adminUsers">
             <div className="adminUsersHeader">
@@ -132,6 +166,7 @@ export default function AdminUsers() {
                 <div className="adminUsersGrid">
                     {users.map((user) => {
                         const isPending = pendingUserId === user.id;
+                        const isExpanded = expandedUserId === user.id;
 
                         return (
                             <article key={user.id} className="adminUserCard">
@@ -203,8 +238,82 @@ export default function AdminUsers() {
                                             {isPending ? "Se actualizeaza..." : "Blocheaza contul"}
                                         </button>
                                     )}
+                                    <button
+                                        type="button"
+                                        className="adminUserMoreBtn"
+                                        onClick={() => toggleMoreInfo(user.id)}
+                                    >
+                                        {isExpanded ? "Ascunde informatiile" : "Vezi mai multe informatii"}
+                                    </button>
                                     <p className="adminUserStatusHint">{statusHint(user.status)}</p>
                                 </div>
+
+                                {isExpanded ? (
+                                    <div className="adminUserMoreInfo">
+                                        <section className="adminUserMoreSection">
+                                            <h2 className="adminUserMoreTitle">Butoane de actiune</h2>
+                                            <div className="adminUserActionChipList">
+                                                <span className="adminUserActionChip">Vezi profil</span>
+                                                <span className="adminUserActionChip">Editeaza</span>
+                                                <span className="adminUserActionChip">Schimba rolul</span>
+                                                <span className="adminUserActionChip">Dezactiveaza / Activeaza</span>
+                                                <span className="adminUserActionChip">Sterge</span>
+                                            </div>
+                                        </section>
+
+                                        <section className="adminUserMoreSection">
+                                            <h2 className="adminUserMoreTitle">Date utile pentru admin</h2>
+                                            <div className="adminUserInfoList">
+                                                <div className="adminUserInfoRow">
+                                                    <span>Data ultimei autentificari</span>
+                                                    <strong>{formatDateTime(user.lastLoginAt)}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Numarul de logari</span>
+                                                    <strong>{user.loginCount}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Status email</span>
+                                                    <strong>{formatEmailStatus(user.isEmailVerified)}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Telefon completat</span>
+                                                    <strong>{formatAvailability(user.hasPhone)}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Oras completat</span>
+                                                    <strong>{formatAvailability(user.hasCity)}</strong>
+                                                </div>
+                                            </div>
+                                        </section>
+
+                                        <section className="adminUserMoreSection">
+                                            <h2 className="adminUserMoreTitle">Informatii despre activitate</h2>
+                                            <div className="adminUserInfoList">
+                                                <div className="adminUserInfoRow">
+                                                    <span>Cate postari are</span>
+                                                    <strong>{user.blogPostsCount}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Cate animale a adaugat</span>
+                                                    <strong>{formatMetric(user.petsAddedCount)}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Cate anunturi lost pets a publicat</span>
+                                                    <strong>{formatMetric(user.lostPetsPublishedCount)}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Cate programari / cereri are</span>
+                                                    <strong>{user.adoptionRequestsCount}</strong>
+                                                </div>
+                                                <div className="adminUserInfoRow">
+                                                    <span>Ultima activitate in aplicatie</span>
+                                                    <strong>{formatDateTime(user.lastActivityAt)}</strong>
+                                                </div>
+                                            </div>
+                                        </section>
+                                    </div>
+                                ) : null}
                             </article>
                         );
                     })}

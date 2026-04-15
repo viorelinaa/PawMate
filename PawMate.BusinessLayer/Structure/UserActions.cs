@@ -60,6 +60,9 @@ public class UserActions
                 Password = _passwordSecurityService.HashPassword(user.Password),
                 Role = "user",
                 Status = OfflineStatus,
+                LastLoginAt = null,
+                LoginCount = 0,
+                IsEmailVerified = false,
                 Phone = string.Empty,
                 City = string.Empty,
                 Bio = string.Empty,
@@ -138,6 +141,10 @@ public class UserActions
                 shouldSave = true;
             }
 
+            user.LastLoginAt = DateTime.UtcNow;
+            user.LoginCount += 1;
+            shouldSave = true;
+
             if (shouldSave)
             {
                 _context.SaveChanges();
@@ -177,32 +184,9 @@ public class UserActions
     {
         try
         {
-            var dto = _context.Users
-                .Where(user => user.Id == id)
-                .Select(user => new UserInfoDto
-                {
-                    Id = user.Id,
-                    Name = user.Name,
-                    Email = user.Email,
-                    Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
-                    Status = user.Status == BannedStatus
-                        ? BannedStatus
-                        : user.Status == ActiveStatus
-                            ? ActiveStatus
-                            : OfflineStatus,
-                    CreatedAt = user.CreatedAt,
-                    SelectedAvatar = user.ProfileAvatarId == null
-                        ? null
-                        : new ProfileAvatarInfoDto
-                        {
-                            Id = user.ProfileAvatar!.Id,
-                            Title = user.ProfileAvatar.Title,
-                            ImageUrl = user.ProfileAvatar.ImageUrl
-                        }
-                })
-                .FirstOrDefault();
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
 
-            if (dto == null)
+            if (user == null)
             {
                 return new ServiceResponse
                 {
@@ -210,6 +194,8 @@ public class UserActions
                     Message = "Utilizatorul nu a fost gasit."
                 };
             }
+
+            var dto = BuildUserInfoDto(user);
 
             return new ServiceResponse
             {
@@ -233,27 +219,9 @@ public class UserActions
         try
         {
             var users = _context.Users
-                .Select(user => new UserInfoDto
-                {
-                    Id = user.Id,
-                    Name = user.Name,
-                    Email = user.Email,
-                    Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
-                    Status = user.Status == BannedStatus
-                        ? BannedStatus
-                        : user.Status == ActiveStatus
-                            ? ActiveStatus
-                            : OfflineStatus,
-                    CreatedAt = user.CreatedAt,
-                    SelectedAvatar = user.ProfileAvatarId == null
-                        ? null
-                        : new ProfileAvatarInfoDto
-                        {
-                            Id = user.ProfileAvatar!.Id,
-                            Title = user.ProfileAvatar.Title,
-                            ImageUrl = user.ProfileAvatar.ImageUrl
-                        }
-                })
+                .OrderByDescending(user => user.CreatedAt)
+                .ToList()
+                .Select(BuildUserInfoDto)
                 .ToList();
 
             return new ServiceResponse
@@ -692,6 +660,32 @@ public class UserActions
                 })
                 .FirstOrDefault();
 
+        var blogPostsCount = _context.BlogPosts.Count(post => post.AuthorId == user.Id);
+        var adoptionRequestsCount = _context.Adoptions.Count(adoption => adoption.UserId == user.Id);
+        var latestQuizResultAt = _context.QuizResults
+            .Where(quizResult => quizResult.UserId == user.Id)
+            .Select(quizResult => (DateTime?)quizResult.CompletedAt)
+            .OrderByDescending(completedAt => completedAt)
+            .FirstOrDefault();
+        var latestBlogPostAt = _context.BlogPosts
+            .Where(blogPost => blogPost.AuthorId == user.Id)
+            .Select(blogPost => (DateTime?)blogPost.CreatedAt)
+            .OrderByDescending(createdAt => createdAt)
+            .FirstOrDefault();
+        var latestAdoptionAt = _context.Adoptions
+            .Where(adoption => adoption.UserId == user.Id)
+            .Select(adoption => (DateTime?)adoption.CreatedAt)
+            .OrderByDescending(createdAt => createdAt)
+            .FirstOrDefault();
+        var lastActivityAt = new DateTime?[]
+        {
+            user.CreatedAt,
+            user.LastLoginAt,
+            latestQuizResultAt,
+            latestBlogPostAt,
+            latestAdoptionAt
+        }.Max();
+
         return new UserInfoDto
         {
             Id = user.Id,
@@ -699,6 +693,16 @@ public class UserActions
             Email = user.Email,
             Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
             Status = NormalizeStoredStatus(user.Status),
+            LastLoginAt = user.LastLoginAt,
+            LoginCount = user.LoginCount,
+            IsEmailVerified = user.IsEmailVerified,
+            HasPhone = !string.IsNullOrWhiteSpace(user.Phone),
+            HasCity = !string.IsNullOrWhiteSpace(user.City),
+            BlogPostsCount = blogPostsCount,
+            PetsAddedCount = null,
+            LostPetsPublishedCount = null,
+            AdoptionRequestsCount = adoptionRequestsCount,
+            LastActivityAt = lastActivityAt,
             CreatedAt = user.CreatedAt,
             SelectedAvatar = selectedAvatar
         };

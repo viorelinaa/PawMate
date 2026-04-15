@@ -78,6 +78,14 @@ public sealed class PawMateDbContext : DbContext
             .Property(u => u.Status)
             .HasDefaultValue("offline");
 
+        modelBuilder.Entity<UserEntity>()
+            .Property(u => u.LoginCount)
+            .HasDefaultValue(0);
+
+        modelBuilder.Entity<UserEntity>()
+            .Property(u => u.IsEmailVerified)
+            .HasDefaultValue(false);
+
         modelBuilder.Entity<ProfileAvatarEntity>()
             .Property(a => a.CreatedAt)
             .HasDefaultValueSql("NOW()");

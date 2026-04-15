@@ -14,6 +14,9 @@ public class UserEntity
     public string Password { get; set; } = string.Empty;
     public string Role { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
+    public DateTime? LastLoginAt { get; set; }
+    public int LoginCount { get; set; }
+    public bool IsEmailVerified { get; set; }
 
     public string Phone { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;

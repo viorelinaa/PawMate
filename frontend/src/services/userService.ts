@@ -16,6 +16,16 @@ export interface AdminUser {
     email: string;
     role: AdminUserRole;
     status: AdminUserStatus;
+    lastLoginAt: string | null;
+    loginCount: number;
+    isEmailVerified: boolean;
+    hasPhone: boolean;
+    hasCity: boolean;
+    blogPostsCount: number;
+    petsAddedCount: number | null;
+    lostPetsPublishedCount: number | null;
+    adoptionRequestsCount: number;
+    lastActivityAt: string | null;
     createdAt: string;
     selectedAvatar: AdminUserAvatar | null;
 }
@@ -43,6 +53,16 @@ export async function getUsers(): Promise<AdminUser[]> {
                 user.status === "active" || user.status === "banned"
                     ? user.status
                     : "offline",
+            lastLoginAt: user.lastLoginAt ?? null,
+            loginCount: user.loginCount ?? 0,
+            isEmailVerified: Boolean(user.isEmailVerified),
+            hasPhone: Boolean(user.hasPhone),
+            hasCity: Boolean(user.hasCity),
+            blogPostsCount: user.blogPostsCount ?? 0,
+            petsAddedCount: user.petsAddedCount ?? null,
+            lostPetsPublishedCount: user.lostPetsPublishedCount ?? null,
+            adoptionRequestsCount: user.adoptionRequestsCount ?? 0,
+            lastActivityAt: user.lastActivityAt ?? null,
             selectedAvatar: user.selectedAvatar ?? null,
         }));
     } catch (err) {
@@ -63,6 +83,16 @@ export async function updateUserStatus(
                 data.status === "active" || data.status === "banned"
                     ? data.status
                     : "offline",
+            lastLoginAt: data.lastLoginAt ?? null,
+            loginCount: data.loginCount ?? 0,
+            isEmailVerified: Boolean(data.isEmailVerified),
+            hasPhone: Boolean(data.hasPhone),
+            hasCity: Boolean(data.hasCity),
+            blogPostsCount: data.blogPostsCount ?? 0,
+            petsAddedCount: data.petsAddedCount ?? null,
+            lostPetsPublishedCount: data.lostPetsPublishedCount ?? null,
+            adoptionRequestsCount: data.adoptionRequestsCount ?? 0,
+            lastActivityAt: data.lastActivityAt ?? null,
             selectedAvatar: data.selectedAvatar ?? null,
         };
     } catch (err) {
