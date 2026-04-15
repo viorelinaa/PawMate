@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { PasswordField } from "../components/PasswordField";
 
 export default function Login() {
     const navigate = useNavigate();
@@ -55,16 +56,14 @@ export default function Login() {
                         />
                     </label>
 
-                    <label style={styles.label}>
-                        Parola
-                        <input
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Introdu parola"
-                            style={styles.input}
-                        />
-                    </label>
+                    <PasswordField
+                        label="Parola"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Introdu parola"
+                        inputStyle={styles.input}
+                        labelStyle={styles.label}
+                    />
 
                     {error && <div style={styles.error}>{error}</div>}
 
