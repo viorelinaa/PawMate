@@ -219,16 +219,113 @@ public class UserActions
         try
         {
             var users = _context.Users
+                .AsNoTracking()
                 .OrderByDescending(user => user.CreatedAt)
-                .ToList()
-                .Select(BuildUserInfoDto)
+                .Select(user => new
+                {
+                    user.Id,
+                    user.Name,
+                    user.Email,
+                    user.Role,
+                    user.Status,
+                    user.LastLoginAt,
+                    user.LoginCount,
+                    user.IsEmailVerified,
+                    user.Phone,
+                    user.City,
+                    user.CreatedAt,
+                    AvatarId = user.ProfileAvatar != null ? user.ProfileAvatar.Id : (int?)null,
+                    AvatarTitle = user.ProfileAvatar != null ? user.ProfileAvatar.Title : null,
+                    AvatarImageUrl = user.ProfileAvatar != null ? user.ProfileAvatar.ImageUrl : null
+                })
+                .ToList();
+
+            var blogStatsByUserId = _context.BlogPosts
+                .AsNoTracking()
+                .GroupBy(post => post.AuthorId)
+                .Select(group => new
+                {
+                    UserId = group.Key,
+                    Count = group.Count(),
+                    LatestCreatedAt = group.Max(post => (DateTime?)post.CreatedAt)
+                })
+                .ToDictionary(
+                    group => group.UserId,
+                    group => (Count: group.Count, LatestCreatedAt: group.LatestCreatedAt)
+                );
+
+            var adoptionStatsByUserId = _context.Adoptions
+                .AsNoTracking()
+                .GroupBy(adoption => adoption.UserId)
+                .Select(group => new
+                {
+                    UserId = group.Key,
+                    Count = group.Count(),
+                    LatestCreatedAt = group.Max(adoption => (DateTime?)adoption.CreatedAt)
+                })
+                .ToDictionary(
+                    group => group.UserId,
+                    group => (Count: group.Count, LatestCreatedAt: group.LatestCreatedAt)
+                );
+
+            var latestQuizResultAtByUserId = _context.QuizResults
+                .AsNoTracking()
+                .GroupBy(quizResult => quizResult.UserId)
+                .Select(group => new
+                {
+                    UserId = group.Key,
+                    LatestCompletedAt = group.Max(quizResult => (DateTime?)quizResult.CompletedAt)
+                })
+                .ToDictionary(group => group.UserId, group => group.LatestCompletedAt);
+
+            var userList = users
+                .Select(user =>
+                {
+                    blogStatsByUserId.TryGetValue(user.Id, out var blogStats);
+                    adoptionStatsByUserId.TryGetValue(user.Id, out var adoptionStats);
+                    latestQuizResultAtByUserId.TryGetValue(user.Id, out var latestQuizResultAt);
+
+                    return new UserInfoDto
+                    {
+                        Id = user.Id,
+                        Name = user.Name,
+                        Email = user.Email,
+                        Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
+                        Status = NormalizeStoredStatus(user.Status),
+                        LastLoginAt = user.LastLoginAt,
+                        LoginCount = user.LoginCount,
+                        IsEmailVerified = user.IsEmailVerified,
+                        HasPhone = !string.IsNullOrWhiteSpace(user.Phone),
+                        HasCity = !string.IsNullOrWhiteSpace(user.City),
+                        BlogPostsCount = blogStats.Count,
+                        PetsAddedCount = null,
+                        LostPetsPublishedCount = null,
+                        AdoptionRequestsCount = adoptionStats.Count,
+                        LastActivityAt = GetLatestActivityAt(
+                            user.CreatedAt,
+                            user.LastLoginAt,
+                            latestQuizResultAt,
+                            blogStats.LatestCreatedAt,
+                            adoptionStats.LatestCreatedAt
+                        ),
+                        CreatedAt = user.CreatedAt,
+                        SelectedAvatar = user.AvatarId == null
+                            ? null
+                            : new ProfileAvatarInfoDto
+                            {
+                                Id = user.AvatarId.Value,
+                                Title = user.AvatarTitle ?? string.Empty,
+                                ImageUrl = user.AvatarImageUrl ?? string.Empty
+                            }
+                    };
+                })
                 .ToList();
 
             return new ServiceResponse
             {
                 IsSuccess = true,
                 Message = "Lista utilizatorilor a fost obtinuta cu succes.",
-                Data = users
+                Data = userList
             };
         }
         catch (Exception ex)
@@ -677,14 +774,13 @@ public class UserActions
             .Select(adoption => (DateTime?)adoption.CreatedAt)
             .OrderByDescending(createdAt => createdAt)
             .FirstOrDefault();
-        var lastActivityAt = new DateTime?[]
-        {
+        var lastActivityAt = GetLatestActivityAt(
             user.CreatedAt,
             user.LastLoginAt,
             latestQuizResultAt,
             latestBlogPostAt,
             latestAdoptionAt
-        }.Max();
+        );
 
         return new UserInfoDto
         {
@@ -706,6 +802,38 @@ public class UserActions
             CreatedAt = user.CreatedAt,
             SelectedAvatar = selectedAvatar
         };
+    }
+
+    private static DateTime? GetLatestActivityAt(
+        DateTime createdAt,
+        DateTime? lastLoginAt,
+        DateTime? latestQuizResultAt,
+        DateTime? latestBlogPostAt,
+        DateTime? latestAdoptionAt)
+    {
+        var lastActivityAt = createdAt;
+
+        if (lastLoginAt.HasValue && lastLoginAt.Value > lastActivityAt)
+        {
+            lastActivityAt = lastLoginAt.Value;
+        }
+
+        if (latestQuizResultAt.HasValue && latestQuizResultAt.Value > lastActivityAt)
+        {
+            lastActivityAt = latestQuizResultAt.Value;
+        }
+
+        if (latestBlogPostAt.HasValue && latestBlogPostAt.Value > lastActivityAt)
+        {
+            lastActivityAt = latestBlogPostAt.Value;
+        }
+
+        if (latestAdoptionAt.HasValue && latestAdoptionAt.Value > lastActivityAt)
+        {
+            lastActivityAt = latestAdoptionAt.Value;
+        }
+
+        return lastActivityAt;
     }
 
     private static string NormalizeStoredStatus(string? status)
