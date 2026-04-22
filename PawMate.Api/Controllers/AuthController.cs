@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer.Structure;
 using PawMate.Domain.Models.User;
@@ -11,6 +12,7 @@ public class AuthController : ControllerBase
     private readonly UserActions _userActions = new();
 
     [HttpPost("auth")]
+    [AllowAnonymous]
     public IActionResult Login([FromBody] UserLoginDto loginData)
     {
         var response = _userActions.LoginUserAction(loginData);
@@ -24,6 +26,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("active/{userId}")]
+    [Authorize]
     public IActionResult MarkActive(int userId)
     {
         var response = _userActions.MarkUserActiveAction(userId);
@@ -37,6 +40,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("logout/{userId}")]
+    [Authorize]
     public IActionResult Logout(int userId)
     {
         var response = _userActions.MarkUserOfflineAction(userId);

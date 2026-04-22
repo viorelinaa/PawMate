@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer.Structure;
 using PawMate.Domain.Models.ProfileAvatar;
 using PawMate.Domain.Models.User;
@@ -7,11 +8,13 @@ namespace PawMate.Api.Controllers;
 
 [ApiController]
 [Route("api/profile")]
+[Authorize]
 public class ProfileController : ControllerBase
 {
     private readonly UserActions _userActions = new();
 
     [HttpGet("{id}")]
+    [AllowAnonymous]
     public IActionResult GetProfile(int id)
     {
         var response = _userActions.GetUserProfileAction(id);
@@ -38,6 +41,7 @@ public class ProfileController : ControllerBase
     }
 
     [HttpGet("avatars")]
+    [AllowAnonymous]
     public IActionResult GetAvatarOptions()
     {
         var response = _userActions.GetProfileAvatarOptionsAction();
@@ -50,6 +54,7 @@ public class ProfileController : ControllerBase
     }
 
     [HttpPost("avatars")]
+    [Authorize(Roles = "admin")]
     public IActionResult CreateAvatarOption([FromBody] ProfileAvatarCreateDto avatarData)
     {
         var response = _userActions.CreateProfileAvatarOptionAction(avatarData);

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer;
 using PawMate.BusinessLayer.Interfaces;
@@ -38,6 +39,7 @@ public class VolunteerController : ControllerBase
     }
 
     [HttpPost("create")]
+    [Authorize(Roles = "admin")]
     public IActionResult CreateVolunteer([FromBody] VolunteerCreateDto volunteer)
     {
         var response = _volunteerLogic.CreateVolunteer(volunteer);

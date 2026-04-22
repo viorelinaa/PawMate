@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer;
 using PawMate.BusinessLayer.Interfaces;
 using PawMate.Domain.Models.Sitter;
@@ -38,6 +39,7 @@ public class SitterController : ControllerBase
     }
 
     [HttpPost("create")]
+    [Authorize(Roles = "admin")]
     public IActionResult CreateSitter([FromBody] SitterCreateDto sitter)
     {
         var response = _sitterLogic.CreateSitter(sitter);
@@ -48,6 +50,7 @@ public class SitterController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "admin")]
     public IActionResult UpdateSitter([FromRoute] int id, [FromBody] SitterUpdateDto sitter)
     {
         var response = _sitterLogic.UpdateSitter(id, sitter);
@@ -58,6 +61,7 @@ public class SitterController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
     public IActionResult DeleteSitter([FromRoute] int id)
     {
         var response = _sitterLogic.DeleteSitter(id);
