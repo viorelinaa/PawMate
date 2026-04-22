@@ -154,7 +154,12 @@ public class UserActions
                 ? "admin"
                 : "user";
 
-            var token = new TokenService().GenerateToken();
+            var token = new TokenService(
+                JwtConfig.SecretKey,
+                JwtConfig.Issuer,
+                JwtConfig.Audience,
+                JwtConfig.ExpiryMinutes
+            ).GenerateToken(user.Id, user.Email, normalizedRole);
 
             return new ServiceResponse
             {
