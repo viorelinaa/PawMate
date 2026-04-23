@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer;
 using PawMate.BusinessLayer.Interfaces;
@@ -38,6 +39,7 @@ public class MarketplaceController : ControllerBase
     }
 
     [HttpPost("create")]
+    [Authorize]
     public IActionResult CreateListing([FromBody] MarketplaceCreateDto listing)
     {
         var response = _marketplaceLogic.CreateListing(listing);

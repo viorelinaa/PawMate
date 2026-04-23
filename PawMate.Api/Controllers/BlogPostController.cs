@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer;
 using PawMate.BusinessLayer.Interfaces;
@@ -38,6 +39,7 @@ public class BlogPostController : ControllerBase
     }
 
     [HttpPost("create")]
+    [Authorize]
     public IActionResult CreateBlogPost([FromBody] BlogPostCreateDto blogPost)
     {
         var response = _blogPostLogic.CreateBlogPost(blogPost);

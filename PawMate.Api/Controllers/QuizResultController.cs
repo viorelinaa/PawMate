@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer;
 using PawMate.BusinessLayer.Interfaces;
@@ -7,6 +8,7 @@ namespace PawMate.Api.Controllers;
 
 [ApiController]
 [Route("api/quiz-results")]
+[Authorize]
 public class QuizResultController : ControllerBase
 {
     private readonly IQuizResultLogic _quizResultLogic;

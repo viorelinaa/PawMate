@@ -1,7 +1,8 @@
 import { createContext, useEffect, useEffectEvent, useRef, useState, type ReactNode } from "react";
+import axios from "axios";
 import type { AxiosInstance } from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
-import { apiClient } from "./apiClient";
+import { apiClient, apiBaseUrl } from "./apiClient";
 import { paths } from "../routes/paths";
 
 interface ApiContextType {
@@ -62,8 +63,27 @@ export function ApiProvider({ children }: { children: ReactNode }) {
 
         const responseInterceptor = apiClient.interceptors.response.use(
             (response) => response,
-            (error) => {
+            async (error) => {
                 const status = error.response?.status;
+                const originalRequest = error.config;
+
+                if (status === 401 && !originalRequest._retry) {
+                    originalRequest._retry = true;
+                    try {
+                        const { data } = await axios.post<{ token: string }>(
+                            `${apiBaseUrl}/session/refresh`,
+                            {},
+                            { withCredentials: true }
+                        );
+                        sessionStorage.setItem("pawmate_token", data.token);
+                        originalRequest.headers.Authorization = `Bearer ${data.token}`;
+                        return apiClient(originalRequest);
+                    } catch {
+                        sessionStorage.clear();
+                        navigate(paths.login, { replace: true });
+                        return Promise.reject(error);
+                    }
+                }
 
                 if (!error.response || status >= 500) {
                     setIsBackendAvailable(false);

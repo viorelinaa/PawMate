@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer;
 using PawMate.BusinessLayer.Interfaces;
@@ -34,6 +35,7 @@ public class LostPetController : ControllerBase
     }
 
     [HttpPost("create")]
+    [Authorize]
     public IActionResult CreateLostPet([FromBody] LostPetCreateDto lostPet)
     {
         var response = _lostPetLogic.CreateLostPet(lostPet);
@@ -42,6 +44,7 @@ public class LostPetController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize]
     public IActionResult UpdateLostPet([FromRoute] int id, [FromBody] LostPetUpdateDto lostPet)
     {
         var response = _lostPetLogic.UpdateLostPet(id, lostPet);
@@ -50,6 +53,7 @@ public class LostPetController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize]
     public IActionResult DeleteLostPet([FromRoute] int id)
     {
         var response = _lostPetLogic.DeleteLostPet(id);

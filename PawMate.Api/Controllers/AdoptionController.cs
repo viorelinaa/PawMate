@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer;
 using PawMate.BusinessLayer.Interfaces;
@@ -38,6 +39,7 @@ public class AdoptionController : ControllerBase
     }
 
     [HttpPost("create")]
+    [Authorize]
     public IActionResult CreateAdoption([FromBody] AdoptionCreateDto adoption)
     {
         var response = _adoptionLogic.CreateAdoption(adoption);

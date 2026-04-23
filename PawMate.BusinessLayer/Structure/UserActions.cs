@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PawMate.Domain.Entities.ProfileAvatar;
 using PawMate.DataAccessLayer.Context;
 using PawMate.Domain.Entities.QuizResult;
+using PawMate.Domain.Entities.RefreshToken;
 using PawMate.Domain.Entities.User;
 using PawMate.Domain.Models.ProfileAvatar;
 using PawMate.Domain.Models.Quiz;
@@ -154,15 +155,32 @@ public class UserActions
                 ? "admin"
                 : "user";
 
-            var token = new TokenService().GenerateToken();
+            var token = new TokenService(
+                JwtConfig.SecretKey,
+                JwtConfig.Issuer,
+                JwtConfig.Audience,
+                JwtConfig.ExpiryMinutes
+            ).GenerateToken(user.Id, user.Email, normalizedRole);
+
+            var refreshToken = TokenService.GenerateRefreshToken();
+            _context.RefreshTokens.Add(new RefreshTokenEntity
+            {
+                UserId = user.Id,
+                Token = refreshToken,
+                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                IsRevoked = false,
+                CreatedAt = DateTime.UtcNow
+            });
+            _context.SaveChanges();
 
             return new ServiceResponse
             {
                 IsSuccess = true,
                 Message = "Autentificare reusita.",
-                Data = new
+                Data = new LoginResultDto
                 {
                     Token = token,
+                    RefreshToken = refreshToken,
                     UserId = user.Id,
                     Role = normalizedRole,
                     Name = user.Name,
@@ -537,13 +555,21 @@ public class UserActions
             if (normalizedStatus != BannedStatus && normalizedStatus != OfflineStatus)
             {
                 user.Status = OfflineStatus;
-                _context.SaveChanges();
             }
             else if (string.IsNullOrWhiteSpace(user.Status))
             {
                 user.Status = OfflineStatus;
-                _context.SaveChanges();
             }
+
+            var activeTokens = _context.RefreshTokens
+                .Where(rt => rt.UserId == userId && !rt.IsRevoked)
+                .ToList();
+            foreach (var rt in activeTokens)
+            {
+                rt.IsRevoked = true;
+            }
+
+            _context.SaveChanges();
 
             return new ServiceResponse
             {
@@ -558,6 +584,83 @@ public class UserActions
             {
                 IsSuccess = false,
                 Message = $"A aparut o eroare la inchiderea sesiunii: {ex.Message}"
+            };
+        }
+    }
+
+    public ServiceResponse RefreshTokenAction(string refreshToken)
+    {
+        try
+        {
+            var tokenEntity = _context.RefreshTokens
+                .Include(rt => rt.User)
+                .FirstOrDefault(rt =>
+                    rt.Token == refreshToken &&
+                    !rt.IsRevoked &&
+                    rt.ExpiresAt > DateTime.UtcNow);
+
+            if (tokenEntity == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Refresh token invalid sau expirat."
+                };
+            }
+
+            var user = tokenEntity.User;
+
+            if (NormalizeStoredStatus(user.Status) == BannedStatus)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Contul este blocat. Contacteaza un administrator."
+                };
+            }
+
+            tokenEntity.IsRevoked = true;
+
+            var newRefreshToken = TokenService.GenerateRefreshToken();
+            _context.RefreshTokens.Add(new RefreshTokenEntity
+            {
+                UserId = user.Id,
+                Token = newRefreshToken,
+                ExpiresAt = DateTime.UtcNow.AddDays(7),
+                IsRevoked = false,
+                CreatedAt = DateTime.UtcNow
+            });
+
+            var normalizedRole = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase)
+                ? "admin"
+                : "user";
+
+            var newAccessToken = new TokenService(
+                JwtConfig.SecretKey,
+                JwtConfig.Issuer,
+                JwtConfig.Audience,
+                JwtConfig.ExpiryMinutes
+            ).GenerateToken(user.Id, user.Email, normalizedRole);
+
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Token reînnoit cu succes.",
+                Data = new RefreshResultDto
+                {
+                    Token = newAccessToken,
+                    RefreshToken = newRefreshToken
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la reînnoirea token-ului: {ex.Message}"
             };
         }
     }

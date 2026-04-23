@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer;
 using PawMate.BusinessLayer.Interfaces;
@@ -38,6 +39,7 @@ public class PetController : ControllerBase
     }
 
     [HttpPost("create")]
+    [Authorize]
     public IActionResult CreatePet([FromBody] PetCreateDto pet)
     {
         var response = _petLogic.CreatePet(pet);
@@ -48,6 +50,7 @@ public class PetController : ControllerBase
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "admin")]
     public IActionResult UpdatePet([FromRoute] int id, [FromBody] PetUpdateDto pet)
     {
         var response = _petLogic.UpdatePet(id, pet);
@@ -58,6 +61,7 @@ public class PetController : ControllerBase
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
     public IActionResult DeletePet([FromRoute] int id)
     {
         var response = _petLogic.DeletePet(id);
