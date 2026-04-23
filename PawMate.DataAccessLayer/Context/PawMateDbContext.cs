@@ -7,6 +7,7 @@ using PawMate.Domain.Entities.Marketplace;
 using PawMate.Domain.Entities.Pet;
 using PawMate.Domain.Entities.ProfileAvatar;
 using PawMate.Domain.Entities.QuizResult;
+using PawMate.Domain.Entities.RefreshToken;
 using PawMate.Domain.Entities.Sitter;
 using PawMate.Domain.Entities.User;
 using PawMate.Domain.Entities.Volunteer;
@@ -26,6 +27,7 @@ public sealed class PawMateDbContext : DbContext
     public DbSet<SitterEntity> Sitters { get; set; }
     public DbSet<ProfileAvatarEntity> ProfileAvatars { get; set; }
     public DbSet<QuizResultEntity> QuizResults { get; set; }
+    public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -96,6 +98,16 @@ public sealed class PawMateDbContext : DbContext
 
         modelBuilder.Entity<UserEntity>()
             .Property(u => u.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        modelBuilder.Entity<RefreshTokenEntity>()
+            .HasOne(rt => rt.User)
+            .WithMany(u => u.RefreshTokens)
+            .HasForeignKey(rt => rt.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<RefreshTokenEntity>()
+            .Property(rt => rt.CreatedAt)
             .HasDefaultValueSql("NOW()");
 
         base.OnModelCreating(modelBuilder);

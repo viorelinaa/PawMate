@@ -3,6 +3,7 @@ using PawMate.Domain.Entities.BlogPost;
 using PawMate.Domain.Entities.Marketplace;
 using PawMate.Domain.Entities.ProfileAvatar;
 using PawMate.Domain.Entities.QuizResult;
+using PawMate.Domain.Entities.RefreshToken;
 
 namespace PawMate.Domain.Entities.User;
 
@@ -31,4 +32,5 @@ public class UserEntity
     public ICollection<BlogPostEntity> BlogPosts { get; set; } = new List<BlogPostEntity>();
     public ICollection<MarketplaceEntity> MarketplaceListings { get; set; } = new List<MarketplaceEntity>();
     public ICollection<QuizResultEntity> QuizResults { get; set; } = new List<QuizResultEntity>();
+    public ICollection<RefreshTokenEntity> RefreshTokens { get; set; } = new List<RefreshTokenEntity>();
 }
