@@ -2,20 +2,7 @@ import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/Cart.css";
 import { paths } from "../routes/paths";
-
-type Product = {
-    id: string;
-    name: string;
-    category: string;
-    description: string;
-    price: string;
-};
-
-function extractPriceNumber(price: string) {
-    const cleaned = price.replace(",", ".").replace(/[^\d.]/g, "");
-    const parsed = Number.parseFloat(cleaned);
-    return Number.isFinite(parsed) ? parsed : 0;
-}
+import type { Product } from "../services/productService";
 
 const CART_KEY = "pawmate_cart";
 
@@ -24,10 +11,16 @@ export default function Cart() {
     const navigate = useNavigate();
 
     const [cartItems, setCartItems] = useState<Product[]>(() => {
-        if (location.state?.cartItems) return location.state.cartItems;
+        if (location.state?.cartItems) return location.state.cartItems as Product[];
         try {
             const saved = localStorage.getItem(CART_KEY);
-            return saved ? JSON.parse(saved) : [];
+            if (!saved) return [];
+            const parsed = JSON.parse(saved) as Product[];
+            if (!Array.isArray(parsed) || parsed.some((p) => typeof p.price !== "number" || !p.title)) {
+                localStorage.removeItem(CART_KEY);
+                return [];
+            }
+            return parsed;
         } catch {
             return [];
         }
@@ -37,11 +30,15 @@ export default function Cart() {
         localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
     }, [cartItems]);
 
-    function removeItem(productId: string) {
-        setCartItems((prev) => prev.filter((p) => p.id !== productId));
+    function removeItem(productId: number) {
+        setCartItems((prev) => {
+            const idx = prev.findIndex((p) => p.id === productId);
+            if (idx === -1) return prev;
+            return [...prev.slice(0, idx), ...prev.slice(idx + 1)];
+        });
     }
 
-    const grouped = cartItems.reduce<Record<string, { product: Product; qty: number }>>((acc, product) => {
+    const grouped = cartItems.reduce<Record<number, { product: Product; qty: number }>>((acc, product) => {
         if (!acc[product.id]) {
             acc[product.id] = { product, qty: 0 };
         }
@@ -50,7 +47,7 @@ export default function Cart() {
     }, {});
 
     const groupedList = Object.values(grouped);
-    const total = cartItems.reduce((sum, p) => sum + extractPriceNumber(p.price), 0);
+    const total = cartItems.reduce((sum, p) => sum + Number(p.price), 0);
 
     return (
         <div className="cartPage">
@@ -93,32 +90,29 @@ export default function Cart() {
                 ) : (
                     <>
                         <div className="cartItems">
-                            {groupedList.map(({ product, qty }) => {
-                                const unitPrice = extractPriceNumber(product.price);
-                                return (
-                                    <div key={product.id} className="cartItem">
-                                        <div className="cartItemInfo">
-                                            <h3 className="cartItemName">{product.name}</h3>
-                                            <span className="cartItemCategory">{product.category}</span>
-                                            <span className="cartItemUnitPrice">{product.price} / buc.</span>
-                                        </div>
-                                        <div className="cartItemRight">
-                                            <span className="cartItemQty">×{qty}</span>
-                                            <span className="cartItemPrice">
-                                                {(unitPrice * qty).toFixed(0)} MDL
-                                            </span>
-                                            <button
-                                                type="button"
-                                                className="cartItemRemove"
-                                                onClick={() => removeItem(product.id)}
-                                                aria-label={`Șterge ${product.name}`}
-                                            >
-                                                ✕
-                                            </button>
-                                        </div>
+                            {groupedList.map(({ product, qty }) => (
+                                <div key={product.id} className="cartItem">
+                                    <div className="cartItemInfo">
+                                        <h3 className="cartItemName">{product.title}</h3>
+                                        <span className="cartItemCategory">{product.category}</span>
+                                        <span className="cartItemUnitPrice">{product.price} MDL / buc.</span>
                                     </div>
-                                );
-                            })}
+                                    <div className="cartItemRight">
+                                        <span className="cartItemQty">×{qty}</span>
+                                        <span className="cartItemPrice">
+                                            {(Number(product.price) * qty).toFixed(0)} MDL
+                                        </span>
+                                        <button
+                                            type="button"
+                                            className="cartItemRemove"
+                                            onClick={() => removeItem(product.id)}
+                                            aria-label={`Șterge ${product.title}`}
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
 
                         <div className="cartTotal">
