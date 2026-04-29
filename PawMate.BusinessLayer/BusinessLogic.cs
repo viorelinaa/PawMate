@@ -61,4 +61,9 @@ public class BusinessLogic
     {
         return new SitterLogic();
     }
+
+    public IVeterinaryClinicLogic GetVeterinaryClinicLogic()
+    {
+        return new VeterinaryClinicLogic();
+    }
 }

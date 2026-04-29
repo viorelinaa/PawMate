@@ -271,13 +271,39 @@
     font-family: var(--font-family);
 }
 
-.vetAddress,
 .vetPhone {
     margin: 6px 0;
     color: var(--color-text-soft);
     font-weight: 600;
     font-size: var(--font-size-base);
     font-family: var(--font-family);
+}
+
+.vetAddressLink {
+    margin: 6px 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-primary);
+    font-weight: 700;
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
+    cursor: pointer;
+    text-align: left;
+    text-decoration: underline;
+    text-decoration-color: rgba(107, 79, 161, 0.35);
+    text-underline-offset: 3px;
+}
+
+.vetAddressLink:hover {
+    color: var(--color-primary-light);
+    text-decoration-color: currentColor;
+}
+
+.vetAddressLink:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 3px;
+    border-radius: 4px;
 }
 
 .services {
@@ -329,6 +355,28 @@
     background: var(--color-primary-light);
 }
 
+.vetAdminActions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.vetEditButton {
+    color: var(--color-primary) !important;
+}
+
+.vetDeleteButton {
+    color: var(--color-danger) !important;
+    border-color: var(--color-danger-border) !important;
+}
+
+@media (max-width: 520px) {
+    .vetAdminActions {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* ── Empty notice ──────────────────────────────────────── */
 .veterinariContent .emptyNotice {
     margin-top: 18px;
@@ -341,4 +389,245 @@
     color: var(--color-text-muted);
     font-weight: 700;
     font-family: var(--font-family);
+}
+
+.veterinariContent .emptyNotice.vetLoadError {
+    color: var(--color-danger);
+    border-color: var(--color-danger-border);
+}
+
+.vetFormModal {
+    max-width: 680px;
+}
+
+.vetDeleteModal {
+    max-width: 440px;
+}
+
+.vetDeleteText {
+    margin: 0 0 18px;
+    color: var(--color-text);
+    font-weight: 600;
+    line-height: 1.55;
+    text-align: center;
+    font-family: var(--font-family);
+}
+
+.vetClinicForm {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.vetClinicRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.vetClinicField {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.vetClinicLabel {
+    color: var(--color-text-muted);
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family);
+}
+
+.vetClinicInput,
+.vetClinicTextarea {
+    width: 100%;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-primary-border);
+    background: var(--color-surface);
+    color: var(--color-text);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    font-family: var(--font-family);
+    box-sizing: border-box;
+}
+
+.vetClinicInput {
+    height: 46px;
+    padding: 0 14px;
+}
+
+.vetClinicTextarea {
+    min-height: 116px;
+    resize: vertical;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    line-height: 1.5;
+}
+
+.vetClinicInputError {
+    border-color: var(--color-danger-border);
+    box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.12);
+}
+
+.vetClinicCheckbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    min-height: 46px;
+    padding: 0 16px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-primary-border);
+    background: var(--color-surface-soft);
+    color: var(--color-text);
+    font-weight: 700;
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family);
+    cursor: pointer;
+}
+
+.vetClinicCheckbox input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--color-primary);
+}
+
+.vetClinicError {
+    color: var(--color-danger);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    font-family: var(--font-family);
+}
+
+.vetClinicErrorBlock {
+    margin: 0;
+    text-align: center;
+}
+
+.vetClinicActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding-top: 4px;
+}
+
+/* ── Vet map modal ──────────────────────────────────────── */
+.vetMapModal {
+    max-width: 760px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.vetMapHeader {
+    margin-bottom: 0;
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid var(--color-primary-border);
+}
+
+.vetMapAddress {
+    margin: 6px 0 0;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family);
+}
+
+.vetMapBody {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 18px 24px 24px;
+}
+
+.vetMapCanvas {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--color-primary-border);
+    background: var(--color-surface-soft);
+}
+
+.vetMapFrame {
+    display: block;
+    width: 100%;
+    height: 360px;
+    border: 0;
+}
+
+.vetMapActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.vetMapAction {
+    flex: 1 1 220px;
+    min-height: 46px;
+    padding: 0 18px;
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    font-weight: 700;
+    font-size: var(--font-size-base);
+    font-family: var(--font-family);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.vetMapAction:hover {
+    transform: translateY(-1px);
+}
+
+.vetMapActionPrimary {
+    background: var(--color-primary);
+    color: white;
+    border: 1px solid var(--color-primary);
+    box-shadow: var(--shadow-btn-primary);
+}
+
+.vetMapActionPrimary:hover {
+    background: var(--color-primary-light);
+}
+
+.vetMapActionSecondary {
+    background: var(--color-surface);
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary-border);
+    box-shadow: var(--shadow-btn-ghost);
+}
+
+.vetMapHint {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: var(--font-size-sm);
+    font-family: var(--font-family);
+}
+
+@media (max-width: 640px) {
+    .vetClinicRow {
+        grid-template-columns: 1fr;
+    }
+
+    .vetClinicActions {
+        justify-content: stretch;
+    }
+
+    .vetClinicActions > * {
+        flex: 1 1 100%;
+    }
+
+    .vetMapHeader {
+        padding: 18px 18px 14px;
+    }
+
+    .vetMapBody {
+        padding: 16px 18px 18px;
+    }
+
+    .vetMapFrame {
+        height: 280px;
+    }
 }

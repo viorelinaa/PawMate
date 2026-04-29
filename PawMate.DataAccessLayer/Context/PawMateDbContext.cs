@@ -10,6 +10,7 @@ using PawMate.Domain.Entities.QuizResult;
 using PawMate.Domain.Entities.RefreshToken;
 using PawMate.Domain.Entities.Sitter;
 using PawMate.Domain.Entities.User;
+using PawMate.Domain.Entities.VeterinaryClinic;
 using PawMate.Domain.Entities.Volunteer;
 
 namespace PawMate.DataAccessLayer.Context;
@@ -25,6 +26,7 @@ public sealed class PawMateDbContext : DbContext
     public DbSet<MarketplaceEntity> MarketplaceListings { get; set; }
     public DbSet<VolunteerEntity> VolunteerOpportunities { get; set; }
     public DbSet<SitterEntity> Sitters { get; set; }
+    public DbSet<VeterinaryClinicEntity> VeterinaryClinics { get; set; }
     public DbSet<ProfileAvatarEntity> ProfileAvatars { get; set; }
     public DbSet<QuizResultEntity> QuizResults { get; set; }
     public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
