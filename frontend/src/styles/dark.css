@@ -867,3 +867,45 @@
     color: var(--dm-text) !important;
     opacity: 1 !important;
 }
+/* Event add/edit modal - dark mode */
+.appShell[data-theme="dark"] .sitterModalOverlay {
+    background: rgba(0, 0, 0, 0.72);
+}
+
+.appShell[data-theme="dark"] .sitterModalBox {
+    background: var(--dm-surface);
+    border: 1px solid var(--dm-border);
+    box-shadow: var(--dm-shadow-strong);
+}
+
+.appShell[data-theme="dark"] .sitterModalTitle {
+    color: var(--dm-accent);
+}
+
+.appShell[data-theme="dark"] .sitterModalClose,
+.appShell[data-theme="dark"] .sitterModalLabel {
+    color: var(--dm-muted);
+}
+
+.appShell[data-theme="dark"] .sitterModalClose:hover {
+    color: var(--dm-text);
+    background: var(--dm-accent-soft);
+}
+
+.appShell[data-theme="dark"] .sitterModalInput,
+.appShell[data-theme="dark"] .sitterModalTextarea {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+    color: var(--dm-text);
+}
+
+.appShell[data-theme="dark"] .sitterModalInput::placeholder,
+.appShell[data-theme="dark"] .sitterModalTextarea::placeholder {
+    color: rgba(241, 234, 249, 0.48);
+}
+
+.appShell[data-theme="dark"] .sitterModalInput:focus,
+.appShell[data-theme="dark"] .sitterModalTextarea:focus {
+    border-color: var(--dm-accent-strong);
+    box-shadow: 0 0 0 3px rgba(200, 170, 240, 0.2);
+}
