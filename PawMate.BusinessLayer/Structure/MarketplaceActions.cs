@@ -1,4 +1,3 @@
-using Microsoft.EntityFrameworkCore;
 using PawMate.DataAccessLayer.Context;
 using PawMate.Domain.Entities.Marketplace;
 using PawMate.Domain.Models.Marketplace;
@@ -23,6 +22,7 @@ public class MarketplaceActions
             {
                 Title = listing.Title,
                 Description = listing.Description,
+                Category = listing.Category,
                 Price = listing.Price,
                 SellerId = listing.SellerId
             };
@@ -39,10 +39,11 @@ public class MarketplaceActions
         }
         catch (Exception ex)
         {
+            var detail = ex.InnerException?.Message ?? ex.Message;
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apărut o eroare la publicarea anunțului: {ex.Message}"
+                Message = $"A apărut o eroare la publicarea anunțului: {detail}"
             };
         }
     }
@@ -67,6 +68,7 @@ public class MarketplaceActions
                 Id = entity.Id,
                 Title = entity.Title,
                 Description = entity.Description,
+                Category = entity.Category,
                 Price = entity.Price,
                 SellerId = entity.SellerId
             };
@@ -98,6 +100,7 @@ public class MarketplaceActions
                     Id = m.Id,
                     Title = m.Title,
                     Description = m.Description,
+                    Category = m.Category,
                     Price = m.Price,
                     SellerId = m.SellerId
                 })
@@ -116,6 +119,78 @@ public class MarketplaceActions
             {
                 IsSuccess = false,
                 Message = $"A apărut o eroare la obținerea listei de anunțuri: {ex.Message}"
+            };
+        }
+    }
+
+    public ServiceResponse UpdateListingAction(int id, MarketplaceUpdateDto listing)
+    {
+        try
+        {
+            var entity = _context.MarketplaceListings.FirstOrDefault(m => m.Id == id);
+
+            if (entity == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Anunțul de vânzare nu a fost găsit."
+                };
+            }
+
+            entity.Title = listing.Title;
+            entity.Description = listing.Description;
+            entity.Category = listing.Category;
+            entity.Price = listing.Price;
+
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Anunțul de vânzare a fost actualizat cu succes."
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A apărut o eroare la actualizarea anunțului: {ex.Message}"
+            };
+        }
+    }
+
+    public ServiceResponse DeleteListingAction(int id)
+    {
+        try
+        {
+            var entity = _context.MarketplaceListings.FirstOrDefault(m => m.Id == id);
+
+            if (entity == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Anunțul de vânzare nu a fost găsit."
+                };
+            }
+
+            _context.MarketplaceListings.Remove(entity);
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Anunțul de vânzare a fost șters cu succes."
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A apărut o eroare la ștergerea anunțului: {ex.Message}"
             };
         }
     }

@@ -48,4 +48,26 @@ public class EventController : ControllerBase
 
         return Ok(response.Message);
     }
+
+    [HttpPut("{id}")]
+    [Authorize(Roles = "admin")]
+    public IActionResult UpdateEvent([FromRoute] int id, [FromBody] EventUpdateDto evt)
+    {
+        var response = _eventLogic.UpdateEvent(id, evt);
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+
+        return Ok(response.Message);
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize(Roles = "admin")]
+    public IActionResult DeleteEvent([FromRoute] int id)
+    {
+        var response = _eventLogic.DeleteEvent(id);
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+
+        return Ok(response.Message);
+    }
 }

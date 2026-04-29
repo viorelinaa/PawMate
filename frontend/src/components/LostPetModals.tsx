@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
+import { AdminOnly } from "./AdminOnly";
 import { getLostPets, createLostPet, updateLostPet, deleteLostPet } from "../services/lostPetService";
 import type { LostPet } from "../services/lostPetService";
 
@@ -305,19 +306,21 @@ export function LostPetCard({
                 <span className="lostBadge">Contact: {a.contact}</span>
                 {a.isFound && <span className="lostBadge" style={{ background: "#d1fae5", color: "#065f46" }}>Găsit</span>}
             </div>
-            <div style={{ display: "flex", gap: "8px", marginTop: "10px" }}>
-                <AppButton variant="ghost" size="sm" onClick={() => onEdit(a)}>
-                    Editează
-                </AppButton>
-                <AppButton
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDelete(a)}
-                    style={{ borderColor: "#e53e3e", color: "#e53e3e" }}
-                >
-                    Șterge
-                </AppButton>
-            </div>
+            <AdminOnly>
+                <div style={{ display: "flex", gap: "8px", marginTop: "10px" }}>
+                    <AppButton variant="ghost" size="sm" onClick={() => onEdit(a)}>
+                        Editează
+                    </AppButton>
+                    <AppButton
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onDelete(a)}
+                        style={{ borderColor: "#e53e3e", color: "#e53e3e" }}
+                    >
+                        Șterge
+                    </AppButton>
+                </div>
+            </AdminOnly>
         </div>
     );
 }

@@ -119,4 +119,46 @@ public class EventActions
             };
         }
     }
+
+    public ServiceResponse UpdateEventAction(int id, EventUpdateDto evt)
+    {
+        try
+        {
+            var entity = _context.Events.FirstOrDefault(e => e.Id == id);
+            if (entity == null)
+                return new ServiceResponse { IsSuccess = false, Message = "Evenimentul nu a fost găsit." };
+
+            entity.Title = evt.Title;
+            entity.Description = evt.Description;
+            entity.Location = evt.Location;
+            entity.Date = evt.Date;
+
+            _context.SaveChanges();
+
+            return new ServiceResponse { IsSuccess = true, Message = "Evenimentul a fost actualizat cu succes." };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse { IsSuccess = false, Message = $"Eroare la actualizarea evenimentului: {ex.Message}" };
+        }
+    }
+
+    public ServiceResponse DeleteEventAction(int id)
+    {
+        try
+        {
+            var entity = _context.Events.FirstOrDefault(e => e.Id == id);
+            if (entity == null)
+                return new ServiceResponse { IsSuccess = false, Message = "Evenimentul nu a fost găsit." };
+
+            _context.Events.Remove(entity);
+            _context.SaveChanges();
+
+            return new ServiceResponse { IsSuccess = true, Message = "Evenimentul a fost șters cu succes." };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse { IsSuccess = false, Message = $"Eroare la ștergerea evenimentului: {ex.Message}" };
+        }
+    }
 }
