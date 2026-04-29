@@ -1,68 +1,148 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/Veterinari.css";
 import { AdminOnly } from "../components/AdminOnly";
 import { SearchIcon } from "../components/SearchIcon";
 import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
 import { FilterSelect } from "../components/FilterSelect";
+import {
+    AddVeterinaryClinicModal,
+    DeleteVeterinaryClinicConfirmModal,
+    EditVeterinaryClinicModal,
+} from "../components/VeterinaryClinicModals";
+import { getVeterinaryClinics, type VeterinaryClinic } from "../services/veterinaryClinicService";
 
-interface Veterinar {
-    id: string;
-    name: string;
-    city: string;
-    address: string;
-    phone: string;
-    services: string[];
-    emergency: boolean;
-    description: string;
+function buildMapQuery(veterinar: VeterinaryClinic) {
+    return [veterinar.address, veterinar.city, "Moldova"].filter(Boolean).join(", ");
 }
 
-const veterinariList: Veterinar[] = [
-    {
-        id: "v1",
-        name: "Clinica Veterinară PetCare",
-        city: "Chișinău",
-        address: "Str. Alexandru cel Bun 15",
-        phone: "022 123 456",
-        services: ["Consultații", "Vaccinări", "Chirurgie", "Radiologie"],
-        emergency: true,
-        description: "Clinică modernă cu echipament de ultimă generație și personal calificat.",
-    },
-    {
-        id: "v2",
-        name: "Clinica AnimalMed",
-        city: "Bălți",
-        address: "Str. Ștefan cel Mare 45",
-        phone: "0231 45 678",
-        services: ["Consultații", "Vaccinări", "Analize de laborator"],
-        emergency: false,
-        description: "Servicii veterinare de calitate pentru animale de companie.",
-    },
-    {
-        id: "v3",
-        name: "Veterinarul Tău",
-        city: "Chișinău",
-        address: "Bd. Dacia 27",
-        phone: "022 987 654",
-        services: ["Consultații", "Vaccinări", "Deparazitare", "Sterilizare"],
-        emergency: true,
-        description: "Cabinet veterinar cu experiență de peste 15 ani în domeniu.",
-    },
-    {
-        id: "v4",
-        name: "Clinica VetLife",
-        city: "Cahul",
-        address: "Str. Independenței 12",
-        phone: "0299 12 345",
-        services: ["Consultații", "Vaccinări", "Stomatologie"],
-        emergency: false,
-        description: "Îngrijire profesională pentru animale de companie.",
-    },
-];
+function getLocationLabel(veterinar: VeterinaryClinic) {
+    return veterinar.address || "Vezi locația pe hartă";
+}
 
-const allCities = [...new Set(veterinariList.map((v) => v.city))];
+function getCoordinatesFromUrl(url: string) {
+    const decodedUrl = decodeURIComponent(url);
+    const patterns = [
+        /@(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/,
+        /!3d(-?\d+(?:\.\d+)?)!4d(-?\d+(?:\.\d+)?)/,
+        /[?&]q=(-?\d+(?:\.\d+)?),\s*(-?\d+(?:\.\d+)?)/
+    ];
 
-function VeterinarCard({ v }: { v: Veterinar }) {
+    for (const pattern of patterns) {
+        const match = decodedUrl.match(pattern);
+        if (match) {
+            return `${match[1]},${match[2]}`;
+        }
+    }
+
+    return null;
+}
+
+function buildGoogleMapsUrl(veterinar: VeterinaryClinic) {
+    if (veterinar.googleMapsUrl) {
+        return veterinar.googleMapsUrl;
+    }
+
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(buildMapQuery(veterinar))}`;
+}
+
+function buildAppleMapsUrl(veterinar: VeterinaryClinic) {
+    if (veterinar.appleMapsUrl) {
+        return veterinar.appleMapsUrl;
+    }
+
+    return `https://maps.apple.com/?q=${encodeURIComponent(veterinar.name)}&address=${encodeURIComponent(buildMapQuery(veterinar))}`;
+}
+
+function buildEmbeddedMapUrl(veterinar: VeterinaryClinic) {
+    if (veterinar.mapEmbedUrl) {
+        return veterinar.mapEmbedUrl;
+    }
+
+    const coordinates = veterinar.googleMapsUrl ? getCoordinatesFromUrl(veterinar.googleMapsUrl) : null;
+    if (coordinates) {
+        return `https://www.google.com/maps?q=${encodeURIComponent(coordinates)}&z=17&output=embed`;
+    }
+
+    if (veterinar.googleMapsUrl && !veterinar.address) {
+        return `https://www.google.com/maps?q=${encodeURIComponent(veterinar.googleMapsUrl)}&output=embed`;
+    }
+
+    return `https://www.google.com/maps?q=${encodeURIComponent(buildMapQuery(veterinar))}&output=embed`;
+}
+
+function VeterinarMapModal({ veterinar, onClose }: { veterinar: VeterinaryClinic; onClose: () => void }) {
+    return (
+        <div className="modalOverlay" onClick={onClose}>
+            <div
+                className="modalBox vetMapModal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={`vet-map-title-${veterinar.id}`}
+                onClick={(e) => e.stopPropagation()}
+            >
+                <div className="modalHeader vetMapHeader">
+                    <div>
+                        <h2 className="modalTitle" id={`vet-map-title-${veterinar.id}`}>
+                            {veterinar.name}
+                        </h2>
+                        <p className="vetMapAddress">
+                            {getLocationLabel(veterinar)}, {veterinar.city}
+                        </p>
+                    </div>
+                    <button type="button" className="modalClose" onClick={onClose} aria-label="Închide harta">
+                        ✕
+                    </button>
+                </div>
+
+                <div className="vetMapBody">
+                    <div className="vetMapCanvas">
+                        <iframe
+                            className="vetMapFrame"
+                            title={`Harta pentru ${veterinar.name}`}
+                            src={buildEmbeddedMapUrl(veterinar)}
+                            loading="lazy"
+                            referrerPolicy="no-referrer-when-downgrade"
+                        />
+                    </div>
+
+                    <div className="vetMapActions">
+                        <a
+                            className="vetMapAction vetMapActionPrimary"
+                            href={buildGoogleMapsUrl(veterinar)}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            Deschide în Google Maps
+                        </a>
+                        <a
+                            className="vetMapAction vetMapActionSecondary"
+                            href={buildAppleMapsUrl(veterinar)}
+                            target="_blank"
+                            rel="noreferrer"
+                        >
+                            Deschide în Apple Maps
+                        </a>
+                    </div>
+
+                    <p className="vetMapHint">Apasă în afara ferestrei sau tasta Escape pentru închidere.</p>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function VeterinarCard({
+    v,
+    onOpenMap,
+    onEdit,
+    onDelete,
+}: {
+    v: VeterinaryClinic;
+    onOpenMap: (veterinar: VeterinaryClinic) => void;
+    onEdit: (veterinar: VeterinaryClinic) => void;
+    onDelete: (veterinar: VeterinaryClinic) => void;
+}) {
     return (
         <div className="vetCard">
             <div className="vetCardHeader">
@@ -72,7 +152,9 @@ function VeterinarCard({ v }: { v: Veterinar }) {
                 </div>
                 {v.emergency && <span className="emergencyBadge">Urgențe 24/7</span>}
             </div>
-            <p className="vetAddress">📍 {v.address}</p>
+            <button type="button" className="vetAddressLink" onClick={() => onOpenMap(v)}>
+                📍 {getLocationLabel(v)}
+            </button>
             <p className="vetPhone">📞 {v.phone}</p>
             <div className="services">
                 {v.services.map((service) => (
@@ -85,6 +167,26 @@ function VeterinarCard({ v }: { v: Veterinar }) {
             <AppButton className="btnContact" variant="primary" onClick={() => alert(`Sună la ${v.phone}`)}>
                 Contactează
             </AppButton>
+            <AdminOnly>
+                <div className="vetAdminActions">
+                    <AppButton
+                        className="vetEditButton"
+                        variant="ghost"
+                        onClick={() => onEdit(v)}
+                        fullWidth
+                    >
+                        Editează clinica
+                    </AppButton>
+                    <AppButton
+                        className="vetDeleteButton"
+                        variant="ghost"
+                        onClick={() => onDelete(v)}
+                        fullWidth
+                    >
+                        Șterge clinica
+                    </AppButton>
+                </div>
+            </AdminOnly>
         </div>
     );
 }
@@ -93,6 +195,60 @@ export default function Veterinari() {
     const [query, setQuery] = useState("");
     const [city, setCity] = useState("ALL");
     const [onlyEmergency, setOnlyEmergency] = useState(false);
+    const [selectedVeterinar, setSelectedVeterinar] = useState<VeterinaryClinic | null>(null);
+    const [editClinicTarget, setEditClinicTarget] = useState<VeterinaryClinic | null>(null);
+    const [deleteClinicTarget, setDeleteClinicTarget] = useState<VeterinaryClinic | null>(null);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [veterinariList, setVeterinariList] = useState<VeterinaryClinic[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!selectedVeterinar && !showAddModal && !editClinicTarget && !deleteClinicTarget) {
+            return;
+        }
+
+        const previousOverflow = document.body.style.overflow;
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                setSelectedVeterinar(null);
+                setShowAddModal(false);
+                setEditClinicTarget(null);
+                setDeleteClinicTarget(null);
+            }
+        };
+
+        document.body.style.overflow = "hidden";
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [selectedVeterinar, showAddModal, editClinicTarget, deleteClinicTarget]);
+
+    async function loadVeterinaryClinics() {
+        try {
+            setIsLoading(true);
+            const data = await getVeterinaryClinics();
+            setVeterinariList(data);
+            setLoadError(null);
+        } catch (error) {
+            setLoadError(
+                error instanceof Error
+                    ? error.message
+                    : "Nu s-au putut încărca clinicile veterinare."
+            );
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        void loadVeterinaryClinics();
+    }, []);
+
+    const allCities = [...new Set(veterinariList.map((v) => v.city))].sort((a, b) => a.localeCompare(b, "ro"));
 
     const filtered = veterinariList.filter((v) => {
         if (city !== "ALL" && v.city !== city) return false;
@@ -102,9 +258,11 @@ export default function Veterinari() {
             if (
                 !v.name.toLowerCase().includes(q) &&
                 !v.description.toLowerCase().includes(q) &&
-                !v.address.toLowerCase().includes(q)
-            )
+                !v.address.toLowerCase().includes(q) &&
+                !v.services.some((service) => service.toLowerCase().includes(q))
+            ) {
                 return false;
+            }
         }
         return true;
     });
@@ -113,6 +271,13 @@ export default function Veterinari() {
         setQuery("");
         setCity("ALL");
         setOnlyEmergency(false);
+    }
+
+    function handleClinicUpdated(updatedClinic: VeterinaryClinic) {
+        setVeterinariList((prev) =>
+            prev.map((clinic) => (clinic.id === updatedClinic.id ? updatedClinic : clinic))
+        );
+        void loadVeterinaryClinics();
     }
 
     return (
@@ -145,10 +310,33 @@ export default function Veterinari() {
                 <div className="roleActionBar">
                     <AddActionButton
                         label="Adaugă clinică"
-                        onClick={() => alert("Formular adăugare clinică — în curând!")}
+                        onClick={() => setShowAddModal(true)}
                     />
                 </div>
             </AdminOnly>
+
+            {showAddModal && (
+                <AddVeterinaryClinicModal
+                    onClose={() => setShowAddModal(false)}
+                    onAdded={loadVeterinaryClinics}
+                />
+            )}
+
+            {deleteClinicTarget && (
+                <DeleteVeterinaryClinicConfirmModal
+                    clinic={deleteClinicTarget}
+                    onClose={() => setDeleteClinicTarget(null)}
+                    onDeleted={loadVeterinaryClinics}
+                />
+            )}
+
+            {editClinicTarget && (
+                <EditVeterinaryClinicModal
+                    clinic={editClinicTarget}
+                    onClose={() => setEditClinicTarget(null)}
+                    onUpdated={handleClinicUpdated}
+                />
+            )}
 
             <div className="veterinariContent">
                 <div className="filters">
@@ -157,7 +345,7 @@ export default function Veterinari() {
                             <SearchIcon size={18} aria-hidden="true" />
                             <input
                                 className="filterInput"
-                                placeholder="Caută după nume/adresă..."
+                                placeholder="Caută după nume, adresă sau servicii..."
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
                             />
@@ -184,16 +372,31 @@ export default function Veterinari() {
                     </div>
                 </div>
 
-                {filtered.length > 0 ? (
+                {isLoading && <div className="emptyNotice">Se încarcă clinicile veterinare...</div>}
+                {loadError && !isLoading && <div className="emptyNotice vetLoadError">{loadError}</div>}
+
+                {!isLoading && !loadError && filtered.length > 0 ? (
                     <div className="vetCards">
                         {filtered.map((v) => (
-                            <VeterinarCard key={v.id} v={v} />
+                            <VeterinarCard
+                                key={v.id}
+                                v={v}
+                                onOpenMap={setSelectedVeterinar}
+                                onEdit={setEditClinicTarget}
+                                onDelete={setDeleteClinicTarget}
+                            />
                         ))}
                     </div>
-                ) : (
+                ) : null}
+
+                {!isLoading && !loadError && filtered.length === 0 ? (
                     <div className="emptyNotice">Nu există rezultate pentru filtrele selectate.</div>
-                )}
+                ) : null}
             </div>
+
+            {selectedVeterinar && (
+                <VeterinarMapModal veterinar={selectedVeterinar} onClose={() => setSelectedVeterinar(null)} />
+            )}
         </div>
     );
 }
