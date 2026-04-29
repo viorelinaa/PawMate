@@ -133,11 +133,12 @@
 [data-theme="dark"] .adminPageCardTitle {
     color: #f0f0f0;
 }
-
 [data-theme="dark"] .adminPageCard {
-    background: #1e1e2e;
-    border-color: #2e2e40;
+    background: var(--dm-surface);
+    border-color: var(--dm-border);
+    box-shadow: var(--dm-shadow);
 }
+
 
 [data-theme="dark"] .adminPageCardIcon {
     background: #2a1e40;
