@@ -4,6 +4,9 @@ import { paths } from '../routes/paths';
 import { AddActionButton } from '../components/AddActionButton';
 import { AddPetModal, EditPetModal, DeleteConfirmModal } from '../components/PetModals';
 import { AddLostPetModal, EditLostPetModal, DeleteLostPetModal } from '../components/LostPetModals';
+import { AddEventModal } from '../components/EventModals';
+import { AddSitterModal } from '../components/SitterModals';
+import { AddProductModal } from '../components/ProductModals';
 import type { Pet } from '../services/petService';
 import type { LostPet } from '../services/lostPetService';
 import '../styles/AdminPages.css';
@@ -22,6 +25,11 @@ const AdminPages: React.FC = () => {
     const [showAddLost, setShowAddLost] = useState(false);
     const [editLost, setEditLost] = useState<LostPet | null>(null);
     const [deleteLost, setDeleteLost] = useState<LostPet | null>(null);
+
+    // ── Evenimente / Sitters / Vânzări adăugare ───────────────────────────────
+    const [showAddEvent, setShowAddEvent] = useState(false);
+    const [showAddSitter, setShowAddSitter] = useState(false);
+    const [showAddProduct, setShowAddProduct] = useState(false);
 
     return (
         <div className="adminPages">
@@ -50,6 +58,17 @@ const AdminPages: React.FC = () => {
             )}
             {deleteLost && (
                 <DeleteLostPetModal ad={deleteLost} onClose={() => setDeleteLost(null)} onDeleted={() => {}} />
+            )}
+
+            {/* Modals Evenimente / Sitters / Vânzări */}
+            {showAddEvent && (
+                <AddEventModal onClose={() => setShowAddEvent(false)} onAdded={() => {}} />
+            )}
+            {showAddSitter && (
+                <AddSitterModal onClose={() => setShowAddSitter(false)} onAdded={() => {}} />
+            )}
+            {showAddProduct && (
+                <AddProductModal onClose={() => setShowAddProduct(false)} onAdded={() => {}} />
             )}
 
             <div className="adminPagesGrid">
@@ -81,9 +100,9 @@ const AdminPages: React.FC = () => {
                     { id: 'veterinari', title: 'Veterinari', icon: '🏥', description: 'Gestionează clinicile și cabinetele veterinare.', path: paths.veterinari, label: 'Adaugă clinică' },
                     { id: 'donatii', title: 'Donații', icon: '💜', description: 'Administrează ONG-urile și campaniile de donații.', path: paths.donatii, label: 'Adaugă ONG' },
                     { id: 'blog', title: 'Blog', icon: '📝', description: 'Publică și gestionează articolele de pe blog.', path: paths.blog, label: 'Adaugă articol' },
-                    { id: 'evenimente', title: 'Evenimente', icon: '📅', description: 'Creează și administrează evenimentele platformei.', path: paths.evenimente, label: 'Adaugă eveniment' },
-                    { id: 'sitters', title: 'Sitters', icon: '🏠', description: 'Gestionează profilurile îngrijitorilor de animale.', path: paths.sitters, label: 'Adaugă profil sitter' },
-                    { id: 'vanzari', title: 'Vânzări', icon: '🛒', description: 'Administrează produsele și anunțurile din marketplace.', path: paths.vanzari, label: 'Adaugă produs/anunț' },
+                    { id: 'evenimente', title: 'Evenimente', icon: '📅', description: 'Creează și administrează evenimentele platformei.', path: paths.evenimente, label: 'Adaugă eveniment', onAdd: () => setShowAddEvent(true) },
+                    { id: 'sitters', title: 'Sitters', icon: '🏠', description: 'Gestionează profilurile îngrijitorilor de animale.', path: paths.sitters, label: 'Adaugă profil sitter', onAdd: () => setShowAddSitter(true) },
+                    { id: 'vanzari', title: 'Vânzări', icon: '🛒', description: 'Administrează produsele și anunțurile din marketplace.', path: paths.vanzari, label: 'Adaugă produs/anunț', onAdd: () => setShowAddProduct(true) },
                     { id: 'quiz', title: 'Quiz', icon: '🧩', description: 'Gestionează întrebările și răspunsurile din quiz.', path: paths.quiz, label: 'Adaugă întrebare' },
                 ].map((page) => (
                     <div key={page.id} className="adminPageCard">

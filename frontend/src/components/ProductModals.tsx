@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
-import { UserOnly } from "./UserOnly";
+import { AdminOnly } from "./AdminOnly";
 import {
     getProducts,
     createProduct,
@@ -332,7 +332,7 @@ export function ProductCard({
             >
                 Adaugă în coș
             </AppButton>
-            <UserOnly>
+            <AdminOnly>
                 <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
                     <AppButton variant="ghost" size="sm" onClick={() => onEdit(product)}>
                         Editează
@@ -346,7 +346,7 @@ export function ProductCard({
                         Șterge
                     </AppButton>
                 </div>
-            </UserOnly>
+            </AdminOnly>
         </article>
     );
 }
