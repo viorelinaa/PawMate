@@ -664,110 +664,94 @@
 .appShell[data-theme="dark"] .med-guide ::-webkit-scrollbar-thumb {
     background: var(--dm-accent-strong);
 }
-/* ── Profile page ── */
+/* Profile page */
+.appShell[data-theme="dark"] .profile-page {
+    background: var(--dm-bg);
+}
+
 .appShell[data-theme="dark"] .profile-sidebar,
-.appShell[data-theme="dark"] .profile-content {
+.appShell[data-theme="dark"] .profile-main-card,
+.appShell[data-theme="dark"] .profile-avatar-card,
+.appShell[data-theme="dark"] .profile-avatar-form-card,
+.appShell[data-theme="dark"] .profile-activity-card,
+.appShell[data-theme="dark"] .profile-avatar-option {
     background: var(--dm-surface);
     border-color: var(--dm-border);
     box-shadow: var(--dm-shadow);
 }
 
-.appShell[data-theme="dark"] .profile-name {
+.appShell[data-theme="dark"] .profile-user-name,
+.appShell[data-theme="dark"] .profile-main-title,
+.appShell[data-theme="dark"] .profile-avatar-card-title,
+.appShell[data-theme="dark"] .profile-avatar-form-title,
+.appShell[data-theme="dark"] .profile-activity-title,
+.appShell[data-theme="dark"] .profile-quiz-summary-name {
     color: var(--dm-accent);
 }
 
-.appShell[data-theme="dark"] .profile-role,
-.appShell[data-theme="dark"] .profile-joined,
-.appShell[data-theme="dark"] .profile-empty {
+.appShell[data-theme="dark"] .profile-user-role,
+.appShell[data-theme="dark"] .profile-member-date,
+.appShell[data-theme="dark"] .profile-label,
+.appShell[data-theme="dark"] .profile-placeholder,
+.appShell[data-theme="dark"] .profile-quiz-summary-label,
+.appShell[data-theme="dark"] .profile-quiz-summary-meta,
+.appShell[data-theme="dark"] .profile-quiz-summary-date,
+.appShell[data-theme="dark"] .profile-quiz-summary-empty,
+.appShell[data-theme="dark"] .profile-avatar-card-copy,
+.appShell[data-theme="dark"] .profile-activity-copy,
+.appShell[data-theme="dark"] .profile-activity-meta,
+.appShell[data-theme="dark"] .profile-activity-label {
     color: var(--dm-muted);
 }
 
-.appShell[data-theme="dark"] .profile-nav-btn {
+.appShell[data-theme="dark"] .profile-nav-button {
     color: var(--dm-muted);
 }
 
-.appShell[data-theme="dark"] .profile-nav-btn:hover {
+.appShell[data-theme="dark"] .profile-nav-button:hover {
     background: var(--dm-accent-soft);
     color: var(--dm-accent);
+    border-color: var(--dm-border);
 }
 
-.appShell[data-theme="dark"] .profile-nav-btn.active {
+.appShell[data-theme="dark"] .profile-nav-button.active {
     background: var(--dm-accent-strong);
     color: #1a1424;
+    border-color: var(--dm-accent-strong);
 }
 
-.appShell[data-theme="dark"] .profile-section-title {
-    color: var(--dm-text);
-    border-bottom-color: var(--dm-border);
-}
-
-.appShell[data-theme="dark"] .profile-field label {
-    color: var(--dm-muted);
-}
-
-.appShell[data-theme="dark"] .profile-field p {
+.appShell[data-theme="dark"] .profile-input,
+.appShell[data-theme="dark"] .profile-textarea {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
     color: var(--dm-text);
 }
 
-.appShell[data-theme="dark"] .pet-card {
+.appShell[data-theme="dark"] .profile-input::placeholder,
+.appShell[data-theme="dark"] .profile-textarea::placeholder {
+    color: var(--dm-muted);
+}
+
+.appShell[data-theme="dark"] .profile-input:focus,
+.appShell[data-theme="dark"] .profile-textarea:focus {
+    border-color: var(--dm-accent-strong);
+    box-shadow: 0 0 0 3px rgba(200, 170, 240, 0.2);
+    background: var(--dm-surface);
+}
+
+.appShell[data-theme="dark"] .profile-quiz-summary,
+.appShell[data-theme="dark"] .profile-avatar-current-trigger.is-open,
+.appShell[data-theme="dark"] .profile-avatar-preview {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
 }
 
-.appShell[data-theme="dark"] .pet-card-info h4 {
-    color: var(--dm-accent);
+.appShell[data-theme="dark"] .profile-avatar-option.is-selected {
+    background: var(--dm-accent-soft);
+    border-color: var(--dm-accent-strong);
 }
 
-.appShell[data-theme="dark"] .pet-card-info p,
-.appShell[data-theme="dark"] .pet-card-date {
-    color: var(--dm-muted);
-}
 
-.appShell[data-theme="dark"] .activity-item {
-    background: var(--dm-surface-strong);
-    border-color: var(--dm-border);
-}
-
-.appShell[data-theme="dark"] .activity-info p {
-    color: var(--dm-text);
-}
-
-.appShell[data-theme="dark"] .activity-info span {
-    color: var(--dm-muted);
-}
-
-.appShell[data-theme="dark"] .profile-form-group label {
-    color: var(--dm-accent);
-}
-
-.appShell[data-theme="dark"] .security-block-title {
-    color: var(--dm-accent);
-}
-
-.appShell[data-theme="dark"] .security-divider {
-    background: var(--dm-border);
-}
-
-.appShell[data-theme="dark"] .input-disabled {
-    background: var(--dm-surface-strong) !important;
-    opacity: 0.5;
-}
-
-.appShell[data-theme="dark"] .security-message--success {
-    color: var(--dm-accent);
-}
-
-.appShell[data-theme="dark"] .security-submit-btn:disabled {
-    background: var(--dm-surface-strong);
-    color: var(--dm-muted);
-    box-shadow: none;
-}
-
-.appShell[data-theme="dark"] .password-match-hint.match {
-    color: var(--dm-accent);
-}
 
 /* ── Adoption page dark (filtre) ── */
 .appShell[data-theme="dark"] .filterInput,
@@ -845,6 +829,10 @@
 .appShell[data-theme="dark"] .signup-container {
     background: var(--dm-bg);
 }
+.appShell[data-theme="dark"] .signup-header p {
+    color: rgba(241, 234, 249, 0.78);
+}
+
 /* ===================================================== */
 /* FIXURI DARK MODE – Dropdown orașe + text vizibil vet */
 /* ===================================================== */

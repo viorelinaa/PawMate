@@ -456,14 +456,16 @@
 }
 
 [data-theme="dark"] .adminUserCard {
-    background: #1e1e2e;
-    border-color: #2e2e40;
+    background: var(--dm-surface);
+    border-color: var(--dm-border);
+    box-shadow: var(--dm-shadow);
 }
 
 [data-theme="dark"] .adminUserCard--banned {
-    background: #2a1a1a;
-    border-color: #5a2020;
+    background: var(--dm-surface);
+    border-color: rgba(255, 120, 120, 0.35);
 }
+
 
 [data-theme="dark"] .adminUserActivity {
     background: #16161f;

@@ -12,7 +12,7 @@ import {
     type UpdateUserProfilePayload,
     type UserProfile,
 } from "../services/profileService";
-import "../styles/profile.css";
+import "../styles/Profile.css";
 
 type ProfileSection = "personal" | "avatar" | "pets" | "activity";
 

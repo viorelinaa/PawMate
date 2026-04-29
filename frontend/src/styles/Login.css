@@ -27,6 +27,10 @@
   margin-bottom: 10px;
 }
 
+.login-header p {
+  color: #6b6b7a;
+}
+
 .login-form {
   display: flex;
   flex-direction: column;
@@ -44,23 +48,37 @@
   font-weight: 500;
 }
 
-.form-group input {
+.login-field-label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-input,
+.login-password-field input {
+  width: 100%;
   padding: 12px 16px;
   border: 2px solid #E6D5F0;
   border-radius: 10px;
   font-size: 1rem;
-  transition: border-color 0.3s;
+  color: #2b2236;
+  background: #fff;
+  transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
+}
+
+.login-password-field input {
+  padding-right: 44px;
+}
+
+.login-input::placeholder,
+.login-password-field input::placeholder {
+  color: rgba(43, 34, 54, 0.55);
 }
 
 .password-field {
   position: relative;
   display: flex;
   align-items: center;
-}
-
-.password-field input {
-  width: 100%;
-  padding-right: 44px;
 }
 
 .password-toggle {
@@ -86,9 +104,23 @@
   transform: translateY(-50%) scale(1.02);
 }
 
-.form-group input:focus {
+.login-input:focus,
+.login-password-field input:focus {
   outline: none;
   border-color: #6B4C8A;
+  box-shadow: 0 0 0 3px rgba(107, 76, 138, 0.12);
+}
+
+.login-input:-webkit-autofill,
+.login-input:-webkit-autofill:hover,
+.login-input:-webkit-autofill:focus,
+.login-password-field input:-webkit-autofill,
+.login-password-field input:-webkit-autofill:hover,
+.login-password-field input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #2b2236;
+  caret-color: #2b2236;
+  box-shadow: 0 0 0 1000px #fff inset;
+  transition: background-color 9999s ease-in-out 0s;
 }
 
 .login-button {
@@ -107,6 +139,11 @@
   background: #5A3D75;
 }
 
+.login-button:disabled {
+  opacity: 0.75;
+  cursor: not-allowed;
+}
+
 .signup-link {
   text-align: center;
   margin-top: 20px;
@@ -123,7 +160,6 @@
   text-decoration: underline;
 }
 
-/* Role tabs */
 .role-tabs {
   display: flex;
   gap: 8px;
@@ -174,7 +210,6 @@
   color: currentColor;
 }
 
-/* Demo card */
 .demo-card {
   background: #F5EEF9;
   border: 1px solid #E6D5F0;
@@ -197,7 +232,6 @@
   color: #9370b5;
 }
 
-/* Error */
 .login-error {
   color: #c0392b;
   font-size: 0.9rem;
@@ -231,7 +265,8 @@
     gap: 14px;
   }
 
-  .form-group input {
+  .login-input,
+  .login-password-field input {
     padding: 10px 12px;
     font-size: 0.95rem;
   }
