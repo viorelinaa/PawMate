@@ -21,4 +21,14 @@ public class MarketplaceLogic : MarketplaceActions, IMarketplaceLogic
     {
         return GetListingListAction();
     }
+
+    public ServiceResponse UpdateListing(int id, MarketplaceUpdateDto listing)
+    {
+        return UpdateListingAction(id, listing);
+    }
+
+    public ServiceResponse DeleteListing(int id)
+    {
+        return DeleteListingAction(id);
+    }
 }

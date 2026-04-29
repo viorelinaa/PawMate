@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
-import { UserOnly } from "./UserOnly";
+import { AdminOnly } from "./AdminOnly";
 import {
     getSitters,
     createSitter,
@@ -343,10 +343,10 @@ export function SitterCard({
                 <strong>{s.pricePerDay} MDL / zi</strong>
                 <AppButton variant="primary">Rezerva</AppButton>
             </div>
-            <UserOnly>
+            <AdminOnly>
                 <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
                     <AppButton variant="ghost" size="sm" onClick={() => onEdit(s)}>
-                        Editeaza
+                        Editează
                     </AppButton>
                     <AppButton
                         variant="ghost"
@@ -354,10 +354,10 @@ export function SitterCard({
                         onClick={() => onDelete(s)}
                         style={{ borderColor: "#e53e3e", color: "#e53e3e" }}
                     >
-                        Sterge
+                        Șterge
                     </AppButton>
                 </div>
-            </UserOnly>
+            </AdminOnly>
         </div>
     );
 }

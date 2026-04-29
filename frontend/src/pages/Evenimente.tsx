@@ -1,130 +1,55 @@
-import { useState } from "react";
-import type { KeyboardEvent } from "react";
+import { useState, useEffect } from "react";
 import "../styles/Evenimente.css";
 import { AdminOnly } from "../components/AdminOnly";
 import { SearchIcon } from "../components/SearchIcon";
 import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
 import { FilterSelect } from "../components/FilterSelect";
-
-type EventItem = {
-    id: string;
-    city: string;
-    date: string;
-    title: string;
-    description: string;
-    type: string;
-};
-
-const events: EventItem[] = [
-    {
-        id: "e1",
-        city: "Chișinău",
-        date: "2026-03-02",
-        title: "Târg de adopții",
-        description: "Adopții + consiliere + donații.",
-        type: "Adopții",
-    },
-    {
-        id: "e2",
-        city: "Bălți",
-        date: "2026-02-25",
-        title: "Zi de voluntariat la adăpost",
-        description: "Curățenie, plimbări, socializare.",
-        type: "Voluntariat",
-    },
-    {
-        id: "e3",
-        city: "Cahul",
-        date: "2026-03-10",
-        title: "Campanie de vaccinare și microcipare",
-        description: "Consultații rapide, recomandări și vaccinuri de bază.",
-        type: "Campanie medicală",
-    },
-    {
-        id: "e4",
-        city: "Orhei",
-        date: "2026-03-16",
-        title: "Atelier de dresaj pentru căței",
-        description: "Comenzi de bază, jocuri și socializare controlată.",
-        type: "Atelier",
-    },
-    {
-        id: "e5",
-        city: "Soroca",
-        date: "2026-03-22",
-        title: "Întâlnire de socializare pentru pisici",
-        description: "Joacă, schimb de sfaturi și adopții responsabile.",
-        type: "Socializare",
-    },
-    {
-        id: "e6",
-        city: "Ungheni",
-        date: "2026-03-28",
-        title: "Piață de donații pentru adăposturi",
-        description: "Hrană, pături, jucării și accesoriile de care e nevoie.",
-        type: "Donații",
-    },
-    {
-        id: "e7",
-        city: "Chișinău",
-        date: "2026-04-03",
-        title: "Marș caritabil cu căței",
-        description: "Strângere de fonduri pentru îngrijire și tratamente.",
-        type: "Caritabil",
-    },
-    {
-        id: "e8",
-        city: "Hîncești",
-        date: "2026-04-09",
-        title: "Zi de grooming gratuit",
-        description: "Tuns, spălat și îngrijire blană (locuri limitate).",
-        type: "Îngrijire",
-    },
-];
-
-const allCities = [...new Set(events.map((event) => event.city))];
-const allTypes = [...new Set(events.map((event) => event.type))];
-
-function EventCard({ event, onClick, onKeyDown }: {
-    event: EventItem;
-    onClick: () => void;
-    onKeyDown: (e: KeyboardEvent<HTMLElement>) => void;
-}) {
-    return (
-        <article
-            className="eventsCard"
-            role="button"
-            tabIndex={0}
-            onClick={onClick}
-            onKeyDown={onKeyDown}
-        >
-            <div className="eventsCardTop">
-                <span className="eventsCity">{event.city}</span>
-                <span className="eventsDate">{event.date}</span>
-            </div>
-            <h3 className="eventsName">{event.title}</h3>
-            <div className="eventsTags">
-                <span className="eventsTag">{event.type}</span>
-            </div>
-            <p className="eventsDesc">{event.description}</p>
-        </article>
-    );
-}
+import {
+    getEvents,
+    AddEventModal,
+    EditEventModal,
+    DeleteEventModal,
+    EventCard,
+} from "../components/EventModals";
+import type { EventItem } from "../services/eventService";
 
 export default function Evenimente() {
+    const [events, setEvents] = useState<EventItem[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [loadError, setLoadError] = useState<string | null>(null);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [editEvent, setEditEvent] = useState<EventItem | null>(null);
+    const [deleteEvent, setDeleteEvent] = useState<EventItem | null>(null);
     const [query, setQuery] = useState("");
-    const [city, setCity] = useState("ALL");
-    const [eventType, setEventType] = useState("ALL");
+    const [location, setLocation] = useState("ALL");
 
-    const filtered = events.filter((event) => {
-        if (city !== "ALL" && event.city !== city) return false;
-        if (eventType !== "ALL" && event.type !== eventType) return false;
+    async function loadEvents() {
+        try {
+            setIsLoading(true);
+            const data = await getEvents();
+            setEvents(data);
+            setLoadError(null);
+        } catch {
+            setLoadError("Nu s-au putut încărca evenimentele. Verifică conexiunea la server.");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        void loadEvents();
+    }, []);
+
+    const allLocations = [...new Set(events.map((e) => e.location).filter(Boolean))];
+
+    const filtered = events.filter((e) => {
+        if (location !== "ALL" && e.location !== location) return false;
         if (query) {
             const q = query.toLowerCase();
             if (
-                !event.title.toLowerCase().includes(q) &&
-                !event.description.toLowerCase().includes(q)
+                !e.title.toLowerCase().includes(q) &&
+                !e.description?.toLowerCase().includes(q)
             )
                 return false;
         }
@@ -133,22 +58,7 @@ export default function Evenimente() {
 
     function resetFilters() {
         setQuery("");
-        setCity("ALL");
-        setEventType("ALL");
-    }
-
-    function handleEventClick(entry: EventItem) {
-        const accepted = window.confirm(`Vrei să te înregistrezi la "${entry.title}"?`);
-        if (accepted) {
-            alert("Înregistrare trimisă (mock)!");
-        }
-    }
-
-    function handleEventKeyDown(event: KeyboardEvent<HTMLElement>, entry: EventItem) {
-        if (event.key === "Enter" || event.key === " ") {
-            event.preventDefault();
-            handleEventClick(entry);
-        }
+        setLocation("ALL");
     }
 
     return (
@@ -181,10 +91,30 @@ export default function Evenimente() {
                 <div className="roleActionBar">
                     <AddActionButton
                         label="Adaugă eveniment"
-                        onClick={() => alert("Formular adăugare eveniment — în curând!")}
+                        onClick={() => setShowAddModal(true)}
                     />
                 </div>
             </AdminOnly>
+
+            {showAddModal && (
+                <AddEventModal onClose={() => setShowAddModal(false)} onAdded={loadEvents} />
+            )}
+            {editEvent && (
+                <EditEventModal
+                    event={editEvent}
+                    onClose={() => setEditEvent(null)}
+                    onUpdated={loadEvents}
+                />
+            )}
+            {deleteEvent && (
+                <DeleteEventModal
+                    event={deleteEvent}
+                    onClose={() => setDeleteEvent(null)}
+                    onDeleted={() => {
+                        void loadEvents();
+                    }}
+                />
+            )}
 
             <section className="eventsContent">
                 <div className="eventsFilters">
@@ -195,30 +125,18 @@ export default function Evenimente() {
                                 className="filterInput"
                                 placeholder="Caută după titlu..."
                                 value={query}
-                                onChange={(event) => setQuery(event.target.value)}
+                                onChange={(e) => setQuery(e.target.value)}
                             />
                         </div>
                         <FilterSelect
                             className="filterSelect"
-                            value={city}
-                            onChange={(event) => setCity(event.target.value)}
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
                         >
-                            <option value="ALL">Toate orașele</option>
-                            {allCities.map((entry) => (
-                                <option key={entry} value={entry}>
-                                    {entry}
-                                </option>
-                            ))}
-                        </FilterSelect>
-                        <FilterSelect
-                            className="filterSelect"
-                            value={eventType}
-                            onChange={(event) => setEventType(event.target.value)}
-                        >
-                            <option value="ALL">Toate tipurile</option>
-                            {allTypes.map((entry) => (
-                                <option key={entry} value={entry}>
-                                    {entry}
+                            <option value="ALL">Toate locațiile</option>
+                            {allLocations.map((loc) => (
+                                <option key={loc} value={loc}>
+                                    {loc}
                                 </option>
                             ))}
                         </FilterSelect>
@@ -228,20 +146,23 @@ export default function Evenimente() {
                     </div>
                 </div>
 
-                {filtered.length > 0 ? (
+                {isLoading && <div className="eventsEmpty">Se încarcă evenimentele...</div>}
+                {loadError && <div className="eventsEmpty" style={{ color: "red" }}>{loadError}</div>}
+
+                {!isLoading && !loadError && filtered.length === 0 && (
+                    <div className="eventsEmpty">Nu există evenimente pentru filtrele selectate.</div>
+                )}
+
+                {!isLoading && !loadError && filtered.length > 0 && (
                     <div className="eventsGrid">
                         {filtered.map((event) => (
                             <EventCard
                                 key={event.id}
                                 event={event}
-                                onClick={() => handleEventClick(event)}
-                                onKeyDown={(keyEvent) => handleEventKeyDown(keyEvent, event)}
+                                onEdit={setEditEvent}
+                                onDelete={setDeleteEvent}
                             />
                         ))}
-                    </div>
-                ) : (
-                    <div className="eventsEmpty">
-                        Nu există evenimente pentru filtrele selectate.
                     </div>
                 )}
             </section>

@@ -8,99 +8,38 @@ import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
 import { ShoppingCartIcon } from "../components/ShoppingCartIcon";
 import { FilterSelect } from "../components/FilterSelect";
-
-type Product = {
-    id: string;
-    name: string;
-    category: string;
-    description: string;
-    price: string;
-};
-
-const products: Product[] = [
-    {
-        id: "p1",
-        name: "Hrană uscată 2kg",
-        category: "Hrană",
-        description: "Pentru câini adulți.",
-        price: "199 MDL",
-    },
-    {
-        id: "p2",
-        name: "Jucărie minge",
-        category: "Jucării",
-        description: "Cauciuc rezistent.",
-        price: "49 MDL",
-    },
-    {
-        id: "p3",
-        name: "Ham reglabil",
-        category: "Accesorii",
-        description: "Confortabil pentru plimbări.",
-        price: "149 MDL",
-    },
-    {
-        id: "p4",
-        name: "Șampon blană",
-        category: "Îngrijire",
-        description: "Blând, pentru piele sensibilă.",
-        price: "89 MDL",
-    },
-    {
-        id: "p5",
-        name: "Litieră pisici",
-        category: "Igienă",
-        description: "Absorbantă, fără praf.",
-        price: "79 MDL",
-    },
-    {
-        id: "p6",
-        name: "Bol inox",
-        category: "Accesorii",
-        description: "Stabil și ușor de curățat.",
-        price: "39 MDL",
-    },
-];
-
-const allCategories = [...new Set(products.map((product) => product.category))];
-
-function ProductCard({
-    product,
-    onAddToCart,
-}: {
-    product: Product;
-    onAddToCart: (product: Product) => void;
-}) {
-    return (
-        <article className="salesCard">
-            <div className="salesCardTop">
-                <h3 className="salesName">{product.name}</h3>
-                <span className="salesBadge">{product.category}</span>
-            </div>
-            <p className="salesDesc">{product.description}</p>
-            <div className="salesPrice">{product.price}</div>
-            <AppButton
-                className="salesBtn"
-                variant="primary"
-                type="button"
-                onClick={() => onAddToCart(product)}
-            >
-                Adaugă în coș
-            </AppButton>
-        </article>
-    );
-}
+import {
+    getProducts,
+    AddProductModal,
+    EditProductModal,
+    DeleteProductModal,
+    ProductCard,
+} from "../components/ProductModals";
+import type { Product } from "../services/productService";
 
 const CART_KEY = "pawmate_cart";
 
 export default function Vanzari() {
     const navigate = useNavigate();
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [editProduct, setEditProduct] = useState<Product | null>(null);
+    const [deleteProduct, setDeleteProduct] = useState<Product | null>(null);
+    const [products, setProducts] = useState<Product[]>([]);
+    const [loadError, setLoadError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
     const [query, setQuery] = useState("");
     const [category, setCategory] = useState("ALL");
     const [cartItems, setCartItems] = useState<Product[]>(() => {
         try {
             const saved = localStorage.getItem(CART_KEY);
-            return saved ? JSON.parse(saved) : [];
+            if (!saved) return [];
+            const parsed = JSON.parse(saved) as Product[];
+            // dacă itemele sunt în formatul vechi (mock, cu price string sau fără title), resetăm
+            if (!Array.isArray(parsed) || parsed.some((p) => typeof p.price !== "number" || !p.title)) {
+                localStorage.removeItem(CART_KEY);
+                return [];
+            }
+            return parsed;
         } catch {
             return [];
         }
@@ -108,17 +47,36 @@ export default function Vanzari() {
     const [toastVisible, setToastVisible] = useState(false);
     const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+    async function loadProducts() {
+        try {
+            setIsLoading(true);
+            const data = await getProducts();
+            setProducts(data);
+            setLoadError(null);
+        } catch {
+            setLoadError("Nu s-au putut încărca produsele. Verifică conexiunea la server.");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        void loadProducts();
+    }, []);
+
     useEffect(() => {
         localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
     }, [cartItems]);
 
-    const filtered = products.filter((product) => {
-        if (category !== "ALL" && product.category !== category) return false;
+    const allCategories = [...new Set(products.map((p) => p.category).filter(Boolean))];
+
+    const filtered = products.filter((p) => {
+        if (category !== "ALL" && p.category !== category) return false;
         if (query) {
             const q = query.toLowerCase();
             if (
-                !product.name.toLowerCase().includes(q) &&
-                !product.description.toLowerCase().includes(q)
+                !p.title.toLowerCase().includes(q) &&
+                !p.description?.toLowerCase().includes(q)
             )
                 return false;
         }
@@ -168,7 +126,7 @@ export default function Vanzari() {
                 </span>
                 <div className="salesHeroInner">
                     <h1 className="salesTitle heroTitle">Vânzări</h1>
-                    <p className="salesSubtitle heroSubtitle">Produse pentru animale (mock).</p>
+                    <p className="salesSubtitle heroSubtitle">Produse pentru animale de companie.</p>
                 </div>
             </section>
 
@@ -187,11 +145,33 @@ export default function Vanzari() {
                         </span>
                     </button>
                     <AddActionButton
-                        label="Adaugă produs/anunț"
-                        onClick={() => alert("Formular adăugare produs — în curând!")}
+                        label="Adaugă produs"
+                        onClick={() => setShowAddModal(true)}
                     />
                 </div>
             </UserOnly>
+
+            {showAddModal && (
+                <AddProductModal onClose={() => setShowAddModal(false)} onAdded={loadProducts} />
+            )}
+            {editProduct && (
+                <EditProductModal
+                    product={editProduct}
+                    onClose={() => setEditProduct(null)}
+                    onUpdated={loadProducts}
+                />
+            )}
+            {deleteProduct && (
+                <DeleteProductModal
+                    product={deleteProduct}
+                    onClose={() => setDeleteProduct(null)}
+                    onDeleted={() => {
+                        const deletedId = deleteProduct.id;
+                        setCartItems((prev) => prev.filter((item) => item.id !== deletedId));
+                        void loadProducts();
+                    }}
+                />
+            )}
 
             <section className="salesContent">
                 <div className="salesFilters">
@@ -200,7 +180,7 @@ export default function Vanzari() {
                             <SearchIcon size={18} aria-hidden="true" />
                             <input
                                 className="filterInput"
-                                placeholder="Caută după nume..."
+                                placeholder="Caută după titlu..."
                                 value={query}
                                 onChange={(event) => setQuery(event.target.value)}
                             />
@@ -223,15 +203,24 @@ export default function Vanzari() {
                     </div>
                 </div>
 
-                {filtered.length > 0 ? (
+                {isLoading && <div className="salesEmpty">Se încarcă produsele...</div>}
+                {loadError && <div className="salesEmpty" style={{ color: "red" }}>{loadError}</div>}
+
+                {!isLoading && !loadError && filtered.length === 0 && (
+                    <div className="salesEmpty">Nu există produse pentru filtrele selectate.</div>
+                )}
+
+                {!isLoading && !loadError && filtered.length > 0 && (
                     <div className="salesGrid">
                         {filtered.map((product) => (
-                            <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
+                            <ProductCard
+                                key={product.id}
+                                product={product}
+                                onAddToCart={addToCart}
+                                onEdit={setEditProduct}
+                                onDelete={setDeleteProduct}
+                            />
                         ))}
-                    </div>
-                ) : (
-                    <div className="salesEmpty">
-                        Nu există produse pentru filtrele selectate.
                     </div>
                 )}
             </section>

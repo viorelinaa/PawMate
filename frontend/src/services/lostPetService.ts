@@ -1,6 +1,5 @@
 import axios from "axios";
-
-const BASE = "http://localhost:5088/api/lost-pets";
+import { apiClient } from "../axios/apiClient";
 
 export interface LostPet {
     id: number;
@@ -33,7 +32,7 @@ function handleError(err: unknown, fallback: string): never {
 
 export async function getLostPets(): Promise<LostPet[]> {
     try {
-        const { data } = await axios.get<LostPet[]>(`${BASE}/list`);
+        const { data } = await apiClient.get<LostPet[]>("/lost-pets/list");
         return data;
     } catch (err) {
         handleError(err, "Nu s-au putut încărca anunțurile.");
@@ -42,7 +41,7 @@ export async function getLostPets(): Promise<LostPet[]> {
 
 export async function createLostPet(payload: LostPetPayload): Promise<void> {
     try {
-        await axios.post(`${BASE}/create`, payload);
+        await apiClient.post("/lost-pets/create", payload);
     } catch (err) {
         handleError(err, "Nu s-a putut adăuga anunțul.");
     }
@@ -50,7 +49,7 @@ export async function createLostPet(payload: LostPetPayload): Promise<void> {
 
 export async function updateLostPet(id: number, payload: LostPetUpdatePayload): Promise<void> {
     try {
-        await axios.put(`${BASE}/${id}`, payload);
+        await apiClient.put(`/lost-pets/${id}`, payload);
     } catch (err) {
         handleError(err, "Nu s-a putut actualiza anunțul.");
     }
@@ -58,7 +57,7 @@ export async function updateLostPet(id: number, payload: LostPetUpdatePayload): 
 
 export async function deleteLostPet(id: number): Promise<void> {
     try {
-        await axios.delete(`${BASE}/${id}`);
+        await apiClient.delete(`/lost-pets/${id}`);
     } catch (err) {
         handleError(err, "Nu s-a putut șterge anunțul.");
     }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
-import { UserOnly } from "./UserOnly";
+import { AdminOnly } from "./AdminOnly";
 import { getPets, createPet, updatePet, deletePet } from "../services/petService";
 import type { Pet } from "../services/petService";
 
@@ -339,7 +339,7 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
                 <AppButton className="btnDetails" variant="primary" onClick={() => alert("Cerere trimisă (mock)!")}>
                     Cere detalii
                 </AppButton>
-                <UserOnly>
+                <AdminOnly>
                     <AppButton variant="ghost" size="sm" onClick={() => onEdit(p)}>
                         Editează
                     </AppButton>
@@ -351,7 +351,7 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
                     >
                         Șterge
                     </AppButton>
-                </UserOnly>
+                </AdminOnly>
             </div>
         </div>
     );

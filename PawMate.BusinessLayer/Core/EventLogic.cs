@@ -12,6 +12,16 @@ public class EventLogic : EventActions, IEventLogic
         return CreateEventAction(evt);
     }
 
+    public ServiceResponse UpdateEvent(int id, EventUpdateDto evt)
+    {
+        return UpdateEventAction(id, evt);
+    }
+
+    public ServiceResponse DeleteEvent(int id)
+    {
+        return DeleteEventAction(id);
+    }
+
     public ServiceResponse GetEventById(int id)
     {
         return GetEventByIdAction(id);

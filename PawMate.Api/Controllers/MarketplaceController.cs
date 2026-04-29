@@ -48,4 +48,26 @@ public class MarketplaceController : ControllerBase
 
         return Ok(response.Message);
     }
+
+    [HttpPut("{id}")]
+    [Authorize]
+    public IActionResult UpdateListing([FromRoute] int id, [FromBody] MarketplaceUpdateDto listing)
+    {
+        var response = _marketplaceLogic.UpdateListing(id, listing);
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+
+        return Ok(response.Message);
+    }
+
+    [HttpDelete("{id}")]
+    [Authorize]
+    public IActionResult DeleteListing([FromRoute] int id)
+    {
+        var response = _marketplaceLogic.DeleteListing(id);
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+
+        return Ok(response.Message);
+    }
 }
