@@ -66,4 +66,9 @@ public class BusinessLogic
     {
         return new VeterinaryClinicLogic();
     }
+
+    public IStatisticsLogic GetStatisticsLogic()
+    {
+        return new StatisticsLogic();
+    }
 }
