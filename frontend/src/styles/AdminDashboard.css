@@ -1,4 +1,17 @@
 /* ── Admin Dashboard ─────────────────────────────────────── */
+.adminDashLoading {
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.95rem;
+    padding: 24px 0;
+}
+
+.adminDashError {
+    text-align: center;
+    color: #ef4444;
+    font-size: 0.95rem;
+    padding: 24px 0;
+}
 .adminDash {
     max-width: 1200px;
     margin: 0 auto;
