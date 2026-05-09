@@ -74,7 +74,7 @@ function buildEmbeddedMapUrl(veterinar: VeterinaryClinic) {
 
 function VeterinarMapModal({ veterinar, onClose }: { veterinar: VeterinaryClinic; onClose: () => void }) {
     return (
-        <div className="modalOverlay" onClick={onClose}>
+        <div className="modalOverlay vetMapOverlay" onClick={onClose}>
             <div
                 className="modalBox vetMapModal"
                 role="dialog"
