@@ -21,17 +21,16 @@ public class TokenService
         _expiryMinutes = expiryMinutes;
     }
 
-    public string GenerateToken(int userId, string email, string role)
+    public string GenerateToken(int userId, string userName, string role)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()),
-            new Claim(JwtRegisteredClaimNames.Email, email),
-            new Claim(ClaimTypes.Role, role),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+            new Claim(ClaimTypes.Name, userName),
+            new Claim(ClaimTypes.Role, role)
         };
 
         var token = new JwtSecurityToken(

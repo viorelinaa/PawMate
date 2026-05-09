@@ -28,14 +28,7 @@ public class AuthController : ControllerBase
 
         Response.Cookies.Append(RefreshTokenCookieName, result.RefreshToken, RefreshTokenCookieOptions());
 
-        return Ok(new
-        {
-            token = result.Token,
-            userId = result.UserId,
-            role = result.Role,
-            name = result.Name,
-            email = result.Email
-        });
+        return Ok(new { token = result.Token });
     }
 
     [HttpPost("refresh")]

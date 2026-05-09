@@ -160,7 +160,7 @@ public class UserActions
                 JwtConfig.Issuer,
                 JwtConfig.Audience,
                 JwtConfig.ExpiryMinutes
-            ).GenerateToken(user.Id, user.Email, normalizedRole);
+            ).GenerateToken(user.Id, user.Name, normalizedRole);
 
             var refreshToken = TokenService.GenerateRefreshToken();
             _context.RefreshTokens.Add(new RefreshTokenEntity
@@ -640,7 +640,7 @@ public class UserActions
                 JwtConfig.Issuer,
                 JwtConfig.Audience,
                 JwtConfig.ExpiryMinutes
-            ).GenerateToken(user.Id, user.Email, normalizedRole);
+            ).GenerateToken(user.Id, user.Name, normalizedRole);
 
             _context.SaveChanges();
 
