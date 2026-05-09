@@ -40,45 +40,56 @@
     color: #b91c1c;
 }
 
-/* Grid */
-.adminUsersGrid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-}
-
-/* Card */
-.adminUserCard {
+.adminUsersTableShell {
     background: #fff;
     border: 1px solid #e5e7eb;
-    border-radius: 18px;
-    padding: 22px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    border-radius: 16px;
+    overflow-x: auto;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
-    transition: box-shadow 0.2s ease, transform 0.15s ease;
 }
 
-.adminUserCard:hover {
-    box-shadow: 0 6px 20px rgba(107, 79, 161, 0.1);
-    transform: translateY(-2px);
+.adminUsersTable {
+    width: 100%;
+    min-width: 980px;
+    border-collapse: collapse;
+    font-size: 0.86rem;
 }
 
-.adminUserCard--banned {
-    border-color: #fecaca;
-    background: #fff8f8;
+.adminUsersTable th,
+.adminUsersTable td {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid #edf0f4;
+    vertical-align: middle;
 }
 
-.adminUserCard--banned:hover {
-    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.1);
+.adminUsersTable th {
+    background: #f9fafb;
+    color: #6b7280;
+    font-size: 0.73rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    white-space: nowrap;
 }
 
-/* Top row: avatar + info + badge */
-.adminUserCardTop {
+.adminUsersTable tbody tr {
+    transition: background 0.16s ease;
+}
+
+.adminUsersTable tbody tr:hover {
+    background: #fbf9ff;
+}
+
+.adminUsersTable tbody tr:last-child td {
+    border-bottom: 0;
+}
+
+.adminUserTableIdentity {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 240px;
 }
 
 .adminUserAvatar {
@@ -108,6 +119,12 @@
     background: linear-gradient(135deg, #9ca3af, #d1d5db);
 }
 
+.adminUserTableAvatar {
+    width: 40px;
+    height: 40px;
+    font-size: 0.88rem;
+}
+
 .adminUserInfo {
     flex: 1;
     min-width: 0;
@@ -130,6 +147,33 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.adminUsersTableMuted {
+    color: #6b7280;
+    font-weight: 700;
+}
+
+.adminUserRoleBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 68px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.adminUserRoleBadge--admin {
+    background: #ede9fe;
+    color: #5b21b6;
+}
+
+.adminUserRoleBadge--user {
+    background: #e0f2fe;
+    color: #075985;
 }
 
 /* Status badge */
@@ -157,71 +201,17 @@
     color: #991b1b;
 }
 
-/* Details */
-.adminUserDetails {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.adminUserDetail {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.8rem;
-    color: #4b5563;
-}
-
-.adminUserDetailIcon {
-    font-size: 0.9rem;
-    flex-shrink: 0;
-}
-
-/* Recent activity */
-.adminUserActivity {
-    background: #f9fafb;
-    border-radius: 10px;
-    padding: 10px 12px;
-}
-
-.adminUserActivityLabel {
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin: 0 0 6px;
-}
-
-.adminUserActivityList {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.adminUserActivityItem {
-    display: flex;
-    align-items: flex-start;
-    gap: 6px;
-    font-size: 0.78rem;
-    color: #4b5563;
-    line-height: 1.4;
-}
-
 /* Actions */
 .adminUserActions {
     margin-top: auto;
 }
 
 .adminUserBanBtn {
-    width: 100%;
-    padding: 9px 16px;
+    min-width: 108px;
+    padding: 8px 12px;
     border-radius: 10px;
-    font-size: 0.85rem;
-    font-weight: 600;
+    font-size: 0.78rem;
+    font-weight: 800;
     cursor: pointer;
     font-family: inherit;
     border: none;
@@ -266,11 +256,10 @@
 }
 
 .adminUserMoreBtn {
-    width: 100%;
-    margin-top: 10px;
-    padding: 10px 16px;
+    min-width: 84px;
+    padding: 8px 12px;
     border-radius: 10px;
-    font-size: 0.85rem;
+    font-size: 0.78rem;
     font-weight: 700;
     cursor: pointer;
     font-family: inherit;
@@ -284,6 +273,116 @@
     background: #efe4ff;
     border-color: #c9b3f2;
     transform: translateY(-1px);
+}
+
+.adminUsersTableActions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    min-width: 210px;
+}
+
+.adminUsersProtectedLabel {
+    display: inline-flex;
+    align-items: center;
+    min-width: 108px;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #f3f4f6;
+    color: #6b7280;
+    font-size: 0.78rem;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.adminUserModalOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(17, 24, 39, 0.55);
+}
+
+.adminUserModal {
+    width: min(720px, 100%);
+    max-height: min(82vh, 760px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px;
+    box-shadow: 0 24px 70px rgba(17, 24, 39, 0.24);
+}
+
+.adminUserModalHeader {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 22px 24px 16px;
+    border-bottom: 1px solid #ece6fb;
+}
+
+.adminUserModalIdentity {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    min-width: 0;
+}
+
+.adminUserModalAvatar {
+    width: 54px;
+    height: 54px;
+}
+
+.adminUserModalHeader h2 {
+    margin: 0 0 4px;
+    color: #1a1a2e;
+    font-size: 1.2rem;
+    font-weight: 800;
+}
+
+.adminUserModalHeader p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 0.9rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.adminUserModalClose {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e5e7eb;
+    border-radius: 50%;
+    background: #fff;
+    color: #374151;
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.18s ease, transform 0.12s ease;
+}
+
+.adminUserModalClose:hover {
+    background: #f3f4f6;
+    transform: translateY(-1px);
+}
+
+.adminUserModalBody {
+    overflow-y: auto;
+    display: grid;
+    gap: 14px;
+    padding: 18px 24px 24px;
 }
 
 .adminUserMoreInfo {
@@ -417,6 +516,45 @@
     color: #fecaca;
 }
 
+[data-theme="dark"] .adminUsersTableShell {
+    background: var(--dm-surface);
+    border-color: var(--dm-border);
+    box-shadow: var(--dm-shadow);
+}
+
+[data-theme="dark"] .adminUsersTable th {
+    background: #16161f;
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .adminUsersTable td {
+    border-bottom-color: #2e2e40;
+    color: #e5e7eb;
+}
+
+[data-theme="dark"] .adminUsersTable tbody tr:hover {
+    background: #211b2d;
+}
+
+[data-theme="dark"] .adminUsersTableMuted,
+[data-theme="dark"] .adminUsersProtectedLabel {
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .adminUsersProtectedLabel {
+    background: #252535;
+}
+
+[data-theme="dark"] .adminUserRoleBadge--admin {
+    background: #3b2d5f;
+    color: #ddd6fe;
+}
+
+[data-theme="dark"] .adminUserRoleBadge--user {
+    background: #193549;
+    color: #bae6fd;
+}
+
 [data-theme="dark"] .adminUserStatusHint {
     color: #cbd5e1;
 }
@@ -429,6 +567,38 @@
 
 [data-theme="dark"] .adminUserMoreBtn:hover {
     background: #332946;
+}
+
+[data-theme="dark"] .adminUserModalOverlay {
+    background: rgba(0, 0, 0, 0.68);
+}
+
+[data-theme="dark"] .adminUserModal {
+    background: var(--dm-surface);
+    border-color: var(--dm-border);
+    box-shadow: var(--dm-shadow);
+}
+
+[data-theme="dark"] .adminUserModalHeader {
+    border-bottom-color: #3a314f;
+}
+
+[data-theme="dark"] .adminUserModalHeader h2 {
+    color: #f3f0ff;
+}
+
+[data-theme="dark"] .adminUserModalHeader p {
+    color: #cbd5e1;
+}
+
+[data-theme="dark"] .adminUserModalClose {
+    background: #1b1627;
+    border-color: #4a3c68;
+    color: #f3f0ff;
+}
+
+[data-theme="dark"] .adminUserModalClose:hover {
+    background: #2a2238;
 }
 
 [data-theme="dark"] .adminUserMoreInfo {
@@ -455,27 +625,6 @@
     color: #d1d5db;
 }
 
-[data-theme="dark"] .adminUserCard {
-    background: var(--dm-surface);
-    border-color: var(--dm-border);
-    box-shadow: var(--dm-shadow);
-}
-
-[data-theme="dark"] .adminUserCard--banned {
-    background: var(--dm-surface);
-    border-color: rgba(255, 120, 120, 0.35);
-}
-
-
-[data-theme="dark"] .adminUserActivity {
-    background: #16161f;
-}
-
-[data-theme="dark"] .adminUserDetail,
-[data-theme="dark"] .adminUserActivityItem {
-    color: #d1d5db;
-}
-
 [data-theme="dark"] .adminUserConfirmText {
     color: #e5e7eb;
 }
@@ -486,20 +635,19 @@
 }
 
 /* ── Responsive ─────────────────────────────────────── */
-@media (max-width: 1024px) {
-    .adminUsersGrid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
 @media (max-width: 600px) {
     .adminUsers {
         padding: 20px 14px 32px;
     }
 
-    .adminUsersGrid {
-        grid-template-columns: 1fr;
-        gap: 14px;
+    .adminUsersTable {
+        min-width: 900px;
+        font-size: 0.82rem;
+    }
+
+    .adminUsersTable th,
+    .adminUsersTable td {
+        padding: 12px;
     }
 
     .adminUsersHeader h1 {
@@ -512,5 +660,28 @@
 
     .adminUserInfoRow strong {
         text-align: left;
+    }
+
+    .adminUserModalOverlay {
+        align-items: flex-end;
+        padding: 12px;
+    }
+
+    .adminUserModal {
+        max-height: 88vh;
+        border-radius: 16px;
+    }
+
+    .adminUserModalHeader {
+        padding: 18px 16px 14px;
+    }
+
+    .adminUserModalBody {
+        padding: 16px;
+    }
+
+    .adminUserModalAvatar {
+        width: 46px;
+        height: 46px;
     }
 }
