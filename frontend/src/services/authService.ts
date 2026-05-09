@@ -119,9 +119,13 @@ export async function markSessionActive(userId: number): Promise<void> {
     }
 }
 
-export async function logoutUser(userId: number): Promise<void> {
+export async function logoutUser(userId: number, token?: string): Promise<void> {
     try {
-        await apiClient.post(`/session/logout/${userId}`);
+        await apiClient.post(
+            `/session/logout/${userId}`,
+            {},
+            token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
+        );
     } catch (err) {
         handleError(err, "Nu s-a putut inchide sesiunea utilizatorului.");
     }

@@ -10,6 +10,7 @@ public class UserInfoDto
     public string Role { get; set; }
     public string Status { get; set; }
     public DateTime? LastLoginAt { get; set; }
+    public DateTime? LastActiveAt { get; set; }
     public int LoginCount { get; set; }
     public bool IsEmailVerified { get; set; }
     public bool HasPhone { get; set; }

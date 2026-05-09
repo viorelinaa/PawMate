@@ -19,6 +19,7 @@ type AuthContextType = {
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const sessionHeartbeatMs = 60_000;
 
 function clearStoredUser() {
     sessionStorage.removeItem("pawmate_token");
@@ -64,25 +65,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             }
         });
 
-        function handleBeforeUnload() {
-            const url = `${apiBaseUrl}/session/logout/${userId}`;
+        let hasMarkedOffline = false;
+        const heartbeatId = window.setInterval(() => {
+            void markSessionActive(userId).catch(() => {});
+        }, sessionHeartbeatMs);
 
-            if (navigator.sendBeacon) {
-                navigator.sendBeacon(url);
+        function markOfflineOnPageExit() {
+            if (hasMarkedOffline) {
+                return;
+            }
+
+            hasMarkedOffline = true;
+            const url = `${apiBaseUrl}/session/offline/${userId}`;
+            const token = sessionStorage.getItem("pawmate_token");
+
+            if (!token) {
                 return;
             }
 
             void fetch(url, {
                 method: "POST",
                 keepalive: true,
+                credentials: "include",
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
             });
         }
 
-        window.addEventListener("beforeunload", handleBeforeUnload);
+        window.addEventListener("pagehide", markOfflineOnPageExit);
+        window.addEventListener("beforeunload", markOfflineOnPageExit);
 
         return () => {
             isCancelled = true;
-            window.removeEventListener("beforeunload", handleBeforeUnload);
+            window.clearInterval(heartbeatId);
+            window.removeEventListener("pagehide", markOfflineOnPageExit);
+            window.removeEventListener("beforeunload", markOfflineOnPageExit);
         };
     }, [currentUser?.id]);
 
@@ -109,12 +127,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     function logout() {
         const userId = currentUser?.id ?? Number(sessionStorage.getItem("pawmate_uid"));
 
+        if (Number.isFinite(userId) && userId > 0) {
+            const token = sessionStorage.getItem("pawmate_token") ?? undefined;
+            void logoutUser(userId, token).catch(() => {});
+        }
+
         clearStoredUser();
         setCurrentUser(null);
-
-        if (Number.isFinite(userId) && userId > 0) {
-            void logoutUser(userId).catch(() => {});
-        }
     }
 
     function isAdmin() {

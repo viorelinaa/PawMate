@@ -17,6 +17,7 @@ export interface AdminUser {
     role: AdminUserRole;
     status: AdminUserStatus;
     lastLoginAt: string | null;
+    lastActiveAt: string | null;
     loginCount: number;
     isEmailVerified: boolean;
     hasPhone: boolean;
@@ -54,6 +55,7 @@ export async function getUsers(): Promise<AdminUser[]> {
                     ? user.status
                     : "offline",
             lastLoginAt: user.lastLoginAt ?? null,
+            lastActiveAt: user.lastActiveAt ?? null,
             loginCount: user.loginCount ?? 0,
             isEmailVerified: Boolean(user.isEmailVerified),
             hasPhone: Boolean(user.hasPhone),
@@ -84,6 +86,7 @@ export async function updateUserStatus(
                     ? data.status
                     : "offline",
             lastLoginAt: data.lastLoginAt ?? null,
+            lastActiveAt: data.lastActiveAt ?? null,
             loginCount: data.loginCount ?? 0,
             isEmailVerified: Boolean(data.isEmailVerified),
             hasPhone: Boolean(data.hasPhone),

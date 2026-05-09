@@ -18,6 +18,7 @@ public class UserActions
     private const string ActiveStatus = "active";
     private const string OfflineStatus = "offline";
     private const string BannedStatus = "banned";
+    private static readonly TimeSpan ActiveSessionWindow = TimeSpan.FromMinutes(5);
 
     private readonly PawMateDbContext _context;
     private readonly PasswordSecurityService _passwordSecurityService;
@@ -62,6 +63,7 @@ public class UserActions
                 Role = "user",
                 Status = OfflineStatus,
                 LastLoginAt = null,
+                LastActiveAt = null,
                 LoginCount = 0,
                 IsEmailVerified = false,
                 Phone = string.Empty,
@@ -142,7 +144,9 @@ public class UserActions
                 shouldSave = true;
             }
 
-            user.LastLoginAt = DateTime.UtcNow;
+            var now = DateTime.UtcNow;
+            user.LastLoginAt = now;
+            user.LastActiveAt = now;
             user.LoginCount += 1;
             shouldSave = true;
 
@@ -247,6 +251,7 @@ public class UserActions
                     user.Role,
                     user.Status,
                     user.LastLoginAt,
+                    user.LastActiveAt,
                     user.LoginCount,
                     user.IsEmailVerified,
                     user.Phone,
@@ -309,8 +314,9 @@ public class UserActions
                         Name = user.Name,
                         Email = user.Email,
                         Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
-                        Status = NormalizeStoredStatus(user.Status),
+                        Status = GetSessionAwareStatus(user.Status, user.LastActiveAt),
                         LastLoginAt = user.LastLoginAt,
+                        LastActiveAt = user.LastActiveAt,
                         LoginCount = user.LoginCount,
                         IsEmailVerified = user.IsEmailVerified,
                         HasPhone = !string.IsNullOrWhiteSpace(user.Phone),
@@ -472,6 +478,11 @@ public class UserActions
             }
 
             user.Status = normalizedStatus;
+            if (normalizedStatus == ActiveStatus)
+            {
+                user.LastActiveAt = DateTime.UtcNow;
+            }
+
             _context.SaveChanges();
 
             return new ServiceResponse
@@ -514,9 +525,18 @@ public class UserActions
                 };
             }
 
+            var shouldSave = false;
             if (NormalizeStoredStatus(user.Status) != ActiveStatus)
             {
                 user.Status = ActiveStatus;
+                shouldSave = true;
+            }
+
+            user.LastActiveAt = DateTime.UtcNow;
+            shouldSave = true;
+
+            if (shouldSave)
+            {
                 _context.SaveChanges();
             }
 
@@ -537,7 +557,7 @@ public class UserActions
         }
     }
 
-    public ServiceResponse MarkUserOfflineAction(int userId)
+    public ServiceResponse MarkUserOfflineAction(int userId, bool revokeTokens = true)
     {
         try
         {
@@ -561,12 +581,20 @@ public class UserActions
                 user.Status = OfflineStatus;
             }
 
-            var activeTokens = _context.RefreshTokens
-                .Where(rt => rt.UserId == userId && !rt.IsRevoked)
-                .ToList();
-            foreach (var rt in activeTokens)
+            if (normalizedStatus != BannedStatus)
             {
-                rt.IsRevoked = true;
+                user.LastActiveAt = DateTime.UtcNow;
+            }
+
+            if (revokeTokens)
+            {
+                var activeTokens = _context.RefreshTokens
+                    .Where(rt => rt.UserId == userId && !rt.IsRevoked)
+                    .ToList();
+                foreach (var rt in activeTokens)
+                {
+                    rt.IsRevoked = true;
+                }
             }
 
             _context.SaveChanges();
@@ -630,6 +658,9 @@ public class UserActions
                 IsRevoked = false,
                 CreatedAt = DateTime.UtcNow
             });
+
+            user.Status = ActiveStatus;
+            user.LastActiveAt = DateTime.UtcNow;
 
             var normalizedRole = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase)
                 ? "admin"
@@ -834,7 +865,7 @@ public class UserActions
             Name = user.Name,
             Email = user.Email,
             Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
-            Status = NormalizeStoredStatus(user.Status),
+            Status = GetSessionAwareStatus(user.Status, user.LastActiveAt),
             Phone = user.Phone,
             City = user.City,
             Bio = user.Bio,
@@ -891,8 +922,9 @@ public class UserActions
             Name = user.Name,
             Email = user.Email,
             Role = string.Equals(user.Role, "admin", StringComparison.OrdinalIgnoreCase) ? "admin" : "user",
-            Status = NormalizeStoredStatus(user.Status),
+            Status = GetSessionAwareStatus(user.Status, user.LastActiveAt),
             LastLoginAt = user.LastLoginAt,
+            LastActiveAt = user.LastActiveAt,
             LoginCount = user.LoginCount,
             IsEmailVerified = user.IsEmailVerified,
             HasPhone = !string.IsNullOrWhiteSpace(user.Phone),
@@ -937,6 +969,24 @@ public class UserActions
         }
 
         return lastActivityAt;
+    }
+
+    private static string GetSessionAwareStatus(string? status, DateTime? lastActiveAt)
+    {
+        var normalizedStatus = NormalizeStoredStatus(status);
+        if (normalizedStatus != ActiveStatus)
+        {
+            return normalizedStatus;
+        }
+
+        if (!lastActiveAt.HasValue)
+        {
+            return OfflineStatus;
+        }
+
+        return DateTime.UtcNow - lastActiveAt.Value <= ActiveSessionWindow
+            ? ActiveStatus
+            : OfflineStatus;
     }
 
     private static string NormalizeStoredStatus(string? status)

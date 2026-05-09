@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer.Structure;
 using PawMate.Domain.Models.User;
+using System.Security.Claims;
 
 namespace PawMate.Api.Controllers;
 
@@ -61,6 +62,9 @@ public class AuthController : ControllerBase
     [Authorize]
     public IActionResult MarkActive(int userId)
     {
+        if (!CanManageSession(userId))
+            return Forbid();
+
         var response = _userActions.MarkUserActiveAction(userId);
 
         if (!response.IsSuccess)
@@ -73,6 +77,9 @@ public class AuthController : ControllerBase
     [Authorize]
     public IActionResult Logout(int userId)
     {
+        if (!CanManageSession(userId))
+            return Forbid();
+
         Response.Cookies.Delete(RefreshTokenCookieName);
 
         var response = _userActions.MarkUserOfflineAction(userId);
@@ -81,6 +88,27 @@ public class AuthController : ControllerBase
             return BadRequest(response.Message);
 
         return Ok(response.Data);
+    }
+
+    [HttpPost("offline/{userId}")]
+    [Authorize]
+    public IActionResult MarkOffline(int userId)
+    {
+        if (!CanManageSession(userId))
+            return Forbid();
+
+        var response = _userActions.MarkUserOfflineAction(userId, revokeTokens: false);
+
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+
+        return Ok(response.Data);
+    }
+
+    private bool CanManageSession(int userId)
+    {
+        var claimValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return int.TryParse(claimValue, out var authenticatedUserId) && authenticatedUserId == userId;
     }
 
     private static CookieOptions RefreshTokenCookieOptions() => new()

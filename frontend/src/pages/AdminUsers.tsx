@@ -136,6 +136,10 @@ function AdminUserMoreInfoModal({ user, onClose }: { user: AdminUser; onClose: (
                                 <strong>{statusLabel(user.status)}</strong>
                             </div>
                             <div className="adminUserInfoRow">
+                                <span>Ultima sesiune activa</span>
+                                <strong>{formatDateTime(user.lastActiveAt)}</strong>
+                            </div>
+                            <div className="adminUserInfoRow">
                                 <span>Membru din</span>
                                 <strong>{formatJoinDate(user.createdAt)}</strong>
                             </div>
@@ -297,6 +301,7 @@ export default function AdminUsers() {
                                 <th>Status</th>
                                 <th>Logari</th>
                                 <th>Ultima autentificare</th>
+                                <th>Ultima sesiune</th>
                                 <th>Membru din</th>
                                 <th>Actiuni</th>
                             </tr>
@@ -340,6 +345,7 @@ export default function AdminUsers() {
                                         </td>
                                         <td>{user.loginCount}</td>
                                         <td>{formatDateTime(user.lastLoginAt)}</td>
+                                        <td>{formatDateTime(user.lastActiveAt)}</td>
                                         <td>{formatJoinDate(user.createdAt)}</td>
                                         <td>
                                             <div className="adminUsersTableActions">
