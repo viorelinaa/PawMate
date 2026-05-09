@@ -281,7 +281,7 @@
 
 .vetAddressLink {
     margin: 6px 0;
-    padding: 0;
+    padding: 4px 0;
     border: 0;
     background: none;
     color: var(--color-primary);
@@ -293,6 +293,9 @@
     text-decoration: underline;
     text-decoration-color: rgba(107, 79, 161, 0.35);
     text-underline-offset: 3px;
+    display: inline-flex;
+    align-items: flex-start;
+    min-height: 32px;
 }
 
 .vetAddressLink:hover {
@@ -518,6 +521,8 @@
     max-width: 760px;
     padding: 0;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .vetMapHeader {
@@ -539,6 +544,8 @@
     flex-direction: column;
     gap: 16px;
     padding: 18px 24px 24px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .vetMapCanvas {
@@ -607,6 +614,17 @@
 }
 
 @media (max-width: 640px) {
+    .veterinariContent {
+        padding-inline: 14px;
+    }
+
+    .vetAddressLink {
+        width: 100%;
+        min-height: 44px;
+        padding: 10px 0;
+        align-items: center;
+    }
+
     .vetClinicRow {
         grid-template-columns: 1fr;
     }
@@ -619,15 +637,47 @@
         flex: 1 1 100%;
     }
 
+    .vetMapOverlay {
+        align-items: flex-start;
+        justify-content: center;
+        overflow-y: auto;
+        padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom));
+    }
+
+    .vetMapModal {
+        width: 100%;
+        max-width: none;
+        max-height: calc(100dvh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+        border-radius: var(--radius-md);
+    }
+
     .vetMapHeader {
         padding: 18px 18px 14px;
+        align-items: flex-start;
+        gap: 12px;
+        flex: 0 0 auto;
     }
 
     .vetMapBody {
         padding: 16px 18px 18px;
+        flex: 1 1 auto;
     }
 
     .vetMapFrame {
-        height: 280px;
+        height: min(52dvh, 320px);
+        min-height: 220px;
+    }
+
+    .vetMapActions {
+        flex-direction: column;
+    }
+
+    .vetMapAction {
+        flex: 0 0 auto;
+        width: 100%;
+    }
+
+    .vetMapHint {
+        display: none;
     }
 }
