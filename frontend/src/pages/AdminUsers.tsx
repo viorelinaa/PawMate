@@ -86,20 +86,126 @@ function statusBadgeClass(status: AdminUserStatus) {
     }
 }
 
-function statusHint(status: AdminUserStatus) {
-    switch (status) {
-        case "active":
-            return "Utilizatorul este conectat acum.";
-        case "banned":
-            return "Contul este blocat si nu se poate autentifica.";
-        default:
-            return "Utilizatorul va deveni activ la urmatorul login.";
-    }
+function AdminUserMoreInfoModal({ user, onClose }: { user: AdminUser; onClose: () => void }) {
+    return (
+        <div className="adminUserModalOverlay" onClick={onClose}>
+            <div
+                className="adminUserModal"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby={`admin-user-modal-title-${user.id}`}
+                onClick={(event) => event.stopPropagation()}
+            >
+                <div className="adminUserModalHeader">
+                    <div className="adminUserModalIdentity">
+                        <div className="adminUserAvatar adminUserModalAvatar">
+                            {user.selectedAvatar ? (
+                                <img
+                                    className="adminUserAvatarImage"
+                                    src={user.selectedAvatar.imageUrl}
+                                    alt={user.selectedAvatar.title || `Avatar ${user.name}`}
+                                />
+                            ) : (
+                                buildInitials(user.name)
+                            )}
+                        </div>
+                        <div>
+                            <h2 id={`admin-user-modal-title-${user.id}`}>{user.name}</h2>
+                            <p>{user.email}</p>
+                        </div>
+                    </div>
+                    <button type="button" className="adminUserModalClose" onClick={onClose} aria-label="Inchide">
+                        ×
+                    </button>
+                </div>
+
+                <div className="adminUserModalBody">
+                    <section className="adminUserMoreSection">
+                        <h3 className="adminUserMoreTitle">Date cont</h3>
+                        <div className="adminUserInfoList">
+                            <div className="adminUserInfoRow">
+                                <span>ID utilizator</span>
+                                <strong>{user.id}</strong>
+                            </div>
+                            <div className="adminUserInfoRow">
+                                <span>Rol salvat in baza de date</span>
+                                <strong>{user.role}</strong>
+                            </div>
+                            <div className="adminUserInfoRow">
+                                <span>Statut cont</span>
+                                <strong>{statusLabel(user.status)}</strong>
+                            </div>
+                            <div className="adminUserInfoRow">
+                                <span>Ultima sesiune activa</span>
+                                <strong>{formatDateTime(user.lastActiveAt)}</strong>
+                            </div>
+                            <div className="adminUserInfoRow">
+                                <span>Membru din</span>
+                                <strong>{formatJoinDate(user.createdAt)}</strong>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="adminUserMoreSection">
+                        <h3 className="adminUserMoreTitle">Date utile pentru admin</h3>
+                        <div className="adminUserInfoList">
+                            <div className="adminUserInfoRow">
+                                <span>Data ultimei autentificari</span>
+                                <strong>{formatDateTime(user.lastLoginAt)}</strong>
+                            </div>
+                            <div className="adminUserInfoRow">
+                                <span>Numarul de logari</span>
+                                <strong>{user.loginCount}</strong>
+                            </div>
+                            <div className="adminUserInfoRow">
+                                <span>Status email</span>
+                                <strong>{formatEmailStatus(user.isEmailVerified)}</strong>
+                            </div>
+                            <div className="adminUserInfoRow">
+                                <span>Telefon completat</span>
+                                <strong>{formatAvailability(user.hasPhone)}</strong>
+                            </div>
+                            <div className="adminUserInfoRow">
+                                <span>Oras completat</span>
+                                <strong>{formatAvailability(user.hasCity)}</strong>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section className="adminUserMoreSection">
+                        <h3 className="adminUserMoreTitle">Informatii despre activitate</h3>
+                        <div className="adminUserInfoList">
+                            <div className="adminUserInfoRow">
+                                <span>Cate postari are</span>
+                                <strong>{user.blogPostsCount}</strong>
+                            </div>
+                            <div className="adminUserInfoRow">
+                                <span>Cate animale a adaugat</span>
+                                <strong>{formatMetric(user.petsAddedCount)}</strong>
+                            </div>
+                            <div className="adminUserInfoRow">
+                                <span>Cate anunturi lost pets a publicat</span>
+                                <strong>{formatMetric(user.lostPetsPublishedCount)}</strong>
+                            </div>
+                            <div className="adminUserInfoRow">
+                                <span>Cate programari / cereri are</span>
+                                <strong>{user.adoptionRequestsCount}</strong>
+                            </div>
+                            <div className="adminUserInfoRow">
+                                <span>Ultima activitate in aplicatie</span>
+                                <strong>{formatDateTime(user.lastActivityAt)}</strong>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export default function AdminUsers() {
     const [users, setUsers] = useState<AdminUser[]>([]);
-    const [expandedUserId, setExpandedUserId] = useState<number | null>(null);
+    const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [pendingUserId, setPendingUserId] = useState<number | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -109,7 +215,7 @@ export default function AdminUsers() {
             try {
                 setIsLoading(true);
                 const loadedUsers = await getUsers();
-                setUsers(loadedUsers.filter((user) => user.role === "user"));
+                setUsers(loadedUsers);
                 setError(null);
             } catch (err) {
                 setError(err instanceof Error ? err.message : "Nu s-a putut incarca lista de utilizatori.");
@@ -120,6 +226,28 @@ export default function AdminUsers() {
 
         void loadUsers();
     }, []);
+
+    useEffect(() => {
+        if (!selectedUser) {
+            return;
+        }
+
+        const previousOverflow = document.body.style.overflow;
+
+        function handleKeyDown(event: KeyboardEvent) {
+            if (event.key === "Escape") {
+                setSelectedUser(null);
+            }
+        }
+
+        document.body.style.overflow = "hidden";
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.body.style.overflow = previousOverflow;
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [selectedUser]);
 
     async function handleStatusChange(userId: number, status: AdminUserStatus) {
         try {
@@ -141,8 +269,8 @@ export default function AdminUsers() {
         }
     }
 
-    function toggleMoreInfo(userId: number) {
-        setExpandedUserId((prev) => (prev === userId ? null : userId));
+    function openMoreInfo(user: AdminUser) {
+        setSelectedUser(user);
     }
 
     return (
@@ -163,162 +291,103 @@ export default function AdminUsers() {
             ) : users.length === 0 ? (
                 <div className="adminUsersState">Nu exista utilizatori inregistrati in baza de date.</div>
             ) : (
-                <div className="adminUsersGrid">
-                    {users.map((user) => {
-                        const isPending = pendingUserId === user.id;
-                        const isExpanded = expandedUserId === user.id;
+                <div className="adminUsersTableShell">
+                    <table className="adminUsersTable">
+                        <thead>
+                            <tr>
+                                <th>Utilizator</th>
+                                <th>ID</th>
+                                <th>Rol</th>
+                                <th>Status</th>
+                                <th>Logari</th>
+                                <th>Ultima autentificare</th>
+                                <th>Ultima sesiune</th>
+                                <th>Membru din</th>
+                                <th>Actiuni</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {users.map((user) => {
+                                const isPending = pendingUserId === user.id;
+                                const isAdminUser = user.role === "admin";
 
-                        return (
-                            <article key={user.id} className="adminUserCard">
-                                <div className="adminUserCardTop">
-                                    <div className="adminUserAvatar">
-                                        {user.selectedAvatar ? (
-                                            <img
-                                                className="adminUserAvatarImage"
-                                                src={user.selectedAvatar.imageUrl}
-                                                alt={user.selectedAvatar.title || `Avatar ${user.name}`}
-                                            />
-                                        ) : (
-                                            buildInitials(user.name)
-                                        )}
-                                    </div>
-                                    <div className="adminUserInfo">
-                                        <p className="adminUserName">{user.name}</p>
-                                        <p className="adminUserEmail">{user.email}</p>
-                                    </div>
-                                    <span className={`adminUserBadge ${statusBadgeClass(user.status)}`}>
-                                        {statusLabel(user.status)}
-                                    </span>
-                                </div>
-
-                                <div className="adminUserDetails">
-                                    <div className="adminUserDetail">
-                                        <span className="adminUserDetailIcon">📅</span>
-                                        <span>Membru din {formatJoinDate(user.createdAt)}</span>
-                                    </div>
-                                    <div className="adminUserDetail">
-                                        <span className="adminUserDetailIcon">🆔</span>
-                                        <span>ID utilizator: {user.id}</span>
-                                    </div>
-                                    <div className="adminUserDetail">
-                                        <span className="adminUserDetailIcon">👤</span>
-                                        <span>Rol salvat in baza de date: {user.role}</span>
-                                    </div>
-                                    <div className="adminUserDetail">
-                                        <span className="adminUserDetailIcon">📡</span>
-                                        <span>Statut cont: {statusLabel(user.status).toLowerCase()}</span>
-                                    </div>
-                                </div>
-
-                                <div className="adminUserActivity">
-                                    <p className="adminUserActivityLabel">Sursa</p>
-                                    <ul className="adminUserActivityList">
-                                        <li className="adminUserActivityItem">
-                                            <span>💾</span>
-                                            <span>Datele de pe acest card vin din tabela de utilizatori din baza de date.</span>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <div className="adminUserActions">
-                                    {user.status === "banned" ? (
-                                        <button
-                                            className="adminUserBanBtn adminUserBanBtn--unban"
-                                            onClick={() => handleStatusChange(user.id, "offline")}
-                                            disabled={isPending}
-                                        >
-                                            {isPending ? "Se actualizeaza..." : "Deblocheaza contul"}
-                                        </button>
-                                    ) : (
-                                        <button
-                                            className="adminUserBanBtn adminUserBanBtn--ban"
-                                            onClick={() => handleStatusChange(user.id, "banned")}
-                                            disabled={isPending}
-                                        >
-                                            {isPending ? "Se actualizeaza..." : "Blocheaza contul"}
-                                        </button>
-                                    )}
-                                    <button
-                                        type="button"
-                                        className="adminUserMoreBtn"
-                                        onClick={() => toggleMoreInfo(user.id)}
-                                    >
-                                        {isExpanded ? "Ascunde informatiile" : "Vezi mai multe informatii"}
-                                    </button>
-                                    <p className="adminUserStatusHint">{statusHint(user.status)}</p>
-                                </div>
-
-                                {isExpanded ? (
-                                    <div className="adminUserMoreInfo">
-                                        <section className="adminUserMoreSection">
-                                            <h2 className="adminUserMoreTitle">Butoane de actiune</h2>
-                                            <div className="adminUserActionChipList">
-                                                <span className="adminUserActionChip">Vezi profil</span>
-                                                <span className="adminUserActionChip">Editeaza</span>
-                                                <span className="adminUserActionChip">Schimba rolul</span>
-                                                <span className="adminUserActionChip">Dezactiveaza / Activeaza</span>
-                                                <span className="adminUserActionChip">Sterge</span>
-                                            </div>
-                                        </section>
-
-                                        <section className="adminUserMoreSection">
-                                            <h2 className="adminUserMoreTitle">Date utile pentru admin</h2>
-                                            <div className="adminUserInfoList">
-                                                <div className="adminUserInfoRow">
-                                                    <span>Data ultimei autentificari</span>
-                                                    <strong>{formatDateTime(user.lastLoginAt)}</strong>
+                                return (
+                                    <tr key={user.id}>
+                                        <td>
+                                            <div className="adminUserTableIdentity">
+                                                <div className="adminUserAvatar adminUserTableAvatar">
+                                                    {user.selectedAvatar ? (
+                                                        <img
+                                                            className="adminUserAvatarImage"
+                                                            src={user.selectedAvatar.imageUrl}
+                                                            alt={user.selectedAvatar.title || `Avatar ${user.name}`}
+                                                        />
+                                                    ) : (
+                                                        buildInitials(user.name)
+                                                    )}
                                                 </div>
-                                                <div className="adminUserInfoRow">
-                                                    <span>Numarul de logari</span>
-                                                    <strong>{user.loginCount}</strong>
-                                                </div>
-                                                <div className="adminUserInfoRow">
-                                                    <span>Status email</span>
-                                                    <strong>{formatEmailStatus(user.isEmailVerified)}</strong>
-                                                </div>
-                                                <div className="adminUserInfoRow">
-                                                    <span>Telefon completat</span>
-                                                    <strong>{formatAvailability(user.hasPhone)}</strong>
-                                                </div>
-                                                <div className="adminUserInfoRow">
-                                                    <span>Oras completat</span>
-                                                    <strong>{formatAvailability(user.hasCity)}</strong>
+                                                <div className="adminUserInfo">
+                                                    <p className="adminUserName">{user.name}</p>
+                                                    <p className="adminUserEmail">{user.email}</p>
                                                 </div>
                                             </div>
-                                        </section>
-
-                                        <section className="adminUserMoreSection">
-                                            <h2 className="adminUserMoreTitle">Informatii despre activitate</h2>
-                                            <div className="adminUserInfoList">
-                                                <div className="adminUserInfoRow">
-                                                    <span>Cate postari are</span>
-                                                    <strong>{user.blogPostsCount}</strong>
-                                                </div>
-                                                <div className="adminUserInfoRow">
-                                                    <span>Cate animale a adaugat</span>
-                                                    <strong>{formatMetric(user.petsAddedCount)}</strong>
-                                                </div>
-                                                <div className="adminUserInfoRow">
-                                                    <span>Cate anunturi lost pets a publicat</span>
-                                                    <strong>{formatMetric(user.lostPetsPublishedCount)}</strong>
-                                                </div>
-                                                <div className="adminUserInfoRow">
-                                                    <span>Cate programari / cereri are</span>
-                                                    <strong>{user.adoptionRequestsCount}</strong>
-                                                </div>
-                                                <div className="adminUserInfoRow">
-                                                    <span>Ultima activitate in aplicatie</span>
-                                                    <strong>{formatDateTime(user.lastActivityAt)}</strong>
-                                                </div>
+                                        </td>
+                                        <td className="adminUsersTableMuted">#{user.id}</td>
+                                        <td>
+                                            <span className={`adminUserRoleBadge adminUserRoleBadge--${user.role}`}>
+                                                {user.role === "admin" ? "Admin" : "User"}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <span className={`adminUserBadge ${statusBadgeClass(user.status)}`}>
+                                                {statusLabel(user.status)}
+                                            </span>
+                                        </td>
+                                        <td>{user.loginCount}</td>
+                                        <td>{formatDateTime(user.lastLoginAt)}</td>
+                                        <td>{formatDateTime(user.lastActiveAt)}</td>
+                                        <td>{formatJoinDate(user.createdAt)}</td>
+                                        <td>
+                                            <div className="adminUsersTableActions">
+                                                {isAdminUser ? (
+                                                    <span className="adminUsersProtectedLabel">Cont admin</span>
+                                                ) : user.status === "banned" ? (
+                                                    <button
+                                                        className="adminUserBanBtn adminUserBanBtn--unban"
+                                                        onClick={() => handleStatusChange(user.id, "offline")}
+                                                        disabled={isPending}
+                                                    >
+                                                        {isPending ? "..." : "Deblocheaza"}
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        className="adminUserBanBtn adminUserBanBtn--ban"
+                                                        onClick={() => handleStatusChange(user.id, "banned")}
+                                                        disabled={isPending}
+                                                    >
+                                                        {isPending ? "..." : "Blocheaza"}
+                                                    </button>
+                                                )}
+                                                <button
+                                                    type="button"
+                                                    className="adminUserMoreBtn"
+                                                    onClick={() => openMoreInfo(user)}
+                                                >
+                                                    Detalii
+                                                </button>
                                             </div>
-                                        </section>
-                                    </div>
-                                ) : null}
-                            </article>
-                        );
-                    })}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
                 </div>
             )}
+
+            {selectedUser ? (
+                <AdminUserMoreInfoModal user={selectedUser} onClose={() => setSelectedUser(null)} />
+            ) : null}
         </div>
     );
 }
