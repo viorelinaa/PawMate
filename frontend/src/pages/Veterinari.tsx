@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/Veterinari.css";
 import { AdminOnly } from "../components/AdminOnly";
 import { SearchIcon } from "../components/SearchIcon";
@@ -192,6 +193,8 @@ function VeterinarCard({
 }
 
 export default function Veterinari() {
+    const location = useLocation();
+    const navigate = useNavigate();
     const [query, setQuery] = useState("");
     const [city, setCity] = useState("ALL");
     const [onlyEmergency, setOnlyEmergency] = useState(false);
@@ -202,6 +205,25 @@ export default function Veterinari() {
     const [veterinariList, setVeterinariList] = useState<VeterinaryClinic[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const searchParams = new URLSearchParams(location.search);
+        if (searchParams.get("add") !== "clinic") {
+            return;
+        }
+
+        setShowAddModal(true);
+        searchParams.delete("add");
+
+        const nextSearch = searchParams.toString();
+        navigate(
+            {
+                pathname: location.pathname,
+                search: nextSearch ? `?${nextSearch}` : "",
+            },
+            { replace: true }
+        );
+    }, [location.pathname, location.search, navigate]);
 
     useEffect(() => {
         if (!selectedVeterinar && !showAddModal && !editClinicTarget && !deleteClinicTarget) {
