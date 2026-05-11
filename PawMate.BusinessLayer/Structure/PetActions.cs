@@ -77,6 +77,7 @@ public class PetActions
                 Vaccinated = entity.Vaccinated,
                 Sterilized = entity.Sterilized,
                 Description = entity.Description,
+                ImageUrl = entity.ImageUrl,
                 UserId = entity.UserId
             };
 
@@ -162,6 +163,7 @@ public class PetActions
                     Vaccinated = p.Vaccinated,
                     Sterilized = p.Sterilized,
                     Description = p.Description,
+                    ImageUrl = p.ImageUrl,
                     UserId = p.UserId
                 })
                 .ToList();
@@ -225,6 +227,50 @@ public class PetActions
         }
     }
 
+
+    public ServiceResponse UpdatePetImageAction(int id, int userId, bool isAdmin, string imageUrl)
+    {
+        try
+        {
+            var entity = _context.Pets.FirstOrDefault(p => p.Id == id);
+
+            if (entity == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Animalul de companie nu a fost gasit."
+                };
+            }
+
+            if (!isAdmin && entity.UserId != userId)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Poti modifica doar animalele adaugate de tine."
+                };
+            }
+
+            entity.ImageUrl = imageUrl;
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Imaginea animalului a fost salvata cu succes.",
+                Data = imageUrl
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la salvarea imaginii: {ex.Message}"
+            };
+        }
+    }
     public ServiceResponse DeletePetAction(int id, int userId, bool isAdmin)
     {
         try

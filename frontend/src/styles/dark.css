@@ -908,3 +908,92 @@
     border-color: var(--dm-accent-strong);
     box-shadow: 0 0 0 3px rgba(200, 170, 240, 0.2);
 }
+
+.appShell[data-theme="dark"] .petImagePlaceholder,
+.appShell[data-theme="dark"] .petImagePicker {
+    background: rgba(255,255,255,0.06);
+    border-color: var(--dm-border);
+}
+
+.appShell[data-theme="dark"] .petImage,
+.appShell[data-theme="dark"] .petImagePreview {
+    border-color: var(--dm-border);
+}
+
+/* Adoption and lost-pet modals */
+.appShell[data-theme="dark"] .modalBox,
+.appShell[data-theme="dark"] .lostModalBox {
+    background: linear-gradient(180deg, #2b2436 0%, #211b2c 100%);
+    border: 1px solid var(--dm-border);
+    box-shadow: 0 22px 60px rgba(0, 0, 0, 0.62);
+    color: var(--dm-text);
+}
+
+.appShell[data-theme="dark"] .lostModalOverlay {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.appShell[data-theme="dark"] .modalTitle,
+.appShell[data-theme="dark"] .lostModalTitle {
+    color: var(--dm-accent);
+}
+
+.appShell[data-theme="dark"] .modalLabel,
+.appShell[data-theme="dark"] .lostModalLabel,
+.appShell[data-theme="dark"] .modalCheckLabel,
+.appShell[data-theme="dark"] .lostModalCheckLabel {
+    color: var(--dm-muted);
+}
+
+.appShell[data-theme="dark"] .modalClose,
+.appShell[data-theme="dark"] .lostModalClose {
+    color: var(--dm-accent);
+}
+
+.appShell[data-theme="dark"] .modalClose:hover,
+.appShell[data-theme="dark"] .lostModalClose:hover {
+    color: var(--dm-text);
+    background: var(--dm-accent-soft);
+}
+
+.appShell[data-theme="dark"] .modalInput,
+.appShell[data-theme="dark"] .modalTextarea,
+.appShell[data-theme="dark"] .lostModalInput,
+.appShell[data-theme="dark"] .lostModalTextarea,
+.appShell[data-theme="dark"] .modalBox .fs-btn,
+.appShell[data-theme="dark"] .lostModalBox .fs-btn {
+    background: #2a2334;
+    border-color: rgba(203, 176, 234, 0.28);
+    color: var(--dm-text);
+}
+
+.appShell[data-theme="dark"] .modalInput::placeholder,
+.appShell[data-theme="dark"] .modalTextarea::placeholder,
+.appShell[data-theme="dark"] .lostModalInput::placeholder,
+.appShell[data-theme="dark"] .lostModalTextarea::placeholder {
+    color: rgba(241, 234, 249, 0.5);
+}
+
+.appShell[data-theme="dark"] .modalInput:focus,
+.appShell[data-theme="dark"] .modalTextarea:focus,
+.appShell[data-theme="dark"] .lostModalInput:focus,
+.appShell[data-theme="dark"] .lostModalTextarea:focus,
+.appShell[data-theme="dark"] .modalBox .fs-btn:focus,
+.appShell[data-theme="dark"] .lostModalBox .fs-btn:focus {
+    border-color: var(--dm-accent-strong);
+    box-shadow: 0 0 0 3px rgba(200, 170, 240, 0.18);
+}
+
+.appShell[data-theme="dark"] .modalActions,
+.appShell[data-theme="dark"] .lostModalActions {
+    border-color: var(--dm-border-soft);
+}
+
+.appShell[data-theme="dark"] .petImagePicker {
+    background: rgba(203, 176, 234, 0.08);
+    color: var(--dm-accent);
+}
+
+.appShell[data-theme="dark"] .petImagePicker small {
+    color: var(--dm-muted);
+}

@@ -27,6 +27,11 @@ public class PetLogic : PetActions, IPetLogic
         return UpdatePetAction(id, pet);
     }
 
+
+    public ServiceResponse UpdatePetImage(int id, int userId, bool isAdmin, string imageUrl)
+    {
+        return UpdatePetImageAction(id, userId, isAdmin, imageUrl);
+    }
     public ServiceResponse DeletePet(int id, int userId, bool isAdmin)
     {
         return DeletePetAction(id, userId, isAdmin);

@@ -8,7 +8,6 @@ import { FilterSelect } from "../components/FilterSelect";
 import { getPets, AddPetModal, EditPetModal, DeleteConfirmModal, PetCard } from "../components/PetModals";
 import type { Pet } from "../services/petService";
 
-// ── Pagina principală ─────────────────────────────────────────────────────────
 export default function Adoption() {
     const [showAddModal, setShowAddModal] = useState(false);
     const [editPet, setEditPet] = useState<Pet | null>(null);

@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
-import { getPets, createPet, updatePet, deletePet } from "../services/petService";
+import { getPets, createPet, updatePet, deletePet, uploadPetImage, getPetImageUrl } from "../services/petService";
 import { useAuth } from "../context/AuthContext";
 import type { Pet } from "../services/petService";
+
+const maxPetImageBytes = 2 * 1024 * 1024;
+const allowedPetImageTypes = ["image/jpeg", "image/png", "image/webp"];
 
 export interface PetForm {
     name: string;
@@ -35,10 +38,32 @@ export function petToForm(p: Pet): PetForm {
 }
 
 export { getPets };
+function normalizePetLabel(value: string) {
+    const invalidChar = "\uFFFD";
+    const labels: Record<string, string> = {
+        [`Pisic${invalidChar}`]: "Pisică",
+        [`C${invalidChar}ine`]: "Câine",
+        [`Pas${invalidChar}re`]: "Pasăre",
+        [`Roz${invalidChar}tor`]: "Rozător",
+    };
 
-// ── Formular comun ────────────────────────────────────────────────────────────
+    return labels[value] ?? value;
+}
+
+function validatePetImage(file: File | null) {
+    if (!file) return "";
+    if (!allowedPetImageTypes.includes(file.type)) {
+        return "Alege o imagine JPG, PNG sau WEBP.";
+    }
+    if (file.size > maxPetImageBytes) {
+        return "Imaginea trebuie să aibă maximum 2 MB.";
+    }
+    return "";
+}
+
 export function PetFormFields({
     form, errors, loading, apiError, submitLabel, onSubmit, onChange, onClose,
+    selectedImage, imagePreviewUrl, imageError, onImageChange,
 }: {
     form: PetForm;
     errors: Partial<Record<keyof PetForm, string>>;
@@ -48,6 +73,10 @@ export function PetFormFields({
     onSubmit: (e: React.FormEvent) => void;
     onChange: (field: keyof PetForm, value: string | boolean) => void;
     onClose: () => void;
+    selectedImage?: File | null;
+    imagePreviewUrl?: string;
+    imageError?: string;
+    onImageChange?: (file: File | null) => void;
 }) {
     return (
         <form className="modalForm" onSubmit={onSubmit} noValidate>
@@ -153,6 +182,25 @@ export function PetFormFields({
                 />
             </div>
 
+            {onImageChange && (
+                <div className="modalField">
+                    <label className="modalLabel">Poza animalului</label>
+                    <label className="petImagePicker">
+                        <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            onChange={e => onImageChange(e.target.files?.[0] ?? null)}
+                        />
+                        <span>{selectedImage ? selectedImage.name : "Alege imaginea"}</span>
+                        <small>JPG, PNG sau WEBP, maximum 2 MB</small>
+                    </label>
+                    {imagePreviewUrl && (
+                        <img className="petImagePreview" src={imagePreviewUrl} alt="Previzualizare animal" />
+                    )}
+                    {imageError && <span className="fieldError">{imageError}</span>}
+                </div>
+            )}
+
             {apiError && <p className="fieldError" style={{ textAlign: "center" }}>{apiError}</p>}
 
             <div className="modalActions">
@@ -177,21 +225,40 @@ function validatePetForm(form: PetForm): Partial<Record<keyof PetForm, string>> 
     return e;
 }
 
-// ── Modal Adăugare ────────────────────────────────────────────────────────────
 export function AddPetModal({ onClose, onAdded }: { onClose: () => void; onAdded: () => void }) {
     const [form, setForm] = useState<PetForm>(emptyForm);
     const [errors, setErrors] = useState<Partial<Record<keyof PetForm, string>>>({});
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+    const [imageError, setImageError] = useState("");
+
+    useEffect(() => {
+        if (!selectedImage) {
+            setImagePreviewUrl("");
+            return;
+        }
+
+        const previewUrl = URL.createObjectURL(selectedImage);
+        setImagePreviewUrl(previewUrl);
+
+        return () => URL.revokeObjectURL(previewUrl);
+    }, [selectedImage]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         const errs = validatePetForm(form);
-        if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+        const selectedImageError = validatePetImage(selectedImage);
+        setImageError(selectedImageError);
+        if (Object.keys(errs).length > 0 || selectedImageError) { setErrors(errs); return; }
         setLoading(true);
         setApiError(null);
         try {
-            await createPet(form);
+            const petId = await createPet(form);
+            if (selectedImage) {
+                await uploadPetImage(petId, selectedImage);
+            }
             onAdded();
             onClose();
         } catch (err: unknown) {
@@ -206,24 +273,32 @@ export function AddPetModal({ onClose, onAdded }: { onClose: () => void; onAdded
         setErrors(prev => ({ ...prev, [field]: undefined }));
     }
 
+    function handleImageChange(file: File | null) {
+        setSelectedImage(file);
+        setImageError(validatePetImage(file));
+    }
+
     return (
         <div className="modalOverlay" onClick={onClose}>
             <div className="modalBox" onClick={e => e.stopPropagation()}>
                 <div className="modalHeader">
                     <h2 className="modalTitle">Adaugă animal pentru adopție</h2>
-                    <button className="modalClose" onClick={onClose} aria-label="Închide">✕</button>
+                    <button className="modalClose" onClick={onClose} aria-label="Închide">x</button>
                 </div>
                 <PetFormFields
                     form={form} errors={errors} loading={loading} apiError={apiError}
                     submitLabel="Adaugă animal"
                     onSubmit={handleSubmit} onChange={handleChange} onClose={onClose}
+                    selectedImage={selectedImage}
+                    imagePreviewUrl={imagePreviewUrl}
+                    imageError={imageError}
+                    onImageChange={handleImageChange}
                 />
             </div>
         </div>
     );
 }
 
-// ── Modal Editare ─────────────────────────────────────────────────────────────
 export function EditPetModal({ pet, onClose, onUpdated }: { pet: Pet; onClose: () => void; onUpdated: () => void }) {
     const [form, setForm] = useState<PetForm>(petToForm(pet));
     const [errors, setErrors] = useState<Partial<Record<keyof PetForm, string>>>({});
@@ -257,7 +332,7 @@ export function EditPetModal({ pet, onClose, onUpdated }: { pet: Pet; onClose: (
             <div className="modalBox" onClick={e => e.stopPropagation()}>
                 <div className="modalHeader">
                     <h2 className="modalTitle">Editează animal</h2>
-                    <button className="modalClose" onClick={onClose} aria-label="Închide">✕</button>
+                    <button className="modalClose" onClick={onClose} aria-label="Închide">x</button>
                 </div>
                 <PetFormFields
                     form={form} errors={errors} loading={loading} apiError={apiError}
@@ -269,7 +344,6 @@ export function EditPetModal({ pet, onClose, onUpdated }: { pet: Pet; onClose: (
     );
 }
 
-// ── Modal Confirmare Ștergere ─────────────────────────────────────────────────
 export function DeleteConfirmModal({ pet, onClose, onDeleted }: { pet: Pet; onClose: () => void; onDeleted: () => void }) {
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
@@ -293,7 +367,7 @@ export function DeleteConfirmModal({ pet, onClose, onDeleted }: { pet: Pet; onCl
             <div className="modalBox" style={{ maxWidth: 420 }} onClick={e => e.stopPropagation()}>
                 <div className="modalHeader">
                     <h2 className="modalTitle">Șterge animal</h2>
-                    <button className="modalClose" onClick={onClose} aria-label="Închide">✕</button>
+                    <button className="modalClose" onClick={onClose} aria-label="Închide">x</button>
                 </div>
                 <div style={{ padding: "8px 0 16px", textAlign: "center", color: "var(--color-text)" }}>
                     Ești sigur că vrei să ștergi <strong>{pet.name}</strong>? Această acțiune nu poate fi anulată.
@@ -317,20 +391,34 @@ export function DeleteConfirmModal({ pet, onClose, onDeleted }: { pet: Pet; onCl
     );
 }
 
-// ── Card Animal ───────────────────────────────────────────────────────────────
 export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => void; onDelete: (p: Pet) => void }) {
     const { currentUser, isAdmin } = useAuth();
     const canEdit = isAdmin();
     const canDelete = canEdit || (!!currentUser && p.userId === currentUser.id);
+    const [imageFailed, setImageFailed] = useState(false);
+    const imageSrc = imageFailed ? "" : getPetImageUrl(p.imageUrl);
+    const speciesLabel = normalizePetLabel(p.species);
+
+    useEffect(() => {
+        setImageFailed(false);
+    }, [p.imageUrl]);
 
     return (
         <div className="petCard">
+            {imageSrc ? (
+                <img className="petImage" src={imageSrc} alt={`Poză cu ${p.name}`} loading="lazy" onError={() => setImageFailed(true)} />
+            ) : (
+                <div className="petImagePlaceholder">
+                    <span>{speciesLabel}</span>
+                    <small>Fără poză</small>
+                </div>
+            )}
             <div className="petCardHeader">
                 <div>
                     <h3 className="petName">{p.name}</h3>
                     <span className="petCity">{p.city}</span>
                 </div>
-                <span className="badge">{p.species}</span>
+                <span className="badge">{speciesLabel}</span>
             </div>
             <div className="badges">
                 <span className="badge">{p.age}</span>
@@ -340,12 +428,12 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
             </div>
             <p className="petDesc">{p.description}</p>
             <div className="petCardActions" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                <AppButton className="btnDetails" variant="primary" onClick={() => alert("Cerere trimisa (mock)!")}>
+                <AppButton className="btnDetails" variant="primary" onClick={() => alert("Cerere trimisă (mock)!")}>
                     Cere detalii
                 </AppButton>
                 {canEdit && (
                     <AppButton variant="ghost" size="sm" onClick={() => onEdit(p)}>
-                        Editeaza
+                        Editează
                     </AppButton>
                 )}
                 {canDelete && (
@@ -355,7 +443,7 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
                         onClick={() => onDelete(p)}
                         style={{ borderColor: "#e53e3e", color: "#e53e3e" }}
                     >
-                        Sterge
+                        Șterge
                     </AppButton>
                 )}
             </div>

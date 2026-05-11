@@ -97,3 +97,6 @@ knip.jsonc
 *.cache
 private_key.pem
 public_key.pem
+
+# Uploaded local media
+PawMate.Api/wwwroot/uploads/

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { apiClient } from "../axios/apiClient";
+import { apiBaseUrl, apiClient } from "../axios/apiClient";
 
 export interface PetCreatePayload {
   name: string;
@@ -24,6 +24,7 @@ export interface Pet {
   vaccinated: boolean;
   sterilized: boolean;
   description: string;
+  imageUrl?: string | null;
   userId?: number | null;
 }
 
@@ -39,6 +40,16 @@ export interface PetQuery {
   sortDirection?: "asc" | "desc";
 }
 
+interface CreatePetResponse {
+  id: number;
+}
+
+interface UploadPetImageResponse {
+  imageUrl: string;
+}
+
+const apiFileBaseUrl = apiBaseUrl.replace(/\/api$/i, "");
+
 function handleError(err: unknown, fallback: string): never {
   if (axios.isAxiosError(err)) {
     const message =
@@ -52,6 +63,12 @@ function handleError(err: unknown, fallback: string): never {
   throw new Error(fallback);
 }
 
+export function getPetImageUrl(imageUrl?: string | null) {
+  if (!imageUrl) return "";
+  if (/^https?:\/\//i.test(imageUrl)) return imageUrl;
+  return `${apiFileBaseUrl}${imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`}`;
+}
+
 export async function getPets(query?: PetQuery): Promise<Pet[]> {
     try {
         const { data } = await apiClient.get<Pet[]>("/pets/list", { params: query });
@@ -61,11 +78,29 @@ export async function getPets(query?: PetQuery): Promise<Pet[]> {
     }
 }
 
-export async function createPet(data: PetCreatePayload): Promise<void> {
+export async function createPet(data: PetCreatePayload): Promise<number> {
   try {
-    await apiClient.post("/pets/create", data);
+    const response = await apiClient.post<CreatePetResponse>("/pets/create", data);
+    return response.data.id;
   } catch (err) {
     handleError(err, "Eroare la adăugarea animalului.");
+  }
+}
+
+export async function uploadPetImage(id: number, image: File): Promise<string> {
+  try {
+    const formData = new FormData();
+    formData.append("image", image);
+
+    const { data } = await apiClient.post<UploadPetImageResponse>(`/pets/${id}/image`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    return data.imageUrl;
+  } catch (err) {
+    handleError(err, "Eroare la încărcarea imaginii.");
   }
 }
 

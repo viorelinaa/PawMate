@@ -9,5 +9,6 @@ public interface IPetLogic
     ServiceResponse GetPetById(int id);
     ServiceResponse GetPetList(PetQueryDto query);
     ServiceResponse UpdatePet(int id, PetUpdateDto pet);
+    ServiceResponse UpdatePetImage(int id, int userId, bool isAdmin, string imageUrl);
     ServiceResponse DeletePet(int id, int userId, bool isAdmin);
 }
