@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
-import { AdminOnly } from "./AdminOnly";
 import { getPets, createPet, updatePet, deletePet } from "../services/petService";
+import { useAuth } from "../context/AuthContext";
 import type { Pet } from "../services/petService";
 
 export interface PetForm {
@@ -319,6 +319,10 @@ export function DeleteConfirmModal({ pet, onClose, onDeleted }: { pet: Pet; onCl
 
 // ── Card Animal ───────────────────────────────────────────────────────────────
 export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => void; onDelete: (p: Pet) => void }) {
+    const { currentUser, isAdmin } = useAuth();
+    const canEdit = isAdmin();
+    const canDelete = canEdit || (!!currentUser && p.userId === currentUser.id);
+
     return (
         <div className="petCard">
             <div className="petCardHeader">
@@ -336,22 +340,24 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
             </div>
             <p className="petDesc">{p.description}</p>
             <div className="petCardActions" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                <AppButton className="btnDetails" variant="primary" onClick={() => alert("Cerere trimisă (mock)!")}>
+                <AppButton className="btnDetails" variant="primary" onClick={() => alert("Cerere trimisa (mock)!")}>
                     Cere detalii
                 </AppButton>
-                <AdminOnly>
+                {canEdit && (
                     <AppButton variant="ghost" size="sm" onClick={() => onEdit(p)}>
-                        Editează
+                        Editeaza
                     </AppButton>
+                )}
+                {canDelete && (
                     <AppButton
                         variant="ghost"
                         size="sm"
                         onClick={() => onDelete(p)}
                         style={{ borderColor: "#e53e3e", color: "#e53e3e" }}
                     >
-                        Șterge
+                        Sterge
                     </AppButton>
-                </AdminOnly>
+                )}
             </div>
         </div>
     );

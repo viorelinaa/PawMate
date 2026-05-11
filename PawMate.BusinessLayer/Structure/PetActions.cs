@@ -14,7 +14,7 @@ public class PetActions
         _context = new PawMateDbContext();
     }
 
-    public ServiceResponse CreatePetAction(PetCreateDto pet)
+    public ServiceResponse CreatePetAction(PetCreateDto pet, int userId)
     {
         try
         {
@@ -27,7 +27,8 @@ public class PetActions
                 Size = pet.Size,
                 Vaccinated = pet.Vaccinated,
                 Sterilized = pet.Sterilized,
-                Description = pet.Description
+                Description = pet.Description,
+                UserId = userId
             };
 
             _context.Pets.Add(entity);
@@ -75,7 +76,8 @@ public class PetActions
                 Size = entity.Size,
                 Vaccinated = entity.Vaccinated,
                 Sterilized = entity.Sterilized,
-                Description = entity.Description
+                Description = entity.Description,
+                UserId = entity.UserId
             };
 
             return new ServiceResponse
@@ -159,7 +161,8 @@ public class PetActions
                     Size = p.Size,
                     Vaccinated = p.Vaccinated,
                     Sterilized = p.Sterilized,
-                    Description = p.Description
+                    Description = p.Description,
+                    UserId = p.UserId
                 })
                 .ToList();
 
@@ -222,7 +225,7 @@ public class PetActions
         }
     }
 
-    public ServiceResponse DeletePetAction(int id)
+    public ServiceResponse DeletePetAction(int id, int userId, bool isAdmin)
     {
         try
         {
@@ -233,17 +236,28 @@ public class PetActions
                 return new ServiceResponse
                 {
                     IsSuccess = false,
-                    Message = "Animalul de companie nu a fost găsit."
+                    Message = "Animalul de companie nu a fost gasit."
                 };
             }
 
+            if (!isAdmin && entity.UserId != userId)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Poti sterge doar animalele adaugate de tine."
+                };
+            }
+
+            var adoptionRequests = _context.Adoptions.Where(a => a.PetId == id);
+            _context.Adoptions.RemoveRange(adoptionRequests);
             _context.Pets.Remove(entity);
             _context.SaveChanges();
 
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Animalul de companie a fost șters cu succes."
+                Message = "Animalul de companie a fost sters cu succes."
             };
         }
         catch (Exception ex)
@@ -251,7 +265,7 @@ public class PetActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apărut o eroare la ștergerea animalului: {ex.Message}"
+                Message = $"A aparut o eroare la stergerea animalului: {ex.Message}"
             };
         }
     }

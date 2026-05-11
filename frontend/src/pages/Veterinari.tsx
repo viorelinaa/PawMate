@@ -165,9 +165,6 @@ function VeterinarCard({
                 ))}
             </div>
             <p className="vetDesc">{v.description}</p>
-            <AppButton className="btnContact" variant="primary" onClick={() => alert(`Sună la ${v.phone}`)}>
-                Contactează
-            </AppButton>
             <AdminOnly>
                 <div className="vetAdminActions">
                     <AppButton

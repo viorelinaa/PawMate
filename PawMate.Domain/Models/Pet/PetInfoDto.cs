@@ -11,4 +11,5 @@ public class PetInfoDto
     public bool Vaccinated { get; set; }
     public bool Sterilized { get; set; }
     public string Description { get; set; }
+    public int? UserId { get; set; }
 }

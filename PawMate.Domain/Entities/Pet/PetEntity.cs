@@ -1,4 +1,5 @@
 using PawMate.Domain.Entities.Adoption;
+using PawMate.Domain.Entities.User;
 
 namespace PawMate.Domain.Entities.Pet;
 
@@ -13,6 +14,8 @@ public class PetEntity
     public bool Vaccinated { get; set; }
     public bool Sterilized { get; set; }
     public string Description { get; set; }
+    public int? UserId { get; set; }
 
+    public UserEntity? User { get; set; }
     public ICollection<AdoptionEntity> Adoptions { get; set; } = new List<AdoptionEntity>();
 }

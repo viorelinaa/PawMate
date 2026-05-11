@@ -24,6 +24,7 @@ export interface Pet {
   vaccinated: boolean;
   sterilized: boolean;
   description: string;
+  userId?: number | null;
 }
 
 export interface PetQuery {

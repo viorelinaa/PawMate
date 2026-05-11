@@ -7,9 +7,9 @@ namespace PawMate.BusinessLayer.Core;
 
 public class PetLogic : PetActions, IPetLogic
 {
-    public ServiceResponse CreatePet(PetCreateDto pet)
+    public ServiceResponse CreatePet(PetCreateDto pet, int userId)
     {
-        return CreatePetAction(pet);
+        return CreatePetAction(pet, userId);
     }
 
     public ServiceResponse GetPetById(int id)
@@ -27,8 +27,8 @@ public class PetLogic : PetActions, IPetLogic
         return UpdatePetAction(id, pet);
     }
 
-    public ServiceResponse DeletePet(int id)
+    public ServiceResponse DeletePet(int id, int userId, bool isAdmin)
     {
-        return DeletePetAction(id);
+        return DeletePetAction(id, userId, isAdmin);
     }
 }
