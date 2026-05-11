@@ -14,7 +14,7 @@ public class LostPetActions
         _context = new PawMateDbContext();
     }
 
-    public ServiceResponse CreateLostPetAction(LostPetCreateDto lostPet)
+    public ServiceResponse CreateLostPetAction(LostPetCreateDto lostPet, int userId)
     {
         try
         {
@@ -25,7 +25,8 @@ public class LostPetActions
                 LostDate = DateTime.SpecifyKind(DateTime.Parse(lostPet.LostDate), DateTimeKind.Utc),
                 Contact = lostPet.Contact,
                 Description = lostPet.Description,
-                IsFound = false
+                IsFound = false,
+                UserId = userId
             };
 
             _context.LostPets.Add(entity);
@@ -114,7 +115,8 @@ public class LostPetActions
                     LostDate = lp.LostDate.ToString("yyyy-MM-dd"),
                     Contact = lp.Contact,
                     Description = lp.Description,
-                    IsFound = lp.IsFound
+                    IsFound = lp.IsFound,
+                    UserId = lp.UserId
                 })
                 .ToList();
 
@@ -157,19 +159,28 @@ public class LostPetActions
         }
     }
 
-    public ServiceResponse DeleteLostPetAction(int id)
+    public ServiceResponse DeleteLostPetAction(int id, int userId, bool isAdmin)
     {
         try
         {
             var entity = _context.LostPets.FirstOrDefault(lp => lp.Id == id);
 
             if (entity == null)
-                return new ServiceResponse { IsSuccess = false, Message = "Anunțul nu a fost găsit." };
+                return new ServiceResponse { IsSuccess = false, Message = "Anuntul nu a fost gasit." };
+
+            if (!isAdmin && entity.UserId != userId)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Poti sterge doar anunturile adaugate de tine."
+                };
+            }
 
             _context.LostPets.Remove(entity);
             _context.SaveChanges();
 
-            return new ServiceResponse { IsSuccess = true, Message = "Anunțul a fost șters cu succes." };
+            return new ServiceResponse { IsSuccess = true, Message = "Anuntul a fost sters cu succes." };
         }
         catch (Exception ex)
         {
@@ -185,6 +196,7 @@ public class LostPetActions
         LostDate = lp.LostDate.ToString("yyyy-MM-dd"),
         Contact = lp.Contact,
         Description = lp.Description,
-        IsFound = lp.IsFound
+        IsFound = lp.IsFound,
+        UserId = lp.UserId
     };
 }

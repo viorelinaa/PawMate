@@ -1,3 +1,5 @@
+using PawMate.Domain.Entities.User;
+
 namespace PawMate.Domain.Entities.LostPet;
 
 public class LostPetEntity
@@ -9,4 +11,7 @@ public class LostPetEntity
     public string Contact { get; set; }
     public string Description { get; set; }
     public bool IsFound { get; set; }
+    public int? UserId { get; set; }
+
+    public UserEntity? User { get; set; }
 }

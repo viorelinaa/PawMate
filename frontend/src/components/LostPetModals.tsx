@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
-import { AdminOnly } from "./AdminOnly";
 import { getLostPets, createLostPet, updateLostPet, deleteLostPet } from "../services/lostPetService";
+import { useAuth } from "../context/AuthContext";
 import type { LostPet } from "../services/lostPetService";
 
 export { getLostPets };
@@ -295,32 +295,40 @@ export function LostPetCard({
     onEdit: (a: LostPet) => void;
     onDelete: (a: LostPet) => void;
 }) {
+    const { currentUser, isAdmin } = useAuth();
+    const canEdit = isAdmin();
+    const canDelete = canEdit || (!!currentUser && a.userId === currentUser.id);
+
     return (
         <div className="lostCard">
             <div className="lostCardHeader">
                 <span className="lostBadge">{a.species}</span>
-                <span className="lostSmall">{a.city} • {a.lostDate}</span>
+                <span className="lostSmall">{a.city} - {a.lostDate}</span>
             </div>
             <p className="lostDesc">{a.description}</p>
             <div className="lostBadges">
                 <span className="lostBadge">Contact: {a.contact}</span>
-                {a.isFound && <span className="lostBadge" style={{ background: "#d1fae5", color: "#065f46" }}>Găsit</span>}
+                {a.isFound && <span className="lostBadge" style={{ background: "#d1fae5", color: "#065f46" }}>Gasit</span>}
             </div>
-            <AdminOnly>
+            {(canEdit || canDelete) && (
                 <div style={{ display: "flex", gap: "8px", marginTop: "10px" }}>
-                    <AppButton variant="ghost" size="sm" onClick={() => onEdit(a)}>
-                        Editează
-                    </AppButton>
-                    <AppButton
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onDelete(a)}
-                        style={{ borderColor: "#e53e3e", color: "#e53e3e" }}
-                    >
-                        Șterge
-                    </AppButton>
+                    {canEdit && (
+                        <AppButton variant="ghost" size="sm" onClick={() => onEdit(a)}>
+                            Editeaza
+                        </AppButton>
+                    )}
+                    {canDelete && (
+                        <AppButton
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => onDelete(a)}
+                            style={{ borderColor: "#e53e3e", color: "#e53e3e" }}
+                        >
+                            Sterge
+                        </AppButton>
+                    )}
                 </div>
-            </AdminOnly>
+            )}
         </div>
     );
 }

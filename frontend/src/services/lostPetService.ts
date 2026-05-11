@@ -9,6 +9,7 @@ export interface LostPet {
     contact: string;
     description: string;
     isFound: boolean;
+    userId?: number | null;
 }
 
 export interface LostPetPayload {
@@ -21,6 +22,7 @@ export interface LostPetPayload {
 
 export interface LostPetUpdatePayload extends LostPetPayload {
     isFound: boolean;
+    userId?: number | null;
 }
 
 export interface LostPetQuery {
