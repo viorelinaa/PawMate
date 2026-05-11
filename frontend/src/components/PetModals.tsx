@@ -17,11 +17,19 @@ export interface PetForm {
     vaccinated: boolean;
     sterilized: boolean;
     description: string;
+    ownerContact: string;
 }
 
 export const emptyForm: PetForm = {
-    name: "", species: "", city: "", age: "", size: "",
-    vaccinated: false, sterilized: false, description: "",
+    name: "",
+    species: "",
+    city: "",
+    age: "",
+    size: "",
+    vaccinated: false,
+    sterilized: false,
+    description: "",
+    ownerContact: "",
 };
 
 export function petToForm(p: Pet): PetForm {
@@ -34,17 +42,23 @@ export function petToForm(p: Pet): PetForm {
         vaccinated: p.vaccinated,
         sterilized: p.sterilized,
         description: p.description ?? "",
+        ownerContact: p.ownerContact ?? "",
     };
 }
 
 export { getPets };
+
 function normalizePetLabel(value: string) {
-    const invalidChar = "\uFFFD";
     const labels: Record<string, string> = {
-        [`Pisic${invalidChar}`]: "Pisică",
-        [`C${invalidChar}ine`]: "Câine",
-        [`Pas${invalidChar}re`]: "Pasăre",
-        [`Roz${invalidChar}tor`]: "Rozător",
+        Caine: "Câine",
+        Pisica: "Pisică",
+        Pasare: "Pasăre",
+        Rozator: "Rozător",
+        "CÄƒine": "Câine",
+        "CĂ˘ine": "Câine",
+        "PisicÄ": "Pisică",
+        "PasÄre": "Pasăre",
+        "RozÄtor": "Rozător",
     };
 
     return labels[value] ?? value;
@@ -182,6 +196,17 @@ export function PetFormFields({
                 />
             </div>
 
+            <div className="modalField">
+                <label className="modalLabel">Contact proprietar *</label>
+                <input
+                    className={`modalInput${errors.ownerContact ? " inputError" : ""}`}
+                    placeholder="ex. +373 6xx xxx xxx sau email"
+                    value={form.ownerContact}
+                    onChange={e => onChange("ownerContact", e.target.value)}
+                />
+                {errors.ownerContact && <span className="fieldError">{errors.ownerContact}</span>}
+            </div>
+
             {onImageChange && (
                 <div className="modalField">
                     <label className="modalLabel">Poza animalului</label>
@@ -222,6 +247,7 @@ function validatePetForm(form: PetForm): Partial<Record<keyof PetForm, string>> 
     if (!form.city.trim()) e.city = "Orașul este obligatoriu.";
     if (!form.age) e.age = "Selectează vârsta.";
     if (!form.size) e.size = "Selectează talia.";
+    if (!form.ownerContact.trim()) e.ownerContact = "Contactul proprietarului este obligatoriu.";
     return e;
 }
 
@@ -255,7 +281,7 @@ export function AddPetModal({ onClose, onAdded }: { onClose: () => void; onAdded
         setLoading(true);
         setApiError(null);
         try {
-            const petId = await createPet(form);
+            const petId = await createPet({ ...form, ownerContact: form.ownerContact.trim() });
             if (selectedImage) {
                 await uploadPetImage(petId, selectedImage);
             }
@@ -312,7 +338,7 @@ export function EditPetModal({ pet, onClose, onUpdated }: { pet: Pet; onClose: (
         setLoading(true);
         setApiError(null);
         try {
-            await updatePet(pet.id, form);
+            await updatePet(pet.id, { ...form, ownerContact: form.ownerContact.trim() });
             onUpdated();
             onClose();
         } catch (err: unknown) {
@@ -370,7 +396,7 @@ export function DeleteConfirmModal({ pet, onClose, onDeleted }: { pet: Pet; onCl
                     <button className="modalClose" onClick={onClose} aria-label="Închide">x</button>
                 </div>
                 <div style={{ padding: "8px 0 16px", textAlign: "center", color: "var(--color-text)" }}>
-                    Ești sigur că vrei să ștergi <strong>{pet.name}</strong>? Această acțiune nu poate fi anulată.
+                    Ești sigură că vrei să ștergi <strong>{pet.name}</strong>? Această acțiune nu poate fi anulată.
                 </div>
                 {apiError && <p className="fieldError" style={{ textAlign: "center" }}>{apiError}</p>}
                 <div className="modalActions">
@@ -396,12 +422,15 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
     const canEdit = isAdmin();
     const canDelete = canEdit || (!!currentUser && p.userId === currentUser.id);
     const [imageFailed, setImageFailed] = useState(false);
+    const [showContact, setShowContact] = useState(false);
     const imageSrc = imageFailed ? "" : getPetImageUrl(p.imageUrl);
     const speciesLabel = normalizePetLabel(p.species);
+    const ownerContact = p.ownerContact?.trim();
 
     useEffect(() => {
         setImageFailed(false);
-    }, [p.imageUrl]);
+        setShowContact(false);
+    }, [p.id, p.imageUrl]);
 
     return (
         <div className="petCard">
@@ -428,9 +457,15 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
             </div>
             <p className="petDesc">{p.description}</p>
             <div className="petCardActions" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                <AppButton className="btnDetails" variant="primary" onClick={() => alert("Cerere trimisă (mock)!")}>
-                    Cere detalii
+                <AppButton className="btnDetails" variant="primary" onClick={() => setShowContact(prev => !prev)}>
+                    {showContact ? "Ascunde detalii" : "Cere detalii"}
                 </AppButton>
+                {showContact && (
+                    <div className="petContactBox">
+                        <span>Contact proprietar</span>
+                        <strong>{ownerContact || "Contact indisponibil"}</strong>
+                    </div>
+                )}
                 {canEdit && (
                     <AppButton variant="ghost" size="sm" onClick={() => onEdit(p)}>
                         Editează

@@ -1,6 +1,6 @@
 /* src/pages/Adoption.css */
 
-/* ── Hero ──────────────────────────────────────────────── */
+/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .adoptionHero {
     position: relative;
     padding: 80px 24px 60px;
@@ -70,14 +70,14 @@
     font-family: var(--font-family);
 }
 
-/* ── Content ───────────────────────────────────────────── */
+/* â”€â”€ Content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .adoptionContent {
     max-width: 1100px;
     margin: 0 auto;
     padding: 30px 24px 70px;
 }
 
-/* ── Filtre ────────────────────────────────────────────── */
+/* â”€â”€ Filtre â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .filters {
     margin-top: 18px;
     background: var(--color-surface-soft);
@@ -176,7 +176,7 @@
 
 .btnReset:hover { transform: translateY(-1px); }
 
-/* ── Pet Cards ─────────────────────────────────────────── */
+/* â”€â”€ Pet Cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .petCards {
     display: grid;
     gap: 16px;
@@ -189,6 +189,9 @@
 
 .petCard {
     background: var(--color-surface);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     border-radius: var(--radius-md);
     padding: 18px;
     box-shadow: var(--shadow-card);
@@ -250,6 +253,11 @@
     font-family: var(--font-family);
 }
 
+
+.petCardActions {
+    margin-top: auto;
+    padding-top: 14px;
+}
 .btnDetails {
     border: 0;
     border-radius: var(--radius-full);
@@ -260,7 +268,6 @@
     color: white;
     box-shadow: var(--shadow-btn-primary);
     transition: transform var(--transition-fast), background var(--transition-fast);
-    margin-top: 14px;
     font-family: var(--font-family);
     font-size: var(--font-size-base);
     width: 100%;
@@ -271,6 +278,29 @@
     background: var(--color-primary-light);
 }
 
+.petContactBox {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-primary-border);
+    background: var(--color-primary-faint);
+    color: var(--color-text);
+    font-family: var(--font-family);
+}
+
+.petContactBox span {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.petContactBox strong {
+    color: var(--color-primary);
+    font-size: var(--font-size-sm);
+    overflow-wrap: anywhere;
+}
 .emptyNotice {
     margin-top: 18px;
     background: var(--color-surface-soft);
@@ -284,7 +314,7 @@
     font-family: var(--font-family);
 }
 
-/* ── Add Pet Modal ─────────────────────────────────────── */
+/* â”€â”€ Add Pet Modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .modalOverlay {
     position: fixed;
     inset: 0;

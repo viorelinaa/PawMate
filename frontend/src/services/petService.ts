@@ -10,6 +10,7 @@ export interface PetCreatePayload {
   vaccinated: boolean;
   sterilized: boolean;
   description: string;
+  ownerContact: string;
 }
 
 export interface PetUpdatePayload extends PetCreatePayload {}
@@ -24,6 +25,7 @@ export interface Pet {
   vaccinated: boolean;
   sterilized: boolean;
   description: string;
+  ownerContact?: string | null;
   imageUrl?: string | null;
   userId?: number | null;
 }

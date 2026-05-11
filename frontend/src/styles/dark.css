@@ -997,3 +997,17 @@
 .appShell[data-theme="dark"] .petImagePicker small {
     color: var(--dm-muted);
 }
+
+.appShell[data-theme="dark"] .petContactBox {
+    background: rgba(203, 176, 234, 0.08);
+    border-color: var(--dm-border);
+    color: var(--dm-text);
+}
+
+.appShell[data-theme="dark"] .petContactBox span {
+    color: var(--dm-muted);
+}
+
+.appShell[data-theme="dark"] .petContactBox strong {
+    color: var(--dm-accent);
+}

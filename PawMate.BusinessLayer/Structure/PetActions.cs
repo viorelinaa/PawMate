@@ -28,6 +28,7 @@ public class PetActions
                 Vaccinated = pet.Vaccinated,
                 Sterilized = pet.Sterilized,
                 Description = pet.Description,
+                OwnerContact = pet.OwnerContact,
                 UserId = userId
             };
 
@@ -77,6 +78,7 @@ public class PetActions
                 Vaccinated = entity.Vaccinated,
                 Sterilized = entity.Sterilized,
                 Description = entity.Description,
+                OwnerContact = entity.OwnerContact,
                 ImageUrl = entity.ImageUrl,
                 UserId = entity.UserId
             };
@@ -163,6 +165,7 @@ public class PetActions
                     Vaccinated = p.Vaccinated,
                     Sterilized = p.Sterilized,
                     Description = p.Description,
+                    OwnerContact = p.OwnerContact,
                     ImageUrl = p.ImageUrl,
                     UserId = p.UserId
                 })
@@ -208,6 +211,7 @@ public class PetActions
             entity.Vaccinated = pet.Vaccinated;
             entity.Sterilized = pet.Sterilized;
             entity.Description = pet.Description;
+            entity.OwnerContact = pet.OwnerContact;
 
             _context.SaveChanges();
 

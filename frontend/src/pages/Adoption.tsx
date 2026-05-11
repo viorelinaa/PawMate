@@ -37,7 +37,7 @@ export default function Adoption() {
             setPets(data);
             setLoadError(null);
         } catch {
-            setLoadError("Nu s-au putut incarca animalele. Verifica conexiunea la server.");
+            setLoadError("Nu s-au putut încărca animalele. Verifică conexiunea la server.");
         }
     }
 
@@ -57,6 +57,7 @@ export default function Adoption() {
     useEffect(() => {
         void loadPets();
     }, [query, city, species, age, size, onlyVacc, onlySter]);
+
     function resetFilters() {
         setQuery("");
         setCity("ALL");
