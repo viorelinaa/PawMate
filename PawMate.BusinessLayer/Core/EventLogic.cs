@@ -27,8 +27,8 @@ public class EventLogic : EventActions, IEventLogic
         return GetEventByIdAction(id);
     }
 
-    public ServiceResponse GetEventList()
+    public ServiceResponse GetEventList(EventQueryDto query)
     {
-        return GetEventListAction();
+        return GetEventListAction(query);
     }
 }

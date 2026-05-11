@@ -9,7 +9,7 @@ public class LostPetLogic : LostPetActions, ILostPetLogic
 {
     public ServiceResponse CreateLostPet(LostPetCreateDto lostPet) => CreateLostPetAction(lostPet);
     public ServiceResponse GetLostPetById(int id) => GetLostPetByIdAction(id);
-    public ServiceResponse GetLostPetList() => GetLostPetListAction();
+    public ServiceResponse GetLostPetList(LostPetQueryDto query) => GetLostPetListAction(query);
     public ServiceResponse UpdateLostPet(int id, LostPetUpdateDto lostPet) => UpdateLostPetAction(id, lostPet);
     public ServiceResponse DeleteLostPet(int id) => DeleteLostPetAction(id);
 }

@@ -19,6 +19,14 @@ export interface SitterCreatePayload {
     description: string;
 }
 
+export interface SitterQuery {
+    search?: string;
+    onlyTopRated?: boolean;
+    minRating?: number;
+    sortBy?: "name" | "price" | "rating";
+    sortDirection?: "asc" | "desc";
+}
+
 function handleError(err: unknown, fallback: string): never {
     if (axios.isAxiosError(err)) {
         const message =
@@ -32,12 +40,12 @@ function handleError(err: unknown, fallback: string): never {
     throw new Error(fallback);
 }
 
-export async function getSitters(): Promise<Sitter[]> {
+export async function getSitters(query?: SitterQuery): Promise<Sitter[]> {
     try {
-        const { data } = await apiClient.get<Sitter[]>("/sitters/list");
+        const { data } = await apiClient.get<Sitter[]>("/sitters/list", { params: query });
         return data;
     } catch (err) {
-        handleError(err, "Nu s-au putut încărca sitterii.");
+        handleError(err, "Nu s-au putut incarca datele.");
     }
 }
 

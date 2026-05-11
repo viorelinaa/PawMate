@@ -88,11 +88,34 @@ public class EventActions
         }
     }
 
-    public ServiceResponse GetEventListAction()
+    public ServiceResponse GetEventListAction(EventQueryDto query)
     {
         try
         {
-            var list = _context.Events
+            var eventsQuery = _context.Events.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                var search = query.Search.Trim().ToLower();
+                eventsQuery = eventsQuery.Where(e =>
+                    e.Title.ToLower().Contains(search) ||
+                    e.Description.ToLower().Contains(search));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Location) && query.Location != "ALL")
+            {
+                eventsQuery = eventsQuery.Where(e => e.Location == query.Location);
+            }
+
+            eventsQuery = query.SortBy?.ToLower() switch
+            {
+                "title" when query.SortDirection == "desc" => eventsQuery.OrderByDescending(e => e.Title),
+                "title" => eventsQuery.OrderBy(e => e.Title),
+                "date" when query.SortDirection == "asc" => eventsQuery.OrderBy(e => e.Date),
+                _ => eventsQuery.OrderByDescending(e => e.Date)
+            };
+
+            var list = eventsQuery
                 .Select(e => new EventInfoDto
                 {
                     Id = e.Id,
@@ -106,7 +129,7 @@ public class EventActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Lista evenimentelor a fost obținută cu succes.",
+                Message = "Lista evenimentelor a fost obtinuta cu succes.",
                 Data = list
             };
         }
@@ -115,7 +138,7 @@ public class EventActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apărut o eroare la obținerea listei de evenimente: {ex.Message}"
+                Message = $"A aparut o eroare la obtinerea listei de evenimente: {ex.Message}"
             };
         }
     }

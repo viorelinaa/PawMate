@@ -19,9 +19,9 @@ public class PetController : ControllerBase
     }
 
     [HttpGet("list")]
-    public IActionResult GetPetList()
+    public IActionResult GetPetList([FromQuery] PetQueryDto query)
     {
-        var response = _petLogic.GetPetList();
+        var response = _petLogic.GetPetList(query);
         if (!response.IsSuccess)
             return BadRequest(response.Message);
 

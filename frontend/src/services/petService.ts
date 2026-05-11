@@ -26,6 +26,18 @@ export interface Pet {
   description: string;
 }
 
+export interface PetQuery {
+  search?: string;
+  city?: string;
+  species?: string;
+  age?: string;
+  size?: string;
+  onlyVaccinated?: boolean;
+  onlySterilized?: boolean;
+  sortBy?: "name" | "city";
+  sortDirection?: "asc" | "desc";
+}
+
 function handleError(err: unknown, fallback: string): never {
   if (axios.isAxiosError(err)) {
     const message =
@@ -39,13 +51,13 @@ function handleError(err: unknown, fallback: string): never {
   throw new Error(fallback);
 }
 
-export async function getPets(): Promise<Pet[]> {
-  try {
-    const { data } = await apiClient.get<Pet[]>("/pets/list");
-    return data;
-  } catch (err) {
-    handleError(err, "Nu s-au putut încărca animalele.");
-  }
+export async function getPets(query?: PetQuery): Promise<Pet[]> {
+    try {
+        const { data } = await apiClient.get<Pet[]>("/pets/list", { params: query });
+        return data;
+    } catch (err) {
+        handleError(err, "Nu s-au putut incarca datele.");
+    }
 }
 
 export async function createPet(data: PetCreatePayload): Promise<void> {

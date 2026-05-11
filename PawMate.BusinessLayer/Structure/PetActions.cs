@@ -95,11 +95,60 @@ public class PetActions
         }
     }
 
-    public ServiceResponse GetPetListAction()
+    public ServiceResponse GetPetListAction(PetQueryDto query)
     {
         try
         {
-            var list = _context.Pets
+            var petsQuery = _context.Pets.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                var search = query.Search.Trim().ToLower();
+                petsQuery = petsQuery.Where(p =>
+                    p.Name.ToLower().Contains(search) ||
+                    p.Description.ToLower().Contains(search));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.City) && query.City != "ALL")
+            {
+                petsQuery = petsQuery.Where(p => p.City == query.City);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Species) && query.Species != "ALL")
+            {
+                petsQuery = petsQuery.Where(p => p.Species == query.Species);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Age) && query.Age != "ALL")
+            {
+                petsQuery = petsQuery.Where(p => p.Age == query.Age);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Size) && query.Size != "ALL")
+            {
+                petsQuery = petsQuery.Where(p => p.Size == query.Size);
+            }
+
+            if (query.OnlyVaccinated)
+            {
+                petsQuery = petsQuery.Where(p => p.Vaccinated);
+            }
+
+            if (query.OnlySterilized)
+            {
+                petsQuery = petsQuery.Where(p => p.Sterilized);
+            }
+
+            petsQuery = query.SortBy?.ToLower() switch
+            {
+                "name" when query.SortDirection == "desc" => petsQuery.OrderByDescending(p => p.Name),
+                "name" => petsQuery.OrderBy(p => p.Name),
+                "city" when query.SortDirection == "desc" => petsQuery.OrderByDescending(p => p.City),
+                "city" => petsQuery.OrderBy(p => p.City),
+                _ => petsQuery.OrderByDescending(p => p.Id)
+            };
+
+            var list = petsQuery
                 .Select(p => new PetInfoDto
                 {
                     Id = p.Id,
@@ -117,7 +166,7 @@ public class PetActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Lista animalelor a fost obținută cu succes.",
+                Message = "Lista animalelor a fost obtinuta cu succes.",
                 Data = list
             };
         }
@@ -126,7 +175,7 @@ public class PetActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apărut o eroare la obținerea listei de animale: {ex.Message}"
+                Message = $"A aparut o eroare la obtinerea listei de animale: {ex.Message}"
             };
         }
     }

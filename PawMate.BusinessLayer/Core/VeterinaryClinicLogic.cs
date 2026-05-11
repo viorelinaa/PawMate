@@ -12,9 +12,9 @@ public class VeterinaryClinicLogic : VeterinaryClinicActions, IVeterinaryClinicL
         return CreateVeterinaryClinicAction(clinic);
     }
 
-    public ServiceResponse GetVeterinaryClinicList()
+    public ServiceResponse GetVeterinaryClinicList(VeterinaryClinicQueryDto query)
     {
-        return GetVeterinaryClinicListAction();
+        return GetVeterinaryClinicListAction(query);
     }
 
     public ServiceResponse GetVeterinaryClinicById(int id)

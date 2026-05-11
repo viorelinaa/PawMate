@@ -7,7 +7,7 @@ public interface IMarketplaceLogic
 {
     ServiceResponse CreateListing(MarketplaceCreateDto listing);
     ServiceResponse GetListingById(int id);
-    ServiceResponse GetListingList();
+    ServiceResponse GetListingList(MarketplaceQueryDto query);
     ServiceResponse UpdateListing(int id, MarketplaceUpdateDto listing);
     ServiceResponse DeleteListing(int id);
 }

@@ -25,6 +25,13 @@ export interface ProductUpdatePayload {
     price: number;
 }
 
+export interface ProductQuery {
+    search?: string;
+    category?: string;
+    sortBy?: "title" | "price";
+    sortDirection?: "asc" | "desc";
+}
+
 function handleError(err: unknown, fallback: string): never {
     if (axios.isAxiosError(err)) {
         const message =
@@ -36,12 +43,12 @@ function handleError(err: unknown, fallback: string): never {
     throw new Error(fallback);
 }
 
-export async function getProducts(): Promise<Product[]> {
+export async function getProducts(query?: ProductQuery): Promise<Product[]> {
     try {
-        const { data } = await apiClient.get<Product[]>("/marketplace/list");
+        const { data } = await apiClient.get<Product[]>("/marketplace/list", { params: query });
         return data;
     } catch (err) {
-        handleError(err, "Nu s-au putut încărca produsele.");
+        handleError(err, "Nu s-au putut incarca datele.");
     }
 }
 

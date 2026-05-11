@@ -13,6 +13,7 @@ export default function LostPets() {
     const [editAd, setEditAd] = useState<LostPet | null>(null);
     const [deleteAd, setDeleteAd] = useState<LostPet | null>(null);
     const [ads, setAds] = useState<LostPet[]>([]);
+    const [allCities, setAllCities] = useState<string[]>([]);
     const [loadError, setLoadError] = useState<string | null>(null);
     const [query, setQuery] = useState("");
     const [species, setSpecies] = useState("ALL");
@@ -20,27 +21,34 @@ export default function LostPets() {
 
     async function loadAds() {
         try {
-            const data = await getLostPets();
+            const data = await getLostPets({
+                search: query,
+                species,
+                city,
+            });
             setAds(data);
             setLoadError(null);
         } catch {
-            setLoadError("Nu s-au putut încărca anunțurile. Verifică conexiunea la server.");
+            setLoadError("Nu s-au putut incarca anunturile. Verifica conexiunea la server.");
+        }
+    }
+
+    async function loadLostPetFilterOptions() {
+        try {
+            const data = await getLostPets();
+            setAllCities([...new Set(data.map((a) => a.city).filter(Boolean))]);
+        } catch {
+            setAllCities([]);
         }
     }
 
     useEffect(() => {
-        loadAds();
+        void loadLostPetFilterOptions();
     }, []);
 
-    const allCities = [...new Set(ads.map((a) => a.city).filter(Boolean))];
-
-    const filtered = ads.filter((a) => {
-        if (species !== "ALL" && a.species !== species) return false;
-        if (city !== "ALL" && a.city !== city) return false;
-        if (query && !a.description?.toLowerCase().includes(query.toLowerCase())) return false;
-        return true;
-    });
-
+    useEffect(() => {
+        void loadAds();
+    }, [query, species, city]);
     function resetFilters() {
         setQuery("");
         setSpecies("ALL");
@@ -118,9 +126,9 @@ export default function LostPets() {
                     <div className="lostEmpty" style={{ color: "red" }}>{loadError}</div>
                 )}
 
-                {!loadError && filtered.length > 0 ? (
+                {!loadError && ads.length > 0 ? (
                     <div className="lostCards">
-                        {filtered.map((a) => (
+                        {ads.map((a) => (
                             <LostPetCard key={a.id} a={a} onEdit={setEditAd} onDelete={setDeleteAd} />
                         ))}
                     </div>

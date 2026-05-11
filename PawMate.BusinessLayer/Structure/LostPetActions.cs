@@ -70,11 +70,42 @@ public class LostPetActions
         }
     }
 
-    public ServiceResponse GetLostPetListAction()
+    public ServiceResponse GetLostPetListAction(LostPetQueryDto query)
     {
         try
         {
-            var list = _context.LostPets
+            var lostPetsQuery = _context.LostPets.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                var search = query.Search.Trim().ToLower();
+                lostPetsQuery = lostPetsQuery.Where(lp => lp.Description.ToLower().Contains(search));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Species) && query.Species != "ALL")
+            {
+                lostPetsQuery = lostPetsQuery.Where(lp => lp.Species == query.Species);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.City) && query.City != "ALL")
+            {
+                lostPetsQuery = lostPetsQuery.Where(lp => lp.City == query.City);
+            }
+
+            if (query.IsFound.HasValue)
+            {
+                lostPetsQuery = lostPetsQuery.Where(lp => lp.IsFound == query.IsFound.Value);
+            }
+
+            lostPetsQuery = query.SortBy?.ToLower() switch
+            {
+                "lostdate" when query.SortDirection == "asc" => lostPetsQuery.OrderBy(lp => lp.LostDate),
+                "city" when query.SortDirection == "desc" => lostPetsQuery.OrderByDescending(lp => lp.City),
+                "city" => lostPetsQuery.OrderBy(lp => lp.City),
+                _ => lostPetsQuery.OrderByDescending(lp => lp.LostDate)
+            };
+
+            var list = lostPetsQuery
                 .Select(lp => new LostPetInfoDto
                 {
                     Id = lp.Id,
@@ -90,7 +121,7 @@ public class LostPetActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Lista animalelor pierdute a fost obținută cu succes.",
+                Message = "Lista animalelor pierdute a fost obtinuta cu succes.",
                 Data = list
             };
         }

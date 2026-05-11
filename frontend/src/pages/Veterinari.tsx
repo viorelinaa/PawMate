@@ -203,6 +203,7 @@ export default function Veterinari() {
     const [deleteClinicTarget, setDeleteClinicTarget] = useState<VeterinaryClinic | null>(null);
     const [showAddModal, setShowAddModal] = useState(false);
     const [veterinariList, setVeterinariList] = useState<VeterinaryClinic[]>([]);
+    const [allCities, setAllCities] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState<string | null>(null);
 
@@ -252,43 +253,40 @@ export default function Veterinari() {
     async function loadVeterinaryClinics() {
         try {
             setIsLoading(true);
-            const data = await getVeterinaryClinics();
+            const data = await getVeterinaryClinics({
+                search: query,
+                city,
+                onlyEmergency,
+            });
             setVeterinariList(data);
             setLoadError(null);
         } catch (error) {
             setLoadError(
                 error instanceof Error
                     ? error.message
-                    : "Nu s-au putut încărca clinicile veterinare."
+                    : "Nu s-au putut incarca clinicile veterinare."
             );
         } finally {
             setIsLoading(false);
         }
     }
 
+    async function loadVeterinaryClinicFilterOptions() {
+        try {
+            const data = await getVeterinaryClinics();
+            setAllCities([...new Set(data.map((v) => v.city).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ro")));
+        } catch {
+            setAllCities([]);
+        }
+    }
+
     useEffect(() => {
-        void loadVeterinaryClinics();
+        void loadVeterinaryClinicFilterOptions();
     }, []);
 
-    const allCities = [...new Set(veterinariList.map((v) => v.city))].sort((a, b) => a.localeCompare(b, "ro"));
-
-    const filtered = veterinariList.filter((v) => {
-        if (city !== "ALL" && v.city !== city) return false;
-        if (onlyEmergency && !v.emergency) return false;
-        if (query) {
-            const q = query.toLowerCase();
-            if (
-                !v.name.toLowerCase().includes(q) &&
-                !v.description.toLowerCase().includes(q) &&
-                !v.address.toLowerCase().includes(q) &&
-                !v.services.some((service) => service.toLowerCase().includes(q))
-            ) {
-                return false;
-            }
-        }
-        return true;
-    });
-
+    useEffect(() => {
+        void loadVeterinaryClinics();
+    }, [query, city, onlyEmergency]);
     function resetFilters() {
         setQuery("");
         setCity("ALL");
@@ -397,9 +395,9 @@ export default function Veterinari() {
                 {isLoading && <div className="emptyNotice">Se încarcă clinicile veterinare...</div>}
                 {loadError && !isLoading && <div className="emptyNotice vetLoadError">{loadError}</div>}
 
-                {!isLoading && !loadError && filtered.length > 0 ? (
+                {!isLoading && !loadError && veterinariList.length > 0 ? (
                     <div className="vetCards">
-                        {filtered.map((v) => (
+                        {veterinariList.map((v) => (
                             <VeterinarCard
                                 key={v.id}
                                 v={v}
@@ -411,7 +409,7 @@ export default function Veterinari() {
                     </div>
                 ) : null}
 
-                {!isLoading && !loadError && filtered.length === 0 ? (
+                {!isLoading && !loadError && veterinariList.length === 0 ? (
                     <div className="emptyNotice">Nu există rezultate pentru filtrele selectate.</div>
                 ) : null}
             </div>

@@ -17,9 +17,9 @@ public class PetLogic : PetActions, IPetLogic
         return GetPetByIdAction(id);
     }
 
-    public ServiceResponse GetPetList()
+    public ServiceResponse GetPetList(PetQueryDto query)
     {
-        return GetPetListAction();
+        return GetPetListAction(query);
     }
 
     public ServiceResponse UpdatePet(int id, PetUpdateDto pet)

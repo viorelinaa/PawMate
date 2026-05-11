@@ -25,6 +25,7 @@ export default function Vanzari() {
     const [editProduct, setEditProduct] = useState<Product | null>(null);
     const [deleteProduct, setDeleteProduct] = useState<Product | null>(null);
     const [products, setProducts] = useState<Product[]>([]);
+    const [allCategories, setAllCategories] = useState<string[]>([]);
     const [loadError, setLoadError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [query, setQuery] = useState("");
@@ -50,39 +51,39 @@ export default function Vanzari() {
     async function loadProducts() {
         try {
             setIsLoading(true);
-            const data = await getProducts();
+            const data = await getProducts({
+                search: query,
+                category,
+            });
             setProducts(data);
             setLoadError(null);
         } catch {
-            setLoadError("Nu s-au putut încărca produsele. Verifică conexiunea la server.");
+            setLoadError("Nu s-au putut incarca produsele. Verifica conexiunea la server.");
         } finally {
             setIsLoading(false);
         }
     }
 
+    async function loadProductFilterOptions() {
+        try {
+            const data = await getProducts();
+            setAllCategories([...new Set(data.map((p) => p.category).filter(Boolean))]);
+        } catch {
+            setAllCategories([]);
+        }
+    }
+
+    useEffect(() => {
+        void loadProductFilterOptions();
+    }, []);
+
     useEffect(() => {
         void loadProducts();
-    }, []);
+    }, [query, category]);
 
     useEffect(() => {
         localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
     }, [cartItems]);
-
-    const allCategories = [...new Set(products.map((p) => p.category).filter(Boolean))];
-
-    const filtered = products.filter((p) => {
-        if (category !== "ALL" && p.category !== category) return false;
-        if (query) {
-            const q = query.toLowerCase();
-            if (
-                !p.title.toLowerCase().includes(q) &&
-                !p.description?.toLowerCase().includes(q)
-            )
-                return false;
-        }
-        return true;
-    });
-
     function resetFilters() {
         setQuery("");
         setCategory("ALL");
@@ -206,13 +207,13 @@ export default function Vanzari() {
                 {isLoading && <div className="salesEmpty">Se încarcă produsele...</div>}
                 {loadError && <div className="salesEmpty" style={{ color: "red" }}>{loadError}</div>}
 
-                {!isLoading && !loadError && filtered.length === 0 && (
+                {!isLoading && !loadError && products.length === 0 && (
                     <div className="salesEmpty">Nu există produse pentru filtrele selectate.</div>
                 )}
 
-                {!isLoading && !loadError && filtered.length > 0 && (
+                {!isLoading && !loadError && products.length > 0 && (
                     <div className="salesGrid">
-                        {filtered.map((product) => (
+                        {products.map((product) => (
                             <ProductCard
                                 key={product.id}
                                 product={product}

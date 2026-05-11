@@ -17,8 +17,8 @@ public class BlogPostLogic : BlogPostActions, IBlogPostLogic
         return GetBlogPostByIdAction(id);
     }
 
-    public ServiceResponse GetBlogPostList()
+    public ServiceResponse GetBlogPostList(BlogPostQueryDto query)
     {
-        return GetBlogPostListAction();
+        return GetBlogPostListAction(query);
     }
 }

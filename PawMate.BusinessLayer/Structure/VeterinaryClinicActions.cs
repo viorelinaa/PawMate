@@ -90,13 +90,41 @@ public class VeterinaryClinicActions
         }
     }
 
-    public ServiceResponse GetVeterinaryClinicListAction()
+    public ServiceResponse GetVeterinaryClinicListAction(VeterinaryClinicQueryDto query)
     {
         try
         {
-            var list = _context.VeterinaryClinics
-                .OrderBy(v => v.City)
-                .ThenBy(v => v.Name)
+            var clinicsQuery = _context.VeterinaryClinics.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                var search = query.Search.Trim().ToLower();
+                clinicsQuery = clinicsQuery.Where(v =>
+                    v.Name.ToLower().Contains(search) ||
+                    v.Description.ToLower().Contains(search) ||
+                    v.Address.ToLower().Contains(search) ||
+                    v.Services.ToLower().Contains(search));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.City) && query.City != "ALL")
+            {
+                clinicsQuery = clinicsQuery.Where(v => v.City == query.City);
+            }
+
+            if (query.OnlyEmergency)
+            {
+                clinicsQuery = clinicsQuery.Where(v => v.Emergency);
+            }
+
+            clinicsQuery = query.SortBy?.ToLower() switch
+            {
+                "name" when query.SortDirection == "desc" => clinicsQuery.OrderByDescending(v => v.Name),
+                "name" => clinicsQuery.OrderBy(v => v.Name),
+                "city" when query.SortDirection == "desc" => clinicsQuery.OrderByDescending(v => v.City).ThenBy(v => v.Name),
+                _ => clinicsQuery.OrderBy(v => v.City).ThenBy(v => v.Name)
+            };
+
+            var list = clinicsQuery
                 .ToList()
                 .Select(MapToDto)
                 .ToList();
@@ -104,13 +132,13 @@ public class VeterinaryClinicActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Lista clinicilor veterinare a fost obținută cu succes.",
+                Message = "Lista clinicilor veterinare a fost obtinuta cu succes.",
                 Data = list
             };
         }
         catch (Exception ex)
         {
-            return Failure($"A apărut o eroare la obținerea clinicilor: {ex.Message}");
+            return Failure($"A aparut o eroare la obtinerea clinicilor: {ex.Message}");
         }
     }
 

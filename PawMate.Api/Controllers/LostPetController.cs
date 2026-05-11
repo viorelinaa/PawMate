@@ -19,9 +19,9 @@ public class LostPetController : ControllerBase
     }
 
     [HttpGet("list")]
-    public IActionResult GetLostPetList()
+    public IActionResult GetLostPetList([FromQuery] LostPetQueryDto query)
     {
-        var response = _lostPetLogic.GetLostPetList();
+        var response = _lostPetLogic.GetLostPetList(query);
         if (!response.IsSuccess) return BadRequest(response.Message);
         return Ok(response.Data);
     }

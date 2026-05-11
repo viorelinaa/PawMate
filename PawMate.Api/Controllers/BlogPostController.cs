@@ -19,9 +19,9 @@ public class BlogPostController : ControllerBase
     }
 
     [HttpGet("list")]
-    public IActionResult GetBlogPostList()
+    public IActionResult GetBlogPostList([FromQuery] BlogPostQueryDto query)
     {
-        var response = _blogPostLogic.GetBlogPostList();
+        var response = _blogPostLogic.GetBlogPostList(query);
         if (!response.IsSuccess)
             return BadRequest(response.Message);
 
