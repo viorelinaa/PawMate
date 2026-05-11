@@ -188,7 +188,7 @@ public class PetActions
         }
     }
 
-    public ServiceResponse UpdatePetAction(int id, PetUpdateDto pet)
+    public ServiceResponse UpdatePetAction(int id, PetUpdateDto pet, int userId, bool isAdmin)
     {
         try
         {

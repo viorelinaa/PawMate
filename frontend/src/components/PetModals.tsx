@@ -330,15 +330,35 @@ export function EditPetModal({ pet, onClose, onUpdated }: { pet: Pet; onClose: (
     const [errors, setErrors] = useState<Partial<Record<keyof PetForm, string>>>({});
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [imagePreviewUrl, setImagePreviewUrl] = useState(() => getPetImageUrl(pet.imageUrl));
+    const [imageError, setImageError] = useState("");
+
+    useEffect(() => {
+        if (!selectedImage) {
+            setImagePreviewUrl(getPetImageUrl(pet.imageUrl));
+            return;
+        }
+
+        const previewUrl = URL.createObjectURL(selectedImage);
+        setImagePreviewUrl(previewUrl);
+
+        return () => URL.revokeObjectURL(previewUrl);
+    }, [selectedImage, pet.imageUrl]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         const errs = validatePetForm(form);
-        if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+        const selectedImageError = validatePetImage(selectedImage);
+        setImageError(selectedImageError);
+        if (Object.keys(errs).length > 0 || selectedImageError) { setErrors(errs); return; }
         setLoading(true);
         setApiError(null);
         try {
             await updatePet(pet.id, { ...form, ownerContact: form.ownerContact.trim() });
+            if (selectedImage) {
+                await uploadPetImage(pet.id, selectedImage);
+            }
             onUpdated();
             onClose();
         } catch (err: unknown) {
@@ -353,6 +373,11 @@ export function EditPetModal({ pet, onClose, onUpdated }: { pet: Pet; onClose: (
         setErrors(prev => ({ ...prev, [field]: undefined }));
     }
 
+    function handleImageChange(file: File | null) {
+        setSelectedImage(file);
+        setImageError(validatePetImage(file));
+    }
+
     return (
         <div className="modalOverlay" onClick={onClose}>
             <div className="modalBox" onClick={e => e.stopPropagation()}>
@@ -364,6 +389,10 @@ export function EditPetModal({ pet, onClose, onUpdated }: { pet: Pet; onClose: (
                     form={form} errors={errors} loading={loading} apiError={apiError}
                     submitLabel="Salvează modificările"
                     onSubmit={handleSubmit} onChange={handleChange} onClose={onClose}
+                    selectedImage={selectedImage}
+                    imagePreviewUrl={imagePreviewUrl}
+                    imageError={imageError}
+                    onImageChange={handleImageChange}
                 />
             </div>
         </div>
@@ -419,8 +448,8 @@ export function DeleteConfirmModal({ pet, onClose, onDeleted }: { pet: Pet; onCl
 
 export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => void; onDelete: (p: Pet) => void }) {
     const { currentUser, isAdmin } = useAuth();
-    const canEdit = isAdmin();
-    const canDelete = canEdit || (!!currentUser && p.userId === currentUser.id);
+    const canManage = isAdmin() || (!!currentUser && p.userId === currentUser.id);
+    const canDelete = canManage;
     const [imageFailed, setImageFailed] = useState(false);
     const [showContact, setShowContact] = useState(false);
     const imageSrc = imageFailed ? "" : getPetImageUrl(p.imageUrl);
@@ -457,19 +486,20 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
             </div>
             <p className="petDesc">{p.description}</p>
             <div className="petCardActions" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                <AppButton className="btnDetails" variant="primary" onClick={() => setShowContact(prev => !prev)}>
-                    {showContact ? "Ascunde detalii" : "Cere detalii"}
-                </AppButton>
-                {showContact && (
+                {canManage ? (
+                    <AppButton className="btnDetails" variant="primary" onClick={() => onEdit(p)}>
+                        Editează
+                    </AppButton>
+                ) : (
+                    <AppButton className="btnDetails" variant="primary" onClick={() => setShowContact(prev => !prev)}>
+                        {showContact ? "Ascunde detalii" : "Cere detalii"}
+                    </AppButton>
+                )}
+                {!canManage && showContact && (
                     <div className="petContactBox">
                         <span>Contact proprietar</span>
                         <strong>{ownerContact || "Contact indisponibil"}</strong>
                     </div>
-                )}
-                {canEdit && (
-                    <AppButton variant="ghost" size="sm" onClick={() => onEdit(p)}>
-                        Editează
-                    </AppButton>
                 )}
                 {canDelete && (
                     <AppButton

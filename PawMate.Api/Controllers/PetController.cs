@@ -150,12 +150,22 @@ public class PetController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    [Authorize(Roles = "admin")]
+    [Authorize]
     public IActionResult UpdatePet([FromRoute] int id, [FromBody] PetUpdateDto pet)
     {
-        var response = _petLogic.UpdatePet(id, pet);
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var isAdmin = User.IsInRole("admin");
+        var response = _petLogic.UpdatePet(id, pet, userId.Value, isAdmin);
         if (!response.IsSuccess)
+        {
+            if (response.Message == "Poti modifica doar animalele adaugate de tine.")
+                return StatusCode(StatusCodes.Status403Forbidden, response.Message);
+
             return BadRequest(response.Message);
+        }
 
         return Ok(response.Message);
     }

@@ -22,9 +22,9 @@ public class PetLogic : PetActions, IPetLogic
         return GetPetListAction(query);
     }
 
-    public ServiceResponse UpdatePet(int id, PetUpdateDto pet)
+    public ServiceResponse UpdatePet(int id, PetUpdateDto pet, int userId, bool isAdmin)
     {
-        return UpdatePetAction(id, pet);
+        return UpdatePetAction(id, pet, userId, isAdmin);
     }
 
 
