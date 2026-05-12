@@ -130,8 +130,12 @@ public class PetController : ControllerBase
         if (string.IsNullOrWhiteSpace(imageUrl))
             return BadRequest("Cloudinary nu a returnat URL-ul imaginii.");
 
+        var imagePublicId = uploadResult.PublicId;
+        if (string.IsNullOrWhiteSpace(imagePublicId))
+            return BadRequest("Cloudinary nu a returnat PublicId-ul imaginii.");
+
         var isAdmin = User.IsInRole("admin");
-        var response = _petLogic.UpdatePetImage(id, userId.Value, isAdmin, imageUrl);
+        var response = _petLogic.UpdatePetImage(id, userId.Value, isAdmin, imageUrl, imagePublicId);
 
         if (!response.IsSuccess)
         {
@@ -144,6 +148,12 @@ public class PetController : ControllerBase
                 return StatusCode(StatusCodes.Status403Forbidden, response.Message);
 
             return BadRequest(response.Message);
+        }
+
+        var oldImagePublicId = response.Data as string;
+        if (!string.IsNullOrWhiteSpace(oldImagePublicId) && oldImagePublicId != imagePublicId)
+        {
+            await DeleteCloudinaryImageAsync(oldImagePublicId);
         }
 
         return Ok(new { imageUrl });
@@ -172,7 +182,7 @@ public class PetController : ControllerBase
 
     [HttpDelete("{id}")]
     [Authorize]
-    public IActionResult DeletePet([FromRoute] int id)
+    public async Task<IActionResult> DeletePet([FromRoute] int id)
     {
         var userId = GetCurrentUserId();
         if (!userId.HasValue)
@@ -188,7 +198,24 @@ public class PetController : ControllerBase
             return BadRequest(response.Message);
         }
 
+        await DeleteCloudinaryImageAsync(response.Data as string);
+
         return Ok(response.Message);
+    }
+
+    private async Task DeleteCloudinaryImageAsync(string? publicId)
+    {
+        if (string.IsNullOrWhiteSpace(publicId))
+            return;
+
+        try
+        {
+            await _cloudinary.DestroyAsync(new DeletionParams(publicId));
+        }
+        catch
+        {
+            // The database change already succeeded, so Cloudinary cleanup should not break the user request.
+        }
     }
 
     private int? GetCurrentUserId()

@@ -16,6 +16,7 @@ public class PetEntity
     public string Description { get; set; }
     public string? OwnerContact { get; set; }
     public string? ImageUrl { get; set; }
+    public string? ImagePublicId { get; set; }
     public int? UserId { get; set; }
 
     public UserEntity? User { get; set; }
