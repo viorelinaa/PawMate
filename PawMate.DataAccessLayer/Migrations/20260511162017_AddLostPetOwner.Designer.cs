@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PawMate.DataAccessLayer.Context;
@@ -11,9 +12,11 @@ using PawMate.DataAccessLayer.Context;
 namespace PawMate.DataAccessLayer.Migrations
 {
     [DbContext(typeof(PawMateDbContext))]
-    partial class PawMateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260511162017_AddLostPetOwner")]
+    partial class AddLostPetOwner
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -202,14 +205,8 @@ namespace PawMate.DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("text");
-
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("OwnerContact")
                         .HasColumnType("text");
 
                     b.Property<string>("Size")

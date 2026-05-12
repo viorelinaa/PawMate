@@ -19,9 +19,9 @@ public class EventController : ControllerBase
     }
 
     [HttpGet("list")]
-    public IActionResult GetEventList()
+    public IActionResult GetEventList([FromQuery] EventQueryDto query)
     {
-        var response = _eventLogic.GetEventList();
+        var response = _eventLogic.GetEventList(query);
         if (!response.IsSuccess)
             return BadRequest(response.Message);
 

@@ -29,7 +29,13 @@ export default function SittersList() {
     async function loadSitters() {
         try {
             setIsLoading(true);
-            const data = await getSitters();
+            const data = await getSitters({
+                search: query,
+                onlyTopRated,
+                minRating: ratingThreshold,
+                sortBy: priceSort === "none" ? undefined : "price",
+                sortDirection: priceSort === "none" ? undefined : priceSort,
+            });
             setSitters(data);
             setLoadError(null);
         } catch (error) {
@@ -45,34 +51,13 @@ export default function SittersList() {
 
     useEffect(() => {
         void loadSitters();
-    }, []);
+    }, [query, onlyTopRated, priceSort]);
 
     const handlePriceMenuBlur = (event: FocusEvent<HTMLDivElement>) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
             setPriceMenuOpen(false);
         }
     };
-
-    const filtered = sitters.filter((s) => {
-        const q = query.trim().toLowerCase();
-        if (!q) return true;
-        return (
-            s.name.toLowerCase().includes(q) ||
-            s.city.toLowerCase().includes(q) ||
-            s.services.toLowerCase().includes(q) ||
-            s.description.toLowerCase().includes(q)
-        );
-    });
-
-    const rated = onlyTopRated
-        ? filtered.filter((s) => s.rating >= ratingThreshold)
-        : filtered;
-
-    const sorted = [...rated].sort((a, b) => {
-        if (priceSort === "asc") return a.pricePerDay - b.pricePerDay;
-        if (priceSort === "desc") return b.pricePerDay - a.pricePerDay;
-        return 0;
-    });
 
     const priceLabel =
         priceSort === "asc"
@@ -234,13 +219,13 @@ export default function SittersList() {
                 {isLoading && <div className="lostEmpty">Se incarca sitterii...</div>}
                 {loadError && <div className="lostEmpty" style={{ color: "red" }}>{loadError}</div>}
 
-                {!isLoading && !loadError && sorted.length === 0 && (
+                {!isLoading && !loadError && sitters.length === 0 && (
                     <div className="lostEmpty">Nu exista rezultate pentru filtrele selectate.</div>
                 )}
 
-                {!isLoading && !loadError && sorted.length > 0 && (
+                {!isLoading && !loadError && sitters.length > 0 && (
                     <div className="sitters-grid">
-                        {sorted.map((s) => (
+                        {sitters.map((s) => (
                             <SitterCard
                                 key={s.id}
                                 s={s}

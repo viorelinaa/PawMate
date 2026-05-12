@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PawMate.DataAccessLayer.Context;
@@ -11,9 +12,11 @@ using PawMate.DataAccessLayer.Context;
 namespace PawMate.DataAccessLayer.Migrations
 {
     [DbContext(typeof(PawMateDbContext))]
-    partial class PawMateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260511154320_AddPetOwner")]
+    partial class AddPetOwner
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -139,12 +142,7 @@ namespace PawMate.DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("LostPets");
                 });
@@ -202,14 +200,8 @@ namespace PawMate.DataAccessLayer.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("text");
-
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("OwnerContact")
                         .HasColumnType("text");
 
                     b.Property<string>("Size")
@@ -556,15 +548,6 @@ namespace PawMate.DataAccessLayer.Migrations
                     b.Navigation("Author");
                 });
 
-            modelBuilder.Entity("PawMate.Domain.Entities.LostPet.LostPetEntity", b =>
-                {
-                    b.HasOne("PawMate.Domain.Entities.User.UserEntity", "User")
-                        .WithMany("LostPets")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("PawMate.Domain.Entities.Marketplace.MarketplaceEntity", b =>
                 {
                     b.HasOne("PawMate.Domain.Entities.User.UserEntity", "Seller")
@@ -633,8 +616,6 @@ namespace PawMate.DataAccessLayer.Migrations
                     b.Navigation("Adoptions");
 
                     b.Navigation("BlogPosts");
-
-                    b.Navigation("LostPets");
 
                     b.Navigation("MarketplaceListings");
 

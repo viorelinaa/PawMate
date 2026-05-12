@@ -9,5 +9,5 @@ public interface IEventLogic
     ServiceResponse UpdateEvent(int id, EventUpdateDto evt);
     ServiceResponse DeleteEvent(int id);
     ServiceResponse GetEventById(int id);
-    ServiceResponse GetEventList();
+    ServiceResponse GetEventList(EventQueryDto query);
 }

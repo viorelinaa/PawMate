@@ -16,6 +16,7 @@ import type { EventItem } from "../services/eventService";
 
 export default function Evenimente() {
     const [events, setEvents] = useState<EventItem[]>([]);
+    const [allLocations, setAllLocations] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [loadError, setLoadError] = useState<string | null>(null);
     const [showAddModal, setShowAddModal] = useState(false);
@@ -27,35 +28,37 @@ export default function Evenimente() {
     async function loadEvents() {
         try {
             setIsLoading(true);
-            const data = await getEvents();
+            const data = await getEvents({
+                search: query,
+                location,
+                sortBy: "date",
+                sortDirection: "desc",
+            });
             setEvents(data);
             setLoadError(null);
         } catch {
-            setLoadError("Nu s-au putut încărca evenimentele. Verifică conexiunea la server.");
+            setLoadError("Nu s-au putut incarca evenimentele. Verifica conexiunea la server.");
         } finally {
             setIsLoading(false);
         }
     }
 
+    async function loadEventFilterOptions() {
+        try {
+            const data = await getEvents();
+            setAllLocations([...new Set(data.map((e) => e.location).filter(Boolean))]);
+        } catch {
+            setAllLocations([]);
+        }
+    }
+
     useEffect(() => {
-        void loadEvents();
+        void loadEventFilterOptions();
     }, []);
 
-    const allLocations = [...new Set(events.map((e) => e.location).filter(Boolean))];
-
-    const filtered = events.filter((e) => {
-        if (location !== "ALL" && e.location !== location) return false;
-        if (query) {
-            const q = query.toLowerCase();
-            if (
-                !e.title.toLowerCase().includes(q) &&
-                !e.description?.toLowerCase().includes(q)
-            )
-                return false;
-        }
-        return true;
-    });
-
+    useEffect(() => {
+        void loadEvents();
+    }, [query, location]);
     function resetFilters() {
         setQuery("");
         setLocation("ALL");
@@ -149,13 +152,13 @@ export default function Evenimente() {
                 {isLoading && <div className="eventsEmpty">Se încarcă evenimentele...</div>}
                 {loadError && <div className="eventsEmpty" style={{ color: "red" }}>{loadError}</div>}
 
-                {!isLoading && !loadError && filtered.length === 0 && (
+                {!isLoading && !loadError && events.length === 0 && (
                     <div className="eventsEmpty">Nu există evenimente pentru filtrele selectate.</div>
                 )}
 
-                {!isLoading && !loadError && filtered.length > 0 && (
+                {!isLoading && !loadError && events.length > 0 && (
                     <div className="eventsGrid">
-                        {filtered.map((event) => (
+                        {events.map((event) => (
                             <EventCard
                                 key={event.id}
                                 event={event}

@@ -1,4 +1,4 @@
-ï»¿using PawMate.DataAccessLayer.Context;
+using PawMate.DataAccessLayer.Context;
 using PawMate.Domain.Entities.Sitter;
 using PawMate.Domain.Models.Service;
 using PawMate.Domain.Models.Sitter;
@@ -34,7 +34,7 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Profilul sitter a fost adÄƒugat cu succes.",
+                Message = "Profilul sitter a fost adãugat cu succes.",
                 Data = entity.Id
             };
         }
@@ -43,7 +43,7 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apÄƒrut o eroare la adÄƒugarea profilului: {ex.Message}"
+                Message = $"A apãrut o eroare la adãugarea profilului: {ex.Message}"
             };
         }
     }
@@ -59,7 +59,7 @@ public class SitterActions
                 return new ServiceResponse
                 {
                     IsSuccess = false,
-                    Message = "Profilul sitter nu a fost gÄƒsit."
+                    Message = "Profilul sitter nu a fost gãsit."
                 };
             }
 
@@ -77,7 +77,7 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Profilul sitter a fost gÄƒsit.",
+                Message = "Profilul sitter a fost gãsit.",
                 Data = dto
             };
         }
@@ -86,16 +86,45 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apÄƒrut o eroare la obÈ›inerea profilului: {ex.Message}"
+                Message = $"A apãrut o eroare la ob?inerea profilului: {ex.Message}"
             };
         }
     }
 
-    public ServiceResponse GetSitterListAction()
+    public ServiceResponse GetSitterListAction(SitterQueryDto query)
     {
         try
         {
-            var list = _context.Sitters
+            var sittersQuery = _context.Sitters.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                var search = query.Search.Trim().ToLower();
+                sittersQuery = sittersQuery.Where(s =>
+                    s.Name.ToLower().Contains(search) ||
+                    s.City.ToLower().Contains(search) ||
+                    s.Services.ToLower().Contains(search) ||
+                    s.Description.ToLower().Contains(search));
+            }
+
+            if (query.OnlyTopRated)
+            {
+                var minRating = query.MinRating ?? 4.7m;
+                sittersQuery = sittersQuery.Where(s => s.Rating >= minRating);
+            }
+
+            sittersQuery = query.SortBy?.ToLower() switch
+            {
+                "price" when query.SortDirection == "desc" => sittersQuery.OrderByDescending(s => s.PricePerDay),
+                "price" => sittersQuery.OrderBy(s => s.PricePerDay),
+                "rating" when query.SortDirection == "asc" => sittersQuery.OrderBy(s => s.Rating),
+                "rating" => sittersQuery.OrderByDescending(s => s.Rating),
+                "name" when query.SortDirection == "desc" => sittersQuery.OrderByDescending(s => s.Name),
+                "name" => sittersQuery.OrderBy(s => s.Name),
+                _ => sittersQuery.OrderBy(s => s.Id)
+            };
+
+            var list = sittersQuery
                 .Select(s => new SitterInfoDto
                 {
                     Id = s.Id,
@@ -111,7 +140,7 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Lista sitter-ilor a fost obÈ›inutÄƒ cu succes.",
+                Message = "Lista sitter-ilor a fost obtinuta cu succes.",
                 Data = list
             };
         }
@@ -120,7 +149,7 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apÄƒrut o eroare la obÈ›inerea listei de sitters: {ex.Message}"
+                Message = $"A aparut o eroare la obtinerea listei de sitters: {ex.Message}"
             };
         }
     }
@@ -136,7 +165,7 @@ public class SitterActions
                 return new ServiceResponse
                 {
                     IsSuccess = false,
-                    Message = "Profilul sitter nu a fost gÄƒsit."
+                    Message = "Profilul sitter nu a fost gãsit."
                 };
             }
 
@@ -160,7 +189,7 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apÄƒrut o eroare la actualizarea profilului: {ex.Message}"
+                Message = $"A apãrut o eroare la actualizarea profilului: {ex.Message}"
             };
         }
     }
@@ -176,7 +205,7 @@ public class SitterActions
                 return new ServiceResponse
                 {
                     IsSuccess = false,
-                    Message = "Profilul sitter nu a fost gÄƒsit."
+                    Message = "Profilul sitter nu a fost gãsit."
                 };
             }
 
@@ -186,7 +215,7 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Profilul sitter a fost È™ters cu succes."
+                Message = "Profilul sitter a fost ?ters cu succes."
             };
         }
         catch (Exception ex)
@@ -194,7 +223,7 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apÄƒrut o eroare la È™tergerea profilului: {ex.Message}"
+                Message = $"A apãrut o eroare la ?tergerea profilului: {ex.Message}"
             };
         }
     }

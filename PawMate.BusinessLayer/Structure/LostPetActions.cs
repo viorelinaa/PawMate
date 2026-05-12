@@ -14,7 +14,7 @@ public class LostPetActions
         _context = new PawMateDbContext();
     }
 
-    public ServiceResponse CreateLostPetAction(LostPetCreateDto lostPet)
+    public ServiceResponse CreateLostPetAction(LostPetCreateDto lostPet, int userId)
     {
         try
         {
@@ -25,7 +25,8 @@ public class LostPetActions
                 LostDate = DateTime.SpecifyKind(DateTime.Parse(lostPet.LostDate), DateTimeKind.Utc),
                 Contact = lostPet.Contact,
                 Description = lostPet.Description,
-                IsFound = false
+                IsFound = false,
+                UserId = userId
             };
 
             _context.LostPets.Add(entity);
@@ -70,11 +71,42 @@ public class LostPetActions
         }
     }
 
-    public ServiceResponse GetLostPetListAction()
+    public ServiceResponse GetLostPetListAction(LostPetQueryDto query)
     {
         try
         {
-            var list = _context.LostPets
+            var lostPetsQuery = _context.LostPets.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                var search = query.Search.Trim().ToLower();
+                lostPetsQuery = lostPetsQuery.Where(lp => lp.Description.ToLower().Contains(search));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Species) && query.Species != "ALL")
+            {
+                lostPetsQuery = lostPetsQuery.Where(lp => lp.Species == query.Species);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.City) && query.City != "ALL")
+            {
+                lostPetsQuery = lostPetsQuery.Where(lp => lp.City == query.City);
+            }
+
+            if (query.IsFound.HasValue)
+            {
+                lostPetsQuery = lostPetsQuery.Where(lp => lp.IsFound == query.IsFound.Value);
+            }
+
+            lostPetsQuery = query.SortBy?.ToLower() switch
+            {
+                "lostdate" when query.SortDirection == "asc" => lostPetsQuery.OrderBy(lp => lp.LostDate),
+                "city" when query.SortDirection == "desc" => lostPetsQuery.OrderByDescending(lp => lp.City),
+                "city" => lostPetsQuery.OrderBy(lp => lp.City),
+                _ => lostPetsQuery.OrderByDescending(lp => lp.LostDate)
+            };
+
+            var list = lostPetsQuery
                 .Select(lp => new LostPetInfoDto
                 {
                     Id = lp.Id,
@@ -83,14 +115,15 @@ public class LostPetActions
                     LostDate = lp.LostDate.ToString("yyyy-MM-dd"),
                     Contact = lp.Contact,
                     Description = lp.Description,
-                    IsFound = lp.IsFound
+                    IsFound = lp.IsFound,
+                    UserId = lp.UserId
                 })
                 .ToList();
 
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Lista animalelor pierdute a fost obținută cu succes.",
+                Message = "Lista animalelor pierdute a fost obtinuta cu succes.",
                 Data = list
             };
         }
@@ -126,19 +159,28 @@ public class LostPetActions
         }
     }
 
-    public ServiceResponse DeleteLostPetAction(int id)
+    public ServiceResponse DeleteLostPetAction(int id, int userId, bool isAdmin)
     {
         try
         {
             var entity = _context.LostPets.FirstOrDefault(lp => lp.Id == id);
 
             if (entity == null)
-                return new ServiceResponse { IsSuccess = false, Message = "Anunțul nu a fost găsit." };
+                return new ServiceResponse { IsSuccess = false, Message = "Anuntul nu a fost gasit." };
+
+            if (!isAdmin && entity.UserId != userId)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Poti sterge doar anunturile adaugate de tine."
+                };
+            }
 
             _context.LostPets.Remove(entity);
             _context.SaveChanges();
 
-            return new ServiceResponse { IsSuccess = true, Message = "Anunțul a fost șters cu succes." };
+            return new ServiceResponse { IsSuccess = true, Message = "Anuntul a fost sters cu succes." };
         }
         catch (Exception ex)
         {
@@ -154,6 +196,7 @@ public class LostPetActions
         LostDate = lp.LostDate.ToString("yyyy-MM-dd"),
         Contact = lp.Contact,
         Description = lp.Description,
-        IsFound = lp.IsFound
+        IsFound = lp.IsFound,
+        UserId = lp.UserId
     };
 }

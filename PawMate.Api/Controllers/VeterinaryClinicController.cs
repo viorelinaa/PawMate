@@ -19,9 +19,9 @@ public class VeterinaryClinicController : ControllerBase
     }
 
     [HttpGet("list")]
-    public IActionResult GetVeterinaryClinicList()
+    public IActionResult GetVeterinaryClinicList([FromQuery] VeterinaryClinicQueryDto query)
     {
-        var response = _veterinaryClinicLogic.GetVeterinaryClinicList();
+        var response = _veterinaryClinicLogic.GetVeterinaryClinicList(query);
         if (!response.IsSuccess)
             return BadRequest(response.Message);
 

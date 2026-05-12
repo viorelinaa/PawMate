@@ -5,9 +5,9 @@ namespace PawMate.BusinessLayer.Interfaces;
 
 public interface ILostPetLogic
 {
-    ServiceResponse CreateLostPet(LostPetCreateDto lostPet);
+    ServiceResponse CreateLostPet(LostPetCreateDto lostPet, int userId);
     ServiceResponse GetLostPetById(int id);
-    ServiceResponse GetLostPetList();
+    ServiceResponse GetLostPetList(LostPetQueryDto query);
     ServiceResponse UpdateLostPet(int id, LostPetUpdateDto lostPet);
-    ServiceResponse DeleteLostPet(int id);
+    ServiceResponse DeleteLostPet(int id, int userId, bool isAdmin);
 }

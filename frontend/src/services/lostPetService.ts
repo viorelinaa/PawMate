@@ -9,6 +9,7 @@ export interface LostPet {
     contact: string;
     description: string;
     isFound: boolean;
+    userId?: number | null;
 }
 
 export interface LostPetPayload {
@@ -21,6 +22,16 @@ export interface LostPetPayload {
 
 export interface LostPetUpdatePayload extends LostPetPayload {
     isFound: boolean;
+    userId?: number | null;
+}
+
+export interface LostPetQuery {
+    search?: string;
+    species?: string;
+    city?: string;
+    isFound?: boolean;
+    sortBy?: "lostDate" | "city";
+    sortDirection?: "asc" | "desc";
 }
 
 function handleError(err: unknown, fallback: string): never {
@@ -30,12 +41,12 @@ function handleError(err: unknown, fallback: string): never {
     throw new Error(fallback);
 }
 
-export async function getLostPets(): Promise<LostPet[]> {
+export async function getLostPets(query?: LostPetQuery): Promise<LostPet[]> {
     try {
-        const { data } = await apiClient.get<LostPet[]>("/lost-pets/list");
+        const { data } = await apiClient.get<LostPet[]>("/lost-pets/list", { params: query });
         return data;
     } catch (err) {
-        handleError(err, "Nu s-au putut încărca anunțurile.");
+        handleError(err, "Nu s-au putut incarca datele.");
     }
 }
 

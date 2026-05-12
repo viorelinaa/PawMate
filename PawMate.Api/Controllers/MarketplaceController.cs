@@ -19,9 +19,9 @@ public class MarketplaceController : ControllerBase
     }
 
     [HttpGet("list")]
-    public IActionResult GetListingList()
+    public IActionResult GetListingList([FromQuery] MarketplaceQueryDto query)
     {
-        var response = _marketplaceLogic.GetListingList();
+        var response = _marketplaceLogic.GetListingList(query);
         if (!response.IsSuccess)
             return BadRequest(response.Message);
 

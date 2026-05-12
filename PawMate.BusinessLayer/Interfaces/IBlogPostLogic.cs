@@ -7,5 +7,5 @@ public interface IBlogPostLogic
 {
     ServiceResponse CreateBlogPost(BlogPostCreateDto blogPost);
     ServiceResponse GetBlogPostById(int id);
-    ServiceResponse GetBlogPostList();
+    ServiceResponse GetBlogPostList(BlogPostQueryDto query);
 }

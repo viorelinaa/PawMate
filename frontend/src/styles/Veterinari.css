@@ -337,26 +337,6 @@
     font-family: var(--font-family);
 }
 
-.btnContact {
-    border: 0;
-    border-radius: var(--radius-full);
-    padding: 10px 18px;
-    font-weight: 700;
-    cursor: pointer;
-    background: var(--color-primary);
-    color: white;
-    box-shadow: var(--shadow-btn-primary);
-    transition: transform var(--transition-fast), background var(--transition-fast);
-    margin-top: 14px;
-    font-family: var(--font-family);
-    font-size: var(--font-size-base);
-    width: 100%;
-}
-
-.btnContact:hover {
-    transform: translateY(-1px);
-    background: var(--color-primary-light);
-}
 
 .vetAdminActions {
     display: grid;

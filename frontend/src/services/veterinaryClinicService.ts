@@ -30,6 +30,14 @@ export interface VeterinaryClinicCreatePayload {
 
 export type VeterinaryClinicUpdatePayload = VeterinaryClinicCreatePayload;
 
+export interface VeterinaryClinicQuery {
+    search?: string;
+    city?: string;
+    onlyEmergency?: boolean;
+    sortBy?: "name" | "city";
+    sortDirection?: "asc" | "desc";
+}
+
 function handleError(err: unknown, fallback: string): never {
     if (axios.isAxiosError(err)) {
         const message =
@@ -43,12 +51,12 @@ function handleError(err: unknown, fallback: string): never {
     throw new Error(fallback);
 }
 
-export async function getVeterinaryClinics(): Promise<VeterinaryClinic[]> {
+export async function getVeterinaryClinics(query?: VeterinaryClinicQuery): Promise<VeterinaryClinic[]> {
     try {
-        const { data } = await apiClient.get<VeterinaryClinic[]>("/veterinary-clinics/list");
+        const { data } = await apiClient.get<VeterinaryClinic[]>("/veterinary-clinics/list", { params: query });
         return data.map(normalizeVeterinaryClinic);
     } catch (err) {
-        handleError(err, "Nu s-au putut încărca clinicile veterinare.");
+        handleError(err, "Nu s-au putut incarca datele.");
     }
 }
 

@@ -8,12 +8,12 @@ import { FilterSelect } from "../components/FilterSelect";
 import { getPets, AddPetModal, EditPetModal, DeleteConfirmModal, PetCard } from "../components/PetModals";
 import type { Pet } from "../services/petService";
 
-// ── Pagina principală ─────────────────────────────────────────────────────────
 export default function Adoption() {
     const [showAddModal, setShowAddModal] = useState(false);
     const [editPet, setEditPet] = useState<Pet | null>(null);
     const [deletePetTarget, setDeletePetTarget] = useState<Pet | null>(null);
     const [pets, setPets] = useState<Pet[]>([]);
+    const [allCities, setAllCities] = useState<string[]>([]);
     const [loadError, setLoadError] = useState<string | null>(null);
     const [query, setQuery] = useState("");
     const [city, setCity] = useState("ALL");
@@ -25,7 +25,15 @@ export default function Adoption() {
 
     async function loadPets() {
         try {
-            const data = await getPets();
+            const data = await getPets({
+                search: query,
+                city,
+                species,
+                age,
+                size,
+                onlyVaccinated: onlyVacc,
+                onlySterilized: onlySter,
+            });
             setPets(data);
             setLoadError(null);
         } catch {
@@ -33,26 +41,22 @@ export default function Adoption() {
         }
     }
 
+    async function loadPetFilterOptions() {
+        try {
+            const data = await getPets();
+            setAllCities([...new Set(data.map((p) => p.city).filter(Boolean))]);
+        } catch {
+            setAllCities([]);
+        }
+    }
+
     useEffect(() => {
-        loadPets();
+        void loadPetFilterOptions();
     }, []);
 
-    const allCities = [...new Set(pets.map((p) => p.city).filter(Boolean))];
-
-    const filtered = pets.filter((p) => {
-        if (city !== "ALL" && p.city !== city) return false;
-        if (species !== "ALL" && p.species !== species) return false;
-        if (age !== "ALL" && p.age !== age) return false;
-        if (size !== "ALL" && p.size !== size) return false;
-        if (onlyVacc && !p.vaccinated) return false;
-        if (onlySter && !p.sterilized) return false;
-        if (query) {
-            const q = query.toLowerCase();
-            if (!p.name.toLowerCase().includes(q) && !p.description?.toLowerCase().includes(q))
-                return false;
-        }
-        return true;
-    });
+    useEffect(() => {
+        void loadPets();
+    }, [query, city, species, age, size, onlyVacc, onlySter]);
 
     function resetFilters() {
         setQuery("");
@@ -155,9 +159,9 @@ export default function Adoption() {
                     <div className="emptyNotice" style={{ color: "red" }}>{loadError}</div>
                 )}
 
-                {!loadError && filtered.length > 0 ? (
+                {!loadError && pets.length > 0 ? (
                     <div className="petCards">
-                        {filtered.map((p) => (
+                        {pets.map((p) => (
                             <PetCard
                                 key={p.id}
                                 p={p}

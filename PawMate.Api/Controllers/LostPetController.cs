@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer;
@@ -19,9 +20,9 @@ public class LostPetController : ControllerBase
     }
 
     [HttpGet("list")]
-    public IActionResult GetLostPetList()
+    public IActionResult GetLostPetList([FromQuery] LostPetQueryDto query)
     {
-        var response = _lostPetLogic.GetLostPetList();
+        var response = _lostPetLogic.GetLostPetList(query);
         if (!response.IsSuccess) return BadRequest(response.Message);
         return Ok(response.Data);
     }
@@ -38,7 +39,11 @@ public class LostPetController : ControllerBase
     [Authorize]
     public IActionResult CreateLostPet([FromBody] LostPetCreateDto lostPet)
     {
-        var response = _lostPetLogic.CreateLostPet(lostPet);
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var response = _lostPetLogic.CreateLostPet(lostPet, userId.Value);
         if (!response.IsSuccess) return BadRequest(response.Message);
         return Ok(response.Message);
     }
@@ -56,8 +61,26 @@ public class LostPetController : ControllerBase
     [Authorize]
     public IActionResult DeleteLostPet([FromRoute] int id)
     {
-        var response = _lostPetLogic.DeleteLostPet(id);
-        if (!response.IsSuccess) return BadRequest(response.Message);
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var isAdmin = User.IsInRole("admin");
+        var response = _lostPetLogic.DeleteLostPet(id, userId.Value, isAdmin);
+        if (!response.IsSuccess)
+        {
+            if (response.Message == "Poti sterge doar anunturile adaugate de tine.")
+                return StatusCode(StatusCodes.Status403Forbidden, response.Message);
+
+            return BadRequest(response.Message);
+        }
+
         return Ok(response.Message);
+    }
+
+    private int? GetCurrentUserId()
+    {
+        var rawUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return int.TryParse(rawUserId, out var userId) ? userId : null;
     }
 }

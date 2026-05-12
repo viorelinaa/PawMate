@@ -42,7 +42,7 @@ public class BlogPostActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apărut o eroare la publicarea articolului: {ex.Message}"
+                Message = $"A aparut o eroare la publicarea articolului: {ex.Message}"
             };
         }
     }
@@ -58,7 +58,7 @@ public class BlogPostActions
                 return new ServiceResponse
                 {
                     IsSuccess = false,
-                    Message = "Articolul de blog nu a fost găsit."
+                    Message = "Articolul de blog nu a fost gasit."
                 };
             }
 
@@ -74,7 +74,7 @@ public class BlogPostActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Articolul de blog a fost găsit.",
+                Message = "Articolul de blog a fost gasit.",
                 Data = dto
             };
         }
@@ -83,16 +83,34 @@ public class BlogPostActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apărut o eroare la obținerea articolului: {ex.Message}"
+                Message = $"A aparut o eroare la obtinerea articolului: {ex.Message}"
             };
         }
     }
 
-    public ServiceResponse GetBlogPostListAction()
+    public ServiceResponse GetBlogPostListAction(BlogPostQueryDto query)
     {
         try
         {
-            var list = _context.BlogPosts
+            var blogPostsQuery = _context.BlogPosts.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                var search = query.Search.Trim().ToLower();
+                blogPostsQuery = blogPostsQuery.Where(b =>
+                    b.Title.ToLower().Contains(search) ||
+                    b.Content.ToLower().Contains(search));
+            }
+
+            blogPostsQuery = query.SortBy?.ToLower() switch
+            {
+                "title" when query.SortDirection == "desc" => blogPostsQuery.OrderByDescending(b => b.Title),
+                "title" => blogPostsQuery.OrderBy(b => b.Title),
+                "createdat" when query.SortDirection == "asc" => blogPostsQuery.OrderBy(b => b.CreatedAt),
+                _ => blogPostsQuery.OrderByDescending(b => b.CreatedAt)
+            };
+
+            var list = blogPostsQuery
                 .Select(b => new BlogPostInfoDto
                 {
                     Id = b.Id,
@@ -106,7 +124,7 @@ public class BlogPostActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Lista articolelor de blog a fost obținută cu succes.",
+                Message = "Lista articolelor de blog a fost obtinuta cu succes.",
                 Data = list
             };
         }
@@ -115,7 +133,7 @@ public class BlogPostActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apărut o eroare la obținerea listei de articole: {ex.Message}"
+                Message = $"A aparut o eroare la obtinerea listei de articole: {ex.Message}"
             };
         }
     }

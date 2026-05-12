@@ -1,4 +1,4 @@
-﻿using PawMate.BusinessLayer.Interfaces;
+using PawMate.BusinessLayer.Interfaces;
 using PawMate.BusinessLayer.Structure;
 using PawMate.Domain.Models.Service;
 using PawMate.Domain.Models.Sitter;
@@ -17,9 +17,9 @@ public class SitterLogic : SitterActions, ISitterLogic
         return GetSitterByIdAction(id);
     }
 
-    public ServiceResponse GetSitterList()
+    public ServiceResponse GetSitterList(SitterQueryDto query)
     {
-        return GetSitterListAction();
+        return GetSitterListAction(query);
     }
 
     public ServiceResponse UpdateSitter(int id, SitterUpdateDto sitter)

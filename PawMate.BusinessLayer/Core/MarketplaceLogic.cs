@@ -17,9 +17,9 @@ public class MarketplaceLogic : MarketplaceActions, IMarketplaceLogic
         return GetListingByIdAction(id);
     }
 
-    public ServiceResponse GetListingList()
+    public ServiceResponse GetListingList(MarketplaceQueryDto query)
     {
-        return GetListingListAction();
+        return GetListingListAction(query);
     }
 
     public ServiceResponse UpdateListing(int id, MarketplaceUpdateDto listing)

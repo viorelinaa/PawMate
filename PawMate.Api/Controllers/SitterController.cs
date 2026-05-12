@@ -19,9 +19,9 @@ public class SitterController : ControllerBase
     }
 
     [HttpGet("list")]
-    public IActionResult GetSitterList()
+    public IActionResult GetSitterList([FromQuery] SitterQueryDto query)
     {
-        var response = _sitterLogic.GetSitterList();
+        var response = _sitterLogic.GetSitterList(query);
         if (!response.IsSuccess)
             return BadRequest(response.Message);
 

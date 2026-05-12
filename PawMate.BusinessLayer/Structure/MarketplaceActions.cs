@@ -90,11 +90,35 @@ public class MarketplaceActions
         }
     }
 
-    public ServiceResponse GetListingListAction()
+    public ServiceResponse GetListingListAction(MarketplaceQueryDto query)
     {
         try
         {
-            var list = _context.MarketplaceListings
+            var listingsQuery = _context.MarketplaceListings.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                var search = query.Search.Trim().ToLower();
+                listingsQuery = listingsQuery.Where(m =>
+                    m.Title.ToLower().Contains(search) ||
+                    m.Description.ToLower().Contains(search));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Category) && query.Category != "ALL")
+            {
+                listingsQuery = listingsQuery.Where(m => m.Category == query.Category);
+            }
+
+            listingsQuery = query.SortBy?.ToLower() switch
+            {
+                "price" when query.SortDirection == "desc" => listingsQuery.OrderByDescending(m => m.Price),
+                "price" => listingsQuery.OrderBy(m => m.Price),
+                "title" when query.SortDirection == "desc" => listingsQuery.OrderByDescending(m => m.Title),
+                "title" => listingsQuery.OrderBy(m => m.Title),
+                _ => listingsQuery.OrderByDescending(m => m.Id)
+            };
+
+            var list = listingsQuery
                 .Select(m => new MarketplaceInfoDto
                 {
                     Id = m.Id,
@@ -109,7 +133,7 @@ public class MarketplaceActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Lista anunțurilor de vânzare a fost obținută cu succes.",
+                Message = "Lista anunturilor de vanzare a fost obtinuta cu succes.",
                 Data = list
             };
         }
@@ -118,7 +142,7 @@ public class MarketplaceActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apărut o eroare la obținerea listei de anunțuri: {ex.Message}"
+                Message = $"A aparut o eroare la obtinerea listei de anunturi: {ex.Message}"
             };
         }
     }

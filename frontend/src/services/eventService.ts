@@ -23,6 +23,13 @@ export interface EventUpdatePayload {
     date: string;
 }
 
+export interface EventQuery {
+    search?: string;
+    location?: string;
+    sortBy?: "title" | "date";
+    sortDirection?: "asc" | "desc";
+}
+
 function handleError(err: unknown, fallback: string): never {
     if (axios.isAxiosError(err)) {
         const message =
@@ -34,12 +41,12 @@ function handleError(err: unknown, fallback: string): never {
     throw new Error(fallback);
 }
 
-export async function getEvents(): Promise<EventItem[]> {
+export async function getEvents(query?: EventQuery): Promise<EventItem[]> {
     try {
-        const { data } = await apiClient.get<EventItem[]>("/events/list");
+        const { data } = await apiClient.get<EventItem[]>("/events/list", { params: query });
         return data;
     } catch (err) {
-        handleError(err, "Nu s-au putut încărca evenimentele.");
+        handleError(err, "Nu s-au putut incarca datele.");
     }
 }
 

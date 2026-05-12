@@ -11,4 +11,7 @@ public class PetInfoDto
     public bool Vaccinated { get; set; }
     public bool Sterilized { get; set; }
     public string Description { get; set; }
+    public string? OwnerContact { get; set; }
+    public string? ImageUrl { get; set; }
+    public int? UserId { get; set; }
 }
