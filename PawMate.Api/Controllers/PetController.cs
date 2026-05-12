@@ -141,7 +141,7 @@ public class PetController : ControllerBase
         {
             if (!string.IsNullOrWhiteSpace(uploadResult.PublicId))
             {
-                await _cloudinary.DestroyAsync(new DeletionParams(uploadResult.PublicId));
+                await _cloudinary.DestroyAsync(new DeletionParams(uploadResult.PublicId) { Invalidate = true });
             }
 
             if (response.Message == "Poti modifica doar animalele adaugate de tine.")
@@ -150,11 +150,7 @@ public class PetController : ControllerBase
             return BadRequest(response.Message);
         }
 
-        var oldImagePublicId = response.Data as string;
-        if (!string.IsNullOrWhiteSpace(oldImagePublicId) && oldImagePublicId != imagePublicId)
-        {
-            await DeleteCloudinaryImageAsync(oldImagePublicId);
-        }
+        await DeleteCloudinaryImageAsync(response.Data as PetImageCleanupDto, imagePublicId);
 
         return Ok(new { imageUrl });
     }
@@ -198,24 +194,63 @@ public class PetController : ControllerBase
             return BadRequest(response.Message);
         }
 
-        await DeleteCloudinaryImageAsync(response.Data as string);
+        await DeleteCloudinaryImageAsync(response.Data as PetImageCleanupDto);
 
         return Ok(response.Message);
     }
 
-    private async Task DeleteCloudinaryImageAsync(string? publicId)
+    private async Task DeleteCloudinaryImageAsync(PetImageCleanupDto? image, string? skipPublicId = null)
     {
+        var publicId = image?.ImagePublicId;
         if (string.IsNullOrWhiteSpace(publicId))
+        {
+            publicId = TryExtractCloudinaryPublicId(image?.ImageUrl);
+        }
+
+        if (string.IsNullOrWhiteSpace(publicId) || publicId == skipPublicId)
             return;
 
         try
         {
-            await _cloudinary.DestroyAsync(new DeletionParams(publicId));
+            await _cloudinary.DestroyAsync(new DeletionParams(publicId) { Invalidate = true });
         }
         catch
         {
             // The database change already succeeded, so Cloudinary cleanup should not break the user request.
         }
+    }
+
+    private static string? TryExtractCloudinaryPublicId(string? imageUrl)
+    {
+        if (string.IsNullOrWhiteSpace(imageUrl) ||
+            !Uri.TryCreate(imageUrl, UriKind.Absolute, out var uri) ||
+            !uri.Host.EndsWith("cloudinary.com", StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        var path = uri.AbsolutePath.Trim('/');
+        var uploadMarker = "/upload/";
+        var uploadIndex = path.IndexOf(uploadMarker.Trim('/'), StringComparison.OrdinalIgnoreCase);
+        if (uploadIndex < 0)
+            return null;
+
+        var afterUpload = path[(uploadIndex + "upload".Length)..].Trim('/');
+        var segments = afterUpload.Split('/', StringSplitOptions.RemoveEmptyEntries).ToList();
+        var versionIndex = segments.FindIndex(segment =>
+            segment.Length > 1 && segment[0] == 'v' && segment[1..].All(char.IsDigit));
+
+        if (versionIndex >= 0)
+        {
+            segments = segments.Skip(versionIndex + 1).ToList();
+        }
+
+        if (segments.Count == 0)
+            return null;
+
+        var publicId = string.Join('/', segments);
+        var extension = Path.GetExtension(publicId);
+        return string.IsNullOrWhiteSpace(extension) ? publicId : publicId[..^extension.Length];
     }
 
     private int? GetCurrentUserId()

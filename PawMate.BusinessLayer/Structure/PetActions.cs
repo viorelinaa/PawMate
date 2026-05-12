@@ -257,6 +257,7 @@ public class PetActions
             }
 
             var oldImagePublicId = entity.ImagePublicId;
+            var oldImageUrl = entity.ImageUrl;
             entity.ImageUrl = imageUrl;
             entity.ImagePublicId = imagePublicId;
             _context.SaveChanges();
@@ -265,7 +266,11 @@ public class PetActions
             {
                 IsSuccess = true,
                 Message = "Imaginea animalului a fost salvata cu succes.",
-                Data = oldImagePublicId
+                Data = new PetImageCleanupDto
+                {
+                    ImagePublicId = oldImagePublicId,
+                    ImageUrl = oldImageUrl
+                }
             };
         }
         catch (Exception ex)
@@ -302,6 +307,7 @@ public class PetActions
             }
 
             var imagePublicId = entity.ImagePublicId;
+            var imageUrl = entity.ImageUrl;
             var adoptionRequests = _context.Adoptions.Where(a => a.PetId == id);
             _context.Adoptions.RemoveRange(adoptionRequests);
             _context.Pets.Remove(entity);
@@ -311,7 +317,11 @@ public class PetActions
             {
                 IsSuccess = true,
                 Message = "Animalul de companie a fost sters cu succes.",
-                Data = imagePublicId
+                Data = new PetImageCleanupDto
+                {
+                    ImagePublicId = imagePublicId,
+                    ImageUrl = imageUrl
+                }
             };
         }
         catch (Exception ex)
