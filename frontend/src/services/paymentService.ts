@@ -8,19 +8,29 @@ export interface PayPalClientConfig {
     currency: string;
 }
 
+export interface PayPalCreateOrderItem {
+    productId: number;
+    quantity: number;
+}
+
 export interface PayPalCreateOrderResult {
+    internalOrderId: number;
     orderId: string;
     status: string;
     currency: string;
+    totalAmount: number;
     amount: number;
     approveUrl?: string;
 }
 
 export interface PayPalCaptureOrderResult {
+    internalOrderId: number;
     orderId: string;
     status: string;
     captureId?: string;
     captureStatus?: string;
+    totalAmount: number;
+    currency: string;
 }
 
 function handleError(err: unknown, fallback: string): never {
@@ -44,10 +54,10 @@ export async function getPayPalClientConfig(): Promise<PayPalClientConfig> {
     }
 }
 
-export async function createPayPalOrder(amount: number): Promise<PayPalCreateOrderResult> {
+export async function createPayPalOrder(items: PayPalCreateOrderItem[]): Promise<PayPalCreateOrderResult> {
     try {
         const { data } = await apiClient.post<PayPalCreateOrderResult>("/paypal/create-order", {
-            amount,
+            items,
         });
         return data;
     } catch (err) {

@@ -12,13 +12,13 @@ public class PayPalPaymentLogic : PayPalPaymentActions, IPayPalPaymentLogic
         return GetClientConfigAction();
     }
 
-    public Task<ServiceResponse> CreateOrderAsync(PayPalCreateOrderDto request)
+    public Task<ServiceResponse> CreateOrderAsync(int userId, PayPalCreateOrderDto request)
     {
-        return CreateOrderActionAsync(request);
+        return CreateOrderActionAsync(userId, request);
     }
 
-    public Task<ServiceResponse> CaptureOrderAsync(string orderId)
+    public Task<ServiceResponse> CaptureOrderAsync(int userId, string orderId)
     {
-        return CaptureOrderActionAsync(orderId);
+        return CaptureOrderActionAsync(userId, orderId);
     }
 }

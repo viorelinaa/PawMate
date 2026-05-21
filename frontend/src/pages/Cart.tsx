@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/Cart.css";
 import { paths } from "../routes/paths";
@@ -48,16 +48,25 @@ export default function Cart() {
         });
     }
 
-    const grouped = cartItems.reduce<Record<number, { product: Product; qty: number }>>((acc, product) => {
-        if (!acc[product.id]) {
-            acc[product.id] = { product, qty: 0 };
-        }
-        acc[product.id].qty += 1;
-        return acc;
-    }, {});
+    const groupedList = useMemo(() => {
+        const grouped = cartItems.reduce<Record<number, { product: Product; qty: number }>>((acc, product) => {
+            if (!acc[product.id]) {
+                acc[product.id] = { product, qty: 0 };
+            }
+            acc[product.id].qty += 1;
+            return acc;
+        }, {});
 
-    const groupedList = Object.values(grouped);
-    const total = cartItems.reduce((sum, p) => sum + Number(p.price), 0);
+        return Object.values(grouped);
+    }, [cartItems]);
+    const total = useMemo(() => cartItems.reduce((sum, p) => sum + Number(p.price), 0), [cartItems]);
+    const checkoutItems = useMemo(
+        () => groupedList.map(({ product, qty }) => ({
+            productId: product.id,
+            quantity: qty,
+        })),
+        [groupedList]
+    );
 
     useEffect(() => {
         if (groupedList.length === 0 || total <= 0) {
@@ -88,7 +97,7 @@ export default function Cart() {
                         label: "paypal",
                     },
                     createOrder: async () => {
-                        const order = await createPayPalOrder(total);
+                        const order = await createPayPalOrder(checkoutItems);
                         return order.orderId;
                     },
                     onApprove: async (data) => {
@@ -142,7 +151,7 @@ export default function Cart() {
                 container.innerHTML = "";
             }
         };
-    }, [groupedList.length, total]);
+    }, [checkoutItems, groupedList.length, total]);
 
     return (
         <div className="cartPage">

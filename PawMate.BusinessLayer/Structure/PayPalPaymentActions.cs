@@ -2,6 +2,9 @@ using System.Globalization;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
+using PawMate.DataAccessLayer.Context;
+using PawMate.Domain.Entities.Order;
 using PawMate.Domain.Models.Payment;
 using PawMate.Domain.Models.Service;
 
@@ -14,6 +17,12 @@ public class PayPalPaymentActions
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
+    private readonly PawMateDbContext _context;
+
+    public PayPalPaymentActions()
+    {
+        _context = new PawMateDbContext();
+    }
 
     public ServiceResponse GetClientConfigAction()
     {
@@ -38,7 +47,7 @@ public class PayPalPaymentActions
         };
     }
 
-    public async Task<ServiceResponse> CreateOrderActionAsync(PayPalCreateOrderDto request)
+    public async Task<ServiceResponse> CreateOrderActionAsync(int userId, PayPalCreateOrderDto request)
     {
         if (!PayPalConfig.IsConfigured)
         {
@@ -49,23 +58,70 @@ public class PayPalPaymentActions
             };
         }
 
-        if (request.Amount <= 0)
+        var normalizedItems = NormalizeItems(request);
+        if (normalizedItems.Count == 0)
         {
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = "Suma pentru plată trebuie să fie mai mare decât 0."
+                Message = "Coșul este gol sau conține produse invalide."
             };
         }
 
+        OrderEntity? order = null;
+
         try
         {
-            var accessToken = await GetAccessTokenAsync();
-            var amount = decimal.Round(
-                request.Amount * PayPalConfig.MdlToPaymentCurrencyRate,
+            var productIds = normalizedItems.Select(item => item.ProductId).ToList();
+            var products = await _context.MarketplaceListings
+                .Where(product => productIds.Contains(product.Id))
+                .ToDictionaryAsync(product => product.Id);
+
+            if (products.Count != productIds.Count)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Unul sau mai multe produse din coș nu mai există."
+                };
+            }
+
+            var totalAmount = normalizedItems.Sum(item => products[item.ProductId].Price * item.Quantity);
+            if (totalAmount <= 0)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Totalul comenzii trebuie să fie mai mare decât 0."
+                };
+            }
+
+            var paymentAmount = decimal.Round(
+                totalAmount * PayPalConfig.MdlToPaymentCurrencyRate,
                 2,
                 MidpointRounding.AwayFromZero);
-            var formattedAmount = amount.ToString("0.00", CultureInfo.InvariantCulture);
+
+            order = new OrderEntity
+            {
+                UserId = userId,
+                TotalAmount = totalAmount,
+                PaymentAmount = paymentAmount,
+                Currency = PayPalConfig.Currency,
+                Status = "Pending",
+                CreatedAt = DateTime.UtcNow,
+                Items = normalizedItems.Select(item => new OrderItemEntity
+                {
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    UnitPrice = products[item.ProductId].Price
+                }).ToList()
+            };
+
+            _context.Orders.Add(order);
+            await _context.SaveChangesAsync();
+
+            var accessToken = await GetAccessTokenAsync();
+            var formattedAmount = paymentAmount.ToString("0.00", CultureInfo.InvariantCulture);
 
             var payload = new
             {
@@ -74,6 +130,8 @@ public class PayPalPaymentActions
                 {
                     new
                     {
+                        reference_id = order.Id.ToString(CultureInfo.InvariantCulture),
+                        description = $"PawMate order #{order.Id}",
                         amount = new
                         {
                             currency_code = PayPalConfig.Currency,
@@ -94,6 +152,8 @@ public class PayPalPaymentActions
 
             if (!response.IsSuccessStatusCode)
             {
+                order.Status = "Failed";
+                await _context.SaveChangesAsync();
                 return PayPalErrorResponse("Nu s-a putut crea comanda PayPal.", content);
             }
 
@@ -103,22 +163,33 @@ public class PayPalPaymentActions
             var status = GetString(root, "status");
             var approveUrl = GetApproveUrl(root);
 
+            order.PayPalOrderId = orderId;
+            await _context.SaveChangesAsync();
+
             return new ServiceResponse
             {
                 IsSuccess = true,
                 Message = "Comanda PayPal a fost creată.",
                 Data = new PayPalCreateOrderResultDto
                 {
+                    InternalOrderId = order.Id,
                     OrderId = orderId,
                     Status = status,
                     Currency = PayPalConfig.Currency,
-                    Amount = amount,
+                    TotalAmount = totalAmount,
+                    Amount = paymentAmount,
                     ApproveUrl = approveUrl
                 }
             };
         }
         catch (Exception ex)
         {
+            if (order is { Id: > 0 } && order.Status == "Pending")
+            {
+                order.Status = "Failed";
+                await _context.SaveChangesAsync();
+            }
+
             return new ServiceResponse
             {
                 IsSuccess = false,
@@ -127,7 +198,7 @@ public class PayPalPaymentActions
         }
     }
 
-    public async Task<ServiceResponse> CaptureOrderActionAsync(string orderId)
+    public async Task<ServiceResponse> CaptureOrderActionAsync(int userId, string orderId)
     {
         if (!PayPalConfig.IsConfigured)
         {
@@ -149,6 +220,44 @@ public class PayPalPaymentActions
 
         try
         {
+            var order = await _context.Orders.FirstOrDefaultAsync(o => o.PayPalOrderId == orderId);
+            if (order == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Comanda locală pentru plata PayPal nu a fost găsită."
+                };
+            }
+
+            if (order.UserId != userId)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Nu ai acces la această comandă."
+                };
+            }
+
+            if (order.Status == "Paid")
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = true,
+                    Message = "Comanda este deja plătită.",
+                    Data = new PayPalCaptureOrderResultDto
+                    {
+                        InternalOrderId = order.Id,
+                        OrderId = orderId,
+                        Status = "COMPLETED",
+                        CaptureId = order.PayPalCaptureId,
+                        CaptureStatus = "COMPLETED",
+                        TotalAmount = order.TotalAmount,
+                        Currency = order.Currency
+                    }
+                };
+            }
+
             var accessToken = await GetAccessTokenAsync();
 
             using var httpRequest = new HttpRequestMessage(
@@ -170,6 +279,12 @@ public class PayPalPaymentActions
             var status = GetString(root, "status");
             var captureId = GetFirstCaptureValue(root, "id");
             var captureStatus = GetFirstCaptureValue(root, "status");
+            var isCompleted = status == "COMPLETED" || captureStatus == "COMPLETED";
+
+            order.Status = isCompleted ? "Paid" : "Failed";
+            order.PayPalCaptureId = captureId;
+            order.PaidAt = isCompleted ? DateTime.UtcNow : null;
+            await _context.SaveChangesAsync();
 
             return new ServiceResponse
             {
@@ -177,10 +292,13 @@ public class PayPalPaymentActions
                 Message = "Plata PayPal a fost confirmată.",
                 Data = new PayPalCaptureOrderResultDto
                 {
+                    InternalOrderId = order.Id,
                     OrderId = orderId,
                     Status = status,
                     CaptureId = captureId,
-                    CaptureStatus = captureStatus
+                    CaptureStatus = captureStatus,
+                    TotalAmount = order.TotalAmount,
+                    Currency = order.Currency
                 }
             };
         }
@@ -192,6 +310,19 @@ public class PayPalPaymentActions
                 Message = $"A apărut o eroare la confirmarea plății PayPal: {ex.Message}"
             };
         }
+    }
+
+    private static List<PayPalCreateOrderItemDto> NormalizeItems(PayPalCreateOrderDto request)
+    {
+        return (request.Items ?? new List<PayPalCreateOrderItemDto>())
+            .Where(item => item.ProductId > 0 && item.Quantity > 0)
+            .GroupBy(item => item.ProductId)
+            .Select(group => new PayPalCreateOrderItemDto
+            {
+                ProductId = group.Key,
+                Quantity = group.Sum(item => item.Quantity)
+            })
+            .ToList();
     }
 
     private static async Task<string> GetAccessTokenAsync()
