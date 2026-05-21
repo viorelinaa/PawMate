@@ -204,6 +204,7 @@
     display: flex;
     gap: 12px;
     flex-wrap: wrap;
+    align-items: flex-start;
 }
 
 .cartBackBtn {
@@ -240,6 +241,41 @@
 .cartOrderBtn:hover {
     transform: translateY(-1px);
     box-shadow: 0 16px 28px rgba(106, 74, 131, 0.35);
+}
+
+.cartPayPalArea {
+    flex: 1;
+    min-width: 240px;
+}
+
+.cartPayPalButtons {
+    min-height: 48px;
+}
+
+.cartPaymentNotice,
+.cartPaymentError,
+.cartPaymentSuccess {
+    border-radius: 14px;
+    padding: 11px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.cartPaymentNotice {
+    background: rgba(106, 74, 131, 0.1);
+    color: #6a4a83;
+}
+
+.cartPaymentError {
+    background: rgba(229, 62, 62, 0.1);
+    color: #b83232;
+}
+
+.cartPaymentSuccess {
+    background: rgba(47, 133, 90, 0.12);
+    color: #276749;
+    border: 1px solid rgba(47, 133, 90, 0.18);
 }
 
 /* ── Empty ─────────────────────────────────────────────── */

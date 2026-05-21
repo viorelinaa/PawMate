@@ -1,4 +1,5 @@
 using PawMate.Domain.Entities.User;
+using PawMate.Domain.Entities.Order;
 
 namespace PawMate.Domain.Entities.Marketplace;
 
@@ -12,4 +13,5 @@ public class MarketplaceEntity
     public int SellerId { get; set; }
 
     public UserEntity Seller { get; set; } = null!;
+    public ICollection<OrderItemEntity> OrderItems { get; set; } = new List<OrderItemEntity>();
 }

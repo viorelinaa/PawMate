@@ -4,6 +4,7 @@ using PawMate.Domain.Entities.BlogPost;
 using PawMate.Domain.Entities.Event;
 using PawMate.Domain.Entities.LostPet;
 using PawMate.Domain.Entities.Marketplace;
+using PawMate.Domain.Entities.Order;
 using PawMate.Domain.Entities.Pet;
 using PawMate.Domain.Entities.ProfileAvatar;
 using PawMate.Domain.Entities.QuizResult;
@@ -24,6 +25,8 @@ public sealed class PawMateDbContext : DbContext
     public DbSet<EventEntity> Events { get; set; }
     public DbSet<BlogPostEntity> BlogPosts { get; set; }
     public DbSet<MarketplaceEntity> MarketplaceListings { get; set; }
+    public DbSet<OrderEntity> Orders { get; set; }
+    public DbSet<OrderItemEntity> OrderItems { get; set; }
     public DbSet<VolunteerEntity> VolunteerOpportunities { get; set; }
     public DbSet<SitterEntity> Sitters { get; set; }
     public DbSet<VeterinaryClinicEntity> VeterinaryClinics { get; set; }
@@ -66,6 +69,32 @@ public sealed class PawMateDbContext : DbContext
             .HasOne(m => m.Seller)
             .WithMany(u => u.MarketplaceListings)
             .HasForeignKey(m => m.SellerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<OrderEntity>()
+            .HasOne(o => o.User)
+            .WithMany(u => u.Orders)
+            .HasForeignKey(o => o.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<OrderEntity>()
+            .Property(o => o.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        modelBuilder.Entity<OrderEntity>()
+            .Property(o => o.Status)
+            .HasDefaultValue("Pending");
+
+        modelBuilder.Entity<OrderItemEntity>()
+            .HasOne(oi => oi.Order)
+            .WithMany(o => o.Items)
+            .HasForeignKey(oi => oi.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<OrderItemEntity>()
+            .HasOne(oi => oi.Product)
+            .WithMany(p => p.OrderItems)
+            .HasForeignKey(oi => oi.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<QuizResultEntity>()

@@ -1,14 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/Cart.css";
 import { paths } from "../routes/paths";
 import type { Product } from "../services/productService";
+import {
+    capturePayPalOrder,
+    createPayPalOrder,
+    getPayPalClientConfig,
+    loadPayPalSdk,
+} from "../services/paymentService";
 
 const CART_KEY = "pawmate_cart";
 
 export default function Cart() {
     const location = useLocation();
     const navigate = useNavigate();
+    const paypalContainerRef = useRef<HTMLDivElement | null>(null);
 
     const [cartItems, setCartItems] = useState<Product[]>(() => {
         if (location.state?.cartItems) return location.state.cartItems as Product[];
@@ -25,6 +32,9 @@ export default function Cart() {
             return [];
         }
     });
+    const [paymentError, setPaymentError] = useState<string | null>(null);
+    const [paymentMessage, setPaymentMessage] = useState<string | null>(null);
+    const [isPayPalLoading, setIsPayPalLoading] = useState(false);
 
     useEffect(() => {
         localStorage.setItem(CART_KEY, JSON.stringify(cartItems));
@@ -38,16 +48,110 @@ export default function Cart() {
         });
     }
 
-    const grouped = cartItems.reduce<Record<number, { product: Product; qty: number }>>((acc, product) => {
-        if (!acc[product.id]) {
-            acc[product.id] = { product, qty: 0 };
-        }
-        acc[product.id].qty += 1;
-        return acc;
-    }, {});
+    const groupedList = useMemo(() => {
+        const grouped = cartItems.reduce<Record<number, { product: Product; qty: number }>>((acc, product) => {
+            if (!acc[product.id]) {
+                acc[product.id] = { product, qty: 0 };
+            }
+            acc[product.id].qty += 1;
+            return acc;
+        }, {});
 
-    const groupedList = Object.values(grouped);
-    const total = cartItems.reduce((sum, p) => sum + Number(p.price), 0);
+        return Object.values(grouped);
+    }, [cartItems]);
+    const total = useMemo(() => cartItems.reduce((sum, p) => sum + Number(p.price), 0), [cartItems]);
+    const checkoutItems = useMemo(
+        () => groupedList.map(({ product, qty }) => ({
+            productId: product.id,
+            quantity: qty,
+        })),
+        [groupedList]
+    );
+
+    useEffect(() => {
+        if (groupedList.length === 0 || total <= 0) {
+            return;
+        }
+
+        let isCancelled = false;
+        const container = paypalContainerRef.current;
+
+        async function renderPayPalButtons() {
+            setIsPayPalLoading(true);
+            setPaymentError(null);
+
+            try {
+                const config = await getPayPalClientConfig();
+                await loadPayPalSdk(config.clientId, config.currency);
+
+                if (isCancelled || !container || !window.paypal) {
+                    return;
+                }
+
+                container.innerHTML = "";
+                const buttons = window.paypal.Buttons({
+                    style: {
+                        layout: "vertical",
+                        color: "gold",
+                        shape: "pill",
+                        label: "paypal",
+                    },
+                    createOrder: async () => {
+                        const order = await createPayPalOrder(checkoutItems);
+                        return order.orderId;
+                    },
+                    onApprove: async (data) => {
+                        if (!data.orderID) {
+                            throw new Error("PayPal nu a returnat id-ul comenzii.");
+                        }
+
+                        setPaymentMessage("Se confirmă plata PayPal...");
+                        const result = await capturePayPalOrder(data.orderID);
+
+                        if (result.status !== "COMPLETED" && result.captureStatus !== "COMPLETED") {
+                            throw new Error("Plata PayPal nu a fost finalizată.");
+                        }
+
+                        setCartItems([]);
+                        localStorage.removeItem(CART_KEY);
+                        setPaymentError(null);
+                        setPaymentMessage("Plata PayPal a fost confirmată. Coșul a fost golit.");
+                    },
+                    onCancel: () => {
+                        setPaymentMessage(null);
+                    },
+                    onError: () => {
+                        setPaymentMessage(null);
+                        setPaymentError("Plata PayPal nu a putut fi finalizată.");
+                    },
+                });
+
+                if (buttons.isEligible && !buttons.isEligible()) {
+                    setPaymentError("PayPal nu este disponibil pentru această plată.");
+                    return;
+                }
+
+                await buttons.render(container);
+            } catch (err) {
+                if (!isCancelled) {
+                    setPaymentError(err instanceof Error ? err.message : "PayPal nu este disponibil.");
+                }
+            } finally {
+                if (!isCancelled) {
+                    setIsPayPalLoading(false);
+                }
+            }
+        }
+
+        void renderPayPalButtons();
+
+        return () => {
+            isCancelled = true;
+            if (container) {
+                container.innerHTML = "";
+            }
+        };
+    }, [checkoutItems, groupedList.length, total]);
 
     return (
         <div className="cartPage">
@@ -80,6 +184,8 @@ export default function Cart() {
             </section>
 
             <section className="cartContent">
+                {paymentMessage && <div className="cartPaymentSuccess">{paymentMessage}</div>}
+
                 {groupedList.length === 0 ? (
                     <div className="cartEmpty">
                         <p className="cartEmptyText">Nu ai niciun produs în coș.</p>
@@ -128,13 +234,13 @@ export default function Cart() {
                             >
                                 ← Înapoi la vânzări
                             </button>
-                            <button
-                                type="button"
-                                className="cartOrderBtn"
-                                onClick={() => alert("Comandă plasată! (mock)")}
-                            >
-                                Plasează comanda
-                            </button>
+                            <div className="cartPayPalArea">
+                                {isPayPalLoading && (
+                                    <div className="cartPaymentNotice">Se pregătește PayPal...</div>
+                                )}
+                                {paymentError && <div className="cartPaymentError">{paymentError}</div>}
+                                <div ref={paypalContainerRef} className="cartPayPalButtons" />
+                            </div>
                         </div>
                     </>
                 )}
