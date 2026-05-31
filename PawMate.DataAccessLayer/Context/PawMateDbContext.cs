@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PawMate.Domain.Entities.Adoption;
 using PawMate.Domain.Entities.BlogPost;
+using PawMate.Domain.Entities.Donation;
 using PawMate.Domain.Entities.Event;
 using PawMate.Domain.Entities.LostPet;
 using PawMate.Domain.Entities.Marketplace;
@@ -18,6 +19,7 @@ namespace PawMate.DataAccessLayer.Context;
 
 public sealed class PawMateDbContext : DbContext
 {
+    public DbSet<DonationEntity> Donations { get; set; }
     public DbSet<UserEntity> Users { get; set; }
     public DbSet<PetEntity> Pets { get; set; }
     public DbSet<AdoptionEntity> Adoptions { get; set; }
