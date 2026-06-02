@@ -76,4 +76,9 @@ public class BusinessLogic
     {
         return new PayPalPaymentLogic();
     }
+
+    public IDonationLogic GetDonationLogic()
+    {
+        return new DonationLogic();
+    }
 }
