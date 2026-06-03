@@ -1,5 +1,6 @@
 using System.Text;
 using System.Security.Claims;
+using System.Globalization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -22,6 +23,19 @@ JwtConfig.SecretKey = secretKey;
 JwtConfig.Issuer = issuer;
 JwtConfig.Audience = audience;
 JwtConfig.ExpiryMinutes = expiryMinutes;
+
+var paypalSection = builder.Configuration.GetSection("PayPal");
+PayPalConfig.ClientId = paypalSection["ClientId"] ?? string.Empty;
+PayPalConfig.ClientSecret = paypalSection["ClientSecret"] ?? string.Empty;
+PayPalConfig.BaseUrl = paypalSection["BaseUrl"] ?? "https://api-m.sandbox.paypal.com";
+PayPalConfig.Currency = paypalSection["Currency"] ?? "EUR";
+PayPalConfig.MdlToPaymentCurrencyRate = decimal.TryParse(
+    paypalSection["MdlToPaymentCurrencyRate"],
+    NumberStyles.Number,
+    CultureInfo.InvariantCulture,
+    out var mdlToPaymentCurrencyRate)
+    ? mdlToPaymentCurrencyRate
+    : 0.05m;
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

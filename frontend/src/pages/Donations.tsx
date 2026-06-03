@@ -1,58 +1,83 @@
+import { useEffect, useState } from "react";
 import "../styles/Donations.css";
 import { AdminOnly } from "../components/AdminOnly";
 import { HandCoinsIcon } from "../components/HandCoinsIcon";
 import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
+import {
+    AddDonationOrgModal,
+    EditDonationOrgModal,
+    DeleteDonationOrgModal,
+} from "../components/DonationModals";
+import { getDonationOrgs } from "../services/donationService";
+import type { DonationOrg } from "../services/donationService";
 
-interface DonationOrg {
-    id: string;
-    name: string;
-    city: string;
-    type: string;
-    donationLink: string;
-    description: string;
-}
-
-const donationOrgs: DonationOrg[] = [
-    {
-        id: "d1", name: "Adăpost Prietenii Blănoșilor", city: "Chișinău", type: "Adăpost",
-        donationLink: "#",
-        description: "Ajută cu hrană, medicamente și transport.",
-    },
-    {
-        id: "d2", name: "ONG PawHelp", city: "Bălți", type: "ONG",
-        donationLink: "#",
-        description: "Campanii de sterilizare și adopții responsabile.",
-    },
-    {
-        id: "d3", name: "Asociația AnimalSafe", city: "Chișinău", type: "ONG",
-        donationLink: "#",
-        description: "Salvare și reabilitare animale abandonate.",
-    },
-];
-
-function DonationCard({ o }: { o: DonationOrg }) {
+function DonationCard({
+    o,
+    onEdit,
+    onDelete,
+}: {
+    o: DonationOrg;
+    onEdit: (org: DonationOrg) => void;
+    onDelete: (org: DonationOrg) => void;
+}) {
     return (
         <div className="donCard">
             <div className="donCardHeader">
                 <div>
                     <h3 className="donName">{o.name}</h3>
-                    <span className="donSmall">{o.city}</span>
+                    {o.city && <span className="donSmall">{o.city}</span>}
                 </div>
                 <span className="donBadge">{o.type}</span>
             </div>
             <p className="donDesc">{o.description}</p>
             <div style={{ marginTop: "auto", paddingTop: "14px" }}>
-                <AppButton className="donBtn" variant="primary" onClick={() => alert("Donație (mock)!")}>
+                <a
+                    className="donBtn"
+                    href={o.donationLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
                     <HandCoinsIcon size={16} aria-hidden="true" />
                     Donează
-                </AppButton>
+                </a>
             </div>
+            <AdminOnly>
+                <div style={{ display: "flex", gap: "8px", marginTop: "10px" }}>
+                    <AppButton variant="ghost" size="sm" onClick={() => onEdit(o)}>
+                        Editează
+                    </AppButton>
+                    <AppButton
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onDelete(o)}
+                        style={{ borderColor: "#e53e3e", color: "#e53e3e" }}
+                    >
+                        Șterge
+                    </AppButton>
+                </div>
+            </AdminOnly>
         </div>
     );
 }
 
 export default function Donations() {
+    const [orgs, setOrgs] = useState<DonationOrg[]>([]);
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [editOrg, setEditOrg] = useState<DonationOrg | null>(null);
+    const [deleteOrg, setDeleteOrg] = useState<DonationOrg | null>(null);
+
+    async function loadOrgs() {
+        try {
+            const data = await getDonationOrgs();
+            setOrgs(data);
+        } catch {
+            setOrgs([]);
+        }
+    }
+
+    useEffect(() => { loadOrgs(); }, []);
+
     return (
         <div>
             <section className="donHero">
@@ -83,18 +108,56 @@ export default function Donations() {
                 <div className="roleActionBar">
                     <AddActionButton
                         label="Adaugă ONG"
-                        onClick={() => alert("Formular adăugare ONG — în curând!")}
+                        onClick={() => setShowAddModal(true)}
                     />
                 </div>
             </AdminOnly>
 
             <div className="donContent">
-                <div className="donCards">
-                    {donationOrgs.map((o) => (
-                        <DonationCard key={o.id} o={o} />
-                    ))}
-                </div>
+                {orgs.length === 0 ? (
+                    <p style={{
+                        textAlign: "center",
+                        color: "var(--color-text-muted)",
+                        fontFamily: "var(--font-family)",
+                        fontWeight: 600,
+                        marginTop: "40px",
+                    }}>
+                        Nu există organizații adăugate momentan.
+                    </p>
+                ) : (
+                    <div className="donCards">
+                        {orgs.map((o) => (
+                            <DonationCard
+                                key={o.id}
+                                o={o}
+                                onEdit={setEditOrg}
+                                onDelete={setDeleteOrg}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
+
+            {showAddModal && (
+                <AddDonationOrgModal
+                    onClose={() => setShowAddModal(false)}
+                    onAdded={loadOrgs}
+                />
+            )}
+            {editOrg && (
+                <EditDonationOrgModal
+                    org={editOrg}
+                    onClose={() => setEditOrg(null)}
+                    onUpdated={loadOrgs}
+                />
+            )}
+            {deleteOrg && (
+                <DeleteDonationOrgModal
+                    org={deleteOrg}
+                    onClose={() => setDeleteOrg(null)}
+                    onDeleted={loadOrgs}
+                />
+            )}
         </div>
     );
 }
