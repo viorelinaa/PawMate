@@ -11,6 +11,8 @@ public class LostPetEntity
     public string Contact { get; set; }
     public string Description { get; set; }
     public bool IsFound { get; set; }
+    public string? ImageUrl { get; set; }
+    public string? ImagePublicId { get; set; }
     public int? UserId { get; set; }
 
     public UserEntity? User { get; set; }

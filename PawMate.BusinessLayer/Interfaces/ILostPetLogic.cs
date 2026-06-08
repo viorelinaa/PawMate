@@ -8,6 +8,7 @@ public interface ILostPetLogic
     ServiceResponse CreateLostPet(LostPetCreateDto lostPet, int userId);
     ServiceResponse GetLostPetById(int id);
     ServiceResponse GetLostPetList(LostPetQueryDto query);
+    ServiceResponse UpdateLostPetImage(int id, int userId, bool isAdmin, string imageUrl, string imagePublicId);
     ServiceResponse UpdateLostPet(int id, LostPetUpdateDto lostPet);
     ServiceResponse DeleteLostPet(int id, int userId, bool isAdmin);
 }

@@ -116,6 +116,7 @@ public class LostPetActions
                     Contact = lp.Contact,
                     Description = lp.Description,
                     IsFound = lp.IsFound,
+                    ImageUrl = lp.ImageUrl,
                     UserId = lp.UserId
                 })
                 .ToList();
@@ -159,6 +160,47 @@ public class LostPetActions
         }
     }
 
+    public ServiceResponse UpdateLostPetImageAction(int id, int userId, bool isAdmin, string imageUrl, string imagePublicId)
+    {
+        try
+        {
+            var entity = _context.LostPets.FirstOrDefault(lp => lp.Id == id);
+
+            if (entity == null)
+                return new ServiceResponse { IsSuccess = false, Message = "Anuntul nu a fost gasit." };
+
+            if (!isAdmin && entity.UserId != userId)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Poti modifica doar anunturile adaugate de tine."
+                };
+            }
+
+            var oldImagePublicId = entity.ImagePublicId;
+            var oldImageUrl = entity.ImageUrl;
+            entity.ImageUrl = imageUrl;
+            entity.ImagePublicId = imagePublicId;
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Imaginea anuntului a fost salvata cu succes.",
+                Data = new LostPetImageCleanupDto
+                {
+                    ImagePublicId = oldImagePublicId,
+                    ImageUrl = oldImageUrl
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse { IsSuccess = false, Message = $"Eroare: {ex.Message}" };
+        }
+    }
+
     public ServiceResponse DeleteLostPetAction(int id, int userId, bool isAdmin)
     {
         try
@@ -177,10 +219,21 @@ public class LostPetActions
                 };
             }
 
+            var imagePublicId = entity.ImagePublicId;
+            var imageUrl = entity.ImageUrl;
             _context.LostPets.Remove(entity);
             _context.SaveChanges();
 
-            return new ServiceResponse { IsSuccess = true, Message = "Anuntul a fost sters cu succes." };
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Anuntul a fost sters cu succes.",
+                Data = new LostPetImageCleanupDto
+                {
+                    ImagePublicId = imagePublicId,
+                    ImageUrl = imageUrl
+                }
+            };
         }
         catch (Exception ex)
         {
