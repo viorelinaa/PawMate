@@ -30,7 +30,9 @@ public class LostPetController : ControllerBase
     };
 
     private readonly ILostPetLogic _lostPetLogic;
-    private readonly Cloudinary _cloudinary;
+    private readonly string? _cloudinaryCloudName;
+    private readonly string? _cloudinaryApiKey;
+    private readonly string? _cloudinaryApiSecret;
     private readonly string _cloudinaryFolder;
 
     public LostPetController(IConfiguration configuration)
@@ -39,17 +41,10 @@ public class LostPetController : ControllerBase
         _lostPetLogic = bl.GetLostPetLogic();
 
         var cloudinarySection = configuration.GetSection("Cloudinary");
-        var cloudName = cloudinarySection["CloudName"];
-        var apiKey = cloudinarySection["ApiKey"];
-        var apiSecret = cloudinarySection["ApiSecret"];
-
-        if (string.IsNullOrWhiteSpace(cloudName) || string.IsNullOrWhiteSpace(apiKey) || string.IsNullOrWhiteSpace(apiSecret))
-        {
-            throw new InvalidOperationException("Configuratia Cloudinary lipseste. Seteaza CloudName, ApiKey si ApiSecret.");
-        }
-
-        _cloudinary = new Cloudinary(new Account(cloudName, apiKey, apiSecret));
-        _cloudinaryFolder = cloudinarySection["LostPetsFolder"] ?? "pawmate/lost-pets";
+        _cloudinaryCloudName = cloudinarySection["CloudName"];
+        _cloudinaryApiKey = cloudinarySection["ApiKey"];
+        _cloudinaryApiSecret = cloudinarySection["ApiSecret"];
+        _cloudinaryFolder = cloudinarySection["LostPetsFolder"] ?? cloudinarySection["Folder"] ?? "pawmate/lost-pets";
     }
 
     [HttpGet("list")]
@@ -86,6 +81,10 @@ public class LostPetController : ControllerBase
     [RequestSizeLimit(MaxLostPetImageRequestBytes)]
     public async Task<IActionResult> UploadLostPetImage([FromRoute] int id, [FromForm] IFormFile? image)
     {
+        var cloudinary = CreateCloudinaryClient();
+        if (cloudinary == null)
+            return BadRequest("Configuratia Cloudinary lipseste. Seteaza CloudName, ApiKey si ApiSecret.");
+
         var userId = GetCurrentUserId();
         if (!userId.HasValue)
             return Unauthorized("Utilizatorul nu este autentificat.");
@@ -116,7 +115,7 @@ public class LostPetController : ControllerBase
                 .FetchFormat("auto")
         };
 
-        var uploadResult = await _cloudinary.UploadAsync(uploadParams);
+        var uploadResult = await cloudinary.UploadAsync(uploadParams);
         if (uploadResult.Error != null)
             return BadRequest($"Cloudinary upload error: {uploadResult.Error.Message}");
 
@@ -133,7 +132,7 @@ public class LostPetController : ControllerBase
 
         if (!response.IsSuccess)
         {
-            await _cloudinary.DestroyAsync(new DeletionParams(imagePublicId) { Invalidate = true });
+            await cloudinary.DestroyAsync(new DeletionParams(imagePublicId) { Invalidate = true });
 
             if (response.Message == "Poti modifica doar anunturile adaugate de tine.")
                 return StatusCode(StatusCodes.Status403Forbidden, response.Message);
@@ -141,7 +140,7 @@ public class LostPetController : ControllerBase
             return BadRequest(response.Message);
         }
 
-        await DeleteCloudinaryImageAsync(response.Data as LostPetImageCleanupDto, imagePublicId);
+        await DeleteCloudinaryImageAsync(response.Data as LostPetImageCleanupDto, imagePublicId, cloudinary);
 
         return Ok(new { imageUrl });
     }
@@ -178,7 +177,19 @@ public class LostPetController : ControllerBase
         return Ok(response.Message);
     }
 
-    private async Task DeleteCloudinaryImageAsync(LostPetImageCleanupDto? image, string? skipPublicId = null)
+    private Cloudinary? CreateCloudinaryClient()
+    {
+        if (string.IsNullOrWhiteSpace(_cloudinaryCloudName) ||
+            string.IsNullOrWhiteSpace(_cloudinaryApiKey) ||
+            string.IsNullOrWhiteSpace(_cloudinaryApiSecret))
+        {
+            return null;
+        }
+
+        return new Cloudinary(new Account(_cloudinaryCloudName, _cloudinaryApiKey, _cloudinaryApiSecret));
+    }
+
+    private async Task DeleteCloudinaryImageAsync(LostPetImageCleanupDto? image, string? skipPublicId = null, Cloudinary? cloudinary = null)
     {
         var publicId = image?.ImagePublicId;
         if (string.IsNullOrWhiteSpace(publicId))
@@ -189,9 +200,13 @@ public class LostPetController : ControllerBase
         if (string.IsNullOrWhiteSpace(publicId) || publicId == skipPublicId)
             return;
 
+        cloudinary ??= CreateCloudinaryClient();
+        if (cloudinary == null)
+            return;
+
         try
         {
-            await _cloudinary.DestroyAsync(new DeletionParams(publicId) { Invalidate = true });
+            await cloudinary.DestroyAsync(new DeletionParams(publicId) { Invalidate = true });
         }
         catch
         {
