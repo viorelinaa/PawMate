@@ -564,3 +564,60 @@
     border-radius: var(--radius-md);
     border: 1px solid var(--color-primary-border);
 }
+
+.modalTextarea.inputError {
+    border-color: #e05252;
+}
+
+.adoptionRequestModal {
+    max-width: 660px;
+}
+
+.adoptionRequestPetSummary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-soft);
+    color: var(--color-text);
+    font-family: var(--font-family);
+}
+
+.adoptionRequestPetSummary strong {
+    color: var(--color-primary);
+    font-size: var(--font-size-base);
+}
+
+.adoptionRequestPetSummary span {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    text-align: right;
+}
+
+.adoptionRequestNotice {
+    border: 1px solid rgba(74, 138, 95, 0.32);
+    border-radius: var(--radius-md);
+    background: rgba(74, 138, 95, 0.1);
+    color: #356b48;
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    line-height: 1.35;
+    padding: 10px 12px;
+    text-align: center;
+}
+
+@media (max-width: 520px) {
+    .adoptionRequestPetSummary {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .adoptionRequestPetSummary span {
+        text-align: left;
+    }
+}

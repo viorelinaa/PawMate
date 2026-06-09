@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
 import { getPets, createPet, updatePet, deletePet, uploadPetImage, getPetImageUrl } from "../services/petService";
+import { createAdoptionRequest } from "../services/adoptionService";
 import { useAuth } from "../context/AuthContext";
 import type { Pet } from "../services/petService";
 
@@ -446,12 +447,177 @@ export function DeleteConfirmModal({ pet, onClose, onDeleted }: { pet: Pet; onCl
     );
 }
 
+interface AdoptionRequestForm {
+    applicantName: string;
+    applicantPhone: string;
+    message: string;
+    animalExperience: string;
+    livingConditions: string;
+}
+
+const emptyAdoptionRequestForm: AdoptionRequestForm = {
+    applicantName: "",
+    applicantPhone: "",
+    message: "",
+    animalExperience: "",
+    livingConditions: "",
+};
+
+function validateAdoptionRequestForm(form: AdoptionRequestForm): Partial<Record<keyof AdoptionRequestForm, string>> {
+    const errors: Partial<Record<keyof AdoptionRequestForm, string>> = {};
+    if (!form.applicantName.trim()) errors.applicantName = "Numele este obligatoriu.";
+    if (!form.applicantPhone.trim()) errors.applicantPhone = "Telefonul este obligatoriu.";
+    if (!form.livingConditions.trim()) errors.livingConditions = "Condițiile de trai sunt obligatorii.";
+    return errors;
+}
+
+function AdoptionRequestModal({
+    pet,
+    defaultName,
+    onClose,
+    onSubmitted,
+}: {
+    pet: Pet;
+    defaultName: string;
+    onClose: () => void;
+    onSubmitted: () => void;
+}) {
+    const [form, setForm] = useState<AdoptionRequestForm>(() => ({
+        ...emptyAdoptionRequestForm,
+        applicantName: defaultName,
+    }));
+    const [errors, setErrors] = useState<Partial<Record<keyof AdoptionRequestForm, string>>>({});
+    const [loading, setLoading] = useState(false);
+    const [apiError, setApiError] = useState<string | null>(null);
+
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        const nextErrors = validateAdoptionRequestForm(form);
+        if (Object.keys(nextErrors).length > 0) {
+            setErrors(nextErrors);
+            return;
+        }
+
+        setLoading(true);
+        setApiError(null);
+        try {
+            await createAdoptionRequest({
+                petId: pet.id,
+                applicantName: form.applicantName.trim(),
+                applicantPhone: form.applicantPhone.trim(),
+                message: form.message.trim(),
+                animalExperience: form.animalExperience.trim(),
+                livingConditions: form.livingConditions.trim(),
+            });
+            onSubmitted();
+            onClose();
+        } catch (err: unknown) {
+            setApiError(err instanceof Error ? err.message : "Eroare necunoscută.");
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    function handleChange(field: keyof AdoptionRequestForm, value: string) {
+        setForm(prev => ({ ...prev, [field]: value }));
+        setErrors(prev => ({ ...prev, [field]: undefined }));
+    }
+
+    return (
+        <div className="modalOverlay" onClick={onClose}>
+            <div className="modalBox adoptionRequestModal" onClick={e => e.stopPropagation()}>
+                <div className="modalHeader">
+                    <h2 className="modalTitle">Trimite cerere de adopție</h2>
+                    <button className="modalClose" onClick={onClose} aria-label="Închide">x</button>
+                </div>
+
+                <div className="adoptionRequestPetSummary">
+                    <strong>{pet.name}</strong>
+                    <span>{normalizePetLabel(pet.species)} - {pet.city}</span>
+                </div>
+
+                <form className="modalForm" onSubmit={handleSubmit} noValidate>
+                    <div className="modalRow">
+                        <div className="modalField">
+                            <label className="modalLabel">Nume *</label>
+                            <input
+                                className={`modalInput${errors.applicantName ? " inputError" : ""}`}
+                                value={form.applicantName}
+                                onChange={e => handleChange("applicantName", e.target.value)}
+                                placeholder="Numele tău"
+                            />
+                            {errors.applicantName && <span className="fieldError">{errors.applicantName}</span>}
+                        </div>
+                        <div className="modalField">
+                            <label className="modalLabel">Telefon *</label>
+                            <input
+                                className={`modalInput${errors.applicantPhone ? " inputError" : ""}`}
+                                value={form.applicantPhone}
+                                onChange={e => handleChange("applicantPhone", e.target.value)}
+                                placeholder="ex. +373 6xx xxx xxx"
+                            />
+                            {errors.applicantPhone && <span className="fieldError">{errors.applicantPhone}</span>}
+                        </div>
+                    </div>
+
+                    <div className="modalField">
+                        <label className="modalLabel">Mesaj</label>
+                        <textarea
+                            className="modalTextarea"
+                            value={form.message}
+                            onChange={e => handleChange("message", e.target.value)}
+                            placeholder="Spune de ce vrei să adopți acest animal..."
+                            rows={3}
+                        />
+                    </div>
+
+                    <div className="modalField">
+                        <label className="modalLabel">Experiență cu animalele</label>
+                        <textarea
+                            className="modalTextarea"
+                            value={form.animalExperience}
+                            onChange={e => handleChange("animalExperience", e.target.value)}
+                            placeholder="Ai mai avut animale? Ce experiență ai?"
+                            rows={3}
+                        />
+                    </div>
+
+                    <div className="modalField">
+                        <label className="modalLabel">Condiții de trai *</label>
+                        <textarea
+                            className={`modalTextarea${errors.livingConditions ? " inputError" : ""}`}
+                            value={form.livingConditions}
+                            onChange={e => handleChange("livingConditions", e.target.value)}
+                            placeholder="Apartament/casă, curte, alte animale, program..."
+                            rows={3}
+                        />
+                        {errors.livingConditions && <span className="fieldError">{errors.livingConditions}</span>}
+                    </div>
+
+                    {apiError && <p className="fieldError" style={{ textAlign: "center" }}>{apiError}</p>}
+
+                    <div className="modalActions">
+                        <AppButton type="button" variant="ghost" onClick={onClose} disabled={loading}>
+                            Anulează
+                        </AppButton>
+                        <AppButton type="submit" variant="primary" disabled={loading}>
+                            {loading ? "Se trimite..." : "Trimite cererea"}
+                        </AppButton>
+                    </div>
+                </form>
+            </div>
+        </div>
+    );
+}
+
 export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => void; onDelete: (p: Pet) => void }) {
-    const { currentUser, isAdmin } = useAuth();
+    const { currentUser, isAdmin, isAuthenticated } = useAuth();
     const canManage = isAdmin() || (!!currentUser && p.userId === currentUser.id);
     const canDelete = canManage;
     const [imageFailed, setImageFailed] = useState(false);
     const [showContact, setShowContact] = useState(false);
+    const [showAdoptionRequest, setShowAdoptionRequest] = useState(false);
+    const [requestSent, setRequestSent] = useState(false);
     const imageSrc = imageFailed ? "" : getPetImageUrl(p.imageUrl);
     const speciesLabel = normalizePetLabel(p.species);
     const ownerContact = p.ownerContact?.trim();
@@ -459,10 +625,20 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
     useEffect(() => {
         setImageFailed(false);
         setShowContact(false);
+        setShowAdoptionRequest(false);
+        setRequestSent(false);
     }, [p.id, p.imageUrl]);
 
     return (
         <div className="petCard">
+            {showAdoptionRequest && currentUser && (
+                <AdoptionRequestModal
+                    pet={p}
+                    defaultName={currentUser.name}
+                    onClose={() => setShowAdoptionRequest(false)}
+                    onSubmitted={() => setRequestSent(true)}
+                />
+            )}
             {imageSrc ? (
                 <img className="petImage" src={imageSrc} alt={`Poză cu ${p.name}`} loading="lazy" onError={() => setImageFailed(true)} />
             ) : (
@@ -490,15 +666,24 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
                     <AppButton className="btnDetails" variant="primary" onClick={() => onEdit(p)}>
                         Editează
                     </AppButton>
+                ) : isAuthenticated ? (
+                    <AppButton className="btnDetails" variant="primary" onClick={() => setShowAdoptionRequest(true)} disabled={requestSent}>
+                        {requestSent ? "Cerere trimisă" : "Trimite cerere"}
+                    </AppButton>
                 ) : (
                     <AppButton className="btnDetails" variant="primary" onClick={() => setShowContact(prev => !prev)}>
                         {showContact ? "Ascunde detalii" : "Cere detalii"}
                     </AppButton>
                 )}
-                {!canManage && showContact && (
+                {!canManage && !isAuthenticated && showContact && (
                     <div className="petContactBox">
                         <span>Contact proprietar</span>
                         <strong>{ownerContact || "Contact indisponibil"}</strong>
+                    </div>
+                )}
+                {requestSent && (
+                    <div className="adoptionRequestNotice">
+                        Cererea a fost trimisă și poate fi urmărită din lista cererilor tale.
                     </div>
                 )}
                 {canDelete && (
