@@ -51,6 +51,16 @@ export function petToForm(p: Pet): PetForm {
 
 export { getPets };
 
+const petAdoptionStatusMeta = {
+    available: { label: "Disponibil", className: "available" },
+    in_process: { label: "In proces de adoptie", className: "inProcess" },
+    adopted: { label: "Adoptat", className: "adopted" },
+} as const;
+
+function getPetAdoptionStatusMeta(status?: Pet["adoptionStatus"]) {
+    return petAdoptionStatusMeta[status ?? "available"] ?? petAdoptionStatusMeta.available;
+}
+
 function normalizePetLabel(value: string) {
     const labels: Record<string, string> = {
         Caine: "Câine",
@@ -624,6 +634,8 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
     const imageSrc = imageFailed ? "" : getPetImageUrl(p.imageUrl);
     const speciesLabel = normalizePetLabel(p.species);
     const ownerContact = p.ownerContact?.trim();
+    const adoptionStatus = getPetAdoptionStatusMeta(p.adoptionStatus);
+    const isAdopted = p.adoptionStatus === "adopted";
 
     useEffect(() => {
         setImageFailed(false);
@@ -657,6 +669,7 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
                     <span className="petCity">{p.city}</span>
                 </div>
                 <span className="badge">{speciesLabel}</span>
+                <span className={`petAdoptionStatusBadge ${adoptionStatus.className}`}>{adoptionStatus.label}</span>
             </div>
             <div className="badges">
                 <span className="badge">{p.age}</span>
@@ -671,12 +684,12 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
                         Editează
                     </AppButton>
                 ) : isAuthenticated ? (
-                    <AppButton className="btnDetails" variant="primary" onClick={() => setShowAdoptionRequest(true)} disabled={requestSent}>
-                        {requestSent ? "Cerere trimisă" : "Trimite cerere"}
+                    <AppButton className="btnDetails" variant="primary" onClick={() => setShowAdoptionRequest(true)} disabled={requestSent || isAdopted}>
+                        {isAdopted ? "Adoptat" : requestSent ? "Cerere trimisă" : "Trimite cerere"}
                     </AppButton>
                 ) : (
-                    <AppButton className="btnDetails" variant="primary" onClick={() => setShowContact(prev => !prev)}>
-                        {showContact ? "Ascunde detalii" : "Cere detalii"}
+                    <AppButton className="btnDetails" variant="primary" onClick={() => setShowContact(prev => !prev)} disabled={isAdopted}>
+                        {isAdopted ? "Adoptat" : showContact ? "Ascunde detalii" : "Cere detalii"}
                     </AppButton>
                 )}
                 {!canManage && !isAuthenticated && showContact && (

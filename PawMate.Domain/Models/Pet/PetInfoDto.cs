@@ -14,4 +14,5 @@ public class PetInfoDto
     public string? OwnerContact { get; set; }
     public string? ImageUrl { get; set; }
     public int? UserId { get; set; }
+    public string AdoptionStatus { get; set; } = "available";
 }

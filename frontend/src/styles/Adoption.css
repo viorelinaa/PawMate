@@ -208,6 +208,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    gap: 10px;
 }
 
 .petName {
@@ -658,4 +659,34 @@
 
 .adoptionRequestNotice .appBtn {
     margin-top: 8px;
+}
+.petAdoptionStatusBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-primary-border);
+    padding: 7px 12px;
+    font-size: var(--font-size-xs);
+    font-weight: 900;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.petAdoptionStatusBadge.available {
+    background: rgba(74, 138, 95, 0.1);
+    border-color: rgba(74, 138, 95, 0.32);
+    color: #356b48;
+}
+
+.petAdoptionStatusBadge.inProcess {
+    background: rgba(234, 179, 8, 0.14);
+    border-color: rgba(234, 179, 8, 0.32);
+    color: #8a5f00;
+}
+
+.petAdoptionStatusBadge.adopted {
+    background: rgba(107, 79, 161, 0.12);
+    border-color: rgba(107, 79, 161, 0.28);
+    color: var(--color-primary);
 }

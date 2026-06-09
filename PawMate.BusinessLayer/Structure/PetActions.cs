@@ -80,7 +80,8 @@ public class PetActions
                 Description = entity.Description,
                 OwnerContact = entity.OwnerContact,
                 ImageUrl = entity.ImageUrl,
-                UserId = entity.UserId
+                UserId = entity.UserId,
+                AdoptionStatus = GetPetAdoptionStatus(entity.Id)
             };
 
             return new ServiceResponse
@@ -167,7 +168,12 @@ public class PetActions
                     Description = p.Description,
                     OwnerContact = p.OwnerContact,
                     ImageUrl = p.ImageUrl,
-                    UserId = p.UserId
+                    UserId = p.UserId,
+                    AdoptionStatus = p.Adoptions.Any(a => a.Status == "accepted")
+                        ? "adopted"
+                        : p.Adoptions.Any(a => a.Status == "pending")
+                            ? "in_process"
+                            : "available"
                 })
                 .ToList();
 
@@ -186,6 +192,21 @@ public class PetActions
                 Message = $"A aparut o eroare la obtinerea listei de animale: {ex.Message}"
             };
         }
+    }
+
+    private string GetPetAdoptionStatus(int petId)
+    {
+        if (_context.Adoptions.Any(a => a.PetId == petId && a.Status == "accepted"))
+        {
+            return "adopted";
+        }
+
+        if (_context.Adoptions.Any(a => a.PetId == petId && a.Status == "pending"))
+        {
+            return "in_process";
+        }
+
+        return "available";
     }
 
     public ServiceResponse UpdatePetAction(int id, PetUpdateDto pet, int userId, bool isAdmin)
