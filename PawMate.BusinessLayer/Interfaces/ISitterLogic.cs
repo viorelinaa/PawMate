@@ -5,7 +5,7 @@ namespace PawMate.BusinessLayer.Interfaces;
 
 public interface ISitterLogic
 {
-    ServiceResponse CreateSitter(SitterCreateDto sitter);
+    ServiceResponse CreateSitter(SitterCreateDto sitter, int userId);
     ServiceResponse GetSitterById(int id);
     ServiceResponse GetSitterList(SitterQueryDto query);
     ServiceResponse UpdateSitter(int id, SitterUpdateDto sitter);

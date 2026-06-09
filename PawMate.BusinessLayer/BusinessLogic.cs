@@ -77,6 +77,11 @@ public class BusinessLogic
         return new PayPalPaymentLogic();
     }
 
+    public IChatLogic GetChatLogic()
+    {
+        return new ChatLogic();
+    }
+
     public IDonationLogic GetDonationLogic()
     {
         return new DonationLogic();

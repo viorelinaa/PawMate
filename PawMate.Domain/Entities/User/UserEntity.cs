@@ -1,5 +1,6 @@
 using PawMate.Domain.Entities.Adoption;
 using PawMate.Domain.Entities.BlogPost;
+using PawMate.Domain.Entities.Chat;
 using PawMate.Domain.Entities.LostPet;
 using PawMate.Domain.Entities.Marketplace;
 using PawMate.Domain.Entities.Order;
@@ -40,4 +41,7 @@ public class UserEntity
     public ICollection<OrderEntity> Orders { get; set; } = new List<OrderEntity>();
     public ICollection<QuizResultEntity> QuizResults { get; set; } = new List<QuizResultEntity>();
     public ICollection<RefreshTokenEntity> RefreshTokens { get; set; } = new List<RefreshTokenEntity>();
+    public ICollection<ChatConversationEntity> ChatConversationsAsClient { get; set; } = new List<ChatConversationEntity>();
+    public ICollection<ChatConversationEntity> ChatConversationsAsSitter { get; set; } = new List<ChatConversationEntity>();
+    public ICollection<ChatMessageEntity> ChatMessages { get; set; } = new List<ChatMessageEntity>();
 }
