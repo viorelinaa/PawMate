@@ -621,3 +621,7 @@
         text-align: left;
     }
 }
+
+.adoptionRequestNotice .appBtn {
+    margin-top: 8px;
+}

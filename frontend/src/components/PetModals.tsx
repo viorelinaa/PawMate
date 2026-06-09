@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
 import { getPets, createPet, updatePet, deletePet, uploadPetImage, getPetImageUrl } from "../services/petService";
@@ -611,6 +612,7 @@ function AdoptionRequestModal({
 }
 
 export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => void; onDelete: (p: Pet) => void }) {
+    const navigate = useNavigate();
     const { currentUser, isAdmin, isAuthenticated } = useAuth();
     const canManage = isAdmin() || (!!currentUser && p.userId === currentUser.id);
     const canDelete = canManage;
@@ -684,6 +686,7 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
                 {requestSent && (
                     <div className="adoptionRequestNotice">
                         Cererea a fost trimisă și poate fi urmărită din lista cererilor tale.
+                        <AppButton type="button" variant="ghost" size="sm" onClick={() => navigate("/profile?tab=adoptions")}>Vezi cererea</AppButton>
                     </div>
                 )}
                 {canDelete && (

@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { AppButton } from "../components/AppButton";
 import { AdoptionRequestsPanel } from "../components/AdoptionRequestsPanel";
@@ -98,8 +98,21 @@ function formatQuizCompatibility(score: number, totalQuestions: number) {
     return `${percent}% compatibilitate`;
 }
 
-const emptyForm: ProfileFormState = {
-    firstName: "",
+function readProfileSection(value: string | null): ProfileSection {
+    if (
+        value === "avatar" ||
+        value === "pets" ||
+        value === "adoptions" ||
+        value === "receivedAdoptions" ||
+        value === "activity"
+    ) {
+        return value;
+    }
+
+    return "personal";
+}
+
+const emptyForm: ProfileFormState = {    firstName: "",
     lastName: "",
     email: "",
     phone: "",
@@ -108,6 +121,7 @@ const emptyForm: ProfileFormState = {
 
 export default function Profile() {
     const navigate = useNavigate();
+    const [searchParams, setSearchParams] = useSearchParams();
     const { currentUser, isAuthenticated, logout, updateProfileBasics } = useAuth();
 
     const [profile, setProfile] = useState<UserProfile | null>(null);
@@ -115,7 +129,7 @@ export default function Profile() {
     const [avatarTitle, setAvatarTitle] = useState("");
     const [avatarUrl, setAvatarUrl] = useState("");
     const [form, setForm] = useState<ProfileFormState>(emptyForm);
-    const [activeSection, setActiveSection] = useState<ProfileSection>("personal");
+    const [activeSection, setActiveSection] = useState<ProfileSection>(() => readProfileSection(searchParams.get("tab")));
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [isAddingAvatar, setIsAddingAvatar] = useState(false);
@@ -162,19 +176,28 @@ export default function Profile() {
     }, [currentUser, isAuthenticated]);
 
     useEffect(() => {
+        const sectionFromUrl = readProfileSection(searchParams.get("tab"));
+        setActiveSection(sectionFromUrl);
+    }, [searchParams]);
+
+    useEffect(() => {
         if (activeSection !== "avatar") {
             setIsAvatarPickerOpen(false);
         }
     }, [activeSection]);
 
-    function setField(field: keyof ProfileFormState, value: string) {
-        setForm((prev) => ({ ...prev, [field]: value }));
+    function selectSection(section: ProfileSection) {
+        setActiveSection(section);
+        setSearchParams(section === "personal" ? {} : { tab: section });
+    }
+
+    function setField(field: keyof ProfileFormState, value: string) {        setForm((prev) => ({ ...prev, [field]: value }));
         setError(null);
         setSuccess(null);
     }
 
     function openAvatarSection(openPicker = false) {
-        setActiveSection("avatar");
+        selectSection("avatar");
         setIsAvatarPickerOpen(openPicker);
         setError(null);
         setSuccess(null);
@@ -384,7 +407,7 @@ export default function Profile() {
                         <div className="profile-sidebar-nav">
                             <button
                                 className={`profile-nav-button ${activeSection === "personal" ? "active" : ""}`}
-                                onClick={() => setActiveSection("personal")}
+                                onClick={() => selectSection("personal")}
                                 type="button"
                             >
                                 Date personale
@@ -398,28 +421,28 @@ export default function Profile() {
                             </button>
                             <button
                                 className={`profile-nav-button ${activeSection === "pets" ? "active" : ""}`}
-                                onClick={() => setActiveSection("pets")}
+                                onClick={() => selectSection("pets")}
                                 type="button"
                             >
                                 Animalele mele
                             </button>
                             <button
                                 className={`profile-nav-button ${activeSection === "adoptions" ? "active" : ""}`}
-                                onClick={() => setActiveSection("adoptions")}
+                                onClick={() => selectSection("adoptions")}
                                 type="button"
                             >
                                 Cererile mele
                             </button>
                             <button
                                 className={`profile-nav-button ${activeSection === "receivedAdoptions" ? "active" : ""}`}
-                                onClick={() => setActiveSection("receivedAdoptions")}
+                                onClick={() => selectSection("receivedAdoptions")}
                                 type="button"
                             >
                                 Cereri primite
                             </button>
                             <button
                                 className={`profile-nav-button ${activeSection === "activity" ? "active" : ""}`}
-                                onClick={() => setActiveSection("activity")}
+                                onClick={() => selectSection("activity")}
                                 type="button"
                             >
                                 Activitate
