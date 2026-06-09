@@ -777,3 +777,97 @@
 .profile-request-reject-btn:hover {
     background: rgba(255, 71, 87, 0.06) !important;
 }
+.profile-request-detail-overlay {
+    align-items: flex-start;
+    overflow-y: auto;
+    padding: 38px 18px;
+}
+
+.profile-request-detail-modal {
+    width: min(980px, calc(100vw - 36px));
+    max-width: 980px;
+    padding: 30px 34px 28px;
+}
+
+.profile-request-detail-layout {
+    display: grid;
+    grid-template-columns: minmax(220px, 320px) 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.profile-request-detail-media {
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-primary-faint);
+    overflow: hidden;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+    font-weight: 900;
+    text-align: center;
+}
+
+.profile-request-detail-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.profile-request-detail-content {
+    min-width: 0;
+}
+
+.profile-request-detail-section {
+    margin-top: 18px;
+}
+
+.profile-request-detail-section h3 {
+    margin: 0 0 10px;
+    color: var(--color-primary);
+    font-size: var(--font-size-md);
+    font-weight: 900;
+}
+
+.profile-request-detail-text {
+    display: grid;
+    gap: 10px;
+}
+
+.profile-request-detail-text p {
+    margin: 0;
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-soft);
+    color: var(--color-text-soft);
+    font-size: var(--font-size-md);
+    font-weight: 700;
+    line-height: 1.6;
+    padding: 12px 14px;
+}
+
+.profile-request-detail-text strong {
+    color: var(--color-primary);
+}
+
+@media (max-width: 760px) {
+    .profile-request-detail-overlay {
+        padding: 18px 12px;
+    }
+
+    .profile-request-detail-modal {
+        width: min(100%, calc(100vw - 24px));
+        padding: 24px 18px 20px;
+    }
+
+    .profile-request-detail-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-request-detail-media {
+        max-width: 240px;
+    }
+}

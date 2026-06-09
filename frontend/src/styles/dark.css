@@ -1066,3 +1066,20 @@
 .appShell[data-theme="dark"] .profile-request-reject-btn:hover {
     background: rgba(255, 71, 87, 0.12) !important;
 }
+.appShell[data-theme="dark"] .profile-request-detail-modal {
+    background: linear-gradient(180deg, #2b2436 0%, #211b2c 100%);
+    border-color: var(--dm-border);
+    color: var(--dm-text);
+}
+
+.appShell[data-theme="dark"] .profile-request-detail-media,
+.appShell[data-theme="dark"] .profile-request-detail-text p {
+    background: rgba(203, 176, 234, 0.08);
+    border-color: var(--dm-border);
+    color: var(--dm-text);
+}
+
+.appShell[data-theme="dark"] .profile-request-detail-section h3,
+.appShell[data-theme="dark"] .profile-request-detail-text strong {
+    color: var(--dm-accent);
+}
