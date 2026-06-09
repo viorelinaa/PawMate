@@ -8,6 +8,13 @@ namespace PawMate.BusinessLayer.Structure;
 
 public class AdoptionActions
 {
+    private static readonly HashSet<string> ValidStatuses = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "pending",
+        "accepted",
+        "rejected"
+    };
+
     private readonly PawMateDbContext _context;
 
     public AdoptionActions()
@@ -15,16 +22,54 @@ public class AdoptionActions
         _context = new PawMateDbContext();
     }
 
-    public ServiceResponse CreateAdoptionAction(AdoptionCreateDto adoption)
+    public ServiceResponse CreateAdoptionAction(AdoptionCreateDto adoption, int userId)
     {
         try
         {
+            if (adoption.PetId <= 0)
+            {
+                return new ServiceResponse { IsSuccess = false, Message = "Alege animalul pentru care trimiti cererea." };
+            }
+
+            if (string.IsNullOrWhiteSpace(adoption.ApplicantName) ||
+                string.IsNullOrWhiteSpace(adoption.ApplicantPhone) ||
+                string.IsNullOrWhiteSpace(adoption.LivingConditions))
+            {
+                return new ServiceResponse { IsSuccess = false, Message = "Completeaza numele, telefonul si conditiile de trai." };
+            }
+
+            var pet = _context.Pets.FirstOrDefault(p => p.Id == adoption.PetId);
+            if (pet == null)
+            {
+                return new ServiceResponse { IsSuccess = false, Message = "Animalul nu a fost gasit." };
+            }
+
+            if (pet.UserId == userId)
+            {
+                return new ServiceResponse { IsSuccess = false, Message = "Nu poti trimite cerere pentru animalul adaugat de tine." };
+            }
+
+            var hasPendingRequest = _context.Adoptions.Any(a =>
+                a.PetId == adoption.PetId &&
+                a.UserId == userId &&
+                a.Status == "pending");
+
+            if (hasPendingRequest)
+            {
+                return new ServiceResponse { IsSuccess = false, Message = "Ai deja o cerere in asteptare pentru acest animal." };
+            }
+
             var entity = new AdoptionEntity
             {
                 PetId = adoption.PetId,
-                UserId = adoption.UserId,
+                UserId = userId,
                 Status = "pending",
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                ApplicantName = adoption.ApplicantName.Trim(),
+                ApplicantPhone = adoption.ApplicantPhone.Trim(),
+                Message = adoption.Message.Trim(),
+                AnimalExperience = adoption.AnimalExperience.Trim(),
+                LivingConditions = adoption.LivingConditions.Trim()
             };
 
             _context.Adoptions.Add(entity);
@@ -33,7 +78,7 @@ public class AdoptionActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Cererea de adopție a fost trimisă cu succes.",
+                Message = "Cererea de adoptie a fost trimisa cu succes.",
                 Data = entity.Id
             };
         }
@@ -42,40 +87,32 @@ public class AdoptionActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apărut o eroare la crearea cererii de adopție: {ex.Message}"
+                Message = $"A aparut o eroare la crearea cererii de adoptie: {ex.Message}"
             };
         }
     }
 
-    public ServiceResponse GetAdoptionByIdAction(int id)
+    public ServiceResponse GetAdoptionByIdAction(int id, int userId, bool isAdmin)
     {
         try
         {
-            var entity = _context.Adoptions.FirstOrDefault(a => a.Id == id);
-
+            var entity = GetAdoptionsQuery().FirstOrDefault(a => a.Id == id);
             if (entity == null)
             {
-                return new ServiceResponse
-                {
-                    IsSuccess = false,
-                    Message = "Cererea de adopție nu a fost găsită."
-                };
+                return new ServiceResponse { IsSuccess = false, Message = "Cererea de adoptie nu a fost gasita." };
             }
 
-            var dto = new AdoptionInfoDto
+            var canView = isAdmin || entity.UserId == userId || entity.Pet.UserId == userId;
+            if (!canView)
             {
-                Id = entity.Id,
-                PetId = entity.PetId,
-                UserId = entity.UserId,
-                Status = entity.Status,
-                CreatedAt = entity.CreatedAt
-            };
+                return new ServiceResponse { IsSuccess = false, Message = "Nu ai dreptul sa vezi aceasta cerere." };
+            }
 
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Cererea de adopție a fost găsită.",
-                Data = dto
+                Message = "Cererea de adoptie a fost gasita.",
+                Data = ToDto(entity)
             };
         }
         catch (Exception ex)
@@ -83,7 +120,7 @@ public class AdoptionActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apărut o eroare la obținerea cererii de adopție: {ex.Message}"
+                Message = $"A aparut o eroare la obtinerea cererii de adoptie: {ex.Message}"
             };
         }
     }
@@ -92,21 +129,16 @@ public class AdoptionActions
     {
         try
         {
-            var list = _context.Adoptions
-                .Select(a => new AdoptionInfoDto
-                {
-                    Id = a.Id,
-                    PetId = a.PetId,
-                    UserId = a.UserId,
-                    Status = a.Status,
-                    CreatedAt = a.CreatedAt
-                })
+            var list = GetAdoptionsQuery()
+                .OrderByDescending(a => a.CreatedAt)
+                .AsEnumerable()
+                .Select(ToDto)
                 .ToList();
 
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Lista cererilor de adopție a fost obținută cu succes.",
+                Message = "Lista cererilor de adoptie a fost obtinuta cu succes.",
                 Data = list
             };
         }
@@ -115,8 +147,131 @@ public class AdoptionActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apărut o eroare la obținerea listei de adopții: {ex.Message}"
+                Message = $"A aparut o eroare la obtinerea listei de adoptii: {ex.Message}"
             };
         }
     }
+
+    public ServiceResponse GetMyAdoptionListAction(int userId)
+    {
+        try
+        {
+            var list = GetAdoptionsQuery()
+                .Where(a => a.UserId == userId)
+                .OrderByDescending(a => a.CreatedAt)
+                .AsEnumerable()
+                .Select(ToDto)
+                .ToList();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Cererile tale de adoptie au fost obtinute cu succes.",
+                Data = list
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse { IsSuccess = false, Message = $"Eroare: {ex.Message}" };
+        }
+    }
+
+    public ServiceResponse GetReceivedAdoptionListAction(int userId, bool isAdmin)
+    {
+        try
+        {
+            var query = GetAdoptionsQuery();
+            if (!isAdmin)
+            {
+                query = query.Where(a => a.Pet.UserId == userId);
+            }
+
+            var list = query
+                .OrderByDescending(a => a.CreatedAt)
+                .AsEnumerable()
+                .Select(ToDto)
+                .ToList();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Cererile primite au fost obtinute cu succes.",
+                Data = list
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse { IsSuccess = false, Message = $"Eroare: {ex.Message}" };
+        }
+    }
+
+    public ServiceResponse UpdateAdoptionStatusAction(int id, AdoptionStatusUpdateDto status, int userId, bool isAdmin)
+    {
+        try
+        {
+            var normalizedStatus = status.Status.Trim().ToLowerInvariant();
+            if (!ValidStatuses.Contains(normalizedStatus) || normalizedStatus == "pending")
+            {
+                return new ServiceResponse { IsSuccess = false, Message = "Statusul cererii nu este valid." };
+            }
+
+            var entity = _context.Adoptions
+                .Include(a => a.Pet)
+                .FirstOrDefault(a => a.Id == id);
+
+            if (entity == null)
+            {
+                return new ServiceResponse { IsSuccess = false, Message = "Cererea de adoptie nu a fost gasita." };
+            }
+
+            if (!isAdmin && entity.Pet.UserId != userId)
+            {
+                return new ServiceResponse { IsSuccess = false, Message = "Poti modifica doar cererile primite pentru animalele tale." };
+            }
+
+            entity.Status = normalizedStatus;
+            entity.ReviewedAt = DateTime.UtcNow;
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Statusul cererii a fost actualizat cu succes.",
+                Data = ToDto(GetAdoptionsQuery().First(a => a.Id == id))
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse { IsSuccess = false, Message = $"Eroare: {ex.Message}" };
+        }
+    }
+
+    private IQueryable<AdoptionEntity> GetAdoptionsQuery()
+    {
+        return _context.Adoptions
+            .Include(a => a.Pet)
+            .Include(a => a.User);
+    }
+
+    private static AdoptionInfoDto ToDto(AdoptionEntity a) => new()
+    {
+        Id = a.Id,
+        PetId = a.PetId,
+        UserId = a.UserId,
+        OwnerUserId = a.Pet.UserId,
+        Status = a.Status,
+        CreatedAt = a.CreatedAt,
+        ReviewedAt = a.ReviewedAt,
+        ApplicantName = a.ApplicantName,
+        ApplicantPhone = a.ApplicantPhone,
+        Message = a.Message,
+        AnimalExperience = a.AnimalExperience,
+        LivingConditions = a.LivingConditions,
+        ApplicantUserName = a.User.Name,
+        ApplicantEmail = a.User.Email,
+        PetName = a.Pet.Name,
+        PetSpecies = a.Pet.Species,
+        PetCity = a.Pet.City,
+        PetImageUrl = a.Pet.ImageUrl
+    };
 }
