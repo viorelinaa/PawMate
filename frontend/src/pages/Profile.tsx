@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { AppButton } from "../components/AppButton";
 import { AdoptionRequestsPanel } from "../components/AdoptionRequestsPanel";
+import { ReceivedAdoptionRequestsPanel } from "../components/ReceivedAdoptionRequestsPanel";
 import {
     createProfileAvatarOption,
     getProfile,
@@ -15,7 +16,7 @@ import {
 } from "../services/profileService";
 import "../styles/Profile.css";
 
-type ProfileSection = "personal" | "avatar" | "pets" | "adoptions" | "activity";
+type ProfileSection = "personal" | "avatar" | "pets" | "adoptions" | "receivedAdoptions" | "activity";
 
 type ProfileFormState = {
     firstName: string;
@@ -410,6 +411,13 @@ export default function Profile() {
                                 Cererile mele
                             </button>
                             <button
+                                className={`profile-nav-button ${activeSection === "receivedAdoptions" ? "active" : ""}`}
+                                onClick={() => setActiveSection("receivedAdoptions")}
+                                type="button"
+                            >
+                                Cereri primite
+                            </button>
+                            <button
                                 className={`profile-nav-button ${activeSection === "activity" ? "active" : ""}`}
                                 onClick={() => setActiveSection("activity")}
                                 type="button"
@@ -659,6 +667,12 @@ export default function Profile() {
                                 <h1 className="profile-main-title">Cererile mele de adoptie</h1>
                                 <hr className="profile-main-divider" />
                                 <AdoptionRequestsPanel />
+                            </>
+                        ) : activeSection === "receivedAdoptions" ? (
+                            <>
+                                <h1 className="profile-main-title">Cereri de adoptie primite</h1>
+                                <hr className="profile-main-divider" />
+                                <ReceivedAdoptionRequestsPanel />
                             </>
                         ) : (
                             <>

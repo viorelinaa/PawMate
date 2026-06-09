@@ -1046,3 +1046,23 @@
     border-color: rgba(255, 71, 87, 0.36);
     color: #ff95a0;
 }
+.appShell[data-theme="dark"] .profile-request-applicant strong {
+    background: var(--dm-accent);
+    color: #1d1526;
+}
+
+.appShell[data-theme="dark"] .profile-request-applicant span {
+    background: rgba(203, 176, 234, 0.08);
+    border-color: var(--dm-border);
+    color: var(--dm-muted);
+}
+
+.appShell[data-theme="dark"] .profile-request-reject-btn {
+    background: var(--dm-surface) !important;
+    color: #ff95a0 !important;
+    border-color: rgba(255, 71, 87, 0.36) !important;
+}
+
+.appShell[data-theme="dark"] .profile-request-reject-btn:hover {
+    background: rgba(255, 71, 87, 0.12) !important;
+}
