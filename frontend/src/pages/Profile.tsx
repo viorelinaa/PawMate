@@ -2,6 +2,7 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { AppButton } from "../components/AppButton";
+import { AdoptionRequestsPanel } from "../components/AdoptionRequestsPanel";
 import {
     createProfileAvatarOption,
     getProfile,
@@ -14,7 +15,7 @@ import {
 } from "../services/profileService";
 import "../styles/Profile.css";
 
-type ProfileSection = "personal" | "avatar" | "pets" | "activity";
+type ProfileSection = "personal" | "avatar" | "pets" | "adoptions" | "activity";
 
 type ProfileFormState = {
     firstName: string;
@@ -402,6 +403,13 @@ export default function Profile() {
                                 Animalele mele
                             </button>
                             <button
+                                className={`profile-nav-button ${activeSection === "adoptions" ? "active" : ""}`}
+                                onClick={() => setActiveSection("adoptions")}
+                                type="button"
+                            >
+                                Cererile mele
+                            </button>
+                            <button
                                 className={`profile-nav-button ${activeSection === "activity" ? "active" : ""}`}
                                 onClick={() => setActiveSection("activity")}
                                 type="button"
@@ -645,6 +653,12 @@ export default function Profile() {
                                 <p className="profile-placeholder">
                                     Momentan nu ai animale adaugate in profil.
                                 </p>
+                            </>
+                        ) : activeSection === "adoptions" ? (
+                            <>
+                                <h1 className="profile-main-title">Cererile mele de adoptie</h1>
+                                <hr className="profile-main-divider" />
+                                <AdoptionRequestsPanel />
                             </>
                         ) : (
                             <>

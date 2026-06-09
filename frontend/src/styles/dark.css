@@ -1011,3 +1011,38 @@
 .appShell[data-theme="dark"] .petContactBox strong {
     color: var(--dm-accent);
 }
+.appShell[data-theme="dark"] .profile-request-card,
+.appShell[data-theme="dark"] .profile-request-meta-grid span {
+    background: var(--dm-surface);
+    border-color: var(--dm-border);
+    color: var(--dm-muted);
+}
+
+.appShell[data-theme="dark"] .profile-request-media {
+    background: rgba(203, 176, 234, 0.08);
+    border-color: var(--dm-border);
+    color: var(--dm-accent);
+}
+
+.appShell[data-theme="dark"] .profile-request-note {
+    border-color: var(--dm-accent);
+    color: var(--dm-text);
+}
+
+.appShell[data-theme="dark"] .profile-request-status.pending {
+    background: rgba(234, 179, 8, 0.16);
+    border-color: rgba(234, 179, 8, 0.38);
+    color: #f3c653;
+}
+
+.appShell[data-theme="dark"] .profile-request-status.accepted {
+    background: rgba(46, 204, 113, 0.16);
+    border-color: rgba(46, 204, 113, 0.34);
+    color: #72dea1;
+}
+
+.appShell[data-theme="dark"] .profile-request-status.rejected {
+    background: rgba(255, 71, 87, 0.14);
+    border-color: rgba(255, 71, 87, 0.36);
+    color: #ff95a0;
+}
