@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
@@ -525,7 +526,7 @@ function AdoptionRequestModal({
     }
 
     return (
-        <div className="modalOverlay" onClick={onClose}>
+        <div className="modalOverlay adoptionRequestOverlay" onClick={onClose}>
             <div className="modalBox adoptionRequestModal" onClick={e => e.stopPropagation()}>
                 <div className="modalHeader">
                     <h2 className="modalTitle">Trimite cerere de adopție</h2>
@@ -633,13 +634,14 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
 
     return (
         <div className="petCard">
-            {showAdoptionRequest && currentUser && (
+            {showAdoptionRequest && currentUser && createPortal(
                 <AdoptionRequestModal
                     pet={p}
                     defaultName={currentUser.name}
                     onClose={() => setShowAdoptionRequest(false)}
                     onSubmitted={() => setRequestSent(true)}
-                />
+                />,
+                document.body
             )}
             {imageSrc ? (
                 <img className="petImage" src={imageSrc} alt={`Poză cu ${p.name}`} loading="lazy" onError={() => setImageFailed(true)} />

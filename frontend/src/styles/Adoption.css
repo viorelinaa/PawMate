@@ -382,6 +382,7 @@
     gap: 16px;
 }
 
+
 @media (max-width: 520px) {
     .modalRow { grid-template-columns: 1fr; }
 }
@@ -569,8 +570,29 @@
     border-color: #e05252;
 }
 
+.adoptionRequestOverlay {
+    align-items: flex-start;
+    overflow-y: auto;
+    padding: 40px 18px;
+}
+
 .adoptionRequestModal {
-    max-width: 660px;
+    width: min(920px, calc(100vw - 36px));
+    max-width: 920px;
+    padding: 30px 34px 28px;
+}
+
+.adoptionRequestModal .modalTitle {
+    font-size: clamp(1.6rem, 2.6vw, 2.15rem);
+    line-height: 1.15;
+}
+
+.adoptionRequestModal .modalForm {
+    gap: 18px;
+}
+
+.adoptionRequestModal .modalTextarea {
+    min-height: 104px;
 }
 
 .adoptionRequestPetSummary {
@@ -609,6 +631,18 @@
     line-height: 1.35;
     padding: 10px 12px;
     text-align: center;
+}
+
+@media (max-width: 760px) {
+    .adoptionRequestOverlay {
+        align-items: flex-start;
+        padding: 18px 12px;
+    }
+
+    .adoptionRequestModal {
+        width: min(100%, calc(100vw - 24px));
+        padding: 24px 18px 20px;
+    }
 }
 
 @media (max-width: 520px) {
