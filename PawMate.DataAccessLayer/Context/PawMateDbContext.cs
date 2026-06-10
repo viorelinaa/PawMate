@@ -31,6 +31,7 @@ public sealed class PawMateDbContext : DbContext
     public DbSet<OrderEntity> Orders { get; set; }
     public DbSet<OrderItemEntity> OrderItems { get; set; }
     public DbSet<VolunteerEntity> VolunteerOpportunities { get; set; }
+    public DbSet<VolunteerApplicationEntity> VolunteerApplications { get; set; }
     public DbSet<SitterEntity> Sitters { get; set; }
     public DbSet<SitterRatingEntity> SitterRatings { get; set; }
     public DbSet<VeterinaryClinicEntity> VeterinaryClinics { get; set; }
@@ -108,6 +109,30 @@ public sealed class PawMateDbContext : DbContext
             .WithMany(u => u.QuizResults)
             .HasForeignKey(q => q.UserId)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<VolunteerApplicationEntity>()
+            .HasOne(v => v.User)
+            .WithMany()
+            .HasForeignKey(v => v.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<VolunteerApplicationEntity>()
+            .HasOne(v => v.ReviewedByAdmin)
+            .WithMany()
+            .HasForeignKey(v => v.ReviewedByAdminId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<VolunteerApplicationEntity>()
+            .Property(v => v.Status)
+            .HasDefaultValue("pending");
+
+        modelBuilder.Entity<VolunteerApplicationEntity>()
+            .Property(v => v.AdminComment)
+            .HasDefaultValue(string.Empty);
+
+        modelBuilder.Entity<VolunteerApplicationEntity>()
+            .Property(v => v.CreatedAt)
+            .HasDefaultValueSql("NOW()");
 
         modelBuilder.Entity<UserEntity>()
             .HasOne(u => u.ProfileAvatar)
