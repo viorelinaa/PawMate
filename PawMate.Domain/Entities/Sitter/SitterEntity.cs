@@ -16,4 +16,5 @@ public class SitterEntity
 
     public UserEntity? User { get; set; }
     public ICollection<ChatConversationEntity> ChatConversations { get; set; } = new List<ChatConversationEntity>();
+    public ICollection<SitterRatingEntity> Ratings { get; set; } = new List<SitterRatingEntity>();
 }

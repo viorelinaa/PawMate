@@ -76,6 +76,22 @@ public class SitterController : ControllerBase
         return Ok(response.Message);
     }
 
+
+    [HttpPost("{id}/rating")]
+    [Authorize]
+    public IActionResult RateSitter([FromRoute] int id, [FromBody] SitterRatingCreateDto rating)
+    {
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var response = _sitterLogic.RateSitter(id, rating, userId.Value);
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+
+        return Ok(response.Data);
+    }
+
     private int? GetCurrentUserId()
     {
         var rawUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);

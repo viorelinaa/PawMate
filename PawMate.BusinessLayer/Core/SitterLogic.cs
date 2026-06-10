@@ -31,4 +31,9 @@ public class SitterLogic : SitterActions, ISitterLogic
     {
         return DeleteSitterAction(id);
     }
+
+    public ServiceResponse RateSitter(int id, SitterRatingCreateDto rating, int userId)
+    {
+        return RateSitterAction(id, rating, userId);
+    }
 }

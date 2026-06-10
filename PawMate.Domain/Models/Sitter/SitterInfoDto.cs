@@ -9,5 +9,6 @@ public class SitterInfoDto
     public decimal PricePerDay { get; set; }
     public string Description { get; set; } = string.Empty;
     public decimal Rating { get; set; }
+    public int RatingCount { get; set; }
     public int? UserId { get; set; }
 }

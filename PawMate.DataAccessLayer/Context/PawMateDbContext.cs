@@ -32,6 +32,7 @@ public sealed class PawMateDbContext : DbContext
     public DbSet<OrderItemEntity> OrderItems { get; set; }
     public DbSet<VolunteerEntity> VolunteerOpportunities { get; set; }
     public DbSet<SitterEntity> Sitters { get; set; }
+    public DbSet<SitterRatingEntity> SitterRatings { get; set; }
     public DbSet<VeterinaryClinicEntity> VeterinaryClinics { get; set; }
     public DbSet<ProfileAvatarEntity> ProfileAvatars { get; set; }
     public DbSet<QuizResultEntity> QuizResults { get; set; }
@@ -159,32 +160,53 @@ public sealed class PawMateDbContext : DbContext
             .HasForeignKey(s => s.UserId)
             .OnDelete(DeleteBehavior.SetNull);
 
+        modelBuilder.Entity<SitterRatingEntity>()
+            .HasIndex(r => new { r.SitterId, r.UserId })
+            .IsUnique();
+
+        modelBuilder.Entity<SitterRatingEntity>()
+            .ToTable(t => t.HasCheckConstraint("CK_SitterRatings_Rating", "\"Rating\" >= 1 AND \"Rating\" <= 5"));
+
+        modelBuilder.Entity<SitterRatingEntity>()
+            .HasOne(r => r.Sitter)
+            .WithMany(s => s.Ratings)
+            .HasForeignKey(r => r.SitterId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<SitterRatingEntity>()
+            .HasOne(r => r.User)
+            .WithMany(u => u.SitterRatings)
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<SitterRatingEntity>()
+            .Property(r => r.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        modelBuilder.Entity<SitterRatingEntity>()
+            .Property(r => r.UpdatedAt)
+            .HasDefaultValueSql("NOW()");
         modelBuilder.Entity<ChatConversationEntity>()
             .HasIndex(c => new { c.ClientUserId, c.SitterId })
             .IsUnique();
-
         modelBuilder.Entity<ChatConversationEntity>()
             .HasOne(c => c.ClientUser)
             .WithMany(u => u.ChatConversationsAsClient)
             .HasForeignKey(c => c.ClientUserId)
             .OnDelete(DeleteBehavior.Restrict);
-
         modelBuilder.Entity<ChatConversationEntity>()
             .HasOne(c => c.SitterUser)
             .WithMany(u => u.ChatConversationsAsSitter)
             .HasForeignKey(c => c.SitterUserId)
             .OnDelete(DeleteBehavior.Restrict);
-
         modelBuilder.Entity<ChatConversationEntity>()
             .HasOne(c => c.Sitter)
             .WithMany(s => s.ChatConversations)
             .HasForeignKey(c => c.SitterId)
             .OnDelete(DeleteBehavior.Restrict);
-
         modelBuilder.Entity<ChatConversationEntity>()
             .Property(c => c.CreatedAt)
             .HasDefaultValueSql("NOW()");
-
         modelBuilder.Entity<ChatConversationEntity>()
             .Property(c => c.LastMessageAt)
             .HasDefaultValueSql("NOW()");

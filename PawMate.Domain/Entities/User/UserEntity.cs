@@ -8,6 +8,7 @@ using PawMate.Domain.Entities.Pet;
 using PawMate.Domain.Entities.ProfileAvatar;
 using PawMate.Domain.Entities.QuizResult;
 using PawMate.Domain.Entities.RefreshToken;
+using PawMate.Domain.Entities.Sitter;
 
 namespace PawMate.Domain.Entities.User;
 
@@ -44,4 +45,5 @@ public class UserEntity
     public ICollection<ChatConversationEntity> ChatConversationsAsClient { get; set; } = new List<ChatConversationEntity>();
     public ICollection<ChatConversationEntity> ChatConversationsAsSitter { get; set; } = new List<ChatConversationEntity>();
     public ICollection<ChatMessageEntity> ChatMessages { get; set; } = new List<ChatMessageEntity>();
+    public ICollection<SitterRatingEntity> SitterRatings { get; set; } = new List<SitterRatingEntity>();
 }

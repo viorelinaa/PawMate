@@ -197,6 +197,88 @@ public class SitterActions
         }
     }
 
+
+    public ServiceResponse RateSitterAction(int id, SitterRatingCreateDto rating, int userId)
+    {
+        try
+        {
+            if (rating.Rating < 1 || rating.Rating > 5)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Ratingul trebuie sa fie intre 1 si 5."
+                };
+            }
+
+            var sitter = _context.Sitters.FirstOrDefault(s => s.Id == id);
+            if (sitter == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Profilul sitter nu a fost gasit."
+                };
+            }
+
+            var now = DateTime.UtcNow;
+            var existingRating = _context.SitterRatings.FirstOrDefault(r => r.SitterId == id && r.UserId == userId);
+
+            if (existingRating == null)
+            {
+                existingRating = new SitterRatingEntity
+                {
+                    SitterId = id,
+                    UserId = userId,
+                    Rating = rating.Rating,
+                    CreatedAt = now,
+                    UpdatedAt = now
+                };
+
+                _context.SitterRatings.Add(existingRating);
+            }
+            else
+            {
+                existingRating.Rating = rating.Rating;
+                existingRating.UpdatedAt = now;
+            }
+
+            _context.SaveChanges();
+
+            var ratingValues = _context.SitterRatings
+                .Where(r => r.SitterId == id)
+                .Select(r => r.Rating)
+                .ToList();
+
+            sitter.Rating = ratingValues.Count == 0
+                ? 0
+                : Math.Round(ratingValues.Average(value => (decimal)value), 1);
+
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Ratingul a fost salvat.",
+                Data = new SitterRatingInfoDto
+                {
+                    SitterId = id,
+                    Rating = sitter.Rating,
+                    RatingCount = ratingValues.Count,
+                    MyRating = existingRating.Rating
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la salvarea ratingului: {ex.Message}"
+            };
+        }
+    }
+
     public ServiceResponse DeleteSitterAction(int id)
     {
         try
