@@ -362,7 +362,7 @@ export function SitterCard({
             ? "Profilul tau"
             : "Scrie";
     const ratingCount = s.ratingCount ?? 0;
-    const activeRating = selectedRating ?? Math.round(s.rating);
+    const activeRating = selectedRating ?? 0;
     const ratingCountLabel = ratingCount === 1 ? "1 rating" : `${ratingCount} ratinguri`;
     const canRate = Boolean(currentUser) && !isOwnSitterProfile;
     const reviewCountLabel = reviewsLoaded ? reviews.length : ratingCount;
@@ -425,7 +425,9 @@ export function SitterCard({
             setCommentTouched(false);
             onRated(result);
 
-            if (reviewsOpen) {
+            const hasSavedComment = Boolean((result.comment ?? comment ?? "").trim());
+            if (reviewsOpen || hasSavedComment) {
+                setReviewsOpen(true);
                 await loadReviews();
             } else {
                 setReviewsLoaded(false);
@@ -442,12 +444,12 @@ export function SitterCard({
     }
 
     async function handleSaveComment() {
-        if (activeRating < 1) {
+        if (!selectedRating) {
             setRatingError("Alege intai un rating.");
             return;
         }
 
-        await saveReview(activeRating, commentDraft);
+        await saveReview(selectedRating, commentDraft);
     }
 
     return (
