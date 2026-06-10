@@ -86,6 +86,26 @@ public class ChatController : ControllerBase
         return Ok(response.Data);
     }
 
+
+    [HttpPost("{id}/read")]
+    public IActionResult MarkConversationRead([FromRoute] int id)
+    {
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var response = _chatLogic.MarkConversationRead(id, userId.Value);
+        if (!response.IsSuccess)
+        {
+            if (response.Message == "Nu ai acces la aceasta conversatie.")
+                return StatusCode(StatusCodes.Status403Forbidden, response.Message);
+
+            return BadRequest(response.Message);
+        }
+
+        return Ok(response.Data);
+    }
+
     private int? GetCurrentUserId()
     {
         var rawUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);

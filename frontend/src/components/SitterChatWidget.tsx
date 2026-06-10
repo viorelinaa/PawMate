@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import {
     getConversations,
     getMessages,
+    markConversationRead,
     sendMessage,
     type ChatConversation,
     type ChatMessage,
@@ -36,7 +37,7 @@ export function SitterChatWidget({
 }: SitterChatWidgetProps) {
     const { currentUser } = useAuth();
     const [conversations, setConversations] = useState<ChatConversation[]>([]);
-    const [selectedId, setSelectedId] = useState<number | null>(activeConversationId);
+    const [selectedId, setSelectedId] = useState<number | null>(null);
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [draft, setDraft] = useState("");
     const [isLoadingConversations, setIsLoadingConversations] = useState(false);
@@ -64,9 +65,8 @@ export function SitterChatWidget({
             setConversations(data);
             setError(null);
 
-            const nextId = preferredId || selectedId || data[0]?.id || null;
-            if (nextId) {
-                setSelectedId(nextId);
+            if (preferredId) {
+                setSelectedId(preferredId);
             }
         } catch (err) {
             setError(err instanceof Error ? err.message : "Nu s-au putut incarca conversatiile.");
@@ -80,6 +80,14 @@ export function SitterChatWidget({
             setIsLoadingMessages(true);
             const data = await getMessages(conversationId);
             setMessages(data);
+            await markConversationRead(conversationId);
+            setConversations((prev) =>
+                prev.map((conversation) =>
+                    conversation.id === conversationId
+                        ? { ...conversation, unreadCount: 0 }
+                        : conversation
+                )
+            );
             setError(null);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Nu s-au putut incarca mesajele.");
@@ -94,9 +102,9 @@ export function SitterChatWidget({
             return;
         }
 
-        void loadConversations(activeConversationId);
+        void loadConversations(null);
         const refreshId = window.setInterval(() => {
-            void loadConversations(activeConversationId);
+            void loadConversations(null);
         }, 30000);
 
         return () => window.clearInterval(refreshId);
@@ -133,6 +141,7 @@ export function SitterChatWidget({
             const created = await sendMessage(selectedId, body);
             setMessages((prev) => [...prev, created]);
             setDraft("");
+            await markConversationRead(selectedId);
             await loadConversations(selectedId);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Nu s-a putut trimite mesajul.");
@@ -150,7 +159,13 @@ export function SitterChatWidget({
             <button
                 type="button"
                 className="sitterChatToggle"
-                onClick={() => onOpenChange(!isOpen)}
+                onClick={() => {
+                    if (!isOpen) {
+                        setSelectedId(null);
+                        setMessages([]);
+                    }
+                    onOpenChange(!isOpen);
+                }}
                 aria-label={isOpen ? "Inchide chatul" : "Deschide chatul"}
                 title={isOpen ? "Inchide chatul" : "Mesaje"}
             >
@@ -163,7 +178,7 @@ export function SitterChatWidget({
                     <header className="sitterChatHeader">
                         <div>
                             <h2>Mesaje</h2>
-                            <p>{selectedConversation?.sitterName ?? "Alege o conversatie"}</p>
+                            <p>{selectedConversation?.sitterName ?? "Alege cui raspunzi"}</p>
                         </div>
                         <button type="button" onClick={() => onOpenChange(false)} aria-label="Inchide chatul">{"\u00d7"}</button>
                     </header>
@@ -197,7 +212,7 @@ export function SitterChatWidget({
                                 {isLoadingMessages ? (
                                     <div className="sitterChatEmpty">Se incarca mesajele...</div>
                                 ) : !selectedId ? (
-                                    <div className="sitterChatEmpty">Selecteaza o conversatie.</div>
+                                    <div className="sitterChatEmpty">Alege un contact de sus ca sa raspunzi.</div>
                                 ) : messages.length === 0 ? (
                                     <div className="sitterChatEmpty">Trimite primul mesaj.</div>
                                 ) : (

@@ -72,3 +72,11 @@ export async function sendMessage(conversationId: number, body: string): Promise
         handleError(err, "Nu s-a putut trimite mesajul.");
     }
 }
+export async function markConversationRead(conversationId: number): Promise<number> {
+    try {
+        const { data } = await apiClient.post<number>(`/chats/${conversationId}/read`);
+        return data;
+    } catch (err) {
+        handleError(err, "Nu s-a putut marca conversatia ca citita.");
+    }
+}

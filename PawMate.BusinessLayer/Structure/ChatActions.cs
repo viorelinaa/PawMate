@@ -190,6 +190,47 @@ public class ChatActions
         }
     }
 
+
+    public ServiceResponse MarkConversationReadAction(int conversationId, int userId)
+    {
+        try
+        {
+            var conversation = _context.ChatConversations.FirstOrDefault(c => c.Id == conversationId);
+            if (conversation == null)
+            {
+                return Fail("Conversatia nu a fost gasita.");
+            }
+
+            if (!CanAccessConversation(conversation, userId))
+            {
+                return Fail("Nu ai acces la aceasta conversatie.");
+            }
+
+            var now = DateTime.UtcNow;
+            var unreadMessages = _context.ChatMessages
+                .Where(m => m.ConversationId == conversationId && m.SenderUserId != userId && !m.ReadAt.HasValue)
+                .ToList();
+
+            foreach (var message in unreadMessages)
+            {
+                message.ReadAt = now;
+            }
+
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Conversatia a fost marcata ca citita.",
+                Data = unreadMessages.Count
+            };
+        }
+        catch (Exception ex)
+        {
+            return Fail($"A aparut o eroare la marcarea conversatiei ca citita: {ex.Message}");
+        }
+    }
+
     private IQueryable<ChatConversationEntity> GetConversationQuery()
     {
         return _context.ChatConversations

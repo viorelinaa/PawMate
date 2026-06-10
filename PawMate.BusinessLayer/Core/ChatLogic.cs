@@ -11,4 +11,5 @@ public class ChatLogic : ChatActions, IChatLogic
     public ServiceResponse GetConversations(int userId) => GetConversationsAction(userId);
     public ServiceResponse GetMessages(int conversationId, int userId) => GetMessagesAction(conversationId, userId);
     public ServiceResponse SendMessage(int conversationId, ChatMessageCreateDto dto, int userId) => SendMessageAction(conversationId, dto, userId);
+    public ServiceResponse MarkConversationRead(int conversationId, int userId) => MarkConversationReadAction(conversationId, userId);
 }
