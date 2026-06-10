@@ -8,6 +8,7 @@ public class SitterRatingEntity
     public int SitterId { get; set; }
     public int UserId { get; set; }
     public int Rating { get; set; }
+    public string Comment { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 

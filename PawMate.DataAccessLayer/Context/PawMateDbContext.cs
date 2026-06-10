@@ -178,6 +178,9 @@ public sealed class PawMateDbContext : DbContext
             .WithMany(u => u.SitterRatings)
             .HasForeignKey(r => r.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<SitterRatingEntity>()
+            .Property(r => r.Comment)
+            .HasDefaultValue(string.Empty);
 
         modelBuilder.Entity<SitterRatingEntity>()
             .Property(r => r.CreatedAt)

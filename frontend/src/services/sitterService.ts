@@ -66,8 +66,19 @@ export interface SitterRatingInfo {
     rating: number;
     ratingCount: number;
     myRating: number;
+    comment: string;
 }
 
+
+export interface SitterReview {
+    id: number;
+    userId: number;
+    userName: string;
+    rating: number;
+    comment: string;
+    createdAt: string;
+    updatedAt: string;
+}
 export async function createSitter(payload: SitterCreatePayload): Promise<void> {
     try {
         await apiClient.post("/sitters/create", payload);
@@ -92,11 +103,19 @@ export async function deleteSitter(id: number): Promise<void> {
     }
 }
 
-export async function rateSitter(id: number, rating: number): Promise<SitterRatingInfo> {
+export async function rateSitter(id: number, rating: number, comment?: string): Promise<SitterRatingInfo> {
     try {
-        const { data } = await apiClient.post<SitterRatingInfo>(`/sitters/${id}/rating`, { rating });
+        const { data } = await apiClient.post<SitterRatingInfo>(`/sitters/${id}/rating`, { rating, comment });
         return data;
     } catch (err) {
         handleError(err, "Nu s-a putut salva ratingul.");
+    }
+}
+export async function getSitterReviews(id: number): Promise<SitterReview[]> {
+    try {
+        const { data } = await apiClient.get<SitterReview[]>(`/sitters/${id}/reviews`);
+        return data;
+    } catch (err) {
+        handleError(err, "Nu s-au putut incarca review-urile.");
     }
 }

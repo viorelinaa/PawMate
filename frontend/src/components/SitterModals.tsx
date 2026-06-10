@@ -9,8 +9,9 @@ import {
     updateSitter,
     deleteSitter,
     rateSitter,
+    getSitterReviews,
 } from "../services/sitterService";
-import type { Sitter, SitterRatingInfo } from "../services/sitterService";
+import type { Sitter, SitterRatingInfo, SitterReview } from "../services/sitterService";
 
 export { getSitters };
 
@@ -342,6 +343,13 @@ export function SitterCard({
     const [ratingError, setRatingError] = useState<string | null>(null);
     const [selectedRating, setSelectedRating] = useState<number | null>(null);
     const [savingRating, setSavingRating] = useState<number | null>(null);
+    const [commentDraft, setCommentDraft] = useState("");
+    const [commentTouched, setCommentTouched] = useState(false);
+    const [reviewsOpen, setReviewsOpen] = useState(false);
+    const [reviewsLoaded, setReviewsLoaded] = useState(false);
+    const [reviewsLoading, setReviewsLoading] = useState(false);
+    const [reviewsError, setReviewsError] = useState<string | null>(null);
+    const [reviews, setReviews] = useState<SitterReview[]>([]);
 
     const isStartingChat = startingChatSitterId === s.id;
     const isOwnSitterProfile = Boolean(currentUser && s.userId === currentUser.id);
@@ -357,10 +365,49 @@ export function SitterCard({
     const activeRating = selectedRating ?? Math.round(s.rating);
     const ratingCountLabel = ratingCount === 1 ? "1 rating" : `${ratingCount} ratinguri`;
     const canRate = Boolean(currentUser) && !isOwnSitterProfile;
+    const reviewCountLabel = reviewsLoaded ? reviews.length : ratingCount;
 
-    async function handleRate(value: number) {
+    function formatReviewDate(value: string) {
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+            return "Recent";
+        }
+
+        return date.toLocaleDateString("ro-RO", { day: "2-digit", month: "short", year: "numeric" });
+    }
+
+    async function loadReviews() {
+        try {
+            setReviewsLoading(true);
+            setReviewsError(null);
+            const data = await getSitterReviews(s.id);
+            setReviews(data);
+            setReviewsLoaded(true);
+
+            const myReview = currentUser ? data.find((review) => review.userId === currentUser.id) : null;
+            if (myReview) {
+                setSelectedRating(myReview.rating);
+                setCommentDraft(myReview.comment ?? "");
+                setCommentTouched(false);
+            }
+        } catch (err) {
+            setReviewsError(err instanceof Error ? err.message : "Nu s-au putut incarca review-urile.");
+        } finally {
+            setReviewsLoading(false);
+        }
+    }
+
+    function toggleReviews() {
+        const nextOpen = !reviewsOpen;
+        setReviewsOpen(nextOpen);
+        if (nextOpen && !reviewsLoaded) {
+            void loadReviews();
+        }
+    }
+
+    async function saveReview(value: number, comment?: string) {
         if (!currentUser) {
-            setRatingError("Autentifica-te ca sa poti da rating.");
+            setRatingError("Autentifica-te ca sa poti lasa review.");
             return;
         }
 
@@ -372,14 +419,35 @@ export function SitterCard({
         try {
             setSavingRating(value);
             setRatingError(null);
-            const result = await rateSitter(s.id, value);
+            const result = await rateSitter(s.id, value, comment);
             setSelectedRating(result.myRating);
+            setCommentDraft(result.comment ?? comment ?? commentDraft);
+            setCommentTouched(false);
             onRated(result);
+
+            if (reviewsOpen) {
+                await loadReviews();
+            } else {
+                setReviewsLoaded(false);
+            }
         } catch (err) {
-            setRatingError(err instanceof Error ? err.message : "Nu s-a putut salva ratingul.");
+            setRatingError(err instanceof Error ? err.message : "Nu s-a putut salva review-ul.");
         } finally {
             setSavingRating(null);
         }
+    }
+
+    async function handleRate(value: number) {
+        await saveReview(value, commentTouched ? commentDraft : undefined);
+    }
+
+    async function handleSaveComment() {
+        if (activeRating < 1) {
+            setRatingError("Alege intai un rating.");
+            return;
+        }
+
+        await saveReview(activeRating, commentDraft);
     }
 
     return (
@@ -387,6 +455,16 @@ export function SitterCard({
             <div className="rating">
                 {s.rating > 0 ? `★ ${s.rating.toFixed(1)}` : "Nou"}
             </div>
+            <button
+                type="button"
+                className={`sitterCommentsToggle${reviewsOpen ? " isActive" : ""}`}
+                onClick={toggleReviews}
+                aria-label={`Comentarii pentru ${s.name}`}
+                title="Vezi comentariile"
+            >
+                <span>💬</span>
+                <small>{reviewCountLabel}</small>
+            </button>
             <h3>{s.name}</h3>
             <p className="city">{s.city}</p>
             <p><strong>Servicii:</strong> {s.services}</p>
@@ -411,9 +489,51 @@ export function SitterCard({
                         </button>
                     ))}
                 </div>
+                <textarea
+                    className="sitterCommentInput"
+                    value={commentDraft}
+                    onChange={(event) => {
+                        setCommentDraft(event.target.value);
+                        setCommentTouched(true);
+                    }}
+                    placeholder="Lasa un comentariu despre experienta..."
+                    maxLength={700}
+                    disabled={savingRating !== null || !canRate}
+                />
+                <div className="sitterReviewActions">
+                    <small>{commentDraft.length}/700</small>
+                    <button type="button" onClick={() => void handleSaveComment()} disabled={savingRating !== null || !canRate}>
+                        Salveaza review
+                    </button>
+                </div>
                 {savingRating !== null ? <small className="sitterRatingHint">Se salveaza...</small> : null}
                 {ratingError ? <small className="sitterRatingError">{ratingError}</small> : null}
             </div>
+            {reviewsOpen ? (
+                <div className="sitterReviewsPanel">
+                    <div className="sitterReviewsHeader">
+                        <strong>Comentarii</strong>
+                        <button type="button" onClick={() => void loadReviews()} disabled={reviewsLoading}>
+                            Reincarca
+                        </button>
+                    </div>
+                    {reviewsLoading ? <p>Se incarca review-urile...</p> : null}
+                    {reviewsError ? <p className="sitterRatingError">{reviewsError}</p> : null}
+                    {!reviewsLoading && !reviewsError && reviews.length === 0 ? (
+                        <p>Nu exista comentarii pentru acest sitter.</p>
+                    ) : null}
+                    {!reviewsLoading && !reviewsError ? reviews.map((review) => (
+                        <article className="sitterReviewItem" key={review.id}>
+                            <div>
+                                <strong>{review.userName || "Utilizator"}</strong>
+                                <span>{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</span>
+                            </div>
+                            <p>{review.comment || "Fara comentariu."}</p>
+                            <small>{formatReviewDate(review.updatedAt)}</small>
+                        </article>
+                    )) : null}
+                </div>
+            ) : null}
             <div className="card-footer">
                 <strong>{s.pricePerDay} MDL / zi</strong>
                 <AppButton

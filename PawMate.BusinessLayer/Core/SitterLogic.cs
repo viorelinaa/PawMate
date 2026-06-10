@@ -36,4 +36,9 @@ public class SitterLogic : SitterActions, ISitterLogic
     {
         return RateSitterAction(id, rating, userId);
     }
+
+    public ServiceResponse GetSitterReviews(int id)
+    {
+        return GetSitterReviewsAction(id);
+    }
 }

@@ -73,6 +73,7 @@ public class SitterActions
                 PricePerDay = entity.PricePerDay,
                 Description = entity.Description,
                 Rating = entity.Rating,
+                RatingCount = _context.SitterRatings.Count(r => r.SitterId == entity.Id),
                 UserId = entity.UserId
             };
 
@@ -136,6 +137,7 @@ public class SitterActions
                     PricePerDay = s.PricePerDay,
                     Description = s.Description,
                     Rating = s.Rating,
+                    RatingCount = _context.SitterRatings.Count(r => r.SitterId == s.Id),
                     UserId = s.UserId
                 })
                 .ToList();
@@ -210,6 +212,15 @@ public class SitterActions
                     Message = "Ratingul trebuie sa fie intre 1 si 5."
                 };
             }
+            var normalizedComment = rating.Comment?.Trim();
+            if (normalizedComment?.Length > 700)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Comentariul poate avea maximum 700 de caractere."
+                };
+            }
 
             var sitter = _context.Sitters.FirstOrDefault(s => s.Id == id);
             if (sitter == null)
@@ -231,6 +242,7 @@ public class SitterActions
                     SitterId = id,
                     UserId = userId,
                     Rating = rating.Rating,
+                    Comment = normalizedComment ?? string.Empty,
                     CreatedAt = now,
                     UpdatedAt = now
                 };
@@ -240,6 +252,10 @@ public class SitterActions
             else
             {
                 existingRating.Rating = rating.Rating;
+                if (rating.Comment != null)
+                {
+                    existingRating.Comment = normalizedComment ?? string.Empty;
+                }
                 existingRating.UpdatedAt = now;
             }
 
@@ -265,7 +281,8 @@ public class SitterActions
                     SitterId = id,
                     Rating = sitter.Rating,
                     RatingCount = ratingValues.Count,
-                    MyRating = existingRating.Rating
+                    MyRating = existingRating.Rating,
+                    Comment = existingRating.Comment
                 }
             };
         }
@@ -275,6 +292,51 @@ public class SitterActions
             {
                 IsSuccess = false,
                 Message = $"A aparut o eroare la salvarea ratingului: {ex.Message}"
+            };
+        }
+    }
+    public ServiceResponse GetSitterReviewsAction(int id)
+    {
+        try
+        {
+            var sitterExists = _context.Sitters.Any(s => s.Id == id);
+            if (!sitterExists)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Profilul sitter nu a fost gasit."
+                };
+            }
+
+            var reviews = _context.SitterRatings
+                .Where(r => r.SitterId == id && (r.Rating > 0 || r.Comment != string.Empty))
+                .OrderByDescending(r => r.UpdatedAt)
+                .Select(r => new SitterReviewDto
+                {
+                    Id = r.Id,
+                    UserId = r.UserId,
+                    UserName = r.User.Name,
+                    Rating = r.Rating,
+                    Comment = r.Comment,
+                    CreatedAt = r.CreatedAt,
+                    UpdatedAt = r.UpdatedAt
+                })
+                .ToList();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Review-urile sitterului au fost obtinute.",
+                Data = reviews
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la obtinerea review-urilor: {ex.Message}"
             };
         }
     }

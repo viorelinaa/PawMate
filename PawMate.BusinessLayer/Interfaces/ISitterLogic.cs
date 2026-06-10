@@ -11,4 +11,5 @@ public interface ISitterLogic
     ServiceResponse UpdateSitter(int id, SitterUpdateDto sitter);
     ServiceResponse DeleteSitter(int id);
     ServiceResponse RateSitter(int id, SitterRatingCreateDto rating, int userId);
+    ServiceResponse GetSitterReviews(int id);
 }

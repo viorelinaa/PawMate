@@ -75,8 +75,15 @@ public class SitterController : ControllerBase
 
         return Ok(response.Message);
     }
+    [HttpGet("{id}/reviews")]
+    public IActionResult GetSitterReviews([FromRoute] int id)
+    {
+        var response = _sitterLogic.GetSitterReviews(id);
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
 
-
+        return Ok(response.Data);
+    }
     [HttpPost("{id}/rating")]
     [Authorize]
     public IActionResult RateSitter([FromRoute] int id, [FromBody] SitterRatingCreateDto rating)
