@@ -124,7 +124,10 @@ public class SitterActions
                 "rating" => sittersQuery.OrderByDescending(s => s.Rating),
                 "name" when query.SortDirection == "desc" => sittersQuery.OrderByDescending(s => s.Name),
                 "name" => sittersQuery.OrderBy(s => s.Name),
-                _ => sittersQuery.OrderBy(s => s.Id)
+                _ => sittersQuery
+                    .OrderByDescending(s => s.Rating)
+                    .ThenByDescending(s => _context.SitterRatings.Count(r => r.SitterId == s.Id))
+                    .ThenBy(s => s.Id)
             };
 
             var list = sittersQuery
