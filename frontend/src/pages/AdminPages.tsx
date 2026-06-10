@@ -95,6 +95,28 @@ const AdminPages: React.FC = () => {
                 </div>
 
                 {/* ── Restul cardurilor ── */}
+                <div className="adminPageCard">
+                    <div className="adminPageCardTop">
+                        <span className="adminPageCardIcon">V</span>
+                        <h2 className="adminPageCardTitle">Voluntariat</h2>
+                    </div>
+                    <p className="adminPageCardDesc">Verifica cererile de voluntariat si trimite raspunsuri catre useri.</p>
+                    <div className="adminPageCardActions">
+                        <button
+                            className="adminPageCardViewBtn"
+                            onClick={() => navigate(paths.adminVoluntariat)}
+                        >
+                            Verifica cereri
+                        </button>
+                        <button
+                            className="adminPageCardViewBtn"
+                            onClick={() => navigate(paths.voluntariat)}
+                        >
+                            Vezi pagina
+                        </button>
+                    </div>
+                </div>
+
                 {[
                     { id: 'pierdute', title: 'Animale Pierdute', icon: '🔍', description: 'Administrează anunțurile de animale pierdute.', path: paths.pierdute, label: 'Adaugă anunț animal pierdut', onAdd: () => setShowAddLost(true) },
                     { id: 'veterinari', title: 'Veterinari', icon: '🏥', description: 'Gestionează clinicile și cabinetele veterinare.', path: paths.veterinari, label: 'Adaugă clinică', onAdd: () => navigate(`${paths.veterinari}?add=clinic`) },

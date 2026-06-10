@@ -35,6 +35,11 @@ export interface VolunteerApplication {
     reviewedByAdminName: string;
 }
 
+export interface VolunteerApplicationDecisionPayload {
+    status: Exclude<VolunteerApplicationStatus, "pending">;
+    adminComment: string;
+}
+
 function handleError(err: unknown, fallback: string): never {
     if (axios.isAxiosError(err)) {
         const message =
@@ -65,5 +70,29 @@ export async function getMyVolunteerApplications(): Promise<VolunteerApplication
         return data;
     } catch (err) {
         handleError(err, "Nu s-au putut incarca cererile tale de voluntariat.");
+    }
+}
+
+export async function getVolunteerApplicationsForAdmin(): Promise<VolunteerApplication[]> {
+    try {
+        const { data } = await apiClient.get<VolunteerApplication[]>("/volunteer/applications/admin");
+        return data;
+    } catch (err) {
+        handleError(err, "Nu s-au putut incarca cererile de voluntariat pentru admin.");
+    }
+}
+
+export async function reviewVolunteerApplication(
+    id: number,
+    payload: VolunteerApplicationDecisionPayload
+): Promise<VolunteerApplication> {
+    try {
+        const { data } = await apiClient.put<VolunteerApplication>(
+            `/volunteer/applications/${id}/decision`,
+            payload
+        );
+        return data;
+    } catch (err) {
+        handleError(err, "Nu s-a putut salva decizia pentru cererea de voluntariat.");
     }
 }

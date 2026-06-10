@@ -19,5 +19,6 @@ export const paths = {
     adminStatistici: "/admin/statistici",
     adminPagini: "/admin/pagini",
     adminUtilizatori: "/admin/utilizatori",
+    adminVoluntariat: "/admin/voluntariat",
     notfound: "*",
 } as const;

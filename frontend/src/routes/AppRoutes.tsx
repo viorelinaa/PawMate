@@ -22,6 +22,7 @@ import Profile from "../pages/Profile";
 import AdminDashboard from "../pages/AdminDashboard";
 import AdminPages from "../pages/AdminPages";
 import AdminUsers from "../pages/AdminUsers";
+import AdminVolunteerApplications from "../pages/AdminVolunteerApplications";
 import { RequireAdmin } from "../components/RequireAdmin";
 
 export default function AppRoutes() {
@@ -67,6 +68,14 @@ export default function AppRoutes() {
                         element={
                             <RequireAdmin>
                                 <AdminUsers />
+                            </RequireAdmin>
+                        }
+                    />
+                    <Route
+                        path={paths.adminVoluntariat}
+                        element={
+                            <RequireAdmin>
+                                <AdminVolunteerApplications />
                             </RequireAdmin>
                         }
                     />
