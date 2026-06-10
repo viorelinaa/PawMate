@@ -154,7 +154,7 @@ export function SitterChatWidget({
                 aria-label={isOpen ? "Inchide chatul" : "Deschide chatul"}
                 title={isOpen ? "Inchide chatul" : "Mesaje"}
             >
-                <span className="sitterChatIcon" aria-hidden="true">✉</span>
+                <span className="sitterChatIcon" aria-hidden="true">{"\u2709"}</span>
                 {unreadTotal > 0 ? <span className="sitterChatBadge">{unreadTotal > 9 ? "9+" : unreadTotal}</span> : null}
             </button>
 
