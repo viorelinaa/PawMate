@@ -56,7 +56,6 @@ export default function Navbar({ theme, onToggleTheme }: NavbarProps) {
                         <NavLink to="/ghid-medical" onClick={() => setOpen(false)}>MedGuide</NavLink>
                         <NavLink to="/donatii" onClick={() => setOpen(false)}>Donații</NavLink>
                         <NavLink to="/sitters" onClick={() => setOpen(false)}>Sitters</NavLink>
-                        {currentUser && <NavLink to={paths.mesaje} onClick={() => setOpen(false)}>Mesaje</NavLink>}
                         <NavLink to="/voluntariat" onClick={() => setOpen(false)}>Voluntariat</NavLink>
                         <NavLink to="/wiki" onClick={() => setOpen(false)}>Wiki</NavLink>
                         <NavLink to="/blog" onClick={() => setOpen(false)}>Blog</NavLink>

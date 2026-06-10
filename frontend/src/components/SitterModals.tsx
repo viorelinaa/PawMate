@@ -1,11 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
 import { AdminOnly } from "./AdminOnly";
 import { useAuth } from "../context/AuthContext";
-import { paths } from "../routes/paths";
-import { startConversation } from "../services/chatService";
 import {
     getSitters,
     createSitter,
@@ -329,16 +326,18 @@ export function SitterCard({
     s,
     onEdit,
     onDelete,
+    onStartChat,
+    startingChatSitterId,
 }: {
     s: Sitter;
     onEdit: (s: Sitter) => void;
     onDelete: (s: Sitter) => void;
+    onStartChat: (s: Sitter) => void;
+    startingChatSitterId: number | null;
 }) {
-    const navigate = useNavigate();
     const { currentUser } = useAuth();
-    const [isStartingChat, setIsStartingChat] = useState(false);
-    const [chatError, setChatError] = useState<string | null>(null);
 
+    const isStartingChat = startingChatSitterId === s.id;
     const isOwnSitterProfile = Boolean(currentUser && s.userId === currentUser.id);
     const isChatUnavailable = !s.userId || isOwnSitterProfile;
     const chatButtonLabel = isStartingChat
@@ -349,32 +348,10 @@ export function SitterCard({
             ? "Profilul tau"
             : "Scrie";
 
-    async function handleStartChat() {
-        if (!currentUser) {
-            navigate(paths.login);
-            return;
-        }
-
-        if (isChatUnavailable) {
-            return;
-        }
-
-        try {
-            setIsStartingChat(true);
-            setChatError(null);
-            const conversation = await startConversation(s.id);
-            navigate(`${paths.mesaje}?conversation=${conversation.id}`);
-        } catch (err) {
-            setChatError(err instanceof Error ? err.message : "Nu s-a putut porni conversatia.");
-        } finally {
-            setIsStartingChat(false);
-        }
-    }
-
     return (
         <div className="sitter-card">
             <div className="rating">
-                {s.rating > 0 ? `⭐ ${s.rating.toFixed(1)}` : "Nou"}
+                {s.rating > 0 ? `â­ ${s.rating.toFixed(1)}` : "Nou"}
             </div>
             <h3>{s.name}</h3>
             <p className="city">{s.city}</p>
@@ -385,14 +362,13 @@ export function SitterCard({
                 <AppButton
                     type="button"
                     variant="primary"
-                    onClick={handleStartChat}
+                    onClick={() => onStartChat(s)}
                     disabled={isStartingChat || isChatUnavailable}
                     title={!s.userId ? "Profilul nu are cont asociat pentru chat" : isOwnSitterProfile ? "Acesta este profilul tau" : undefined}
                 >
                     {chatButtonLabel}
                 </AppButton>
             </div>
-            {chatError ? <p className="sitter-chat-error">{chatError}</p> : null}
             <AdminOnly>
                 <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
                     <AppButton variant="ghost" size="sm" onClick={() => onEdit(s)}>
