@@ -27,9 +27,9 @@ public class SitterLogic : SitterActions, ISitterLogic
         return UpdateSitterAction(id, sitter);
     }
 
-    public ServiceResponse DeleteSitter(int id)
+    public ServiceResponse DeleteSitter(int id, int userId, bool isAdmin)
     {
-        return DeleteSitterAction(id);
+        return DeleteSitterAction(id, userId, isAdmin);
     }
 
     public ServiceResponse RateSitter(int id, SitterRatingCreateDto rating, int userId)

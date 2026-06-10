@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
-import { AdminOnly } from "./AdminOnly";
 import { useAuth } from "../context/AuthContext";
 import {
     getSitters,
@@ -339,7 +338,7 @@ export function SitterCard({
     onRated: (rating: SitterRatingInfo) => void;
     startingChatSitterId: number | null;
 }) {
-    const { currentUser } = useAuth();
+    const { currentUser, isAdmin } = useAuth();
     const [ratingError, setRatingError] = useState<string | null>(null);
     const [selectedRating, setSelectedRating] = useState<number | null>(null);
     const [savingRating, setSavingRating] = useState<number | null>(null);
@@ -353,6 +352,8 @@ export function SitterCard({
 
     const isStartingChat = startingChatSitterId === s.id;
     const isOwnSitterProfile = Boolean(currentUser && s.userId === currentUser.id);
+    const isAdminUser = isAdmin();
+    const canDeleteSitter = isOwnSitterProfile || isAdminUser;
     const isChatUnavailable = !s.userId || isOwnSitterProfile;
     const chatButtonLabel = isStartingChat
         ? "Se deschide..."
@@ -548,11 +549,13 @@ export function SitterCard({
                     {chatButtonLabel}
                 </AppButton>
             </div>
-            <AdminOnly>
+            {canDeleteSitter ? (
                 <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
-                    <AppButton variant="ghost" size="sm" onClick={() => onEdit(s)}>
-                        Editeaza
-                    </AppButton>
+                    {isAdminUser ? (
+                        <AppButton variant="ghost" size="sm" onClick={() => onEdit(s)}>
+                            Editeaza
+                        </AppButton>
+                    ) : null}
                     <AppButton
                         variant="ghost"
                         size="sm"
@@ -562,7 +565,7 @@ export function SitterCard({
                         Sterge
                     </AppButton>
                 </div>
-            </AdminOnly>
+            ) : null}
         </div>
     );
 }

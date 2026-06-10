@@ -69,7 +69,11 @@ public class SitterController : ControllerBase
     [Authorize]
     public IActionResult DeleteSitter([FromRoute] int id)
     {
-        var response = _sitterLogic.DeleteSitter(id);
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var response = _sitterLogic.DeleteSitter(id, userId.Value, User.IsInRole("admin"));
         if (!response.IsSuccess)
             return BadRequest(response.Message);
 

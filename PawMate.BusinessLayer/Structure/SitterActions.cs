@@ -341,7 +341,7 @@ public class SitterActions
         }
     }
 
-    public ServiceResponse DeleteSitterAction(int id)
+    public ServiceResponse DeleteSitterAction(int id, int userId, bool isAdmin)
     {
         try
         {
@@ -355,6 +355,38 @@ public class SitterActions
                     Message = "Profilul sitter nu a fost gasit."
                 };
             }
+
+            if (!isAdmin && entity.UserId != userId)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Poti sterge doar propriul profil de sitter."
+                };
+            }
+
+            var conversationIds = _context.ChatConversations
+                .Where(c => c.SitterId == id)
+                .Select(c => c.Id)
+                .ToList();
+
+            if (conversationIds.Count > 0)
+            {
+                var messages = _context.ChatMessages
+                    .Where(m => conversationIds.Contains(m.ConversationId))
+                    .ToList();
+                _context.ChatMessages.RemoveRange(messages);
+
+                var conversations = _context.ChatConversations
+                    .Where(c => conversationIds.Contains(c.Id))
+                    .ToList();
+                _context.ChatConversations.RemoveRange(conversations);
+            }
+
+            var ratings = _context.SitterRatings
+                .Where(r => r.SitterId == id)
+                .ToList();
+            _context.SitterRatings.RemoveRange(ratings);
 
             _context.Sitters.Remove(entity);
             _context.SaveChanges();

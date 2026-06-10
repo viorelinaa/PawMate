@@ -9,7 +9,7 @@ public interface ISitterLogic
     ServiceResponse GetSitterById(int id);
     ServiceResponse GetSitterList(SitterQueryDto query);
     ServiceResponse UpdateSitter(int id, SitterUpdateDto sitter);
-    ServiceResponse DeleteSitter(int id);
+    ServiceResponse DeleteSitter(int id, int userId, bool isAdmin);
     ServiceResponse RateSitter(int id, SitterRatingCreateDto rating, int userId);
     ServiceResponse GetSitterReviews(int id);
 }
