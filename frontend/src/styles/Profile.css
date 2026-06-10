@@ -651,6 +651,26 @@
     display: block;
 }
 
+.profile-volunteer-icon {
+    display: grid;
+    place-items: center;
+    background:
+        linear-gradient(135deg, rgba(107, 79, 161, 0.16), rgba(46, 204, 113, 0.14)),
+        var(--color-surface);
+}
+
+.profile-volunteer-icon span {
+    display: grid;
+    place-items: center;
+    width: 62px;
+    height: 62px;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    color: #fff;
+    font-size: 1.8rem;
+    font-weight: 900;
+}
+
 .profile-request-body {
     min-width: 0;
 }
