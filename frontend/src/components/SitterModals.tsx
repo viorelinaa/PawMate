@@ -14,11 +14,16 @@ import type { Sitter, SitterRatingInfo, SitterReview } from "../services/sitterS
 
 export { getSitters };
 
+export const sitterCityOptions = ["Chisinau", "Balti", "Cahul", "Orhei", "Ungheni", "Soroca", "Comrat"];
+export const sitterServiceOptions = ["Plimbari", "Ingrijire la domiciliu", "Pet sitting", "Hranire", "Altul"];
+export const sitterPetTypeOptions = ["Orice", "Caini", "Pisici", "Pasari", "Rozatoare", "Reptile"];
+
 // ── Tipuri formular ───────────────────────────────────────────────────────────
 export interface SitterForm {
     name: string;
     city: string;
     services: string;
+    acceptedPetTypes: string;
     pricePerDay: string;
     description: string;
 }
@@ -27,6 +32,7 @@ export const emptySitterForm: SitterForm = {
     name: "",
     city: "",
     services: "",
+    acceptedPetTypes: "Orice",
     pricePerDay: "",
     description: "",
 };
@@ -36,6 +42,7 @@ export function sitterToForm(s: Sitter): SitterForm {
         name: s.name,
         city: s.city,
         services: s.services,
+        acceptedPetTypes: s.acceptedPetTypes ?? "Orice",
         pricePerDay: String(s.pricePerDay),
         description: s.description ?? "",
     };
@@ -46,6 +53,7 @@ function validateSitterForm(form: SitterForm): Partial<Record<keyof SitterForm, 
     if (!form.name.trim()) e.name = "Numele este obligatoriu.";
     if (!form.city.trim()) e.city = "Orasul este obligatoriu.";
     if (!form.services) e.services = "Selecteaza tipul de serviciu.";
+    if (!form.acceptedPetTypes) e.acceptedPetTypes = "Selecteaza tipul de animal.";
     if (!form.pricePerDay.trim()) e.pricePerDay = "Pretul este obligatoriu.";
     else if (isNaN(Number(form.pricePerDay)) || Number(form.pricePerDay) <= 0)
         e.pricePerDay = "Introdu un pret valid.";
@@ -87,12 +95,16 @@ export function SitterFormFields({
                 </div>
                 <div className="sitterModalField">
                     <label className="sitterModalLabel">Oras *</label>
-                    <input
-                        className={`sitterModalInput${errors.city ? " sitterInputError" : ""}`}
-                        placeholder="ex. Chisinau"
+                    <FilterSelect
+                        className={errors.city ? "fs-error" : ""}
                         value={form.city}
                         onChange={(e) => onChange("city", e.target.value)}
-                    />
+                    >
+                        <option value="">Selecteaza orasul</option>
+                        {sitterCityOptions.map((city) => (
+                            <option key={city} value={city}>{city}</option>
+                        ))}
+                    </FilterSelect>
                     {errors.city && <span className="sitterFieldError">{errors.city}</span>}
                 </div>
             </div>
@@ -106,11 +118,9 @@ export function SitterFormFields({
                         onChange={(e) => onChange("services", e.target.value)}
                     >
                         <option value="">Selecteaza serviciul</option>
-                        <option value="Plimbari">Plimbari</option>
-                        <option value="Ingrijire la domiciliu">Ingrijire la domiciliu</option>
-                        <option value="Pet sitting">Pet sitting</option>
-                        <option value="Hranire">Hranire</option>
-                        <option value="Altul">Altul</option>
+                        {sitterServiceOptions.map((service) => (
+                            <option key={service} value={service}>{service}</option>
+                        ))}
                     </FilterSelect>
                     {errors.services && <span className="sitterFieldError">{errors.services}</span>}
                 </div>
@@ -126,6 +136,20 @@ export function SitterFormFields({
                     />
                     {errors.pricePerDay && <span className="sitterFieldError">{errors.pricePerDay}</span>}
                 </div>
+            </div>
+
+            <div className="sitterModalField">
+                <label className="sitterModalLabel">Tip animal acceptat *</label>
+                <FilterSelect
+                    className={errors.acceptedPetTypes ? "fs-error" : ""}
+                    value={form.acceptedPetTypes}
+                    onChange={(e) => onChange("acceptedPetTypes", e.target.value)}
+                >
+                    {sitterPetTypeOptions.map((petType) => (
+                        <option key={petType} value={petType}>{petType}</option>
+                    ))}
+                </FilterSelect>
+                {errors.acceptedPetTypes && <span className="sitterFieldError">{errors.acceptedPetTypes}</span>}
             </div>
 
             <div className="sitterModalField">
@@ -171,6 +195,7 @@ export function AddSitterModal({ onClose, onAdded }: { onClose: () => void; onAd
                 name: form.name.trim(),
                 city: form.city.trim(),
                 services: form.services,
+                acceptedPetTypes: form.acceptedPetTypes,
                 pricePerDay: Number(form.pricePerDay),
                 description: form.description.trim(),
             });
@@ -231,6 +256,7 @@ export function EditSitterModal({
                 name: form.name.trim(),
                 city: form.city.trim(),
                 services: form.services,
+                acceptedPetTypes: form.acceptedPetTypes,
                 pricePerDay: Number(form.pricePerDay),
                 description: form.description.trim(),
                 rating: sitter.rating,
@@ -471,6 +497,7 @@ export function SitterCard({
             <h3>{s.name}</h3>
             <p className="city">{s.city}</p>
             <p><strong>Servicii:</strong> {s.services}</p>
+            <p><strong>Animale acceptate:</strong> {s.acceptedPetTypes ?? "Orice"}</p>
             <p>{s.description}</p>
             <div className="sitterRatingPanel">
                 <div className="sitterRatingSummary">

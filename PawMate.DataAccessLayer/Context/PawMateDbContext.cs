@@ -160,6 +160,10 @@ public sealed class PawMateDbContext : DbContext
             .HasForeignKey(s => s.UserId)
             .OnDelete(DeleteBehavior.SetNull);
 
+        modelBuilder.Entity<SitterEntity>()
+            .Property(s => s.AcceptedPetTypes)
+            .HasDefaultValue("Orice");
+
         modelBuilder.Entity<SitterRatingEntity>()
             .HasIndex(r => new { r.SitterId, r.UserId })
             .IsUnique();

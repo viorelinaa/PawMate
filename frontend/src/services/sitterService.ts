@@ -6,6 +6,7 @@ export interface Sitter {
     name: string;
     city: string;
     services: string;
+    acceptedPetTypes: string;
     pricePerDay: number;
     description: string;
     rating: number;
@@ -17,12 +18,16 @@ export interface SitterCreatePayload {
     name: string;
     city: string;
     services: string;
+    acceptedPetTypes: string;
     pricePerDay: number;
     description: string;
 }
 
 export interface SitterQuery {
     search?: string;
+    city?: string;
+    service?: string;
+    petType?: string;
     onlyTopRated?: boolean;
     minRating?: number;
     sortBy?: "name" | "price" | "rating";
@@ -55,6 +60,7 @@ export interface SitterUpdatePayload {
     name: string;
     city: string;
     services: string;
+    acceptedPetTypes: string;
     pricePerDay: number;
     description: string;
     rating: number;

@@ -23,6 +23,7 @@ public class SitterActions
                 Name = sitter.Name,
                 City = sitter.City,
                 Services = sitter.Services,
+                AcceptedPetTypes = string.IsNullOrWhiteSpace(sitter.AcceptedPetTypes) ? "Orice" : sitter.AcceptedPetTypes,
                 PricePerDay = sitter.PricePerDay,
                 Description = sitter.Description,
                 Rating = 0,
@@ -70,6 +71,7 @@ public class SitterActions
                 Name = entity.Name,
                 City = entity.City,
                 Services = entity.Services,
+                AcceptedPetTypes = entity.AcceptedPetTypes,
                 PricePerDay = entity.PricePerDay,
                 Description = entity.Description,
                 Rating = entity.Rating,
@@ -107,7 +109,28 @@ public class SitterActions
                     s.Name.ToLower().Contains(search) ||
                     s.City.ToLower().Contains(search) ||
                     s.Services.ToLower().Contains(search) ||
+                    s.AcceptedPetTypes.ToLower().Contains(search) ||
                     s.Description.ToLower().Contains(search));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.City))
+            {
+                var city = query.City.Trim().ToLower();
+                sittersQuery = sittersQuery.Where(s => s.City.ToLower() == city);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Service))
+            {
+                var service = query.Service.Trim().ToLower();
+                sittersQuery = sittersQuery.Where(s => s.Services.ToLower() == service);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.PetType))
+            {
+                var petType = query.PetType.Trim().ToLower();
+                sittersQuery = sittersQuery.Where(s =>
+                    s.AcceptedPetTypes.ToLower() == petType ||
+                    s.AcceptedPetTypes.ToLower() == "orice");
             }
 
             if (query.OnlyTopRated)
@@ -137,6 +160,7 @@ public class SitterActions
                     Name = s.Name,
                     City = s.City,
                     Services = s.Services,
+                    AcceptedPetTypes = s.AcceptedPetTypes,
                     PricePerDay = s.PricePerDay,
                     Description = s.Description,
                     Rating = s.Rating,
@@ -180,6 +204,7 @@ public class SitterActions
             entity.Name = sitter.Name;
             entity.City = sitter.City;
             entity.Services = sitter.Services;
+            entity.AcceptedPetTypes = string.IsNullOrWhiteSpace(sitter.AcceptedPetTypes) ? "Orice" : sitter.AcceptedPetTypes;
             entity.PricePerDay = sitter.PricePerDay;
             entity.Description = sitter.Description;
             entity.Rating = sitter.Rating;

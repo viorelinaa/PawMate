@@ -107,7 +107,7 @@
 /* ── Filtre ────────────────────────────────────────────── */
 .pet-sitting-page .filters {
     display: grid;
-    grid-template-columns: minmax(260px, 1.3fr) repeat(3, minmax(140px, 1fr));
+    grid-template-columns: minmax(240px, 1.4fr) repeat(4, minmax(130px, 1fr));
     align-items: stretch;
     gap: 16px;
     padding: 22px 28px;
@@ -116,6 +116,10 @@
     box-shadow: var(--shadow-card);
     border: 1px solid var(--color-primary-border);
     margin-bottom: 32px;
+}
+
+.pet-sitting-page .filters .fs-dropdown {
+    --filter-h: 46px;
 }
 
 .pet-sitting-page .filters input {

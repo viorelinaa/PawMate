@@ -3,6 +3,9 @@ namespace PawMate.Domain.Models.Sitter;
 public class SitterQueryDto
 {
     public string? Search { get; set; }
+    public string? City { get; set; }
+    public string? Service { get; set; }
+    public string? PetType { get; set; }
     public bool OnlyTopRated { get; set; }
     public decimal? MinRating { get; set; }
     public string? SortBy { get; set; }
