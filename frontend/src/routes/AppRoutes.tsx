@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 import Footer from "../layouts/Footer";
 import Home from "../pages/Home";
 import Adoption from "../pages/Adoption";
@@ -23,6 +23,7 @@ import AdminDashboard from "../pages/AdminDashboard";
 import AdminPages from "../pages/AdminPages";
 import AdminUsers from "../pages/AdminUsers";
 import AdminVolunteerApplications from "../pages/AdminVolunteerApplications";
+import AdminWithdrawals from "../pages/AdminWithdrawals";
 import { RequireAdmin } from "../components/RequireAdmin";
 
 export default function AppRoutes() {
@@ -44,6 +45,10 @@ export default function AppRoutes() {
                     <Route path={paths.vanzari} element={<Vanzari />} />
                     <Route path={paths.cos} element={<Cart />} />
                     <Route path={paths.profile} element={<Profile />} />
+                    <Route
+                        path={paths.wallet}
+                        element={<Navigate to={`${paths.profile}?tab=wallet`} replace />}
+                    />
                     <Route path={paths.unauthorized} element={<Unauthorized />} />
                     <Route path={paths.forbidden} element={<Forbidden />} />
                     <Route path={paths.serverError} element={<ServerError />} />
@@ -76,6 +81,14 @@ export default function AppRoutes() {
                         element={
                             <RequireAdmin>
                                 <AdminVolunteerApplications />
+                            </RequireAdmin>
+                        }
+                    />
+                    <Route
+                        path={paths.adminRetrageri}
+                        element={
+                            <RequireAdmin>
+                                <AdminWithdrawals />
                             </RequireAdmin>
                         }
                     />

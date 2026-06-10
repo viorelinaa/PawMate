@@ -9,6 +9,7 @@ using PawMate.Domain.Entities.ProfileAvatar;
 using PawMate.Domain.Entities.QuizResult;
 using PawMate.Domain.Entities.RefreshToken;
 using PawMate.Domain.Entities.Sitter;
+using PawMate.Domain.Entities.Wallet;
 
 namespace PawMate.Domain.Entities.User;
 
@@ -29,6 +30,7 @@ public class UserEntity
     public string City { get; set; } = string.Empty;
     public string Bio { get; set; } = string.Empty;
     public string Address { get; set; } = string.Empty;
+    public string PayPalSandboxEmail { get; set; } = string.Empty;
     public int? ProfileAvatarId { get; set; }
     public DateTime CreatedAt { get; set; }
 
@@ -46,4 +48,7 @@ public class UserEntity
     public ICollection<ChatConversationEntity> ChatConversationsAsSitter { get; set; } = new List<ChatConversationEntity>();
     public ICollection<ChatMessageEntity> ChatMessages { get; set; } = new List<ChatMessageEntity>();
     public ICollection<SitterRatingEntity> SitterRatings { get; set; } = new List<SitterRatingEntity>();
+    public SellerWalletEntity? SellerWallet { get; set; }
+    public ICollection<WalletTransactionEntity> WalletTransactions { get; set; } = new List<WalletTransactionEntity>();
+    public ICollection<WithdrawalRequestEntity> WithdrawalRequests { get; set; } = new List<WithdrawalRequestEntity>();
 }

@@ -1,4 +1,5 @@
 using PawMate.Domain.Entities.User;
+using PawMate.Domain.Entities.Wallet;
 
 namespace PawMate.Domain.Entities.Order;
 
@@ -17,4 +18,5 @@ public class OrderEntity
 
     public UserEntity User { get; set; } = null!;
     public ICollection<OrderItemEntity> Items { get; set; } = new List<OrderItemEntity>();
+    public ICollection<WalletTransactionEntity> WalletTransactions { get; set; } = new List<WalletTransactionEntity>();
 }

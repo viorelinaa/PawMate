@@ -5,6 +5,7 @@ import { AppButton } from "../components/AppButton";
 import { AdoptionRequestsPanel } from "../components/AdoptionRequestsPanel";
 import { ReceivedAdoptionRequestsPanel } from "../components/ReceivedAdoptionRequestsPanel";
 import { VolunteerApplicationsPanel } from "../components/VolunteerApplicationsPanel";
+import Wallet from "./Wallet";
 import {
     createProfileAvatarOption,
     getProfile,
@@ -17,7 +18,7 @@ import {
 } from "../services/profileService";
 import "../styles/Profile.css";
 
-type ProfileSection = "personal" | "avatar" | "pets" | "adoptions" | "receivedAdoptions" | "volunteer" | "activity";
+type ProfileSection = "personal" | "avatar" | "pets" | "adoptions" | "receivedAdoptions" | "volunteer" | "wallet" | "activity";
 
 type ProfileFormState = {
     firstName: string;
@@ -106,6 +107,7 @@ function readProfileSection(value: string | null): ProfileSection {
         value === "adoptions" ||
         value === "receivedAdoptions" ||
         value === "volunteer" ||
+        value === "wallet" ||
         value === "activity"
     ) {
         return value;
@@ -450,6 +452,13 @@ export default function Profile() {
                                 Voluntariat
                             </button>
                             <button
+                                className={`profile-nav-button ${activeSection === "wallet" ? "active" : ""}`}
+                                onClick={() => selectSection("wallet")}
+                                type="button"
+                            >
+                                Portofel
+                            </button>
+                            <button
                                 className={`profile-nav-button ${activeSection === "activity" ? "active" : ""}`}
                                 onClick={() => selectSection("activity")}
                                 type="button"
@@ -712,6 +721,8 @@ export default function Profile() {
                                 <hr className="profile-main-divider" />
                                 <VolunteerApplicationsPanel />
                             </>
+                        ) : activeSection === "wallet" ? (
+                            <Wallet embedded />
                         ) : (
                             <>
                                 <h1 className="profile-main-title">Activitate</h1>

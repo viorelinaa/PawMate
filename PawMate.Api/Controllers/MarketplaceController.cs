@@ -71,6 +71,11 @@ public class MarketplaceController : ControllerBase
     [Authorize]
     public IActionResult CreateListing([FromBody] MarketplaceCreateDto listing)
     {
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        listing.SellerId = userId.Value;
         var response = _marketplaceLogic.CreateListing(listing);
         if (!response.IsSuccess)
             return BadRequest(response.Message);

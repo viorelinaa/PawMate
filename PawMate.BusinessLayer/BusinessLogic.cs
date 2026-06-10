@@ -86,4 +86,9 @@ public class BusinessLogic
     {
         return new DonationLogic();
     }
+
+    public IWalletLogic GetWalletLogic()
+    {
+        return new WalletLogic();
+    }
 }

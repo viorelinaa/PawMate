@@ -97,17 +97,15 @@ const AdminPages: React.FC = () => {
                 {/* ── Restul cardurilor ── */}
                 <div className="adminPageCard">
                     <div className="adminPageCardTop">
-                        <span className="adminPageCardIcon">V</span>
+                        <span className="adminPageCardIcon" aria-hidden="true">🤝</span>
                         <h2 className="adminPageCardTitle">Voluntariat</h2>
                     </div>
-                    <p className="adminPageCardDesc">Verifica cererile de voluntariat si trimite raspunsuri catre useri.</p>
+                    <p className="adminPageCardDesc">Verifică cererile de voluntariat și trimite răspunsuri către utilizatori.</p>
                     <div className="adminPageCardActions">
-                        <button
-                            className="adminPageCardViewBtn"
+                        <AddActionButton
+                            label="Verifică cereri"
                             onClick={() => navigate(paths.adminVoluntariat)}
-                        >
-                            Verifica cereri
-                        </button>
+                        />
                         <button
                             className="adminPageCardViewBtn"
                             onClick={() => navigate(paths.voluntariat)}
