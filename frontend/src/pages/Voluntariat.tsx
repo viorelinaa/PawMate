@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppButton } from "../components/AppButton";
+import { FilterSelect } from "../components/FilterSelect";
 import { useAuth } from "../context/AuthContext";
 import {
     createVolunteerApplication,
@@ -76,6 +77,8 @@ export default function Voluntariat() {
     const [isCheckingApplications, setIsCheckingApplications] = useState(false);
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
     const [formError, setFormError] = useState<string | null>(null);
+    const [availability, setAvailability] = useState("");
+    const [experience, setExperience] = useState("");
     const userName = useMemo(() => splitName(currentUser?.name), [currentUser?.name]);
     const applicationToShow = submittedApplication ?? latestApplication;
 
@@ -129,10 +132,18 @@ export default function Voluntariat() {
         }
 
         const { errors, firstInvalidElement } = collectFormValidationErrors(e.currentTarget);
-        setFieldErrors(errors);
+        const nextErrors = { ...errors };
 
-        if (firstInvalidElement) {
-            firstInvalidElement.focus();
+        if (!availability) {
+            nextErrors.disponibilitate = "Completeaza acest camp obligatoriu.";
+        }
+
+        setFieldErrors(nextErrors);
+
+        if (firstInvalidElement || nextErrors.disponibilitate) {
+            if (firstInvalidElement) {
+                firstInvalidElement.focus();
+            }
             return;
         }
 
@@ -147,8 +158,8 @@ export default function Voluntariat() {
                 email: String(submittedData.get("email") ?? "").trim(),
                 phone: String(submittedData.get("telefon") ?? "").trim(),
                 age,
-                experience: String(submittedData.get("experienta") ?? "").trim(),
-                availability: String(submittedData.get("disponibilitate") ?? "").trim(),
+                experience,
+                availability,
                 activities: submittedData.getAll("activitati").map(String),
                 message: String(submittedData.get("mesaj") ?? "").trim(),
             });
@@ -156,6 +167,8 @@ export default function Voluntariat() {
             setSubmittedApplication(application);
             setLatestApplication(application);
             setFieldErrors({});
+            setAvailability("");
+            setExperience("");
             formRef.current?.reset();
         } catch (err) {
             setFormError(err instanceof Error ? err.message : "A aparut o eroare la trimiterea cererii.");
@@ -166,6 +179,8 @@ export default function Voluntariat() {
 
     function resetForm() {
         formRef.current?.reset();
+        setAvailability("");
+        setExperience("");
         setFieldErrors({});
         setFormError(null);
     }
@@ -346,23 +361,29 @@ export default function Voluntariat() {
                             </div>
 
                             <div className="formGroup">
-                                <label htmlFor="disponibilitate">Disponibilitate *</label>
-                                <select
-                                    id="disponibilitate"
-                                    name="disponibilitate"
-                                    defaultValue=""
-                                    onBlur={handleFieldBlur}
-                                    required
+                                <label id="volunteer-disponibilitate-label">Disponibilitate *</label>
+                                <input type="hidden" name="disponibilitate" value={availability} />
+                                <FilterSelect
+                                    className={`formSelect volunteerDropdown ${fieldErrors.disponibilitate ? "field-invalid" : ""}`}
+                                    value={availability}
+                                    onChange={(event) => {
+                                        setAvailability(event.target.value);
+                                        setFieldErrors((prev) => {
+                                            const next = { ...prev };
+                                            delete next.disponibilitate;
+                                            return next;
+                                        });
+                                    }}
                                     disabled={isLoading}
-                                    className={`formSelect ${fieldErrors.disponibilitate ? "field-invalid" : ""}`}
-                                    aria-invalid={Boolean(fieldErrors.disponibilitate)}
+                                    aria-labelledby="volunteer-disponibilitate-label"
                                     aria-describedby={fieldErrors.disponibilitate ? "volunteer-disponibilitate-error" : undefined}
+                                    aria-invalid={Boolean(fieldErrors.disponibilitate)}
                                 >
                                     <option value="">Alege optiune</option>
                                     {availabilityOptions.map((option) => (
                                         <option key={option.value} value={option.value}>{option.label}</option>
                                     ))}
-                                </select>
+                                </FilterSelect>
                                 {fieldErrors.disponibilitate ? (
                                     <p className="validation-error" id="volunteer-disponibilitate-error">
                                         {fieldErrors.disponibilitate}
@@ -372,20 +393,20 @@ export default function Voluntariat() {
                         </div>
 
                         <div className="formGroup">
-                            <label htmlFor="experienta">Experienta cu animale</label>
-                            <select
-                                id="experienta"
-                                name="experienta"
-                                defaultValue=""
-                                onBlur={handleFieldBlur}
+                            <label id="volunteer-experienta-label">Experienta cu animale</label>
+                            <input type="hidden" name="experienta" value={experience} />
+                            <FilterSelect
+                                className="formSelect volunteerDropdown"
+                                value={experience}
+                                onChange={(event) => setExperience(event.target.value)}
                                 disabled={isLoading}
-                                className="formSelect"
+                                aria-labelledby="volunteer-experienta-label"
                             >
                                 <option value="">Alege optiune</option>
                                 {experienceOptions.map((option) => (
                                     <option key={option.value} value={option.value}>{option.label}</option>
                                 ))}
-                            </select>
+                            </FilterSelect>
                         </div>
 
                         <div className="formGroup">

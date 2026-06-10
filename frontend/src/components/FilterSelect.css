@@ -38,6 +38,11 @@
     box-shadow: 0 0 0 3px var(--color-primary-faint);
 }
 
+.fs-dropdown--disabled .fs-btn {
+    opacity: 0.62;
+    cursor: not-allowed;
+}
+
 .fs-btn-label {
     overflow: hidden;
     text-overflow: ellipsis;
