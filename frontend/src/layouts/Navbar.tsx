@@ -23,7 +23,7 @@ export default function Navbar({ theme, onToggleTheme }: NavbarProps) {
 
     useEffect(() => {
         const onResize = () => {
-            if (window.innerWidth > 768) setOpen(false);
+            if (window.innerWidth > 860) setOpen(false);
         };
         window.addEventListener("resize", onResize);
         return () => window.removeEventListener("resize", onResize);
