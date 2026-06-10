@@ -240,6 +240,7 @@ export function SitterChatWidget({
                                         key={conversation.id}
                                         className={`sitterChatConversation${conversation.id === selectedId ? " isActive" : ""}`}
                                         onClick={() => setSelectedId(conversation.id)}
+                                        title={getConversationDisplayName(conversation)}
                                     >
                                         <span>{getConversationDisplayName(conversation)}</span>
                                         <small>{conversation.lastMessage || "Conversatie noua"}</small>
