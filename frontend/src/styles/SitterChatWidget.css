@@ -1,7 +1,7 @@
 .sitterChatDock {
     position: fixed;
-    top: 128px;
-    right: 26px;
+    top: 112px;
+    right: 24px;
     z-index: 900;
     display: flex;
     flex-direction: column;
@@ -17,8 +17,8 @@
 
 .sitterChatToggle {
     position: relative;
-    width: 54px;
-    height: 54px;
+    width: 52px;
+    height: 52px;
     border: 0;
     border-radius: var(--radius-full);
     background: var(--color-primary);
@@ -62,9 +62,9 @@
 }
 
 .sitterChatPanel {
-    width: min(390px, calc(100vw - 32px));
-    height: min(540px, calc(100vh - 156px));
-    min-height: 430px;
+    width: min(370px, calc(100vw - 32px));
+    height: min(430px, calc(100dvh - 150px));
+    min-height: 320px;
     overflow: hidden;
     border: 1px solid rgba(117, 79, 146, 0.18);
     border-radius: 22px;
@@ -80,7 +80,7 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 14px 16px;
+    padding: 12px 15px;
     background: var(--color-primary);
     color: white;
 }
@@ -92,7 +92,7 @@
 }
 
 .sitterChatHeader h2 {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 800;
 }
 
@@ -108,8 +108,8 @@
 }
 
 .sitterChatHeader button {
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     border: 0;
     border-radius: var(--radius-full);
     background: rgba(255, 255, 255, 0.18);
@@ -145,23 +145,23 @@
 
 .sitterChatConversations {
     min-height: 0;
-    max-height: 92px;
+    max-height: 76px;
     display: flex;
     gap: 8px;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 10px 12px;
+    padding: 8px 10px;
     border-bottom: 1px solid var(--color-primary-border);
     background: linear-gradient(180deg, var(--color-primary-faint), rgba(255, 255, 255, 0.9));
 }
 
 .sitterChatConversation {
     position: relative;
-    flex: 0 0 168px;
+    flex: 0 0 152px;
     min-width: 0;
     display: grid;
     gap: 4px;
-    padding: 10px 12px;
+    padding: 8px 10px;
     border: 1px solid transparent;
     border-radius: 15px;
     background: rgba(255, 255, 255, 0.76);
@@ -221,10 +221,10 @@
 .sitterChatMessageList {
     min-height: 0;
     overflow-y: auto;
-    padding: 16px 14px;
+    padding: 12px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .sitterChatEmpty {
@@ -239,7 +239,7 @@
 .sitterChatBubble {
     max-width: 84%;
     align-self: flex-start;
-    padding: 10px 12px;
+    padding: 9px 11px;
     border: 1px solid var(--color-primary-border);
     border-radius: 16px 16px 16px 5px;
     background: white;
@@ -284,7 +284,7 @@
 
 .sitterChatForm input {
     min-width: 0;
-    height: 42px;
+    height: 40px;
     border: 1px solid var(--color-primary-border);
     border-radius: var(--radius-full);
     padding: 0 14px;
@@ -302,8 +302,8 @@
 }
 
 .sitterChatForm button {
-    min-width: 82px;
-    height: 42px;
+    min-width: 78px;
+    height: 40px;
     border: 0;
     border-radius: var(--radius-full);
     background: var(--color-primary);
@@ -323,13 +323,71 @@
 @media (max-width: 760px) {
     .sitterChatDock {
         top: auto;
-        right: 14px;
-        bottom: 16px;
+        right: 12px;
+        bottom: 12px;
     }
 
     .sitterChatPanel {
-        width: calc(100vw - 28px);
-        height: min(560px, calc(100vh - 112px));
-        min-height: 390px;
+        width: calc(100vw - 24px);
+        height: min(420px, calc(100dvh - 112px));
+        min-height: 320px;
+    }
+}
+
+@media (max-width: 420px) {
+    .sitterChatToggle {
+        width: 48px;
+        height: 48px;
+    }
+
+    .sitterChatPanel {
+        height: min(390px, calc(100dvh - 104px));
+        min-height: 300px;
+        border-radius: 18px;
+    }
+
+    .sitterChatHeader {
+        padding: 10px 12px;
+    }
+
+    .sitterChatHeader h2 {
+        font-size: 18px;
+    }
+
+    .sitterChatHeader p {
+        max-width: 230px;
+    }
+
+    .sitterChatConversations {
+        max-height: 70px;
+        padding: 7px 9px;
+    }
+
+    .sitterChatConversation {
+        flex-basis: 142px;
+        padding: 7px 9px;
+    }
+
+    .sitterChatMessageList {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .sitterChatBubble {
+        max-width: 88%;
+        padding: 8px 10px;
+    }
+
+    .sitterChatForm {
+        padding: 9px;
+    }
+
+    .sitterChatForm input,
+    .sitterChatForm button {
+        height: 38px;
+    }
+
+    .sitterChatForm button {
+        min-width: 72px;
     }
 }

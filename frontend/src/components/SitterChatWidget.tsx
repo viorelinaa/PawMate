@@ -165,9 +165,7 @@ export function SitterChatWidget({
                             <h2>Mesaje</h2>
                             <p>{selectedConversation?.sitterName ?? "Alege o conversatie"}</p>
                         </div>
-                        <button type="button" onClick={() => onOpenChange(false)} aria-label="Inchide chatul">
-                            ×
-                        </button>
+                        <button type="button" onClick={() => onOpenChange(false)} aria-label="Inchide chatul">{"\u00d7"}</button>
                     </header>
 
                     {error ? <div className="sitterChatError">{error}</div> : null}
