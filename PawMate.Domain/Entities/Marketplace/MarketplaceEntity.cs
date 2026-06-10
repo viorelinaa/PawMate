@@ -10,6 +10,8 @@ public class MarketplaceEntity
     public string Description { get; set; } = string.Empty;
     public string Category { get; set; } = string.Empty;
     public decimal Price { get; set; }
+    public string? ImageUrl { get; set; }
+    public string? ImagePublicId { get; set; }
     public int SellerId { get; set; }
 
     public UserEntity Seller { get; set; } = null!;
