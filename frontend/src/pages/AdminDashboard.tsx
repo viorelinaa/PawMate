@@ -9,7 +9,6 @@ const ACTIVITY_ICONS: Record<string, string> = {
     user: '👥',
     event: '📋',
     lostpet: '🔍',
-    blog: '📝',
 };
 
 function formatDate(dateStr: string): string {
@@ -63,7 +62,7 @@ const AdminDashboard: React.FC = () => {
     const maxBar = allBarValues.length > 0 ? Math.max(...allBarValues, 1) : 1;
 
     const contentValues = contentCounts
-        ? [contentCounts.adoptii, contentCounts.blogPosts, contentCounts.veterinaryClinics,
+        ? [contentCounts.adoptii, contentCounts.veterinaryClinics,
            contentCounts.quizResults, contentCounts.marketplaceListings, contentCounts.evenimente]
         : [1];
     const maxContent = Math.max(...contentValues, 1);
@@ -193,7 +192,6 @@ const AdminDashboard: React.FC = () => {
                         <div className="adminPageVisitsGrid">
                             {[
                                 { name: 'Adopții', count: contentCounts?.adoptii ?? 0, icon: '🐾' },
-                                { name: 'Blog', count: contentCounts?.blogPosts ?? 0, icon: '📝' },
                                 { name: 'Veterinari', count: contentCounts?.veterinaryClinics ?? 0, icon: '🏥' },
                                 { name: 'Quiz', count: contentCounts?.quizResults ?? 0, icon: '🧩' },
                                 { name: 'Vânzări', count: contentCounts?.marketplaceListings ?? 0, icon: '🛒' },

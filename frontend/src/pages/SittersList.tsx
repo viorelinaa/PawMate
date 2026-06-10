@@ -6,14 +6,18 @@ import { SearchIcon } from "../components/SearchIcon";
 import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
 import { SitterChatWidget } from "../components/SitterChatWidget";
+import { FilterSelect } from "../components/FilterSelect";
 import {
     getSitters,
     AddSitterModal,
     EditSitterModal,
     DeleteSitterConfirmModal,
     SitterCard,
+    sitterCityOptions,
+    sitterServiceOptions,
+    sitterPetTypeOptions,
 } from "../components/SitterModals";
-import type { Sitter } from "../services/sitterService";
+import type { Sitter, SitterRatingInfo } from "../services/sitterService";
 import { startConversation } from "../services/chatService";
 import { useAuth } from "../context/AuthContext";
 import { paths } from "../routes/paths";
@@ -28,6 +32,9 @@ export default function SittersList() {
     const [loadError, setLoadError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [query, setQuery] = useState("");
+    const [cityFilter, setCityFilter] = useState("");
+    const [serviceFilter, setServiceFilter] = useState("");
+    const [petTypeFilter, setPetTypeFilter] = useState("");
     const [onlyTopRated, setOnlyTopRated] = useState(false);
     const [priceSort, setPriceSort] = useState<"none" | "asc" | "desc">("none");
     const [priceMenuOpen, setPriceMenuOpen] = useState(false);
@@ -42,6 +49,9 @@ export default function SittersList() {
             setIsLoading(true);
             const data = await getSitters({
                 search: query,
+                city: cityFilter || undefined,
+                service: serviceFilter || undefined,
+                petType: petTypeFilter || undefined,
                 onlyTopRated,
                 minRating: ratingThreshold,
                 sortBy: priceSort === "none" ? undefined : "price",
@@ -62,7 +72,7 @@ export default function SittersList() {
 
     useEffect(() => {
         void loadSitters();
-    }, [query, onlyTopRated, priceSort]);
+    }, [query, cityFilter, serviceFilter, petTypeFilter, onlyTopRated, priceSort]);
 
     const handlePriceMenuBlur = (event: FocusEvent<HTMLDivElement>) => {
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
@@ -79,6 +89,16 @@ export default function SittersList() {
 
     const ratingLabel = `⭐ rating ${ratingThreshold}+`;
 
+
+    function handleSitterRated(rating: SitterRatingInfo) {
+        setSitters((prev) =>
+            prev.map((sitter) =>
+                sitter.id === rating.sitterId
+                    ? { ...sitter, rating: rating.rating, ratingCount: rating.ratingCount }
+                    : sitter
+            )
+        );
+    }
 
     async function handleOpenSitterChat(sitter: Sitter) {
         if (!currentUser) {
@@ -185,6 +205,9 @@ export default function SittersList() {
                         className="filter-reset filter-btn"
                         onClick={() => {
                             setQuery("");
+                            setCityFilter("");
+                            setServiceFilter("");
+                            setPetTypeFilter("");
                             setOnlyTopRated(false);
                             setPriceSort("none");
                             setPriceMenuOpen(false);
@@ -192,6 +215,27 @@ export default function SittersList() {
                     >
                         Reset
                     </AppButton>
+
+                    <FilterSelect value={cityFilter} onChange={(e) => setCityFilter(e.target.value)}>
+                        <option value="">Toate orasele</option>
+                        {sitterCityOptions.map((city) => (
+                            <option key={city} value={city}>{city}</option>
+                        ))}
+                    </FilterSelect>
+
+                    <FilterSelect value={serviceFilter} onChange={(e) => setServiceFilter(e.target.value)}>
+                        <option value="">Toate serviciile</option>
+                        {sitterServiceOptions.map((service) => (
+                            <option key={service} value={service}>{service}</option>
+                        ))}
+                    </FilterSelect>
+
+                    <FilterSelect value={petTypeFilter} onChange={(e) => setPetTypeFilter(e.target.value)}>
+                        <option value="">Toate animalele</option>
+                        {sitterPetTypeOptions.map((petType) => (
+                            <option key={petType} value={petType}>{petType}</option>
+                        ))}
+                    </FilterSelect>
 
                     <AppButton
                         type="button"
@@ -272,6 +316,7 @@ export default function SittersList() {
                                 onEdit={setEditSitter}
                                 onDelete={setDeleteSitterTarget}
                                 onStartChat={handleOpenSitterChat}
+                                onRated={handleSitterRated}
                                 startingChatSitterId={startingChatSitterId}
                             />
                         ))}

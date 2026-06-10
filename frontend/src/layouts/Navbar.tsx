@@ -23,7 +23,7 @@ export default function Navbar({ theme, onToggleTheme }: NavbarProps) {
 
     useEffect(() => {
         const onResize = () => {
-            if (window.innerWidth > 768) setOpen(false);
+            if (window.innerWidth > 860) setOpen(false);
         };
         window.addEventListener("resize", onResize);
         return () => window.removeEventListener("resize", onResize);
@@ -53,12 +53,9 @@ export default function Navbar({ theme, onToggleTheme }: NavbarProps) {
                         <NavLink to="/adoptie" onClick={() => setOpen(false)}>Adopție</NavLink>
                         <NavLink to="/pierdute" onClick={() => setOpen(false)}>Pierdute</NavLink>
                         <NavLink to="/veterinari" onClick={() => setOpen(false)}>Veterinari</NavLink>
-                        <NavLink to="/ghid-medical" onClick={() => setOpen(false)}>MedGuide</NavLink>
                         <NavLink to="/donatii" onClick={() => setOpen(false)}>Donații</NavLink>
                         <NavLink to="/sitters" onClick={() => setOpen(false)}>Sitters</NavLink>
                         <NavLink to="/voluntariat" onClick={() => setOpen(false)}>Voluntariat</NavLink>
-                        <NavLink to="/wiki" onClick={() => setOpen(false)}>Wiki</NavLink>
-                        <NavLink to="/blog" onClick={() => setOpen(false)}>Blog</NavLink>
                         <NavLink to="/evenimente" onClick={() => setOpen(false)}>Evenimente</NavLink>
                         <NavLink to="/vanzari" onClick={() => setOpen(false)}>Vânzări</NavLink>
                         {!currentUser && (

@@ -6,9 +6,11 @@ export interface Sitter {
     name: string;
     city: string;
     services: string;
+    acceptedPetTypes: string;
     pricePerDay: number;
     description: string;
     rating: number;
+    ratingCount: number;
     userId?: number | null;
 }
 
@@ -16,12 +18,16 @@ export interface SitterCreatePayload {
     name: string;
     city: string;
     services: string;
+    acceptedPetTypes: string;
     pricePerDay: number;
     description: string;
 }
 
 export interface SitterQuery {
     search?: string;
+    city?: string;
+    service?: string;
+    petType?: string;
     onlyTopRated?: boolean;
     minRating?: number;
     sortBy?: "name" | "price" | "rating";
@@ -54,12 +60,31 @@ export interface SitterUpdatePayload {
     name: string;
     city: string;
     services: string;
+    acceptedPetTypes: string;
     pricePerDay: number;
     description: string;
     rating: number;
     userId?: number | null;
 }
 
+export interface SitterRatingInfo {
+    sitterId: number;
+    rating: number;
+    ratingCount: number;
+    myRating: number;
+    comment: string;
+}
+
+
+export interface SitterReview {
+    id: number;
+    userId: number;
+    userName: string;
+    rating: number;
+    comment: string;
+    createdAt: string;
+    updatedAt: string;
+}
 export async function createSitter(payload: SitterCreatePayload): Promise<void> {
     try {
         await apiClient.post("/sitters/create", payload);
@@ -81,5 +106,22 @@ export async function deleteSitter(id: number): Promise<void> {
         await apiClient.delete(`/sitters/${id}`);
     } catch (err) {
         handleError(err, "Nu s-a putut șterge profilul sitter.");
+    }
+}
+
+export async function rateSitter(id: number, rating: number, comment?: string): Promise<SitterRatingInfo> {
+    try {
+        const { data } = await apiClient.post<SitterRatingInfo>(`/sitters/${id}/rating`, { rating, comment });
+        return data;
+    } catch (err) {
+        handleError(err, "Nu s-a putut salva ratingul.");
+    }
+}
+export async function getSitterReviews(id: number): Promise<SitterReview[]> {
+    try {
+        const { data } = await apiClient.get<SitterReview[]>(`/sitters/${id}/reviews`);
+        return data;
+    } catch (err) {
+        handleError(err, "Nu s-au putut incarca review-urile.");
     }
 }

@@ -23,6 +23,7 @@ public class SitterActions
                 Name = sitter.Name,
                 City = sitter.City,
                 Services = sitter.Services,
+                AcceptedPetTypes = string.IsNullOrWhiteSpace(sitter.AcceptedPetTypes) ? "Orice" : sitter.AcceptedPetTypes,
                 PricePerDay = sitter.PricePerDay,
                 Description = sitter.Description,
                 Rating = 0,
@@ -70,9 +71,11 @@ public class SitterActions
                 Name = entity.Name,
                 City = entity.City,
                 Services = entity.Services,
+                AcceptedPetTypes = entity.AcceptedPetTypes,
                 PricePerDay = entity.PricePerDay,
                 Description = entity.Description,
                 Rating = entity.Rating,
+                RatingCount = _context.SitterRatings.Count(r => r.SitterId == entity.Id),
                 UserId = entity.UserId
             };
 
@@ -106,7 +109,28 @@ public class SitterActions
                     s.Name.ToLower().Contains(search) ||
                     s.City.ToLower().Contains(search) ||
                     s.Services.ToLower().Contains(search) ||
+                    s.AcceptedPetTypes.ToLower().Contains(search) ||
                     s.Description.ToLower().Contains(search));
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.City))
+            {
+                var city = query.City.Trim().ToLower();
+                sittersQuery = sittersQuery.Where(s => s.City.ToLower() == city);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Service))
+            {
+                var service = query.Service.Trim().ToLower();
+                sittersQuery = sittersQuery.Where(s => s.Services.ToLower() == service);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.PetType))
+            {
+                var petType = query.PetType.Trim().ToLower();
+                sittersQuery = sittersQuery.Where(s =>
+                    s.AcceptedPetTypes.ToLower() == petType ||
+                    s.AcceptedPetTypes.ToLower() == "orice");
             }
 
             if (query.OnlyTopRated)
@@ -123,7 +147,10 @@ public class SitterActions
                 "rating" => sittersQuery.OrderByDescending(s => s.Rating),
                 "name" when query.SortDirection == "desc" => sittersQuery.OrderByDescending(s => s.Name),
                 "name" => sittersQuery.OrderBy(s => s.Name),
-                _ => sittersQuery.OrderBy(s => s.Id)
+                _ => sittersQuery
+                    .OrderByDescending(s => s.Rating)
+                    .ThenByDescending(s => _context.SitterRatings.Count(r => r.SitterId == s.Id))
+                    .ThenBy(s => s.Id)
             };
 
             var list = sittersQuery
@@ -133,9 +160,11 @@ public class SitterActions
                     Name = s.Name,
                     City = s.City,
                     Services = s.Services,
+                    AcceptedPetTypes = s.AcceptedPetTypes,
                     PricePerDay = s.PricePerDay,
                     Description = s.Description,
                     Rating = s.Rating,
+                    RatingCount = _context.SitterRatings.Count(r => r.SitterId == s.Id),
                     UserId = s.UserId
                 })
                 .ToList();
@@ -175,6 +204,7 @@ public class SitterActions
             entity.Name = sitter.Name;
             entity.City = sitter.City;
             entity.Services = sitter.Services;
+            entity.AcceptedPetTypes = string.IsNullOrWhiteSpace(sitter.AcceptedPetTypes) ? "Orice" : sitter.AcceptedPetTypes;
             entity.PricePerDay = sitter.PricePerDay;
             entity.Description = sitter.Description;
             entity.Rating = sitter.Rating;
@@ -197,7 +227,149 @@ public class SitterActions
         }
     }
 
-    public ServiceResponse DeleteSitterAction(int id)
+
+    public ServiceResponse RateSitterAction(int id, SitterRatingCreateDto rating, int userId)
+    {
+        try
+        {
+            if (rating.Rating < 1 || rating.Rating > 5)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Ratingul trebuie sa fie intre 1 si 5."
+                };
+            }
+            var normalizedComment = rating.Comment?.Trim();
+            if (normalizedComment?.Length > 700)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Comentariul poate avea maximum 700 de caractere."
+                };
+            }
+
+            var sitter = _context.Sitters.FirstOrDefault(s => s.Id == id);
+            if (sitter == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Profilul sitter nu a fost gasit."
+                };
+            }
+
+            var now = DateTime.UtcNow;
+            var existingRating = _context.SitterRatings.FirstOrDefault(r => r.SitterId == id && r.UserId == userId);
+
+            if (existingRating == null)
+            {
+                existingRating = new SitterRatingEntity
+                {
+                    SitterId = id,
+                    UserId = userId,
+                    Rating = rating.Rating,
+                    Comment = normalizedComment ?? string.Empty,
+                    CreatedAt = now,
+                    UpdatedAt = now
+                };
+
+                _context.SitterRatings.Add(existingRating);
+            }
+            else
+            {
+                existingRating.Rating = rating.Rating;
+                if (rating.Comment != null)
+                {
+                    existingRating.Comment = normalizedComment ?? string.Empty;
+                }
+                existingRating.UpdatedAt = now;
+            }
+
+            _context.SaveChanges();
+
+            var ratingValues = _context.SitterRatings
+                .Where(r => r.SitterId == id)
+                .Select(r => r.Rating)
+                .ToList();
+
+            sitter.Rating = ratingValues.Count == 0
+                ? 0
+                : Math.Round(ratingValues.Average(value => (decimal)value), 1);
+
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Ratingul a fost salvat.",
+                Data = new SitterRatingInfoDto
+                {
+                    SitterId = id,
+                    Rating = sitter.Rating,
+                    RatingCount = ratingValues.Count,
+                    MyRating = existingRating.Rating,
+                    Comment = existingRating.Comment
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la salvarea ratingului: {ex.Message}"
+            };
+        }
+    }
+    public ServiceResponse GetSitterReviewsAction(int id)
+    {
+        try
+        {
+            var sitterExists = _context.Sitters.Any(s => s.Id == id);
+            if (!sitterExists)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Profilul sitter nu a fost gasit."
+                };
+            }
+
+            var reviews = _context.SitterRatings
+                .Where(r => r.SitterId == id && (r.Rating > 0 || r.Comment != string.Empty))
+                .OrderByDescending(r => r.UpdatedAt)
+                .Select(r => new SitterReviewDto
+                {
+                    Id = r.Id,
+                    UserId = r.UserId,
+                    UserName = r.User.Name,
+                    Rating = r.Rating,
+                    Comment = r.Comment,
+                    CreatedAt = r.CreatedAt,
+                    UpdatedAt = r.UpdatedAt
+                })
+                .ToList();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Review-urile sitterului au fost obtinute.",
+                Data = reviews
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la obtinerea review-urilor: {ex.Message}"
+            };
+        }
+    }
+
+    public ServiceResponse DeleteSitterAction(int id, int userId, bool isAdmin)
     {
         try
         {
@@ -211,6 +383,38 @@ public class SitterActions
                     Message = "Profilul sitter nu a fost gasit."
                 };
             }
+
+            if (!isAdmin && entity.UserId != userId)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Poti sterge doar propriul profil de sitter."
+                };
+            }
+
+            var conversationIds = _context.ChatConversations
+                .Where(c => c.SitterId == id)
+                .Select(c => c.Id)
+                .ToList();
+
+            if (conversationIds.Count > 0)
+            {
+                var messages = _context.ChatMessages
+                    .Where(m => conversationIds.Contains(m.ConversationId))
+                    .ToList();
+                _context.ChatMessages.RemoveRange(messages);
+
+                var conversations = _context.ChatConversations
+                    .Where(c => conversationIds.Contains(c.Id))
+                    .ToList();
+                _context.ChatConversations.RemoveRange(conversations);
+            }
+
+            var ratings = _context.SitterRatings
+                .Where(r => r.SitterId == id)
+                .ToList();
+            _context.SitterRatings.RemoveRange(ratings);
 
             _context.Sitters.Remove(entity);
             _context.SaveChanges();

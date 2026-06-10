@@ -30,6 +30,15 @@ function formatChatDate(value: string) {
     });
 }
 
+function getInitials(name: string) {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) {
+        return "?";
+    }
+
+    return parts.slice(0, 2).map((part) => part[0]?.toUpperCase()).join("");
+}
+
 export function SitterChatWidget({
     isOpen,
     activeConversationId,
@@ -82,6 +91,17 @@ export function SitterChatWidget({
         );
     }
 
+    function getConversationDisplayName(conversation: ChatConversation | null) {
+        if (!conversation) {
+            return "Alege cui raspunzi";
+        }
+
+        if (currentUser?.id === conversation.sitterUserId) {
+            return conversation.clientName || "Utilizator";
+        }
+
+        return conversation.sitterName || conversation.sitterUserName || "Sitter";
+    }
     async function loadConversations(preferredId?: number | null) {
         if (!currentUser) {
             setConversations([]);
@@ -209,7 +229,7 @@ export function SitterChatWidget({
                     <header className="sitterChatHeader">
                         <div>
                             <h2>Mesaje</h2>
-                            <p>{selectedConversation?.sitterName ?? "Alege cui raspunzi"}</p>
+                            <p>{getConversationDisplayName(selectedConversation)}</p>
                         </div>
                         <button type="button" onClick={() => onOpenChange(false)} aria-label="Inchide chatul">{"\u00d7"}</button>
                     </header>
@@ -218,10 +238,18 @@ export function SitterChatWidget({
 
                     <div className="sitterChatBody">
                         <aside className="sitterChatConversations">
+                            <div className="sitterChatSidebarTitle">
+                                <strong>Conversatii</strong>
+                                <span>{conversations.length}</span>
+                            </div>
                             {isLoadingConversations ? (
-                                <div className="sitterChatEmpty">Se incarca...</div>
+                                <div className="sitterChatEmpty sitterChatSidebarEmpty">Se incarca...</div>
                             ) : conversations.length === 0 ? (
-                                <div className="sitterChatEmpty">Nu ai conversatii.</div>
+                                <div className="sitterChatEmpty sitterChatSidebarEmpty">
+                                    <span aria-hidden="true">{"\u2709"}</span>
+                                    <strong>Nu ai conversatii</strong>
+                                    <small>Apasa pe Scrie la un sitter ca sa incepi una.</small>
+                                </div>
                             ) : (
                                 conversations.map((conversation) => (
                                     <button
@@ -229,9 +257,15 @@ export function SitterChatWidget({
                                         key={conversation.id}
                                         className={`sitterChatConversation${conversation.id === selectedId ? " isActive" : ""}`}
                                         onClick={() => setSelectedId(conversation.id)}
+                                        title={getConversationDisplayName(conversation)}
                                     >
-                                        <span>{conversation.sitterName || conversation.sitterUserName}</span>
-                                        <small>{conversation.lastMessage || "Conversatie noua"}</small>
+                                        <span className="sitterChatConversationAvatar" aria-hidden="true">
+                                            {getInitials(getConversationDisplayName(conversation))}
+                                        </span>
+                                        <span className="sitterChatConversationText">
+                                            <strong>{getConversationDisplayName(conversation)}</strong>
+                                            <small>{conversation.lastMessage || "Conversatie noua"}</small>
+                                        </span>
                                         {conversation.unreadCount > 0 ? <b>{conversation.unreadCount}</b> : null}
                                     </button>
                                 ))
@@ -239,13 +273,30 @@ export function SitterChatWidget({
                         </aside>
 
                         <div className="sitterChatMessages">
+                            <div className="sitterChatThreadHeader">
+                                <span className="sitterChatThreadAvatar" aria-hidden="true">
+                                    {getInitials(getConversationDisplayName(selectedConversation))}
+                                </span>
+                                <div>
+                                    <strong>{getConversationDisplayName(selectedConversation)}</strong>
+                                    <small>{selectedId ? "Conversatie activa" : "Selecteaza o conversatie"}</small>
+                                </div>
+                            </div>
                             <div className="sitterChatMessageList">
                                 {isLoadingMessages ? (
                                     <div className="sitterChatEmpty">Se incarca mesajele...</div>
                                 ) : !selectedId ? (
-                                    <div className="sitterChatEmpty sitterChatPickContact">Alege un contact de sus ca sa raspunzi.</div>
+                                    <div className="sitterChatEmpty sitterChatPickContact">
+                                        <span aria-hidden="true">{"\u2190"}</span>
+                                        <strong>Alege o conversatie</strong>
+                                        <small>Selecteaza un contact din lista ca sa raspunzi.</small>
+                                    </div>
                                 ) : messages.length === 0 ? (
-                                    <div className="sitterChatEmpty sitterChatPickContact">Trimite primul mesaj.</div>
+                                    <div className="sitterChatEmpty sitterChatPickContact">
+                                        <span aria-hidden="true">{"\u2709"}</span>
+                                        <strong>Trimite primul mesaj</strong>
+                                        <small>Conversatia e pregatita.</small>
+                                    </div>
                                 ) : (
                                     messages.map((message) => (
                                         <article

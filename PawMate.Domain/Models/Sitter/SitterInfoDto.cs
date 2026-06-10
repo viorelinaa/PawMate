@@ -6,8 +6,10 @@ public class SitterInfoDto
     public string Name { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string Services { get; set; } = string.Empty;
+    public string AcceptedPetTypes { get; set; } = "Orice";
     public decimal PricePerDay { get; set; }
     public string Description { get; set; } = string.Empty;
     public decimal Rating { get; set; }
+    public int RatingCount { get; set; }
     public int? UserId { get; set; }
 }

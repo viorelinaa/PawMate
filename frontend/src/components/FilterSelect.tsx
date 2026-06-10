@@ -10,6 +10,10 @@ interface FilterSelectProps {
     value: string;
     onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     className?: string;
+    disabled?: boolean;
+    "aria-labelledby"?: string;
+    "aria-describedby"?: string;
+    "aria-invalid"?: boolean;
     children: React.ReactNode;
 }
 
@@ -31,6 +35,10 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
     value,
     onChange,
     className = "",
+    disabled = false,
+    "aria-labelledby": ariaLabelledBy,
+    "aria-describedby": ariaDescribedBy,
+    "aria-invalid": ariaInvalid,
     children,
 }) => {
     const [open, setOpen] = useState(false);
@@ -49,6 +57,10 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
     }, []);
 
     const handleSelect = (optValue: string) => {
+        if (disabled) {
+            return;
+        }
+
         const fakeEvent = { target: { value: optValue } } as React.ChangeEvent<HTMLSelectElement>;
         onChange(fakeEvent);
         setOpen(false);
@@ -56,7 +68,7 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
 
     return (
         <div
-            className={`fs-dropdown ${className}`}
+            className={`fs-dropdown ${disabled ? "fs-dropdown--disabled" : ""} ${className}`}
             ref={ref}
             onKeyDown={(e) => e.key === "Escape" && setOpen(false)}
         >
@@ -65,6 +77,10 @@ export const FilterSelect: React.FC<FilterSelectProps> = ({
                 className="fs-btn"
                 aria-haspopup="listbox"
                 aria-expanded={open}
+                aria-labelledby={ariaLabelledBy}
+                aria-describedby={ariaDescribedBy}
+                aria-invalid={ariaInvalid}
+                disabled={disabled}
                 onClick={() => setOpen((prev) => !prev)}
             >
                 <span className="fs-btn-label">{selected?.label ?? ""}</span>

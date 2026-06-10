@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer;
@@ -47,5 +48,67 @@ public class VolunteerController : ControllerBase
             return BadRequest(response.Message);
 
         return Ok(response.Message);
+    }
+
+    [HttpPost("applications")]
+    [Authorize]
+    public IActionResult CreateVolunteerApplication([FromBody] VolunteerApplicationCreateDto application)
+    {
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var response = _volunteerLogic.CreateVolunteerApplication(application, userId.Value);
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+
+        return Ok(response.Data);
+    }
+
+    [HttpGet("applications/mine")]
+    [Authorize]
+    public IActionResult GetMyVolunteerApplications()
+    {
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var response = _volunteerLogic.GetMyVolunteerApplications(userId.Value);
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+
+        return Ok(response.Data);
+    }
+
+    [HttpGet("applications/admin")]
+    [Authorize(Roles = "admin")]
+    public IActionResult GetVolunteerApplicationsForAdmin()
+    {
+        var response = _volunteerLogic.GetVolunteerApplicationsForAdmin();
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+
+        return Ok(response.Data);
+    }
+
+    [HttpPut("applications/{id}/decision")]
+    [Authorize(Roles = "admin")]
+    public IActionResult ReviewVolunteerApplication([FromRoute] int id, [FromBody] VolunteerApplicationDecisionDto decision)
+    {
+        var adminId = GetCurrentUserId();
+        if (!adminId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var response = _volunteerLogic.ReviewVolunteerApplication(id, decision, adminId.Value);
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+
+        return Ok(response.Data);
+    }
+
+    private int? GetCurrentUserId()
+    {
+        var rawUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return int.TryParse(rawUserId, out var userId) ? userId : null;
     }
 }

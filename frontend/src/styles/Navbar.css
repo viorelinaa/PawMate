@@ -4,7 +4,7 @@
     justify-content: space-between;
     gap: 12px;
 
-    padding: 16px 40px 16px 32px;
+    padding: 16px 34px 16px 28px;
     background: #ffffff;
     border-bottom: 1px solid #eee;
 
@@ -16,7 +16,7 @@
 }
 
 .logo {
-    font-size: 22px;
+    font-size: 26px;
     font-weight: 800;
     color: #6b4fa1;
     text-decoration: none;
@@ -29,7 +29,7 @@
 .links {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
     flex: 1 1 auto;
     min-width: 0;
     overflow-x: auto;
@@ -55,10 +55,11 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    font-weight: 500;
+    font-size: 17px;
+    font-weight: 700;
 
     color: #6b4fa1;
-    padding: 8px 16px;
+    padding: 10px 16px;
     border-radius: 999px;
     line-height: 1;
     white-space: nowrap;
@@ -91,6 +92,46 @@
     height: 40px;
     font-size: 18px;
     flex-shrink: 0;
+}
+
+@media (max-width: 1320px) {
+    .navbar {
+        padding: 14px 22px;
+        gap: 10px;
+    }
+
+    .logo {
+        font-size: 24px;
+    }
+
+    .links {
+        gap: 8px;
+    }
+
+    .links a {
+        font-size: 16px;
+        padding: 9px 12px;
+    }
+
+    .navRight {
+        gap: 8px;
+    }
+}
+
+@media (max-width: 980px) {
+    .logo {
+        font-size: 22px;
+    }
+
+    .links a {
+        font-size: 15px;
+        padding: 8px 10px;
+    }
+
+    .themeToggle {
+        width: 38px;
+        height: 38px;
+    }
 }
 
 .themeToggle:hover {
@@ -140,7 +181,7 @@
 }
 
 /* ====== MOBILE ====== */
-@media (max-width: 768px) {
+@media (max-width: 860px) {
     .navbar {
         padding: 12px 14px;
     }
@@ -184,6 +225,8 @@
     }
 
     .links a {
+        font-size: 18px;
+        font-weight: 800;
         padding: 12px 14px;
         border-radius: 14px;
     }

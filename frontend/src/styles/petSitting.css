@@ -107,7 +107,7 @@
 /* ── Filtre ────────────────────────────────────────────── */
 .pet-sitting-page .filters {
     display: grid;
-    grid-template-columns: minmax(260px, 1.3fr) repeat(3, minmax(140px, 1fr));
+    grid-template-columns: minmax(240px, 1.4fr) repeat(4, minmax(130px, 1fr));
     align-items: stretch;
     gap: 16px;
     padding: 22px 28px;
@@ -116,6 +116,10 @@
     box-shadow: var(--shadow-card);
     border: 1px solid var(--color-primary-border);
     margin-bottom: 32px;
+}
+
+.pet-sitting-page .filters .fs-dropdown {
+    --filter-h: 46px;
 }
 
 .pet-sitting-page .filters input {
@@ -277,6 +281,7 @@
     border: 1px solid var(--color-primary-border);
 }
 
+
 .sitter-card h3 {
     margin-top: 0;
     color: var(--color-primary);
@@ -293,6 +298,226 @@
     font-weight: 600;
 }
 
+.sitterRatingPanel {
+    margin-top: 16px;
+    padding: 12px;
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-md);
+    background: linear-gradient(180deg, rgba(248, 246, 252, 0.9), rgba(255, 255, 255, 0.96));
+    display: grid;
+    gap: 10px;
+}
+
+.sitterRatingSummary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--color-primary);
+    font-family: var(--font-family);
+    font-weight: 800;
+}
+
+.sitterRatingSummary small,
+.sitterRatingHint,
+.sitterRatingError {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.sitterRatingStars {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sitterRatingStars button {
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-full);
+    background: white;
+    color: var(--color-primary-light);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    box-shadow: 0 8px 18px rgba(75, 45, 108, 0.08);
+    transition: transform var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+}
+
+.sitterRatingStars button:hover:not(:disabled),
+.sitterRatingStars button.isActive {
+    background: var(--color-primary);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.sitterRatingStars button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+}
+
+.sitterRatingError {
+    color: #e05252;
+}
+
+.sitterCommentsToggle {
+    position: absolute;
+    top: 18px;
+    right: 88px;
+    min-width: 50px;
+    height: 34px;
+    padding: 0 9px;
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-full);
+    background: var(--color-surface);
+    color: var(--color-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    box-shadow: var(--shadow-btn-ghost);
+    transition: transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.sitterCommentsToggle:hover,
+.sitterCommentsToggle.isActive {
+    background: var(--color-primary);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.sitterCommentsToggle span {
+    line-height: 1;
+}
+
+.sitterCommentsToggle small {
+    font-size: var(--font-size-xs);
+    font-weight: 800;
+}
+
+.sitterCommentInput {
+    width: 100%;
+    min-height: 68px;
+    resize: vertical;
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-md);
+    background: white;
+    color: var(--color-text);
+    padding: 10px 12px;
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    outline: none;
+}
+
+.sitterCommentInput:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(117, 79, 146, 0.12);
+}
+
+.sitterCommentInput:disabled {
+    opacity: 0.62;
+    cursor: not-allowed;
+}
+
+.sitterReviewActions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.sitterReviewActions small {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.sitterReviewActions button,
+.sitterReviewsHeader button {
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-full);
+    background: var(--color-surface);
+    color: var(--color-primary);
+    padding: 8px 12px;
+    cursor: pointer;
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    font-weight: 800;
+    box-shadow: var(--shadow-btn-ghost);
+}
+
+.sitterReviewActions button:hover:not(:disabled),
+.sitterReviewsHeader button:hover:not(:disabled) {
+    background: var(--color-primary);
+    color: white;
+}
+
+.sitterReviewActions button:disabled,
+.sitterReviewsHeader button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.sitterReviewsPanel {
+    margin-top: 14px;
+    padding: 14px;
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.9);
+    display: grid;
+    gap: 12px;
+}
+
+.sitterReviewsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--color-primary);
+    font-family: var(--font-family);
+}
+
+.sitterReviewsPanel > p {
+    margin: 0;
+    color: var(--color-text-muted);
+    font-family: var(--font-family);
+    font-weight: 700;
+}
+
+.sitterReviewItem {
+    padding: 12px;
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-md);
+    background: linear-gradient(180deg, rgba(248, 246, 252, 0.9), white);
+    display: grid;
+    gap: 8px;
+}
+
+.sitterReviewItem div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--color-primary);
+    font-family: var(--font-family);
+}
+
+.sitterReviewItem p {
+    margin: 0;
+    color: var(--color-text);
+    font-family: var(--font-family);
+    line-height: 1.45;
+}
+
+.sitterReviewItem small {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
 .card-footer {
     margin-top: 20px;
     display: flex;

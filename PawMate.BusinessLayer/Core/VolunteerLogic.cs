@@ -21,4 +21,24 @@ public class VolunteerLogic : VolunteerActions, IVolunteerLogic
     {
         return GetVolunteerListAction();
     }
+
+    public ServiceResponse CreateVolunteerApplication(VolunteerApplicationCreateDto application, int userId)
+    {
+        return CreateVolunteerApplicationAction(application, userId);
+    }
+
+    public ServiceResponse GetMyVolunteerApplications(int userId)
+    {
+        return GetMyVolunteerApplicationsAction(userId);
+    }
+
+    public ServiceResponse GetVolunteerApplicationsForAdmin()
+    {
+        return GetVolunteerApplicationsForAdminAction();
+    }
+
+    public ServiceResponse ReviewVolunteerApplication(int id, VolunteerApplicationDecisionDto decision, int adminId)
+    {
+        return ReviewVolunteerApplicationAction(id, decision, adminId);
+    }
 }

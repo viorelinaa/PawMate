@@ -208,6 +208,8 @@
 .appShell[data-theme="dark"] .modalContent,
 .appShell[data-theme="dark"] .med-guide .card,
 .appShell[data-theme="dark"] .volunteerForm,
+.appShell[data-theme="dark"] .volunteerIntroPanel,
+.appShell[data-theme="dark"] .volunteerStateCard,
 .appShell[data-theme="dark"] .login-box,
 .appShell[data-theme="dark"] .signup-box,
 .appShell[data-theme="dark"] .nfCard,
@@ -381,6 +383,8 @@
 .appShell[data-theme="dark"] .blogTitle,
 .appShell[data-theme="dark"] .wikiTitle,
 .appShell[data-theme="dark"] .voluntariatTitle,
+.appShell[data-theme="dark"] .volunteerIntroPanel h2,
+.appShell[data-theme="dark"] .volunteerStateCard h2,
 .appShell[data-theme="dark"] .hero-title,
 .appShell[data-theme="dark"] .sectionTitle,
 .appShell[data-theme="dark"] .section-title,
@@ -429,6 +433,8 @@
 .appShell[data-theme="dark"] .eventsSubtitle,
 .appShell[data-theme="dark"] .wikiSub,
 .appShell[data-theme="dark"] .voluntariatSub,
+.appShell[data-theme="dark"] .volunteerIntroPanel p,
+.appShell[data-theme="dark"] .volunteerStateCard p,
 .appShell[data-theme="dark"] .sectionSubtitle,
 .appShell[data-theme="dark"] .cardDesc,
 .appShell[data-theme="dark"] .petDesc,
@@ -775,7 +781,6 @@
     border-color: var(--dm-border);
     color: var(--dm-muted);
 }
-/* ── MedGuide page ── */
 .appShell[data-theme="dark"] .med-guide .medFilters {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);
@@ -907,6 +912,45 @@
 .appShell[data-theme="dark"] .sitterModalTextarea:focus {
     border-color: var(--dm-accent-strong);
     box-shadow: 0 0 0 3px rgba(200, 170, 240, 0.2);
+}
+
+.appShell[data-theme="dark"] .sitterChatPanel,
+.appShell[data-theme="dark"] .sitterChatMessages,
+.appShell[data-theme="dark"] .sitterChatThreadHeader,
+.appShell[data-theme="dark"] .sitterChatForm {
+    background: var(--dm-surface);
+    border-color: var(--dm-border);
+}
+
+.appShell[data-theme="dark"] .sitterChatConversations,
+.appShell[data-theme="dark"] .sitterChatConversation,
+.appShell[data-theme="dark"] .sitterChatPickContact,
+.appShell[data-theme="dark"] .sitterChatSidebarEmpty {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
+}
+
+.appShell[data-theme="dark"] .sitterChatThreadHeader strong,
+.appShell[data-theme="dark"] .sitterChatSidebarTitle,
+.appShell[data-theme="dark"] .sitterChatConversationText strong,
+.appShell[data-theme="dark"] .sitterChatEmpty strong {
+    color: var(--dm-accent);
+}
+
+.appShell[data-theme="dark"] .sitterChatThreadHeader small,
+.appShell[data-theme="dark"] .sitterChatConversationText small,
+.appShell[data-theme="dark"] .sitterChatEmpty,
+.appShell[data-theme="dark"] .sitterChatEmpty small {
+    color: var(--dm-muted);
+}
+
+.appShell[data-theme="dark"] .sitterChatConversationAvatar,
+.appShell[data-theme="dark"] .sitterChatThreadAvatar,
+.appShell[data-theme="dark"] .sitterChatEmpty span,
+.appShell[data-theme="dark"] .sitterChatSidebarTitle span {
+    background: var(--dm-accent-soft);
+    border-color: var(--dm-border);
+    color: var(--dm-accent);
 }
 
 .appShell[data-theme="dark"] .petImagePlaceholder,

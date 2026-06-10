@@ -1,23 +1,29 @@
 import { useState } from "react";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
-import { AdminOnly } from "./AdminOnly";
 import { useAuth } from "../context/AuthContext";
 import {
     getSitters,
     createSitter,
     updateSitter,
     deleteSitter,
+    rateSitter,
+    getSitterReviews,
 } from "../services/sitterService";
-import type { Sitter } from "../services/sitterService";
+import type { Sitter, SitterRatingInfo, SitterReview } from "../services/sitterService";
 
 export { getSitters };
+
+export const sitterCityOptions = ["Chisinau", "Balti", "Cahul", "Orhei", "Ungheni", "Soroca", "Comrat"];
+export const sitterServiceOptions = ["Plimbari", "Ingrijire la domiciliu", "Pet sitting", "Hranire", "Altul"];
+export const sitterPetTypeOptions = ["Orice", "Caini", "Pisici", "Pasari", "Rozatoare", "Reptile"];
 
 // ── Tipuri formular ───────────────────────────────────────────────────────────
 export interface SitterForm {
     name: string;
     city: string;
     services: string;
+    acceptedPetTypes: string;
     pricePerDay: string;
     description: string;
 }
@@ -26,6 +32,7 @@ export const emptySitterForm: SitterForm = {
     name: "",
     city: "",
     services: "",
+    acceptedPetTypes: "Orice",
     pricePerDay: "",
     description: "",
 };
@@ -35,6 +42,7 @@ export function sitterToForm(s: Sitter): SitterForm {
         name: s.name,
         city: s.city,
         services: s.services,
+        acceptedPetTypes: s.acceptedPetTypes ?? "Orice",
         pricePerDay: String(s.pricePerDay),
         description: s.description ?? "",
     };
@@ -45,6 +53,7 @@ function validateSitterForm(form: SitterForm): Partial<Record<keyof SitterForm, 
     if (!form.name.trim()) e.name = "Numele este obligatoriu.";
     if (!form.city.trim()) e.city = "Orasul este obligatoriu.";
     if (!form.services) e.services = "Selecteaza tipul de serviciu.";
+    if (!form.acceptedPetTypes) e.acceptedPetTypes = "Selecteaza tipul de animal.";
     if (!form.pricePerDay.trim()) e.pricePerDay = "Pretul este obligatoriu.";
     else if (isNaN(Number(form.pricePerDay)) || Number(form.pricePerDay) <= 0)
         e.pricePerDay = "Introdu un pret valid.";
@@ -86,12 +95,16 @@ export function SitterFormFields({
                 </div>
                 <div className="sitterModalField">
                     <label className="sitterModalLabel">Oras *</label>
-                    <input
-                        className={`sitterModalInput${errors.city ? " sitterInputError" : ""}`}
-                        placeholder="ex. Chisinau"
+                    <FilterSelect
+                        className={errors.city ? "fs-error" : ""}
                         value={form.city}
                         onChange={(e) => onChange("city", e.target.value)}
-                    />
+                    >
+                        <option value="">Selecteaza orasul</option>
+                        {sitterCityOptions.map((city) => (
+                            <option key={city} value={city}>{city}</option>
+                        ))}
+                    </FilterSelect>
                     {errors.city && <span className="sitterFieldError">{errors.city}</span>}
                 </div>
             </div>
@@ -105,11 +118,9 @@ export function SitterFormFields({
                         onChange={(e) => onChange("services", e.target.value)}
                     >
                         <option value="">Selecteaza serviciul</option>
-                        <option value="Plimbari">Plimbari</option>
-                        <option value="Ingrijire la domiciliu">Ingrijire la domiciliu</option>
-                        <option value="Pet sitting">Pet sitting</option>
-                        <option value="Hranire">Hranire</option>
-                        <option value="Altul">Altul</option>
+                        {sitterServiceOptions.map((service) => (
+                            <option key={service} value={service}>{service}</option>
+                        ))}
                     </FilterSelect>
                     {errors.services && <span className="sitterFieldError">{errors.services}</span>}
                 </div>
@@ -125,6 +136,20 @@ export function SitterFormFields({
                     />
                     {errors.pricePerDay && <span className="sitterFieldError">{errors.pricePerDay}</span>}
                 </div>
+            </div>
+
+            <div className="sitterModalField">
+                <label className="sitterModalLabel">Tip animal acceptat *</label>
+                <FilterSelect
+                    className={errors.acceptedPetTypes ? "fs-error" : ""}
+                    value={form.acceptedPetTypes}
+                    onChange={(e) => onChange("acceptedPetTypes", e.target.value)}
+                >
+                    {sitterPetTypeOptions.map((petType) => (
+                        <option key={petType} value={petType}>{petType}</option>
+                    ))}
+                </FilterSelect>
+                {errors.acceptedPetTypes && <span className="sitterFieldError">{errors.acceptedPetTypes}</span>}
             </div>
 
             <div className="sitterModalField">
@@ -170,6 +195,7 @@ export function AddSitterModal({ onClose, onAdded }: { onClose: () => void; onAd
                 name: form.name.trim(),
                 city: form.city.trim(),
                 services: form.services,
+                acceptedPetTypes: form.acceptedPetTypes,
                 pricePerDay: Number(form.pricePerDay),
                 description: form.description.trim(),
             });
@@ -230,6 +256,7 @@ export function EditSitterModal({
                 name: form.name.trim(),
                 city: form.city.trim(),
                 services: form.services,
+                acceptedPetTypes: form.acceptedPetTypes,
                 pricePerDay: Number(form.pricePerDay),
                 description: form.description.trim(),
                 rating: sitter.rating,
@@ -327,18 +354,32 @@ export function SitterCard({
     onEdit,
     onDelete,
     onStartChat,
+    onRated,
     startingChatSitterId,
 }: {
     s: Sitter;
     onEdit: (s: Sitter) => void;
     onDelete: (s: Sitter) => void;
     onStartChat: (s: Sitter) => void;
+    onRated: (rating: SitterRatingInfo) => void;
     startingChatSitterId: number | null;
 }) {
-    const { currentUser } = useAuth();
+    const { currentUser, isAdmin } = useAuth();
+    const [ratingError, setRatingError] = useState<string | null>(null);
+    const [selectedRating, setSelectedRating] = useState<number | null>(null);
+    const [savingRating, setSavingRating] = useState<number | null>(null);
+    const [commentDraft, setCommentDraft] = useState("");
+    const [commentTouched, setCommentTouched] = useState(false);
+    const [reviewsOpen, setReviewsOpen] = useState(false);
+    const [reviewsLoaded, setReviewsLoaded] = useState(false);
+    const [reviewsLoading, setReviewsLoading] = useState(false);
+    const [reviewsError, setReviewsError] = useState<string | null>(null);
+    const [reviews, setReviews] = useState<SitterReview[]>([]);
 
     const isStartingChat = startingChatSitterId === s.id;
     const isOwnSitterProfile = Boolean(currentUser && s.userId === currentUser.id);
+    const isAdminUser = isAdmin();
+    const canDeleteSitter = isOwnSitterProfile || isAdminUser;
     const isChatUnavailable = !s.userId || isOwnSitterProfile;
     const chatButtonLabel = isStartingChat
         ? "Se deschide..."
@@ -347,16 +388,182 @@ export function SitterCard({
           : isOwnSitterProfile
             ? "Profilul tau"
             : "Scrie";
+    const ratingCount = s.ratingCount ?? 0;
+    const activeRating = selectedRating ?? 0;
+    const ratingCountLabel = ratingCount === 1 ? "1 rating" : `${ratingCount} ratinguri`;
+    const canRate = Boolean(currentUser) && !isOwnSitterProfile;
+    const reviewCountLabel = reviewsLoaded ? reviews.length : ratingCount;
+
+    function formatReviewDate(value: string) {
+        const date = new Date(value);
+        if (Number.isNaN(date.getTime())) {
+            return "Recent";
+        }
+
+        return date.toLocaleDateString("ro-RO", { day: "2-digit", month: "short", year: "numeric" });
+    }
+
+    async function loadReviews() {
+        try {
+            setReviewsLoading(true);
+            setReviewsError(null);
+            const data = await getSitterReviews(s.id);
+            setReviews(data);
+            setReviewsLoaded(true);
+
+            const myReview = currentUser ? data.find((review) => review.userId === currentUser.id) : null;
+            if (myReview) {
+                setSelectedRating(myReview.rating);
+                setCommentDraft(myReview.comment ?? "");
+                setCommentTouched(false);
+            }
+        } catch (err) {
+            setReviewsError(err instanceof Error ? err.message : "Nu s-au putut incarca review-urile.");
+        } finally {
+            setReviewsLoading(false);
+        }
+    }
+
+    function toggleReviews() {
+        const nextOpen = !reviewsOpen;
+        setReviewsOpen(nextOpen);
+        if (nextOpen && !reviewsLoaded) {
+            void loadReviews();
+        }
+    }
+
+    async function saveReview(value: number, comment?: string) {
+        if (!currentUser) {
+            setRatingError("Autentifica-te ca sa poti lasa review.");
+            return;
+        }
+
+        if (isOwnSitterProfile) {
+            setRatingError("Nu poti evalua propriul profil.");
+            return;
+        }
+
+        try {
+            setSavingRating(value);
+            setRatingError(null);
+            const result = await rateSitter(s.id, value, comment);
+            setSelectedRating(result.myRating);
+            setCommentDraft(result.comment ?? comment ?? commentDraft);
+            setCommentTouched(false);
+            onRated(result);
+
+            const hasSavedComment = Boolean((result.comment ?? comment ?? "").trim());
+            if (reviewsOpen || hasSavedComment) {
+                setReviewsOpen(true);
+                await loadReviews();
+            } else {
+                setReviewsLoaded(false);
+            }
+        } catch (err) {
+            setRatingError(err instanceof Error ? err.message : "Nu s-a putut salva review-ul.");
+        } finally {
+            setSavingRating(null);
+        }
+    }
+
+    async function handleRate(value: number) {
+        await saveReview(value, commentTouched ? commentDraft : undefined);
+    }
+
+    async function handleSaveComment() {
+        if (!selectedRating) {
+            setRatingError("Alege intai un rating.");
+            return;
+        }
+
+        await saveReview(selectedRating, commentDraft);
+    }
 
     return (
         <div className="sitter-card">
             <div className="rating">
-                {s.rating > 0 ? `â­ ${s.rating.toFixed(1)}` : "Nou"}
+                {s.rating > 0 ? `★ ${s.rating.toFixed(1)}` : "Nou"}
             </div>
+            <button
+                type="button"
+                className={`sitterCommentsToggle${reviewsOpen ? " isActive" : ""}`}
+                onClick={toggleReviews}
+                aria-label={`Comentarii pentru ${s.name}`}
+                title="Vezi comentariile"
+            >
+                <span>💬</span>
+                <small>{reviewCountLabel}</small>
+            </button>
             <h3>{s.name}</h3>
             <p className="city">{s.city}</p>
             <p><strong>Servicii:</strong> {s.services}</p>
+            <p><strong>Animale acceptate:</strong> {s.acceptedPetTypes ?? "Orice"}</p>
             <p>{s.description}</p>
+            <div className="sitterRatingPanel">
+                <div className="sitterRatingSummary">
+                    <span>{s.rating > 0 ? `${s.rating.toFixed(1)} / 5` : "Fara rating"}</span>
+                    <small>{ratingCountLabel}</small>
+                </div>
+                <div className="sitterRatingStars" role="group" aria-label={`Rating pentru ${s.name}`}>
+                    {[1, 2, 3, 4, 5].map((value) => (
+                        <button
+                            key={value}
+                            type="button"
+                            className={value <= activeRating ? "isActive" : undefined}
+                            onClick={() => void handleRate(value)}
+                            disabled={savingRating !== null || !canRate}
+                            title={!currentUser ? "Autentifica-te ca sa poti da rating" : isOwnSitterProfile ? "Nu poti evalua propriul profil" : `${value} stele`}
+                            aria-label={`${value} stele`}
+                        >
+                            {value <= activeRating ? "★" : "☆"}
+                        </button>
+                    ))}
+                </div>
+                <textarea
+                    className="sitterCommentInput"
+                    value={commentDraft}
+                    onChange={(event) => {
+                        setCommentDraft(event.target.value);
+                        setCommentTouched(true);
+                    }}
+                    placeholder="Lasa un comentariu despre experienta..."
+                    maxLength={700}
+                    disabled={savingRating !== null || !canRate}
+                />
+                <div className="sitterReviewActions">
+                    <small>{commentDraft.length}/700</small>
+                    <button type="button" onClick={() => void handleSaveComment()} disabled={savingRating !== null || !canRate}>
+                        Salveaza review
+                    </button>
+                </div>
+                {savingRating !== null ? <small className="sitterRatingHint">Se salveaza...</small> : null}
+                {ratingError ? <small className="sitterRatingError">{ratingError}</small> : null}
+            </div>
+            {reviewsOpen ? (
+                <div className="sitterReviewsPanel">
+                    <div className="sitterReviewsHeader">
+                        <strong>Comentarii</strong>
+                        <button type="button" onClick={() => void loadReviews()} disabled={reviewsLoading}>
+                            Reincarca
+                        </button>
+                    </div>
+                    {reviewsLoading ? <p>Se incarca review-urile...</p> : null}
+                    {reviewsError ? <p className="sitterRatingError">{reviewsError}</p> : null}
+                    {!reviewsLoading && !reviewsError && reviews.length === 0 ? (
+                        <p>Nu exista comentarii pentru acest sitter.</p>
+                    ) : null}
+                    {!reviewsLoading && !reviewsError ? reviews.map((review) => (
+                        <article className="sitterReviewItem" key={review.id}>
+                            <div>
+                                <strong>{review.userName || "Utilizator"}</strong>
+                                <span>{"★".repeat(review.rating)}{"☆".repeat(5 - review.rating)}</span>
+                            </div>
+                            <p>{review.comment || "Fara comentariu."}</p>
+                            <small>{formatReviewDate(review.updatedAt)}</small>
+                        </article>
+                    )) : null}
+                </div>
+            ) : null}
             <div className="card-footer">
                 <strong>{s.pricePerDay} MDL / zi</strong>
                 <AppButton
@@ -369,11 +576,13 @@ export function SitterCard({
                     {chatButtonLabel}
                 </AppButton>
             </div>
-            <AdminOnly>
+            {canDeleteSitter ? (
                 <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
-                    <AppButton variant="ghost" size="sm" onClick={() => onEdit(s)}>
-                        Editeaza
-                    </AppButton>
+                    {isAdminUser ? (
+                        <AppButton variant="ghost" size="sm" onClick={() => onEdit(s)}>
+                            Editeaza
+                        </AppButton>
+                    ) : null}
                     <AppButton
                         variant="ghost"
                         size="sm"
@@ -383,7 +592,7 @@ export function SitterCard({
                         Sterge
                     </AppButton>
                 </div>
-            </AdminOnly>
+            ) : null}
         </div>
     );
 }
