@@ -775,7 +775,6 @@
     border-color: var(--dm-border);
     color: var(--dm-muted);
 }
-/* ── MedGuide page ── */
 .appShell[data-theme="dark"] .med-guide .medFilters {
     background: var(--dm-surface-strong);
     border-color: var(--dm-border);

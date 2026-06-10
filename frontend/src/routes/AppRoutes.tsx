@@ -15,9 +15,6 @@ import Forbidden from "../pages/Forbidden";
 import ServerError from "../pages/ServerError";
 import Veterinari from "../pages/Veterinari";
 import Voluntariat from "../pages/Voluntariat";
-import Wiki from "../pages/Wiki";
-import MedGuide from "../pages/MedGuide";
-import Blog from "../pages/Blog";
 import Vanzari from "../pages/Vanzari";
 import Cart from "../pages/Cart";
 import Evenimente from "../pages/Evenimente";
@@ -38,13 +35,10 @@ export default function AppRoutes() {
                     <Route path={paths.veterinari} element={<Veterinari />} />
                     <Route path={paths.donatii} element={<Donations />} />
                     <Route path={paths.sitters} element={<SittersList />} />
-                    <Route path={paths.ghidMedical} element={<MedGuide />} />
                     <Route path={paths.login} element={<Login />} />
                     <Route path={paths.quiz} element={<Quiz />} />
                     <Route path={paths.signup} element={<Signup />} />
                     <Route path={paths.voluntariat} element={<Voluntariat />} />
-                    <Route path={paths.wiki} element={<Wiki />} />
-                    <Route path={paths.blog} element={<Blog />} />
                     <Route path={paths.evenimente} element={<Evenimente />} />
                     <Route path={paths.vanzari} element={<Vanzari />} />
                     <Route path={paths.cos} element={<Cart />} />

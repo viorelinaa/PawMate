@@ -99,7 +99,6 @@ const AdminPages: React.FC = () => {
                     { id: 'pierdute', title: 'Animale Pierdute', icon: '🔍', description: 'Administrează anunțurile de animale pierdute.', path: paths.pierdute, label: 'Adaugă anunț animal pierdut', onAdd: () => setShowAddLost(true) },
                     { id: 'veterinari', title: 'Veterinari', icon: '🏥', description: 'Gestionează clinicile și cabinetele veterinare.', path: paths.veterinari, label: 'Adaugă clinică', onAdd: () => navigate(`${paths.veterinari}?add=clinic`) },
                     { id: 'donatii', title: 'Donații', icon: '💜', description: 'Administrează ONG-urile și campaniile de donații.', path: paths.donatii, label: 'Adaugă ONG' },
-                    { id: 'blog', title: 'Blog', icon: '📝', description: 'Publică și gestionează articolele de pe blog.', path: paths.blog, label: 'Adaugă articol' },
                     { id: 'evenimente', title: 'Evenimente', icon: '📅', description: 'Creează și administrează evenimentele platformei.', path: paths.evenimente, label: 'Adaugă eveniment', onAdd: () => setShowAddEvent(true) },
                     { id: 'sitters', title: 'Sitters', icon: '🏠', description: 'Gestionează profilurile îngrijitorilor de animale.', path: paths.sitters, label: 'Adaugă profil sitter', onAdd: () => setShowAddSitter(true) },
                     { id: 'vanzari', title: 'Vânzări', icon: '🛒', description: 'Administrează produsele și anunțurile din marketplace.', path: paths.vanzari, label: 'Adaugă produs/anunț', onAdd: () => setShowAddProduct(true) },
