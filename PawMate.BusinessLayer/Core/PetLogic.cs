@@ -28,9 +28,9 @@ public class PetLogic : PetActions, IPetLogic
     }
 
 
-    public ServiceResponse UpdatePetImage(int id, int userId, bool isAdmin, string imageUrl)
+    public ServiceResponse UpdatePetImage(int id, int userId, bool isAdmin, string imageUrl, string imagePublicId)
     {
-        return UpdatePetImageAction(id, userId, isAdmin, imageUrl);
+        return UpdatePetImageAction(id, userId, isAdmin, imageUrl, imagePublicId);
     }
     public ServiceResponse DeletePet(int id, int userId, bool isAdmin)
     {

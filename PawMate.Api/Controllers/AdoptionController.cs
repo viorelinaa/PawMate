@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer;
@@ -19,6 +20,7 @@ public class AdoptionController : ControllerBase
     }
 
     [HttpGet("list")]
+    [Authorize(Roles = "admin")]
     public IActionResult GetAdoptionList()
     {
         var response = _adoptionLogic.GetAdoptionList();
@@ -28,12 +30,52 @@ public class AdoptionController : ControllerBase
         return Ok(response.Data);
     }
 
-    [HttpGet("{id}")]
-    public IActionResult GetAdoption([FromRoute] int id)
+    [HttpGet("mine")]
+    [Authorize]
+    public IActionResult GetMyAdoptionList()
     {
-        var response = _adoptionLogic.GetAdoptionById(id);
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var response = _adoptionLogic.GetMyAdoptionList(userId.Value);
         if (!response.IsSuccess)
             return BadRequest(response.Message);
+
+        return Ok(response.Data);
+    }
+
+    [HttpGet("received")]
+    [Authorize]
+    public IActionResult GetReceivedAdoptionList()
+    {
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var response = _adoptionLogic.GetReceivedAdoptionList(userId.Value, User.IsInRole("admin"));
+        if (!response.IsSuccess)
+            return BadRequest(response.Message);
+
+        return Ok(response.Data);
+    }
+
+    [HttpGet("{id}")]
+    [Authorize]
+    public IActionResult GetAdoption([FromRoute] int id)
+    {
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var response = _adoptionLogic.GetAdoptionById(id, userId.Value, User.IsInRole("admin"));
+        if (!response.IsSuccess)
+        {
+            if (response.Message == "Nu ai dreptul sa vezi aceasta cerere.")
+                return StatusCode(StatusCodes.Status403Forbidden, response.Message);
+
+            return BadRequest(response.Message);
+        }
 
         return Ok(response.Data);
     }
@@ -42,10 +84,40 @@ public class AdoptionController : ControllerBase
     [Authorize]
     public IActionResult CreateAdoption([FromBody] AdoptionCreateDto adoption)
     {
-        var response = _adoptionLogic.CreateAdoption(adoption);
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var response = _adoptionLogic.CreateAdoption(adoption, userId.Value);
         if (!response.IsSuccess)
             return BadRequest(response.Message);
 
-        return Ok(response.Message);
+        return Ok(new { id = response.Data });
+    }
+
+    [HttpPut("{id}/status")]
+    [Authorize]
+    public IActionResult UpdateAdoptionStatus([FromRoute] int id, [FromBody] AdoptionStatusUpdateDto status)
+    {
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var response = _adoptionLogic.UpdateAdoptionStatus(id, status, userId.Value, User.IsInRole("admin"));
+        if (!response.IsSuccess)
+        {
+            if (response.Message == "Poti modifica doar cererile primite pentru animalele tale.")
+                return StatusCode(StatusCodes.Status403Forbidden, response.Message);
+
+            return BadRequest(response.Message);
+        }
+
+        return Ok(response.Data);
+    }
+
+    private int? GetCurrentUserId()
+    {
+        var rawUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return int.TryParse(rawUserId, out var userId) ? userId : null;
     }
 }

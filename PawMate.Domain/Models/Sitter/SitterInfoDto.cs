@@ -1,4 +1,4 @@
-﻿namespace PawMate.Domain.Models.Sitter;
+namespace PawMate.Domain.Models.Sitter;
 
 public class SitterInfoDto
 {
@@ -9,4 +9,5 @@ public class SitterInfoDto
     public decimal PricePerDay { get; set; }
     public string Description { get; set; } = string.Empty;
     public decimal Rating { get; set; }
+    public int? UserId { get; set; }
 }

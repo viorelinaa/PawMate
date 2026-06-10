@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PawMate.Domain.Entities.Adoption;
 using PawMate.Domain.Entities.BlogPost;
+using PawMate.Domain.Entities.Chat;
 using PawMate.Domain.Entities.Donation;
 using PawMate.Domain.Entities.Event;
 using PawMate.Domain.Entities.LostPet;
@@ -35,6 +36,8 @@ public sealed class PawMateDbContext : DbContext
     public DbSet<ProfileAvatarEntity> ProfileAvatars { get; set; }
     public DbSet<QuizResultEntity> QuizResults { get; set; }
     public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
+    public DbSet<ChatConversationEntity> ChatConversations { get; set; }
+    public DbSet<ChatMessageEntity> ChatMessages { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -149,6 +152,58 @@ public sealed class PawMateDbContext : DbContext
             .Property(rt => rt.CreatedAt)
             .HasDefaultValueSql("NOW()");
 
+
+        modelBuilder.Entity<SitterEntity>()
+            .HasOne(s => s.User)
+            .WithMany()
+            .HasForeignKey(s => s.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<ChatConversationEntity>()
+            .HasIndex(c => new { c.ClientUserId, c.SitterId })
+            .IsUnique();
+
+        modelBuilder.Entity<ChatConversationEntity>()
+            .HasOne(c => c.ClientUser)
+            .WithMany(u => u.ChatConversationsAsClient)
+            .HasForeignKey(c => c.ClientUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ChatConversationEntity>()
+            .HasOne(c => c.SitterUser)
+            .WithMany(u => u.ChatConversationsAsSitter)
+            .HasForeignKey(c => c.SitterUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ChatConversationEntity>()
+            .HasOne(c => c.Sitter)
+            .WithMany(s => s.ChatConversations)
+            .HasForeignKey(c => c.SitterId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ChatConversationEntity>()
+            .Property(c => c.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        modelBuilder.Entity<ChatConversationEntity>()
+            .Property(c => c.LastMessageAt)
+            .HasDefaultValueSql("NOW()");
+
+        modelBuilder.Entity<ChatMessageEntity>()
+            .HasOne(m => m.Conversation)
+            .WithMany(c => c.Messages)
+            .HasForeignKey(m => m.ConversationId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<ChatMessageEntity>()
+            .HasOne(m => m.SenderUser)
+            .WithMany(u => u.ChatMessages)
+            .HasForeignKey(m => m.SenderUserId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<ChatMessageEntity>()
+            .Property(m => m.CreatedAt)
+            .HasDefaultValueSql("NOW()");
         base.OnModelCreating(modelBuilder);
     }
 }

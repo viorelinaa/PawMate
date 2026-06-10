@@ -7,9 +7,9 @@ namespace PawMate.BusinessLayer.Core;
 
 public class SitterLogic : SitterActions, ISitterLogic
 {
-    public ServiceResponse CreateSitter(SitterCreateDto sitter)
+    public ServiceResponse CreateSitter(SitterCreateDto sitter, int userId)
     {
-        return CreateSitterAction(sitter);
+        return CreateSitterAction(sitter, userId);
     }
 
     public ServiceResponse GetSitterById(int id)

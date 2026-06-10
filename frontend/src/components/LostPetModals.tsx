@@ -1,11 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
-import { getLostPets, createLostPet, updateLostPet, deleteLostPet } from "../services/lostPetService";
+import { getLostPets, createLostPet, updateLostPet, deleteLostPet, uploadLostPetImage, getLostPetImageUrl } from "../services/lostPetService";
 import { useAuth } from "../context/AuthContext";
 import type { LostPet } from "../services/lostPetService";
 
 export { getLostPets };
+
+const maxLostPetImageBytes = 2 * 1024 * 1024;
+const allowedLostPetImageTypes = ["image/jpeg", "image/png", "image/webp"];
 
 export interface LostPetForm {
     species: string;
@@ -40,9 +43,20 @@ function validateLostForm(form: LostPetForm): Partial<Record<keyof LostPetForm, 
     return e;
 }
 
-// ── Formular comun ────────────────────────────────────────────────────────────
+function validateLostPetImage(file: File | null) {
+    if (!file) return "";
+    if (!allowedLostPetImageTypes.includes(file.type)) {
+        return "Alege o poza JPG, PNG sau WEBP.";
+    }
+    if (file.size > maxLostPetImageBytes) {
+        return "Poza trebuie sa aiba maximum 2 MB.";
+    }
+    return "";
+}
+
 function LostPetFormFields({
     form, errors, loading, apiError, submitLabel, onSubmit, onChange, onClose, showIsFound,
+    selectedImage, imagePreviewUrl, imageError, onImageChange,
 }: {
     form: LostPetForm;
     errors: Partial<Record<keyof LostPetForm, string>>;
@@ -53,6 +67,10 @@ function LostPetFormFields({
     onChange: (field: keyof LostPetForm, value: string | boolean) => void;
     onClose: () => void;
     showIsFound?: boolean;
+    selectedImage?: File | null;
+    imagePreviewUrl?: string;
+    imageError?: string;
+    onImageChange?: (file: File | null) => void;
 }) {
     return (
         <form className="lostModalForm" onSubmit={onSubmit} noValidate>
@@ -119,6 +137,25 @@ function LostPetFormFields({
                 />
             </div>
 
+            {onImageChange && (
+                <div className="lostModalField">
+                    <label className="lostModalLabel">Poza animalului</label>
+                    <label className="lostImagePicker">
+                        <input
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            onChange={e => onImageChange(e.target.files?.[0] ?? null)}
+                        />
+                        <span>{selectedImage ? selectedImage.name : "Alege poza"}</span>
+                        <small>JPG, PNG sau WEBP, maximum 2 MB</small>
+                    </label>
+                    {imagePreviewUrl && (
+                        <img className="lostImagePreview" src={imagePreviewUrl} alt="Previzualizare animal pierdut" />
+                    )}
+                    {imageError && <span className="lostFieldError">{imageError}</span>}
+                </div>
+            )}
+
             {showIsFound && (
                 <div className="lostModalField">
                     <label className="lostModalCheckLabel">
@@ -146,25 +183,50 @@ function LostPetFormFields({
     );
 }
 
-// ── Modal Adăugare ────────────────────────────────────────────────────────────
 export function AddLostPetModal({ onClose, onAdded }: { onClose: () => void; onAdded: () => void }) {
     const [form, setForm] = useState<LostPetForm>(emptyLostForm);
     const [errors, setErrors] = useState<Partial<Record<keyof LostPetForm, string>>>({});
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+    const [imageError, setImageError] = useState("");
+
+    useEffect(() => {
+        if (!selectedImage) {
+            setImagePreviewUrl("");
+            return;
+        }
+
+        const previewUrl = URL.createObjectURL(selectedImage);
+        setImagePreviewUrl(previewUrl);
+
+        return () => URL.revokeObjectURL(previewUrl);
+    }, [selectedImage]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         const errs = validateLostForm(form);
-        if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+        const selectedImageError = validateLostPetImage(selectedImage);
+        setImageError(selectedImageError);
+        if (Object.keys(errs).length > 0 || selectedImageError) { setErrors(errs); return; }
         setLoading(true);
         setApiError(null);
         try {
-            await createLostPet({ species: form.species, city: form.city, lostDate: form.lostDate, contact: form.contact, description: form.description });
+            const lostPetId = await createLostPet({
+                species: form.species,
+                city: form.city.trim(),
+                lostDate: form.lostDate,
+                contact: form.contact.trim(),
+                description: form.description,
+            });
+            if (selectedImage) {
+                await uploadLostPetImage(lostPetId, selectedImage);
+            }
             onAdded();
             onClose();
         } catch (err: unknown) {
-            setApiError(err instanceof Error ? err.message : "Eroare necunoscută.");
+            setApiError(err instanceof Error ? err.message : "Eroare necunoscuta.");
         } finally {
             setLoading(false);
         }
@@ -173,6 +235,11 @@ export function AddLostPetModal({ onClose, onAdded }: { onClose: () => void; onA
     function handleChange(field: keyof LostPetForm, value: string | boolean) {
         setForm(prev => ({ ...prev, [field]: value }));
         setErrors(prev => ({ ...prev, [field]: undefined }));
+    }
+
+    function handleImageChange(file: File | null) {
+        setSelectedImage(file);
+        setImageError(validateLostPetImage(file));
     }
 
     return (
@@ -180,37 +247,64 @@ export function AddLostPetModal({ onClose, onAdded }: { onClose: () => void; onA
             <div className="lostModalBox" onClick={e => e.stopPropagation()}>
                 <div className="lostModalHeader">
                     <h2 className="lostModalTitle">Adaugă anunț animal pierdut</h2>
-                    <button className="lostModalClose" onClick={onClose} aria-label="Închide">✕</button>
+                    <button className="lostModalClose" onClick={onClose} aria-label="Inchide">x</button>
                 </div>
                 <LostPetFormFields
                     form={form} errors={errors} loading={loading} apiError={apiError}
                     submitLabel="Adaugă anunț"
                     onSubmit={handleSubmit} onChange={handleChange} onClose={onClose}
+                    selectedImage={selectedImage}
+                    imagePreviewUrl={imagePreviewUrl}
+                    imageError={imageError}
+                    onImageChange={handleImageChange}
                 />
             </div>
         </div>
     );
 }
 
-// ── Modal Editare ─────────────────────────────────────────────────────────────
 export function EditLostPetModal({ ad, onClose, onUpdated }: { ad: LostPet; onClose: () => void; onUpdated: () => void }) {
     const [form, setForm] = useState<LostPetForm>(lostPetToForm(ad));
     const [errors, setErrors] = useState<Partial<Record<keyof LostPetForm, string>>>({});
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [imagePreviewUrl, setImagePreviewUrl] = useState(() => getLostPetImageUrl(ad.imageUrl));
+    const [imageError, setImageError] = useState("");
+
+    useEffect(() => {
+        if (!selectedImage) {
+            setImagePreviewUrl(getLostPetImageUrl(ad.imageUrl));
+            return;
+        }
+
+        const previewUrl = URL.createObjectURL(selectedImage);
+        setImagePreviewUrl(previewUrl);
+
+        return () => URL.revokeObjectURL(previewUrl);
+    }, [selectedImage, ad.imageUrl]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         const errs = validateLostForm(form);
-        if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+        const selectedImageError = validateLostPetImage(selectedImage);
+        setImageError(selectedImageError);
+        if (Object.keys(errs).length > 0 || selectedImageError) { setErrors(errs); return; }
         setLoading(true);
         setApiError(null);
         try {
-            await updateLostPet(ad.id, { ...form });
+            await updateLostPet(ad.id, {
+                ...form,
+                city: form.city.trim(),
+                contact: form.contact.trim(),
+            });
+            if (selectedImage) {
+                await uploadLostPetImage(ad.id, selectedImage);
+            }
             onUpdated();
             onClose();
         } catch (err: unknown) {
-            setApiError(err instanceof Error ? err.message : "Eroare necunoscută.");
+            setApiError(err instanceof Error ? err.message : "Eroare necunoscuta.");
         } finally {
             setLoading(false);
         }
@@ -221,25 +315,33 @@ export function EditLostPetModal({ ad, onClose, onUpdated }: { ad: LostPet; onCl
         setErrors(prev => ({ ...prev, [field]: undefined }));
     }
 
+    function handleImageChange(file: File | null) {
+        setSelectedImage(file);
+        setImageError(validateLostPetImage(file));
+    }
+
     return (
         <div className="lostModalOverlay" onClick={onClose}>
             <div className="lostModalBox" onClick={e => e.stopPropagation()}>
                 <div className="lostModalHeader">
                     <h2 className="lostModalTitle">Editează anunț</h2>
-                    <button className="lostModalClose" onClick={onClose} aria-label="Închide">✕</button>
+                    <button className="lostModalClose" onClick={onClose} aria-label="Inchide">x</button>
                 </div>
                 <LostPetFormFields
                     form={form} errors={errors} loading={loading} apiError={apiError}
                     submitLabel="Salvează modificările"
                     onSubmit={handleSubmit} onChange={handleChange} onClose={onClose}
                     showIsFound
+                    selectedImage={selectedImage}
+                    imagePreviewUrl={imagePreviewUrl}
+                    imageError={imageError}
+                    onImageChange={handleImageChange}
                 />
             </div>
         </div>
     );
 }
 
-// ── Modal Confirmare Ștergere ─────────────────────────────────────────────────
 export function DeleteLostPetModal({ ad, onClose, onDeleted }: { ad: LostPet; onClose: () => void; onDeleted: () => void }) {
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
@@ -252,7 +354,7 @@ export function DeleteLostPetModal({ ad, onClose, onDeleted }: { ad: LostPet; on
             onDeleted();
             onClose();
         } catch (err: unknown) {
-            setApiError(err instanceof Error ? err.message : "Eroare necunoscută.");
+            setApiError(err instanceof Error ? err.message : "Eroare necunoscuta.");
         } finally {
             setLoading(false);
         }
@@ -263,7 +365,7 @@ export function DeleteLostPetModal({ ad, onClose, onDeleted }: { ad: LostPet; on
             <div className="lostModalBox" style={{ maxWidth: 420 }} onClick={e => e.stopPropagation()}>
                 <div className="lostModalHeader">
                     <h2 className="lostModalTitle">Șterge anunț</h2>
-                    <button className="lostModalClose" onClick={onClose} aria-label="Închide">✕</button>
+                    <button className="lostModalClose" onClick={onClose} aria-label="Inchide">x</button>
                 </div>
                 <div style={{ padding: "8px 0 16px", textAlign: "center", color: "var(--color-text)" }}>
                     Ești sigur că vrei să ștergi anunțul pentru <strong>{ad.species}</strong> din <strong>{ad.city}</strong>? Această acțiune nu poate fi anulată.
@@ -287,7 +389,6 @@ export function DeleteLostPetModal({ ad, onClose, onDeleted }: { ad: LostPet; on
     );
 }
 
-// ── Card Anunț ────────────────────────────────────────────────────────────────
 export function LostPetCard({
     a, onEdit, onDelete,
 }: {
@@ -298,9 +399,23 @@ export function LostPetCard({
     const { currentUser, isAdmin } = useAuth();
     const canEdit = isAdmin();
     const canDelete = canEdit || (!!currentUser && a.userId === currentUser.id);
+    const [imageFailed, setImageFailed] = useState(false);
+    const imageSrc = imageFailed ? "" : getLostPetImageUrl(a.imageUrl);
+
+    useEffect(() => {
+        setImageFailed(false);
+    }, [a.id, a.imageUrl]);
 
     return (
         <div className="lostCard">
+            {imageSrc ? (
+                <img className="lostCardImage" src={imageSrc} alt={`Poza animal pierdut ${a.species}`} loading="lazy" onError={() => setImageFailed(true)} />
+            ) : (
+                <div className="lostImagePlaceholder">
+                    <span>{a.species}</span>
+                    <small>Fara poza</small>
+                </div>
+            )}
             <div className="lostCardHeader">
                 <span className="lostBadge">{a.species}</span>
                 <span className="lostSmall">{a.city} - {a.lostDate}</span>

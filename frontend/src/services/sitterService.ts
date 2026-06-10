@@ -9,6 +9,7 @@ export interface Sitter {
     pricePerDay: number;
     description: string;
     rating: number;
+    userId?: number | null;
 }
 
 export interface SitterCreatePayload {
@@ -56,6 +57,7 @@ export interface SitterUpdatePayload {
     pricePerDay: number;
     description: string;
     rating: number;
+    userId?: number | null;
 }
 
 export async function createSitter(payload: SitterCreatePayload): Promise<void> {

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { apiClient } from "../axios/apiClient";
+import { apiBaseUrl, apiClient } from "../axios/apiClient";
 
 export interface LostPet {
     id: number;
@@ -9,6 +9,7 @@ export interface LostPet {
     contact: string;
     description: string;
     isFound: boolean;
+    imageUrl?: string | null;
     userId?: number | null;
 }
 
@@ -34,11 +35,32 @@ export interface LostPetQuery {
     sortDirection?: "asc" | "desc";
 }
 
+interface CreateLostPetResponse {
+    id: number;
+}
+
+interface UploadLostPetImageResponse {
+    imageUrl: string;
+}
+
+const apiFileBaseUrl = apiBaseUrl.replace(/\/api$/i, "");
+
 function handleError(err: unknown, fallback: string): never {
     if (axios.isAxiosError(err)) {
-        throw new Error(err.response?.data ?? fallback);
+        const message =
+            typeof err.response?.data === "string"
+                ? err.response.data
+                : fallback;
+
+        throw new Error(message);
     }
     throw new Error(fallback);
+}
+
+export function getLostPetImageUrl(imageUrl?: string | null) {
+    if (!imageUrl) return "";
+    if (/^https?:\/\//i.test(imageUrl)) return imageUrl;
+    return `${apiFileBaseUrl}${imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`}`;
 }
 
 export async function getLostPets(query?: LostPetQuery): Promise<LostPet[]> {
@@ -50,11 +72,29 @@ export async function getLostPets(query?: LostPetQuery): Promise<LostPet[]> {
     }
 }
 
-export async function createLostPet(payload: LostPetPayload): Promise<void> {
+export async function createLostPet(payload: LostPetPayload): Promise<number> {
     try {
-        await apiClient.post("/lost-pets/create", payload);
+        const { data } = await apiClient.post<CreateLostPetResponse>("/lost-pets/create", payload);
+        return data.id;
     } catch (err) {
-        handleError(err, "Nu s-a putut adăuga anunțul.");
+        handleError(err, "Nu s-a putut adauga anuntul.");
+    }
+}
+
+export async function uploadLostPetImage(id: number, image: File): Promise<string> {
+    try {
+        const formData = new FormData();
+        formData.append("image", image);
+
+        const { data } = await apiClient.post<UploadLostPetImageResponse>(`/lost-pets/${id}/image`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
+        return data.imageUrl;
+    } catch (err) {
+        handleError(err, "Nu s-a putut incarca poza.");
     }
 }
 
@@ -62,7 +102,7 @@ export async function updateLostPet(id: number, payload: LostPetUpdatePayload): 
     try {
         await apiClient.put(`/lost-pets/${id}`, payload);
     } catch (err) {
-        handleError(err, "Nu s-a putut actualiza anunțul.");
+        handleError(err, "Nu s-a putut actualiza anuntul.");
     }
 }
 
@@ -70,6 +110,6 @@ export async function deleteLostPet(id: number): Promise<void> {
     try {
         await apiClient.delete(`/lost-pets/${id}`);
     } catch (err) {
-        handleError(err, "Nu s-a putut șterge anunțul.");
+        handleError(err, "Nu s-a putut sterge anuntul.");
     }
 }

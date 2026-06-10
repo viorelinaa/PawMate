@@ -9,5 +9,6 @@ public class LostPetInfoDto
     public string Contact { get; set; }
     public string Description { get; set; }
     public bool IsFound { get; set; }
+    public string? ImageUrl { get; set; }
     public int? UserId { get; set; }
 }

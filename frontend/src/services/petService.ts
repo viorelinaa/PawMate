@@ -15,6 +15,8 @@ export interface PetCreatePayload {
 
 export interface PetUpdatePayload extends PetCreatePayload {}
 
+export type PetAdoptionStatus = "available" | "in_process" | "adopted";
+
 export interface Pet {
   id: number;
   name: string;
@@ -28,6 +30,7 @@ export interface Pet {
   ownerContact?: string | null;
   imageUrl?: string | null;
   userId?: number | null;
+  adoptionStatus?: PetAdoptionStatus;
 }
 
 export interface PetQuery {

@@ -1,0 +1,414 @@
+.sitterChatDock {
+    position: fixed;
+    top: 112px;
+    right: 24px;
+    z-index: 900;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+    pointer-events: none;
+}
+
+.sitterChatToggle,
+.sitterChatPanel {
+    pointer-events: auto;
+}
+
+.sitterChatToggle {
+    position: relative;
+    width: 52px;
+    height: 52px;
+    border: 0;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    color: white;
+    box-shadow: 0 16px 34px rgba(75, 45, 108, 0.28);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.sitterChatToggle:hover {
+    background: var(--color-primary-light);
+    transform: translateY(-2px);
+    box-shadow: 0 20px 40px rgba(75, 45, 108, 0.32);
+}
+
+.sitterChatIcon {
+    font-size: 23px;
+    line-height: 1;
+}
+
+.sitterChatBadge {
+    position: absolute;
+    top: -5px;
+    right: -4px;
+    min-width: 21px;
+    height: 21px;
+    padding: 0 6px;
+    border-radius: var(--radius-full);
+    background: #e05252;
+    color: white;
+    border: 2px solid white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-family);
+    font-size: var(--font-size-xs);
+    font-weight: 800;
+}
+
+.sitterChatPanel {
+    width: min(370px, calc(100vw - 32px));
+    height: min(430px, calc(100dvh - 150px));
+    min-height: 320px;
+    overflow: hidden;
+    border: 1px solid rgba(117, 79, 146, 0.18);
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 0 22px 54px rgba(31, 18, 50, 0.22);
+    backdrop-filter: blur(12px);
+    display: grid;
+    grid-template-rows: auto auto 1fr;
+}
+
+.sitterChatHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 15px;
+    background: var(--color-primary);
+    color: white;
+}
+
+.sitterChatHeader h2,
+.sitterChatHeader p {
+    margin: 0;
+    font-family: var(--font-family);
+}
+
+.sitterChatHeader h2 {
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.sitterChatHeader p {
+    max-width: 270px;
+    margin-top: 2px;
+    opacity: 0.86;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sitterChatHeader button {
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: var(--radius-full);
+    background: rgba(255, 255, 255, 0.18);
+    color: white;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.sitterChatHeader button:hover {
+    background: rgba(255, 255, 255, 0.28);
+}
+
+.sitterChatError {
+    margin: 10px 12px 0;
+    padding: 9px 11px;
+    border: 1px solid #f3b6b6;
+    border-radius: var(--radius-md);
+    background: #fff5f5;
+    color: #c53030;
+    text-align: center;
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+}
+
+.sitterChatBody {
+    min-height: 0;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    background: white;
+}
+
+.sitterChatConversations {
+    min-height: 0;
+    max-height: 76px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--color-primary-border);
+    background: linear-gradient(180deg, var(--color-primary-faint), rgba(255, 255, 255, 0.9));
+}
+
+.sitterChatConversation {
+    position: relative;
+    flex: 0 0 152px;
+    min-width: 0;
+    display: grid;
+    gap: 4px;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.82);
+    text-align: left;
+    cursor: pointer;
+    font-family: var(--font-family);
+    box-shadow: 0 8px 18px rgba(75, 45, 108, 0.07);
+}
+
+.sitterChatConversation:hover,
+.sitterChatConversation.isActive {
+    border-color: var(--color-primary-border);
+    background: white;
+    box-shadow: 0 10px 22px rgba(75, 45, 108, 0.12);
+}
+
+.sitterChatConversation.isActive::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: -1px;
+    height: 3px;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+}
+
+.sitterChatConversation span {
+    color: var(--color-primary);
+    font-weight: 800;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sitterChatConversation small {
+    min-width: 0;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sitterChatConversation b {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    min-width: 19px;
+    height: 19px;
+    border-radius: var(--radius-full);
+    background: #e05252;
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-xs);
+}
+
+.sitterChatMessages {
+    min-width: 0;
+    min-height: 0;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    background: linear-gradient(180deg, #fff, rgba(248, 246, 252, 0.72));
+}
+
+.sitterChatMessageList {
+    min-height: 0;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sitterChatEmpty {
+    margin: auto;
+    padding: 18px;
+    color: var(--color-text-muted);
+    text-align: center;
+    font-family: var(--font-family);
+    font-weight: 700;
+}
+
+
+.sitterChatPickContact {
+    max-width: 250px;
+    border: 1px dashed var(--color-primary-border);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.76);
+    box-shadow: 0 10px 26px rgba(75, 45, 108, 0.08);
+}
+
+.sitterChatBubble {
+    max-width: 84%;
+    align-self: flex-start;
+    padding: 9px 11px;
+    border: 1px solid var(--color-primary-border);
+    border-radius: 16px 16px 16px 5px;
+    background: white;
+    color: var(--color-text);
+    font-family: var(--font-family);
+    box-shadow: 0 8px 20px rgba(75, 45, 108, 0.08);
+}
+
+.sitterChatBubble.isMine {
+    align-self: flex-end;
+    border-radius: 16px 16px 5px 16px;
+    background: var(--color-primary);
+    color: white;
+    border-color: var(--color-primary);
+}
+
+.sitterChatBubble div {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 5px;
+    font-size: 11px;
+    opacity: 0.78;
+}
+
+.sitterChatBubble p {
+    margin: 0;
+    line-height: 1.42;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    font-weight: 600;
+}
+
+.sitterChatForm {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    padding: 12px;
+    border-top: 1px solid var(--color-primary-border);
+    background: rgba(255, 255, 255, 0.92);
+}
+
+.sitterChatForm input {
+    min-width: 0;
+    height: 40px;
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-full);
+    padding: 0 14px;
+    outline: none;
+    color: var(--color-text);
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    background: white;
+}
+
+.sitterChatForm input:focus {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-faint);
+}
+
+.sitterChatForm button {
+    min-width: 78px;
+    height: 40px;
+    border: 0;
+    border-radius: var(--radius-full);
+    background: var(--color-primary);
+    color: white;
+    font-family: var(--font-family);
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: var(--shadow-btn-primary);
+}
+
+.sitterChatForm button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+@media (max-width: 760px) {
+    .sitterChatDock {
+        top: auto;
+        right: 12px;
+        bottom: 12px;
+    }
+
+    .sitterChatPanel {
+        width: calc(100vw - 24px);
+        height: min(420px, calc(100dvh - 112px));
+        min-height: 320px;
+    }
+}
+
+@media (max-width: 420px) {
+    .sitterChatToggle {
+        width: 48px;
+        height: 48px;
+    }
+
+    .sitterChatPanel {
+        height: min(390px, calc(100dvh - 104px));
+        min-height: 300px;
+        border-radius: 18px;
+    }
+
+    .sitterChatHeader {
+        padding: 10px 12px;
+    }
+
+    .sitterChatHeader h2 {
+        font-size: 18px;
+    }
+
+    .sitterChatHeader p {
+        max-width: 230px;
+    }
+
+    .sitterChatConversations {
+        max-height: 70px;
+        padding: 7px 9px;
+    }
+
+    .sitterChatConversation {
+        flex-basis: 142px;
+        padding: 7px 9px;
+    }
+
+    .sitterChatMessageList {
+        padding: 10px;
+        gap: 8px;
+    }
+
+    .sitterChatBubble {
+        max-width: 88%;
+        padding: 8px 10px;
+    }
+
+    .sitterChatForm {
+        padding: 9px;
+    }
+
+    .sitterChatForm input,
+    .sitterChatForm button {
+        height: 38px;
+    }
+
+    .sitterChatForm button {
+        min-width: 72px;
+    }
+}

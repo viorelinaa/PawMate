@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PawMate.BusinessLayer;
@@ -42,7 +43,11 @@ public class SitterController : ControllerBase
     [Authorize]
     public IActionResult CreateSitter([FromBody] SitterCreateDto sitter)
     {
-        var response = _sitterLogic.CreateSitter(sitter);
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var response = _sitterLogic.CreateSitter(sitter, userId.Value);
         if (!response.IsSuccess)
             return BadRequest(response.Message);
 
@@ -69,5 +74,11 @@ public class SitterController : ControllerBase
             return BadRequest(response.Message);
 
         return Ok(response.Message);
+    }
+
+    private int? GetCurrentUserId()
+    {
+        var rawUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return int.TryParse(rawUserId, out var userId) ? userId : null;
     }
 }

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
 import { AdminOnly } from "./AdminOnly";
+import { useAuth } from "../context/AuthContext";
 import {
     getSitters,
     createSitter,
@@ -325,15 +326,32 @@ export function SitterCard({
     s,
     onEdit,
     onDelete,
+    onStartChat,
+    startingChatSitterId,
 }: {
     s: Sitter;
     onEdit: (s: Sitter) => void;
     onDelete: (s: Sitter) => void;
+    onStartChat: (s: Sitter) => void;
+    startingChatSitterId: number | null;
 }) {
+    const { currentUser } = useAuth();
+
+    const isStartingChat = startingChatSitterId === s.id;
+    const isOwnSitterProfile = Boolean(currentUser && s.userId === currentUser.id);
+    const isChatUnavailable = !s.userId || isOwnSitterProfile;
+    const chatButtonLabel = isStartingChat
+        ? "Se deschide..."
+        : !s.userId
+          ? "Indisponibil"
+          : isOwnSitterProfile
+            ? "Profilul tau"
+            : "Scrie";
+
     return (
         <div className="sitter-card">
             <div className="rating">
-                {s.rating > 0 ? `⭐ ${s.rating.toFixed(1)}` : "Nou"}
+                {s.rating > 0 ? `â­ ${s.rating.toFixed(1)}` : "Nou"}
             </div>
             <h3>{s.name}</h3>
             <p className="city">{s.city}</p>
@@ -341,12 +359,20 @@ export function SitterCard({
             <p>{s.description}</p>
             <div className="card-footer">
                 <strong>{s.pricePerDay} MDL / zi</strong>
-                <AppButton variant="primary">Rezerva</AppButton>
+                <AppButton
+                    type="button"
+                    variant="primary"
+                    onClick={() => onStartChat(s)}
+                    disabled={isStartingChat || isChatUnavailable}
+                    title={!s.userId ? "Profilul nu are cont asociat pentru chat" : isOwnSitterProfile ? "Acesta este profilul tau" : undefined}
+                >
+                    {chatButtonLabel}
+                </AppButton>
             </div>
             <AdminOnly>
                 <div style={{ display: "flex", gap: "8px", marginTop: "8px" }}>
                     <AppButton variant="ghost" size="sm" onClick={() => onEdit(s)}>
-                        Editează
+                        Editeaza
                     </AppButton>
                     <AppButton
                         variant="ghost"
@@ -354,7 +380,7 @@ export function SitterCard({
                         onClick={() => onDelete(s)}
                         style={{ borderColor: "#e53e3e", color: "#e53e3e" }}
                     >
-                        Șterge
+                        Sterge
                     </AppButton>
                 </div>
             </AdminOnly>

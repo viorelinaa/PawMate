@@ -14,7 +14,7 @@ public class SitterActions
         _context = new PawMateDbContext();
     }
 
-    public ServiceResponse CreateSitterAction(SitterCreateDto sitter)
+    public ServiceResponse CreateSitterAction(SitterCreateDto sitter, int userId)
     {
         try
         {
@@ -25,7 +25,8 @@ public class SitterActions
                 Services = sitter.Services,
                 PricePerDay = sitter.PricePerDay,
                 Description = sitter.Description,
-                Rating = 0
+                Rating = 0,
+                UserId = userId
             };
 
             _context.Sitters.Add(entity);
@@ -34,7 +35,7 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Profilul sitter a fost adãugat cu succes.",
+                Message = "Profilul sitter a fost adaugat cu succes.",
                 Data = entity.Id
             };
         }
@@ -43,7 +44,7 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apãrut o eroare la adãugarea profilului: {ex.Message}"
+                Message = $"A aparut o eroare la adaugarea profilului: {ex.Message}"
             };
         }
     }
@@ -59,7 +60,7 @@ public class SitterActions
                 return new ServiceResponse
                 {
                     IsSuccess = false,
-                    Message = "Profilul sitter nu a fost gãsit."
+                    Message = "Profilul sitter nu a fost gasit."
                 };
             }
 
@@ -71,13 +72,14 @@ public class SitterActions
                 Services = entity.Services,
                 PricePerDay = entity.PricePerDay,
                 Description = entity.Description,
-                Rating = entity.Rating
+                Rating = entity.Rating,
+                UserId = entity.UserId
             };
 
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Profilul sitter a fost gãsit.",
+                Message = "Profilul sitter a fost gasit.",
                 Data = dto
             };
         }
@@ -86,7 +88,7 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apãrut o eroare la ob?inerea profilului: {ex.Message}"
+                Message = $"A aparut o eroare la obtinerea profilului: {ex.Message}"
             };
         }
     }
@@ -133,7 +135,8 @@ public class SitterActions
                     Services = s.Services,
                     PricePerDay = s.PricePerDay,
                     Description = s.Description,
-                    Rating = s.Rating
+                    Rating = s.Rating,
+                    UserId = s.UserId
                 })
                 .ToList();
 
@@ -165,7 +168,7 @@ public class SitterActions
                 return new ServiceResponse
                 {
                     IsSuccess = false,
-                    Message = "Profilul sitter nu a fost gãsit."
+                    Message = "Profilul sitter nu a fost gasit."
                 };
             }
 
@@ -189,7 +192,7 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apãrut o eroare la actualizarea profilului: {ex.Message}"
+                Message = $"A aparut o eroare la actualizarea profilului: {ex.Message}"
             };
         }
     }
@@ -205,7 +208,7 @@ public class SitterActions
                 return new ServiceResponse
                 {
                     IsSuccess = false,
-                    Message = "Profilul sitter nu a fost gãsit."
+                    Message = "Profilul sitter nu a fost gasit."
                 };
             }
 
@@ -215,7 +218,7 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Profilul sitter a fost ?ters cu succes."
+                Message = "Profilul sitter a fost sters cu succes."
             };
         }
         catch (Exception ex)
@@ -223,7 +226,7 @@ public class SitterActions
             return new ServiceResponse
             {
                 IsSuccess = false,
-                Message = $"A apãrut o eroare la ?tergerea profilului: {ex.Message}"
+                Message = $"A aparut o eroare la stergerea profilului: {ex.Message}"
             };
         }
     }

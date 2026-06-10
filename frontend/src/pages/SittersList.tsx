@@ -1,9 +1,11 @@
 import { useEffect, useState, type FocusEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import "../styles/petSitting.css";
 import { UserOnly } from "../components/UserOnly";
 import { SearchIcon } from "../components/SearchIcon";
 import { AppButton } from "../components/AppButton";
 import { AddActionButton } from "../components/AddActionButton";
+import { SitterChatWidget } from "../components/SitterChatWidget";
 import {
     getSitters,
     AddSitterModal,
@@ -12,8 +14,13 @@ import {
     SitterCard,
 } from "../components/SitterModals";
 import type { Sitter } from "../services/sitterService";
+import { startConversation } from "../services/chatService";
+import { useAuth } from "../context/AuthContext";
+import { paths } from "../routes/paths";
 
 export default function SittersList() {
+    const navigate = useNavigate();
+    const { currentUser } = useAuth();
     const [showAddModal, setShowAddModal] = useState(false);
     const [editSitter, setEditSitter] = useState<Sitter | null>(null);
     const [deleteSitterTarget, setDeleteSitterTarget] = useState<Sitter | null>(null);
@@ -24,6 +31,10 @@ export default function SittersList() {
     const [onlyTopRated, setOnlyTopRated] = useState(false);
     const [priceSort, setPriceSort] = useState<"none" | "asc" | "desc">("none");
     const [priceMenuOpen, setPriceMenuOpen] = useState(false);
+    const [isChatOpen, setIsChatOpen] = useState(false);
+    const [activeChatConversationId, setActiveChatConversationId] = useState<number | null>(null);
+    const [startingChatSitterId, setStartingChatSitterId] = useState<number | null>(null);
+    const [chatLaunchError, setChatLaunchError] = useState<string | null>(null);
     const ratingThreshold = 4.7;
 
     async function loadSitters() {
@@ -68,8 +79,36 @@ export default function SittersList() {
 
     const ratingLabel = `⭐ rating ${ratingThreshold}+`;
 
+
+    async function handleOpenSitterChat(sitter: Sitter) {
+        if (!currentUser) {
+            navigate(paths.login);
+            return;
+        }
+
+        if (!sitter.userId || sitter.userId === currentUser.id) {
+            return;
+        }
+
+        try {
+            setStartingChatSitterId(sitter.id);
+            setChatLaunchError(null);
+            const conversation = await startConversation(sitter.id);
+            setActiveChatConversationId(conversation.id);
+            setIsChatOpen(true);
+        } catch (error) {
+            setChatLaunchError(error instanceof Error ? error.message : "Nu s-a putut porni conversatia.");
+        } finally {
+            setStartingChatSitterId(null);
+        }
+    }
     return (
         <div className="pet-sitting-page">
+            <SitterChatWidget
+                isOpen={isChatOpen}
+                activeConversationId={activeChatConversationId}
+                onOpenChange={setIsChatOpen}
+            />
             <div className="sitters-hero">
                 <div className="sitterCloud sc1" />
                 <div className="sitterCloud sc2" />
@@ -216,6 +255,7 @@ export default function SittersList() {
                     </div>
                 </div>
 
+                {chatLaunchError && <div className="lostEmpty sitter-chat-error global">{chatLaunchError}</div>}
                 {isLoading && <div className="lostEmpty">Se incarca sitterii...</div>}
                 {loadError && <div className="lostEmpty" style={{ color: "red" }}>{loadError}</div>}
 
@@ -231,6 +271,8 @@ export default function SittersList() {
                                 s={s}
                                 onEdit={setEditSitter}
                                 onDelete={setDeleteSitterTarget}
+                                onStartChat={handleOpenSitterChat}
+                                startingChatSitterId={startingChatSitterId}
                             />
                         ))}
                     </div>

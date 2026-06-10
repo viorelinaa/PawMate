@@ -208,6 +208,7 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
+    gap: 10px;
 }
 
 .petName {
@@ -381,6 +382,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 16px;
 }
+
 
 @media (max-width: 520px) {
     .modalRow { grid-template-columns: 1fr; }
@@ -563,4 +565,128 @@
     object-fit: cover;
     border-radius: var(--radius-md);
     border: 1px solid var(--color-primary-border);
+}
+
+.modalTextarea.inputError {
+    border-color: #e05252;
+}
+
+.adoptionRequestOverlay {
+    align-items: flex-start;
+    overflow-y: auto;
+    padding: 40px 18px;
+}
+
+.adoptionRequestModal {
+    width: min(920px, calc(100vw - 36px));
+    max-width: 920px;
+    padding: 30px 34px 28px;
+}
+
+.adoptionRequestModal .modalTitle {
+    font-size: clamp(1.6rem, 2.6vw, 2.15rem);
+    line-height: 1.15;
+}
+
+.adoptionRequestModal .modalForm {
+    gap: 18px;
+}
+
+.adoptionRequestModal .modalTextarea {
+    min-height: 104px;
+}
+
+.adoptionRequestPetSummary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-soft);
+    color: var(--color-text);
+    font-family: var(--font-family);
+}
+
+.adoptionRequestPetSummary strong {
+    color: var(--color-primary);
+    font-size: var(--font-size-base);
+}
+
+.adoptionRequestPetSummary span {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    text-align: right;
+}
+
+.adoptionRequestNotice {
+    border: 1px solid rgba(74, 138, 95, 0.32);
+    border-radius: var(--radius-md);
+    background: rgba(74, 138, 95, 0.1);
+    color: #356b48;
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    font-weight: 700;
+    line-height: 1.35;
+    padding: 10px 12px;
+    text-align: center;
+}
+
+@media (max-width: 760px) {
+    .adoptionRequestOverlay {
+        align-items: flex-start;
+        padding: 18px 12px;
+    }
+
+    .adoptionRequestModal {
+        width: min(100%, calc(100vw - 24px));
+        padding: 24px 18px 20px;
+    }
+}
+
+@media (max-width: 520px) {
+    .adoptionRequestPetSummary {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .adoptionRequestPetSummary span {
+        text-align: left;
+    }
+}
+
+.adoptionRequestNotice .appBtn {
+    margin-top: 8px;
+}
+.petAdoptionStatusBadge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--color-primary-border);
+    padding: 7px 12px;
+    font-size: var(--font-size-xs);
+    font-weight: 900;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.petAdoptionStatusBadge.available {
+    background: rgba(74, 138, 95, 0.1);
+    border-color: rgba(74, 138, 95, 0.32);
+    color: #356b48;
+}
+
+.petAdoptionStatusBadge.inProcess {
+    background: rgba(234, 179, 8, 0.14);
+    border-color: rgba(234, 179, 8, 0.32);
+    color: #8a5f00;
+}
+
+.petAdoptionStatusBadge.adopted {
+    background: rgba(107, 79, 161, 0.12);
+    border-color: rgba(107, 79, 161, 0.28);
+    color: var(--color-primary);
 }

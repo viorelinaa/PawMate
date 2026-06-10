@@ -1,4 +1,7 @@
-﻿namespace PawMate.Domain.Entities.Sitter;
+using PawMate.Domain.Entities.Chat;
+using PawMate.Domain.Entities.User;
+
+namespace PawMate.Domain.Entities.Sitter;
 
 public class SitterEntity
 {
@@ -9,4 +12,8 @@ public class SitterEntity
     public decimal PricePerDay { get; set; }
     public string Description { get; set; } = string.Empty;
     public decimal Rating { get; set; } = 0;
+    public int? UserId { get; set; }
+
+    public UserEntity? User { get; set; }
+    public ICollection<ChatConversationEntity> ChatConversations { get; set; } = new List<ChatConversationEntity>();
 }
