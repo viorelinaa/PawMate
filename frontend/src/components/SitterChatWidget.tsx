@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "../styles/SitterChatWidget.css";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -44,6 +44,7 @@ export function SitterChatWidget({
     const [isLoadingMessages, setIsLoadingMessages] = useState(false);
     const [isSending, setIsSending] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const localReadMarksRef = useRef<Record<number, string>>({});
 
     const selectedConversation = useMemo(
         () => conversations.find((conversation) => conversation.id === selectedId) ?? null,
@@ -51,6 +52,35 @@ export function SitterChatWidget({
     );
 
     const unreadTotal = conversations.reduce((sum, conversation) => sum + conversation.unreadCount, 0);
+
+    function applyLocalReadMarks(items: ChatConversation[]) {
+        return items.map((conversation) => {
+            const readUntil = localReadMarksRef.current[conversation.id];
+            if (!readUntil) {
+                return conversation;
+            }
+
+            const readDate = new Date(readUntil);
+            const lastMessageDate = new Date(conversation.lastMessageAt);
+            if (!Number.isNaN(readDate.getTime()) && !Number.isNaN(lastMessageDate.getTime()) && readDate >= lastMessageDate) {
+                return { ...conversation, unreadCount: 0 };
+            }
+
+            return conversation;
+        });
+    }
+
+    function markConversationLocallyRead(conversationId: number, readUntil?: string) {
+        const conversation = conversations.find((item) => item.id === conversationId);
+        localReadMarksRef.current[conversationId] = readUntil ?? conversation?.lastMessageAt ?? new Date().toISOString();
+        setConversations((prev) =>
+            prev.map((item) =>
+                item.id === conversationId
+                    ? { ...item, unreadCount: 0 }
+                    : item
+            )
+        );
+    }
 
     async function loadConversations(preferredId?: number | null) {
         if (!currentUser) {
@@ -61,7 +91,7 @@ export function SitterChatWidget({
 
         try {
             setIsLoadingConversations(true);
-            const data = await getConversations();
+            const data = applyLocalReadMarks(await getConversations());
             setConversations(data);
             setError(null);
 
@@ -80,23 +110,16 @@ export function SitterChatWidget({
             setIsLoadingMessages(true);
             const data = await getMessages(conversationId);
             setMessages(data);
-            await markConversationRead(conversationId);
-            setConversations((prev) =>
-                prev.map((conversation) =>
-                    conversation.id === conversationId
-                        ? { ...conversation, unreadCount: 0 }
-                        : conversation
-                )
-            );
+            markConversationLocallyRead(conversationId);
             setError(null);
+
+            void markConversationRead(conversationId).catch(() => {});
         } catch (err) {
             setError(err instanceof Error ? err.message : "Nu s-au putut incarca mesajele.");
-            setMessages([]);
         } finally {
             setIsLoadingMessages(false);
         }
     }
-
     useEffect(() => {
         if (!currentUser) {
             return;
@@ -141,7 +164,15 @@ export function SitterChatWidget({
             const created = await sendMessage(selectedId, body);
             setMessages((prev) => [...prev, created]);
             setDraft("");
-            await markConversationRead(selectedId);
+            markConversationLocallyRead(selectedId, created.createdAt);
+            setConversations((prev) =>
+                prev.map((conversation) =>
+                    conversation.id === selectedId
+                        ? { ...conversation, lastMessage: created.body, lastMessageAt: created.createdAt }
+                        : conversation
+                )
+            );
+            void markConversationRead(selectedId).catch(() => {});
             await loadConversations(selectedId);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Nu s-a putut trimite mesajul.");
@@ -212,9 +243,9 @@ export function SitterChatWidget({
                                 {isLoadingMessages ? (
                                     <div className="sitterChatEmpty">Se incarca mesajele...</div>
                                 ) : !selectedId ? (
-                                    <div className="sitterChatEmpty">Alege un contact de sus ca sa raspunzi.</div>
+                                    <div className="sitterChatEmpty sitterChatPickContact">Alege un contact de sus ca sa raspunzi.</div>
                                 ) : messages.length === 0 ? (
-                                    <div className="sitterChatEmpty">Trimite primul mesaj.</div>
+                                    <div className="sitterChatEmpty sitterChatPickContact">Trimite primul mesaj.</div>
                                 ) : (
                                     messages.map((message) => (
                                         <article
