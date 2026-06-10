@@ -13,7 +13,7 @@ import {
     DeleteSitterConfirmModal,
     SitterCard,
 } from "../components/SitterModals";
-import type { Sitter } from "../services/sitterService";
+import type { Sitter, SitterRatingInfo } from "../services/sitterService";
 import { startConversation } from "../services/chatService";
 import { useAuth } from "../context/AuthContext";
 import { paths } from "../routes/paths";
@@ -79,6 +79,16 @@ export default function SittersList() {
 
     const ratingLabel = `⭐ rating ${ratingThreshold}+`;
 
+
+    function handleSitterRated(rating: SitterRatingInfo) {
+        setSitters((prev) =>
+            prev.map((sitter) =>
+                sitter.id === rating.sitterId
+                    ? { ...sitter, rating: rating.rating, ratingCount: rating.ratingCount }
+                    : sitter
+            )
+        );
+    }
 
     async function handleOpenSitterChat(sitter: Sitter) {
         if (!currentUser) {
@@ -272,6 +282,7 @@ export default function SittersList() {
                                 onEdit={setEditSitter}
                                 onDelete={setDeleteSitterTarget}
                                 onStartChat={handleOpenSitterChat}
+                                onRated={handleSitterRated}
                                 startingChatSitterId={startingChatSitterId}
                             />
                         ))}

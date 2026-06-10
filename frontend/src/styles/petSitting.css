@@ -293,6 +293,70 @@
     font-weight: 600;
 }
 
+.sitterRatingPanel {
+    margin-top: 16px;
+    padding: 12px;
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-md);
+    background: linear-gradient(180deg, rgba(248, 246, 252, 0.9), rgba(255, 255, 255, 0.96));
+    display: grid;
+    gap: 10px;
+}
+
+.sitterRatingSummary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: var(--color-primary);
+    font-family: var(--font-family);
+    font-weight: 800;
+}
+
+.sitterRatingSummary small,
+.sitterRatingHint,
+.sitterRatingError {
+    color: var(--color-text-muted);
+    font-size: var(--font-size-xs);
+    font-weight: 700;
+}
+
+.sitterRatingStars {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.sitterRatingStars button {
+    width: 34px;
+    height: 34px;
+    border: 1px solid var(--color-primary-border);
+    border-radius: var(--radius-full);
+    background: white;
+    color: var(--color-primary-light);
+    cursor: pointer;
+    font-size: 18px;
+    line-height: 1;
+    box-shadow: 0 8px 18px rgba(75, 45, 108, 0.08);
+    transition: transform var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+}
+
+.sitterRatingStars button:hover:not(:disabled),
+.sitterRatingStars button.isActive {
+    background: var(--color-primary);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.sitterRatingStars button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+}
+
+.sitterRatingError {
+    color: #e05252;
+}
 .card-footer {
     margin-top: 20px;
     display: flex;

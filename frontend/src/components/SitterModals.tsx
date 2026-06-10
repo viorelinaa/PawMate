@@ -8,8 +8,9 @@ import {
     createSitter,
     updateSitter,
     deleteSitter,
+    rateSitter,
 } from "../services/sitterService";
-import type { Sitter } from "../services/sitterService";
+import type { Sitter, SitterRatingInfo } from "../services/sitterService";
 
 export { getSitters };
 
@@ -327,15 +328,20 @@ export function SitterCard({
     onEdit,
     onDelete,
     onStartChat,
+    onRated,
     startingChatSitterId,
 }: {
     s: Sitter;
     onEdit: (s: Sitter) => void;
     onDelete: (s: Sitter) => void;
     onStartChat: (s: Sitter) => void;
+    onRated: (rating: SitterRatingInfo) => void;
     startingChatSitterId: number | null;
 }) {
     const { currentUser } = useAuth();
+    const [ratingError, setRatingError] = useState<string | null>(null);
+    const [selectedRating, setSelectedRating] = useState<number | null>(null);
+    const [savingRating, setSavingRating] = useState<number | null>(null);
 
     const isStartingChat = startingChatSitterId === s.id;
     const isOwnSitterProfile = Boolean(currentUser && s.userId === currentUser.id);
@@ -347,16 +353,67 @@ export function SitterCard({
           : isOwnSitterProfile
             ? "Profilul tau"
             : "Scrie";
+    const ratingCount = s.ratingCount ?? 0;
+    const activeRating = selectedRating ?? Math.round(s.rating);
+    const ratingCountLabel = ratingCount === 1 ? "1 rating" : `${ratingCount} ratinguri`;
+    const canRate = Boolean(currentUser) && !isOwnSitterProfile;
+
+    async function handleRate(value: number) {
+        if (!currentUser) {
+            setRatingError("Autentifica-te ca sa poti da rating.");
+            return;
+        }
+
+        if (isOwnSitterProfile) {
+            setRatingError("Nu poti evalua propriul profil.");
+            return;
+        }
+
+        try {
+            setSavingRating(value);
+            setRatingError(null);
+            const result = await rateSitter(s.id, value);
+            setSelectedRating(result.myRating);
+            onRated(result);
+        } catch (err) {
+            setRatingError(err instanceof Error ? err.message : "Nu s-a putut salva ratingul.");
+        } finally {
+            setSavingRating(null);
+        }
+    }
 
     return (
         <div className="sitter-card">
             <div className="rating">
-                {s.rating > 0 ? `â­ ${s.rating.toFixed(1)}` : "Nou"}
+                {s.rating > 0 ? `★ ${s.rating.toFixed(1)}` : "Nou"}
             </div>
             <h3>{s.name}</h3>
             <p className="city">{s.city}</p>
             <p><strong>Servicii:</strong> {s.services}</p>
             <p>{s.description}</p>
+            <div className="sitterRatingPanel">
+                <div className="sitterRatingSummary">
+                    <span>{s.rating > 0 ? `${s.rating.toFixed(1)} / 5` : "Fara rating"}</span>
+                    <small>{ratingCountLabel}</small>
+                </div>
+                <div className="sitterRatingStars" role="group" aria-label={`Rating pentru ${s.name}`}>
+                    {[1, 2, 3, 4, 5].map((value) => (
+                        <button
+                            key={value}
+                            type="button"
+                            className={value <= activeRating ? "isActive" : undefined}
+                            onClick={() => void handleRate(value)}
+                            disabled={savingRating !== null || !canRate}
+                            title={!currentUser ? "Autentifica-te ca sa poti da rating" : isOwnSitterProfile ? "Nu poti evalua propriul profil" : `${value} stele`}
+                            aria-label={`${value} stele`}
+                        >
+                            {value <= activeRating ? "★" : "☆"}
+                        </button>
+                    ))}
+                </div>
+                {savingRating !== null ? <small className="sitterRatingHint">Se salveaza...</small> : null}
+                {ratingError ? <small className="sitterRatingError">{ratingError}</small> : null}
+            </div>
             <div className="card-footer">
                 <strong>{s.pricePerDay} MDL / zi</strong>
                 <AppButton

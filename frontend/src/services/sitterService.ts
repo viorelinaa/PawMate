@@ -9,6 +9,7 @@ export interface Sitter {
     pricePerDay: number;
     description: string;
     rating: number;
+    ratingCount: number;
     userId?: number | null;
 }
 
@@ -60,6 +61,13 @@ export interface SitterUpdatePayload {
     userId?: number | null;
 }
 
+export interface SitterRatingInfo {
+    sitterId: number;
+    rating: number;
+    ratingCount: number;
+    myRating: number;
+}
+
 export async function createSitter(payload: SitterCreatePayload): Promise<void> {
     try {
         await apiClient.post("/sitters/create", payload);
@@ -81,5 +89,14 @@ export async function deleteSitter(id: number): Promise<void> {
         await apiClient.delete(`/sitters/${id}`);
     } catch (err) {
         handleError(err, "Nu s-a putut șterge profilul sitter.");
+    }
+}
+
+export async function rateSitter(id: number, rating: number): Promise<SitterRatingInfo> {
+    try {
+        const { data } = await apiClient.post<SitterRatingInfo>(`/sitters/${id}/rating`, { rating });
+        return data;
+    } catch (err) {
+        handleError(err, "Nu s-a putut salva ratingul.");
     }
 }
