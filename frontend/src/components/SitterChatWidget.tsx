@@ -82,6 +82,17 @@ export function SitterChatWidget({
         );
     }
 
+    function getConversationDisplayName(conversation: ChatConversation | null) {
+        if (!conversation) {
+            return "Alege cui raspunzi";
+        }
+
+        if (currentUser?.id === conversation.sitterUserId) {
+            return conversation.clientName || "Utilizator";
+        }
+
+        return conversation.sitterName || conversation.sitterUserName || "Sitter";
+    }
     async function loadConversations(preferredId?: number | null) {
         if (!currentUser) {
             setConversations([]);
@@ -209,7 +220,7 @@ export function SitterChatWidget({
                     <header className="sitterChatHeader">
                         <div>
                             <h2>Mesaje</h2>
-                            <p>{selectedConversation?.sitterName ?? "Alege cui raspunzi"}</p>
+                            <p>{getConversationDisplayName(selectedConversation)}</p>
                         </div>
                         <button type="button" onClick={() => onOpenChange(false)} aria-label="Inchide chatul">{"\u00d7"}</button>
                     </header>
@@ -230,7 +241,7 @@ export function SitterChatWidget({
                                         className={`sitterChatConversation${conversation.id === selectedId ? " isActive" : ""}`}
                                         onClick={() => setSelectedId(conversation.id)}
                                     >
-                                        <span>{conversation.sitterName || conversation.sitterUserName}</span>
+                                        <span>{getConversationDisplayName(conversation)}</span>
                                         <small>{conversation.lastMessage || "Conversatie noua"}</small>
                                         {conversation.unreadCount > 0 ? <b>{conversation.unreadCount}</b> : null}
                                     </button>
