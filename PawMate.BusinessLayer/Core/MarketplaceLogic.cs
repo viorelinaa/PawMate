@@ -27,6 +27,11 @@ public class MarketplaceLogic : MarketplaceActions, IMarketplaceLogic
         return UpdateListingAction(id, listing);
     }
 
+    public ServiceResponse UpdateListingImage(int id, int userId, bool isAdmin, string imageUrl, string imagePublicId)
+    {
+        return UpdateListingImageAction(id, userId, isAdmin, imageUrl, imagePublicId);
+    }
+
     public ServiceResponse DeleteListing(int id)
     {
         return DeleteListingAction(id);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppButton } from "./AppButton";
 import { FilterSelect } from "./FilterSelect";
 import { AdminOnly } from "./AdminOnly";
@@ -7,10 +7,15 @@ import {
     createProduct,
     updateProduct,
     deleteProduct,
+    uploadProductImage,
+    getProductImageUrl,
 } from "../services/productService";
 import type { Product } from "../services/productService";
 
 export { getProducts };
+
+const maxProductImageBytes = 2 * 1024 * 1024;
+const allowedProductImageTypes = ["image/jpeg", "image/png", "image/webp"];
 
 export interface ProductForm {
     title: string;
@@ -45,6 +50,17 @@ function validateProductForm(form: ProductForm): Partial<Record<keyof ProductFor
     return e;
 }
 
+function validateProductImage(file: File | null) {
+    if (!file) return "";
+    if (!allowedProductImageTypes.includes(file.type)) {
+        return "Alege o imagine JPG, PNG sau WEBP.";
+    }
+    if (file.size > maxProductImageBytes) {
+        return "Imaginea trebuie sa aiba maximum 2 MB.";
+    }
+    return "";
+}
+
 function ProductFormFields({
     form,
     errors,
@@ -54,6 +70,10 @@ function ProductFormFields({
     onSubmit,
     onChange,
     onClose,
+    selectedImage,
+    imagePreviewUrl,
+    imageError,
+    onImageChange,
 }: {
     form: ProductForm;
     errors: Partial<Record<keyof ProductForm, string>>;
@@ -63,6 +83,10 @@ function ProductFormFields({
     onSubmit: (e: React.FormEvent) => void;
     onChange: (field: keyof ProductForm, value: string) => void;
     onClose: () => void;
+    selectedImage: File | null;
+    imagePreviewUrl: string;
+    imageError: string;
+    onImageChange: (file: File | null) => void;
 }) {
     return (
         <form className="sitterModalForm" onSubmit={onSubmit} noValidate>
@@ -122,6 +146,23 @@ function ProductFormFields({
                 />
             </div>
 
+            <div className="sitterModalField">
+                <label className="sitterModalLabel">Poza produsului</label>
+                <label className="productImagePicker">
+                    <input
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={(e) => onImageChange(e.target.files?.[0] ?? null)}
+                    />
+                    <span>{selectedImage ? selectedImage.name : "Alege imaginea"}</span>
+                    <small>JPG, PNG sau WEBP, maximum 2 MB</small>
+                </label>
+                {imagePreviewUrl && (
+                    <img className="productImagePreview" src={imagePreviewUrl} alt="Previzualizare produs" />
+                )}
+                {imageError && <span className="sitterFieldError">{imageError}</span>}
+            </div>
+
             {apiError && <p className="sitterFieldError" style={{ textAlign: "center" }}>{apiError}</p>}
 
             <div className="sitterModalActions">
@@ -142,22 +183,42 @@ export function AddProductModal({ onClose, onAdded }: { onClose: () => void; onA
     const [errors, setErrors] = useState<Partial<Record<keyof ProductForm, string>>>({});
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [imagePreviewUrl, setImagePreviewUrl] = useState("");
+    const [imageError, setImageError] = useState("");
+
+    useEffect(() => {
+        if (!selectedImage) {
+            setImagePreviewUrl("");
+            return;
+        }
+
+        const previewUrl = URL.createObjectURL(selectedImage);
+        setImagePreviewUrl(previewUrl);
+
+        return () => URL.revokeObjectURL(previewUrl);
+    }, [selectedImage]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         const errs = validateProductForm(form);
-        if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+        const selectedImageError = validateProductImage(selectedImage);
+        setImageError(selectedImageError);
+        if (Object.keys(errs).length > 0 || selectedImageError) { setErrors(errs); return; }
         setLoading(true);
         setApiError(null);
         try {
             const sellerId = Number(sessionStorage.getItem("pawmate_uid") ?? "0");
-            await createProduct({
+            const productId = await createProduct({
                 title: form.title.trim(),
                 description: form.description.trim(),
                 category: form.category,
                 price: Number(form.price),
                 sellerId,
             });
+            if (selectedImage) {
+                await uploadProductImage(productId, selectedImage);
+            }
             onAdded();
             onClose();
         } catch (err: unknown) {
@@ -172,6 +233,11 @@ export function AddProductModal({ onClose, onAdded }: { onClose: () => void; onA
         setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
 
+    function handleImageChange(file: File | null) {
+        setSelectedImage(file);
+        setImageError(validateProductImage(file));
+    }
+
     return (
         <div className="sitterModalOverlay" onClick={onClose}>
             <div className="sitterModalBox" onClick={(e) => e.stopPropagation()}>
@@ -183,6 +249,10 @@ export function AddProductModal({ onClose, onAdded }: { onClose: () => void; onA
                     form={form} errors={errors} loading={loading} apiError={apiError}
                     submitLabel="Adaugă produs"
                     onSubmit={handleSubmit} onChange={handleChange} onClose={onClose}
+                    selectedImage={selectedImage}
+                    imagePreviewUrl={imagePreviewUrl}
+                    imageError={imageError}
+                    onImageChange={handleImageChange}
                 />
             </div>
         </div>
@@ -203,11 +273,28 @@ export function EditProductModal({
     const [errors, setErrors] = useState<Partial<Record<keyof ProductForm, string>>>({});
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState<string | null>(null);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [imagePreviewUrl, setImagePreviewUrl] = useState(() => getProductImageUrl(product.imageUrl));
+    const [imageError, setImageError] = useState("");
+
+    useEffect(() => {
+        if (!selectedImage) {
+            setImagePreviewUrl(getProductImageUrl(product.imageUrl));
+            return;
+        }
+
+        const previewUrl = URL.createObjectURL(selectedImage);
+        setImagePreviewUrl(previewUrl);
+
+        return () => URL.revokeObjectURL(previewUrl);
+    }, [selectedImage, product.imageUrl]);
 
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
         const errs = validateProductForm(form);
-        if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+        const selectedImageError = validateProductImage(selectedImage);
+        setImageError(selectedImageError);
+        if (Object.keys(errs).length > 0 || selectedImageError) { setErrors(errs); return; }
         setLoading(true);
         setApiError(null);
         try {
@@ -217,6 +304,9 @@ export function EditProductModal({
                 category: form.category,
                 price: Number(form.price),
             });
+            if (selectedImage) {
+                await uploadProductImage(product.id, selectedImage);
+            }
             onUpdated();
             onClose();
         } catch (err: unknown) {
@@ -231,6 +321,11 @@ export function EditProductModal({
         setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
 
+    function handleImageChange(file: File | null) {
+        setSelectedImage(file);
+        setImageError(validateProductImage(file));
+    }
+
     return (
         <div className="sitterModalOverlay" onClick={onClose}>
             <div className="sitterModalBox" onClick={(e) => e.stopPropagation()}>
@@ -242,6 +337,10 @@ export function EditProductModal({
                     form={form} errors={errors} loading={loading} apiError={apiError}
                     submitLabel="Salvează modificările"
                     onSubmit={handleSubmit} onChange={handleChange} onClose={onClose}
+                    selectedImage={selectedImage}
+                    imagePreviewUrl={imagePreviewUrl}
+                    imageError={imageError}
+                    onImageChange={handleImageChange}
                 />
             </div>
         </div>
@@ -316,8 +415,23 @@ export function ProductCard({
     onEdit: (product: Product) => void;
     onDelete: (product: Product) => void;
 }) {
+    const [imageFailed, setImageFailed] = useState(false);
+    const imageSrc = imageFailed ? "" : getProductImageUrl(product.imageUrl);
+
+    useEffect(() => {
+        setImageFailed(false);
+    }, [product.id, product.imageUrl]);
+
     return (
         <article className="salesCard">
+            {imageSrc ? (
+                <img className="salesCardImage" src={imageSrc} alt={`Poza produs ${product.title}`} loading="lazy" onError={() => setImageFailed(true)} />
+            ) : (
+                <div className="salesImagePlaceholder">
+                    <span>{product.category}</span>
+                    <small>Fara poza</small>
+                </div>
+            )}
             <div className="salesCardTop">
                 <h3 className="salesName">{product.title}</h3>
                 <span className="salesBadge">{product.category}</span>

@@ -678,7 +678,7 @@ export function PetCard({ p, onEdit, onDelete }: { p: Pet; onEdit: (p: Pet) => v
                 <span className="badge">{p.sterilized ? "Sterilizat" : "Nesterilizat"}</span>
             </div>
             <p className="petDesc">{p.description}</p>
-            <div className="petCardActions" style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+            <div className="petCardActions">
                 {canManage ? (
                     <AppButton className="btnDetails" variant="primary" onClick={() => onEdit(p)}>
                         Editează

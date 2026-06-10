@@ -63,7 +63,7 @@
 
 .sitterChatPanel {
     width: min(760px, calc(100vw - 32px));
-    height: min(560px, calc(100dvh - 150px));
+    height: min(560px, calc(100dvh - 220px));
     min-height: 320px;
     overflow: hidden;
     border: 1px solid rgba(117, 79, 146, 0.16);
@@ -71,8 +71,8 @@
     background: rgba(255, 255, 255, 0.98);
     box-shadow: 0 26px 70px rgba(31, 18, 50, 0.24);
     backdrop-filter: blur(12px);
-    display: grid;
-    grid-template-rows: auto auto 1fr;
+    display: flex;
+    flex-direction: column;
 }
 
 .sitterChatHeader {
@@ -137,6 +137,7 @@
 }
 
 .sitterChatBody {
+    flex: 1 1 auto;
     min-height: 0;
     display: grid;
     grid-template-columns: 240px minmax(0, 1fr);

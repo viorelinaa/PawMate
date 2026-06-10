@@ -1,13 +1,39 @@
 import axios from "axios";
 import { apiClient } from "../axios/apiClient";
 
+const apiFileBaseUrl = (apiClient.defaults.baseURL || "").replace(/\/api\/?$/, "");
+
 export interface Product {
     id: number;
     title: string;
     description: string;
     category: string;
     price: number;
+    imageUrl?: string | null;
     sellerId: number;
+}
+
+export function getProductImageUrl(imageUrl?: string | null) {
+    if (!imageUrl) return "";
+    if (/^https?:\/\//i.test(imageUrl)) return imageUrl;
+    return `${apiFileBaseUrl}${imageUrl.startsWith("/") ? imageUrl : `/${imageUrl}`}`;
+}
+
+export async function uploadProductImage(id: number, image: File): Promise<string> {
+    try {
+        const formData = new FormData();
+        formData.append("image", image);
+
+        const { data } = await apiClient.post<UploadProductImageResponse>(`/marketplace/${id}/image`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+
+        return data.imageUrl;
+    } catch (err) {
+        handleError(err, "Nu s-a putut incarca imaginea produsului.");
+    }
 }
 
 export interface ProductCreatePayload {
@@ -32,6 +58,10 @@ export interface ProductQuery {
     sortDirection?: "asc" | "desc";
 }
 
+interface UploadProductImageResponse {
+    imageUrl: string;
+}
+
 function handleError(err: unknown, fallback: string): never {
     if (axios.isAxiosError(err)) {
         const message =
@@ -52,9 +82,10 @@ export async function getProducts(query?: ProductQuery): Promise<Product[]> {
     }
 }
 
-export async function createProduct(payload: ProductCreatePayload): Promise<void> {
+export async function createProduct(payload: ProductCreatePayload): Promise<number> {
     try {
-        await apiClient.post("/marketplace/create", payload);
+        const { data } = await apiClient.post<{ id: number }>("/marketplace/create", payload);
+        return data.id;
     } catch (err) {
         handleError(err, "Nu s-a putut adăuga produsul.");
     }

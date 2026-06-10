@@ -208,7 +208,13 @@
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: 10px;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.petCardHeader > div {
+    min-width: 0;
+    flex: 1 1 140px;
 }
 
 .petName {
@@ -217,6 +223,8 @@
     font-weight: 800;
     font-size: var(--font-size-lg);
     font-family: var(--font-family);
+    line-height: 1.15;
+    overflow-wrap: anywhere;
 }
 
 .petCity {
@@ -252,12 +260,16 @@
     font-weight: 600;
     line-height: 1.55;
     font-family: var(--font-family);
+    overflow-wrap: anywhere;
 }
 
 
 .petCardActions {
     margin-top: auto;
-    padding-top: 14px;
+    padding-top: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 .btnDetails {
     border: 0;
@@ -496,9 +508,8 @@
     object-fit: cover;
     display: block;
     border-radius: var(--radius-md);
-    border: 1px solid var(--color-primary-border);
     margin-bottom: 14px;
-    background: var(--color-primary-faint);
+    background: var(--color-surface-soft);
 }
 
 .petImagePlaceholder {

@@ -9,5 +9,6 @@ public interface IMarketplaceLogic
     ServiceResponse GetListingById(int id);
     ServiceResponse GetListingList(MarketplaceQueryDto query);
     ServiceResponse UpdateListing(int id, MarketplaceUpdateDto listing);
+    ServiceResponse UpdateListingImage(int id, int userId, bool isAdmin, string imageUrl, string imagePublicId);
     ServiceResponse DeleteListing(int id);
 }

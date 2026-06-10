@@ -70,6 +70,7 @@ public class MarketplaceActions
                 Description = entity.Description,
                 Category = entity.Category,
                 Price = entity.Price,
+                ImageUrl = entity.ImageUrl,
                 SellerId = entity.SellerId
             };
 
@@ -126,6 +127,7 @@ public class MarketplaceActions
                     Description = m.Description,
                     Category = m.Category,
                     Price = m.Price,
+                    ImageUrl = m.ImageUrl,
                     SellerId = m.SellerId
                 })
                 .ToList();
@@ -185,6 +187,58 @@ public class MarketplaceActions
         }
     }
 
+    public ServiceResponse UpdateListingImageAction(int id, int userId, bool isAdmin, string imageUrl, string imagePublicId)
+    {
+        try
+        {
+            var entity = _context.MarketplaceListings.FirstOrDefault(m => m.Id == id);
+
+            if (entity == null)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Anuntul de vanzare nu a fost gasit."
+                };
+            }
+
+            if (!isAdmin && entity.SellerId != userId)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Poti modifica doar produsele adaugate de tine."
+                };
+            }
+
+            var oldImagePublicId = entity.ImagePublicId;
+            var oldImageUrl = entity.ImageUrl;
+            entity.ImageUrl = imageUrl;
+            entity.ImagePublicId = imagePublicId;
+
+            _context.SaveChanges();
+
+            return new ServiceResponse
+            {
+                IsSuccess = true,
+                Message = "Imaginea produsului a fost actualizata cu succes.",
+                Data = new MarketplaceImageCleanupDto
+                {
+                    ImagePublicId = oldImagePublicId,
+                    ImageUrl = oldImageUrl
+                }
+            };
+        }
+        catch (Exception ex)
+        {
+            return new ServiceResponse
+            {
+                IsSuccess = false,
+                Message = $"A aparut o eroare la actualizarea imaginii produsului: {ex.Message}"
+            };
+        }
+    }
+
     public ServiceResponse DeleteListingAction(int id)
     {
         try
@@ -200,12 +254,20 @@ public class MarketplaceActions
                 };
             }
 
+            var imagePublicId = entity.ImagePublicId;
+            var imageUrl = entity.ImageUrl;
+
             _context.MarketplaceListings.Remove(entity);
             _context.SaveChanges();
 
             return new ServiceResponse
             {
                 IsSuccess = true,
+                Data = new MarketplaceImageCleanupDto
+                {
+                    ImagePublicId = imagePublicId,
+                    ImageUrl = imageUrl
+                },
                 Message = "Anunțul de vânzare a fost șters cu succes."
             };
         }
