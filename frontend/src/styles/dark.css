@@ -180,8 +180,28 @@
 .appShell[data-theme="dark"] .med-guide,
 .appShell[data-theme="dark"] .med-guide .main-content,
 .appShell[data-theme="dark"] .med-guide .footer,
-.appShell[data-theme="dark"] .nfWrap {
+    .appShell[data-theme="dark"] .nfWrap {
     background: var(--dm-bg);
+}
+
+.appShell[data-theme="dark"] .walletPage {
+    background: var(--dm-bg);
+}
+
+.appShell[data-theme="dark"] .walletStat,
+.appShell[data-theme="dark"] .walletPanel,
+.appShell[data-theme="dark"] .walletListPanel,
+.appShell[data-theme="dark"] .walletAdminCard,
+.appShell[data-theme="dark"] .walletState {
+    background: var(--dm-surface);
+    border-color: var(--dm-border);
+    box-shadow: var(--dm-shadow);
+}
+
+.appShell[data-theme="dark"] .walletListItem,
+.appShell[data-theme="dark"] .walletWithdrawalItem {
+    background: var(--dm-surface-strong);
+    border-color: var(--dm-border);
 }
 
 /* Cards and containers */

@@ -45,6 +45,7 @@ export default function Navbar({ theme, onToggleTheme }: NavbarProps) {
                         <NavLink to={paths.adminStatistici} onClick={() => setOpen(false)}>Statistici</NavLink>
                         <NavLink to={paths.adminPagini} onClick={() => setOpen(false)}>Pagini</NavLink>
                         <NavLink to={paths.adminUtilizatori} onClick={() => setOpen(false)}>Utilizatori</NavLink>
+                        <NavLink to={paths.adminRetrageri} onClick={() => setOpen(false)}>Retrageri</NavLink>
                     </nav>
                 ) : (
                     <nav className={`links ${open ? "open" : ""}`}>

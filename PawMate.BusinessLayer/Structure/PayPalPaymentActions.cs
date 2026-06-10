@@ -5,6 +5,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using PawMate.DataAccessLayer.Context;
 using PawMate.Domain.Entities.Order;
+using PawMate.Domain.Entities.Wallet;
 using PawMate.Domain.Models.Payment;
 using PawMate.Domain.Models.Service;
 
@@ -220,7 +221,10 @@ public class PayPalPaymentActions
 
         try
         {
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.PayPalOrderId == orderId);
+            var order = await _context.Orders
+                .Include(o => o.Items)
+                .ThenInclude(item => item.Product)
+                .FirstOrDefaultAsync(o => o.PayPalOrderId == orderId);
             if (order == null)
             {
                 return new ServiceResponse
@@ -241,6 +245,9 @@ public class PayPalPaymentActions
 
             if (order.Status == "Paid")
             {
+                await CreditSellerWalletsAsync(order);
+                await _context.SaveChangesAsync();
+
                 return new ServiceResponse
                 {
                     IsSuccess = true,
@@ -281,10 +288,19 @@ public class PayPalPaymentActions
             var captureStatus = GetFirstCaptureValue(root, "status");
             var isCompleted = status == "COMPLETED" || captureStatus == "COMPLETED";
 
+            await using var databaseTransaction = await _context.Database.BeginTransactionAsync();
+
             order.Status = isCompleted ? "Paid" : "Failed";
             order.PayPalCaptureId = captureId;
             order.PaidAt = isCompleted ? DateTime.UtcNow : null;
+
+            if (isCompleted)
+            {
+                await CreditSellerWalletsAsync(order);
+            }
+
             await _context.SaveChangesAsync();
+            await databaseTransaction.CommitAsync();
 
             return new ServiceResponse
             {
@@ -323,6 +339,62 @@ public class PayPalPaymentActions
                 Quantity = group.Sum(item => item.Quantity)
             })
             .ToList();
+    }
+
+    private async Task CreditSellerWalletsAsync(OrderEntity order)
+    {
+        var sellerCredits = order.Items
+            .Where(item => item.Product != null)
+            .GroupBy(item => item.Product.SellerId)
+            .Select(group => new
+            {
+                SellerId = group.Key,
+                Amount = group.Sum(item => item.UnitPrice * item.Quantity)
+            })
+            .Where(credit => credit.Amount > 0)
+            .ToList();
+
+        if (sellerCredits.Count == 0)
+        {
+            return;
+        }
+
+        var creditedSellerIds = await _context.WalletTransactions
+            .Where(transaction =>
+                transaction.OrderId == order.Id &&
+                transaction.Type == "sale_credit")
+            .Select(transaction => transaction.SellerId)
+            .ToListAsync();
+
+        foreach (var credit in sellerCredits.Where(credit => !creditedSellerIds.Contains(credit.SellerId)))
+        {
+            var wallet = await _context.SellerWallets
+                .FirstOrDefaultAsync(entry => entry.SellerId == credit.SellerId);
+
+            if (wallet == null)
+            {
+                wallet = new SellerWalletEntity
+                {
+                    SellerId = credit.SellerId,
+                    UpdatedAt = DateTime.UtcNow
+                };
+                _context.SellerWallets.Add(wallet);
+            }
+
+            wallet.AvailableBalance += credit.Amount;
+            wallet.TotalEarned += credit.Amount;
+            wallet.UpdatedAt = DateTime.UtcNow;
+
+            _context.WalletTransactions.Add(new WalletTransactionEntity
+            {
+                SellerId = credit.SellerId,
+                OrderId = order.Id,
+                Amount = credit.Amount,
+                Type = "sale_credit",
+                Description = $"Incasare sandbox din comanda #{order.Id}.",
+                CreatedAt = DateTime.UtcNow
+            });
+        }
     }
 
     private static async Task<string> GetAccessTokenAsync()

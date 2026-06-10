@@ -15,6 +15,7 @@ using PawMate.Domain.Entities.Sitter;
 using PawMate.Domain.Entities.User;
 using PawMate.Domain.Entities.VeterinaryClinic;
 using PawMate.Domain.Entities.Volunteer;
+using PawMate.Domain.Entities.Wallet;
 
 namespace PawMate.DataAccessLayer.Context;
 
@@ -40,6 +41,9 @@ public sealed class PawMateDbContext : DbContext
     public DbSet<RefreshTokenEntity> RefreshTokens { get; set; }
     public DbSet<ChatConversationEntity> ChatConversations { get; set; }
     public DbSet<ChatMessageEntity> ChatMessages { get; set; }
+    public DbSet<SellerWalletEntity> SellerWallets { get; set; }
+    public DbSet<WalletTransactionEntity> WalletTransactions { get; set; }
+    public DbSet<WithdrawalRequestEntity> WithdrawalRequests { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -104,6 +108,75 @@ public sealed class PawMateDbContext : DbContext
             .HasForeignKey(oi => oi.ProductId)
             .OnDelete(DeleteBehavior.Restrict);
 
+        modelBuilder.Entity<SellerWalletEntity>()
+            .HasIndex(wallet => wallet.SellerId)
+            .IsUnique();
+
+        modelBuilder.Entity<SellerWalletEntity>()
+            .HasOne(wallet => wallet.Seller)
+            .WithOne(user => user.SellerWallet)
+            .HasForeignKey<SellerWalletEntity>(wallet => wallet.SellerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<SellerWalletEntity>()
+            .Property(wallet => wallet.UpdatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        modelBuilder.Entity<WalletTransactionEntity>()
+            .HasIndex(transaction => new { transaction.SellerId, transaction.OrderId, transaction.Type })
+            .IsUnique()
+            .HasFilter("\"OrderId\" IS NOT NULL");
+
+        modelBuilder.Entity<WalletTransactionEntity>()
+            .HasOne(transaction => transaction.Seller)
+            .WithMany(user => user.WalletTransactions)
+            .HasForeignKey(transaction => transaction.SellerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<WalletTransactionEntity>()
+            .HasOne(transaction => transaction.Order)
+            .WithMany(order => order.WalletTransactions)
+            .HasForeignKey(transaction => transaction.OrderId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<WalletTransactionEntity>()
+            .HasOne(transaction => transaction.WithdrawalRequest)
+            .WithMany(request => request.Transactions)
+            .HasForeignKey(transaction => transaction.WithdrawalRequestId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<WalletTransactionEntity>()
+            .Property(transaction => transaction.CreatedAt)
+            .HasDefaultValueSql("NOW()");
+
+        modelBuilder.Entity<WithdrawalRequestEntity>()
+            .HasOne(request => request.Seller)
+            .WithMany(user => user.WithdrawalRequests)
+            .HasForeignKey(request => request.SellerId)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<WithdrawalRequestEntity>()
+            .HasOne(request => request.ProcessedByAdmin)
+            .WithMany()
+            .HasForeignKey(request => request.ProcessedByAdminId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<WithdrawalRequestEntity>()
+            .Property(request => request.Status)
+            .HasDefaultValue("pending");
+
+        modelBuilder.Entity<WithdrawalRequestEntity>()
+            .Property(request => request.AdminComment)
+            .HasDefaultValue(string.Empty);
+
+        modelBuilder.Entity<WithdrawalRequestEntity>()
+            .Property(request => request.DestinationPayPalEmail)
+            .HasDefaultValue(string.Empty);
+
+        modelBuilder.Entity<WithdrawalRequestEntity>()
+            .Property(request => request.RequestedAt)
+            .HasDefaultValueSql("NOW()");
+
         modelBuilder.Entity<QuizResultEntity>()
             .HasOne(q => q.User)
             .WithMany(u => u.QuizResults)
@@ -142,6 +215,10 @@ public sealed class PawMateDbContext : DbContext
 
         modelBuilder.Entity<UserEntity>()
             .Property(u => u.Address)
+            .HasDefaultValue(string.Empty);
+
+        modelBuilder.Entity<UserEntity>()
+            .Property(u => u.PayPalSandboxEmail)
             .HasDefaultValue(string.Empty);
 
         modelBuilder.Entity<UserEntity>()
