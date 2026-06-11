@@ -55,7 +55,7 @@ function validateLostPetImage(file: File | null) {
 }
 
 function LostPetFormFields({
-    form, errors, loading, apiError, submitLabel, onSubmit, onChange, onClose, showIsFound,
+    form, errors, loading, apiError, submitLabel, onSubmit, onChange, onClose,
     selectedImage, imagePreviewUrl, imageError, onImageChange,
 }: {
     form: LostPetForm;
@@ -66,7 +66,6 @@ function LostPetFormFields({
     onSubmit: (e: React.FormEvent) => void;
     onChange: (field: keyof LostPetForm, value: string | boolean) => void;
     onClose: () => void;
-    showIsFound?: boolean;
     selectedImage?: File | null;
     imagePreviewUrl?: string;
     imageError?: string;
@@ -153,19 +152,6 @@ function LostPetFormFields({
                         <img className="lostImagePreview" src={imagePreviewUrl} alt="Previzualizare animal pierdut" />
                     )}
                     {imageError && <span className="lostFieldError">{imageError}</span>}
-                </div>
-            )}
-
-            {showIsFound && (
-                <div className="lostModalField">
-                    <label className="lostModalCheckLabel">
-                        <input
-                            type="checkbox"
-                            checked={form.isFound}
-                            onChange={e => onChange("isFound", e.target.checked)}
-                        />
-                        Animalul a fost găsit
-                    </label>
                 </div>
             )}
 
@@ -331,7 +317,6 @@ export function EditLostPetModal({ ad, onClose, onUpdated }: { ad: LostPet; onCl
                     form={form} errors={errors} loading={loading} apiError={apiError}
                     submitLabel="Salvează modificările"
                     onSubmit={handleSubmit} onChange={handleChange} onClose={onClose}
-                    showIsFound
                     selectedImage={selectedImage}
                     imagePreviewUrl={imagePreviewUrl}
                     imageError={imageError}
@@ -390,21 +375,44 @@ export function DeleteLostPetModal({ ad, onClose, onDeleted }: { ad: LostPet; on
 }
 
 export function LostPetCard({
-    a, onEdit, onDelete,
+    a, onEdit, onDelete, onStatusChanged,
 }: {
     a: LostPet;
     onEdit: (a: LostPet) => void;
     onDelete: (a: LostPet) => void;
+    onStatusChanged: () => void | Promise<void>;
 }) {
     const { currentUser, isAdmin } = useAuth();
     const canEdit = isAdmin();
     const canDelete = canEdit || (!!currentUser && a.userId === currentUser.id);
     const [imageFailed, setImageFailed] = useState(false);
+    const [statusLoading, setStatusLoading] = useState(false);
+    const [statusError, setStatusError] = useState<string | null>(null);
     const imageSrc = imageFailed ? "" : getLostPetImageUrl(a.imageUrl);
 
     useEffect(() => {
         setImageFailed(false);
     }, [a.id, a.imageUrl]);
+
+    async function handleFoundChange(isFound: boolean) {
+        try {
+            setStatusLoading(true);
+            setStatusError(null);
+            await updateLostPet(a.id, {
+                species: a.species,
+                city: a.city,
+                lostDate: a.lostDate,
+                contact: a.contact,
+                description: a.description,
+                isFound,
+            });
+            await onStatusChanged();
+        } catch (err) {
+            setStatusError(err instanceof Error ? err.message : "Nu s-a putut actualiza anuntul.");
+        } finally {
+            setStatusLoading(false);
+        }
+    }
 
     return (
         <div className="lostCard">
@@ -426,7 +434,7 @@ export function LostPetCard({
                 {a.isFound && <span className="lostBadge" style={{ background: "#d1fae5", color: "#065f46" }}>Gasit</span>}
             </div>
             {(canEdit || canDelete) && (
-                <div style={{ display: "flex", gap: "8px", marginTop: "10px" }}>
+                <div className="lostCardActions">
                     {canEdit && (
                         <AppButton variant="ghost" size="sm" onClick={() => onEdit(a)}>
                             Editeaza
@@ -442,8 +450,20 @@ export function LostPetCard({
                             Sterge
                         </AppButton>
                     )}
+                    {canDelete && (
+                        <label className="lostFoundToggle">
+                            <input
+                                type="checkbox"
+                                checked={a.isFound}
+                                disabled={statusLoading}
+                                onChange={(event) => void handleFoundChange(event.target.checked)}
+                            />
+                            {statusLoading ? "Se salvează..." : "Animalul a fost găsit"}
+                        </label>
+                    )}
                 </div>
             )}
+            {statusError && <p className="lostCardStatusError">{statusError}</p>}
         </div>
     );
 }

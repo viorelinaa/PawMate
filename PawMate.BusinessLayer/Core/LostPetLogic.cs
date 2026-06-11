@@ -11,6 +11,6 @@ public class LostPetLogic : LostPetActions, ILostPetLogic
     public ServiceResponse GetLostPetById(int id) => GetLostPetByIdAction(id);
     public ServiceResponse GetLostPetList(LostPetQueryDto query) => GetLostPetListAction(query);
     public ServiceResponse UpdateLostPetImage(int id, int userId, bool isAdmin, string imageUrl, string imagePublicId) => UpdateLostPetImageAction(id, userId, isAdmin, imageUrl, imagePublicId);
-    public ServiceResponse UpdateLostPet(int id, LostPetUpdateDto lostPet) => UpdateLostPetAction(id, lostPet);
+    public ServiceResponse UpdateLostPet(int id, int userId, bool isAdmin, LostPetUpdateDto lostPet) => UpdateLostPetAction(id, userId, isAdmin, lostPet);
     public ServiceResponse DeleteLostPet(int id, int userId, bool isAdmin) => DeleteLostPetAction(id, userId, isAdmin);
 }

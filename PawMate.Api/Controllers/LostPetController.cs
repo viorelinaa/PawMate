@@ -149,8 +149,19 @@ public class LostPetController : ControllerBase
     [Authorize]
     public IActionResult UpdateLostPet([FromRoute] int id, [FromBody] LostPetUpdateDto lostPet)
     {
-        var response = _lostPetLogic.UpdateLostPet(id, lostPet);
-        if (!response.IsSuccess) return BadRequest(response.Message);
+        var userId = GetCurrentUserId();
+        if (!userId.HasValue)
+            return Unauthorized("Utilizatorul nu este autentificat.");
+
+        var response = _lostPetLogic.UpdateLostPet(id, userId.Value, User.IsInRole("admin"), lostPet);
+        if (!response.IsSuccess)
+        {
+            if (response.Message == "Poti modifica doar anunturile adaugate de tine.")
+                return StatusCode(StatusCodes.Status403Forbidden, response.Message);
+
+            return BadRequest(response.Message);
+        }
+
         return Ok(response.Message);
     }
 

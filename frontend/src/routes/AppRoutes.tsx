@@ -49,6 +49,10 @@ export default function AppRoutes() {
                         path={paths.wallet}
                         element={<Navigate to={`${paths.profile}?tab=wallet`} replace />}
                     />
+                    <Route
+                        path={paths.legacyWallet}
+                        element={<Navigate to={`${paths.profile}?tab=wallet`} replace />}
+                    />
                     <Route path={paths.unauthorized} element={<Unauthorized />} />
                     <Route path={paths.forbidden} element={<Forbidden />} />
                     <Route path={paths.serverError} element={<ServerError />} />

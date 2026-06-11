@@ -142,7 +142,13 @@ export default function LostPets() {
                 {!loadError && ads.length > 0 ? (
                     <div className="lostCards">
                         {ads.map((a) => (
-                            <LostPetCard key={a.id} a={a} onEdit={setEditAd} onDelete={setDeleteAd} />
+                            <LostPetCard
+                                key={a.id}
+                                a={a}
+                                onEdit={setEditAd}
+                                onDelete={setDeleteAd}
+                                onStatusChanged={loadAds}
+                            />
                         ))}
                     </div>
                 ) : (
