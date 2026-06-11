@@ -17,7 +17,7 @@ export default function Home() {
 
         { title: "Quiz", desc: "Ce animal ți se potrivește?", to: "/quiz" },
         { title: "Evenimente", desc: "Târguri, întâlniri, voluntariat.", to: "/evenimente" },
-        { title: "Vânzări", desc: "Produse (mock).", to: "/vanzari" },
+        { title: "Vânzări", desc: "Produse.", to: "/vanzari" },
     ];
 
     return (
