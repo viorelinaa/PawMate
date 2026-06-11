@@ -134,7 +134,7 @@ public class LostPetActions
         }
     }
 
-    public ServiceResponse UpdateLostPetAction(int id, LostPetUpdateDto lostPet)
+    public ServiceResponse UpdateLostPetAction(int id, int userId, bool isAdmin, LostPetUpdateDto lostPet)
     {
         try
         {
@@ -142,6 +142,15 @@ public class LostPetActions
 
             if (entity == null)
                 return new ServiceResponse { IsSuccess = false, Message = "Anunțul nu a fost găsit." };
+
+            if (!isAdmin && entity.UserId != userId)
+            {
+                return new ServiceResponse
+                {
+                    IsSuccess = false,
+                    Message = "Poti modifica doar anunturile adaugate de tine."
+                };
+            }
 
             entity.Species = lostPet.Species;
             entity.City = lostPet.City;

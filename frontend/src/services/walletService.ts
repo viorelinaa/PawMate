@@ -57,7 +57,7 @@ export async function getMyWallet(): Promise<WalletSummary> {
         const { data } = await apiClient.get<WalletSummary>("/wallet/mine");
         return data;
     } catch (err) {
-        handleError(err, "Nu s-a putut incarca portofelul.");
+        handleError(err, "Nu s-a putut incarca portmoneul.");
     }
 }
 

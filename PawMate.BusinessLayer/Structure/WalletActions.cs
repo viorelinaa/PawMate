@@ -68,7 +68,7 @@ public class WalletActions
             return new ServiceResponse
             {
                 IsSuccess = true,
-                Message = "Portofelul a fost obtinut cu succes.",
+                Message = "Portmoneul a fost obtinut cu succes.",
                 Data = new WalletSummaryDto
                 {
                     PayPalSandboxEmail = payPalSandboxEmail,
@@ -83,7 +83,7 @@ public class WalletActions
         }
         catch (Exception ex)
         {
-            return Error($"A aparut o eroare la incarcarea portofelului: {ex.Message}");
+            return Error($"A aparut o eroare la incarcarea portmoneului: {ex.Message}");
         }
     }
 
@@ -147,7 +147,7 @@ public class WalletActions
 
             if (!IsValidEmail(seller.PayPalSandboxEmail))
             {
-                return Error("Configureaza mai intai emailul PayPal Sandbox in portofel.");
+                return Error("Configureaza mai intai emailul PayPal Sandbox in portmoneu.");
             }
 
             var wallet = await _context.SellerWallets

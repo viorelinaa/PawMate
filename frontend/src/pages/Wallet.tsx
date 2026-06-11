@@ -55,7 +55,7 @@ export default function Wallet({ embedded = false }: WalletProps) {
             setPayPalEmail(walletData.payPalSandboxEmail ?? "");
             setError(null);
         } catch (err) {
-            setError(err instanceof Error ? err.message : "Nu s-a putut incarca portofelul.");
+            setError(err instanceof Error ? err.message : "Nu s-a putut incarca portmoneul.");
         } finally {
             setLoading(false);
         }
@@ -113,7 +113,7 @@ export default function Wallet({ embedded = false }: WalletProps) {
             <header className="walletHeader">
                 <div>
                     <p className="walletKicker">Marketplace Sandbox</p>
-                    <h1>Portofelul meu</h1>
+                    <h1>Portmoneul meu</h1>
                     <p>Incasarile apar aici dupa confirmarea platilor PayPal Sandbox.</p>
                 </div>
                 <button type="button" className="walletRefresh" onClick={loadWallet} disabled={loading}>
@@ -125,7 +125,7 @@ export default function Wallet({ embedded = false }: WalletProps) {
             {success ? <div className="walletFeedback walletFeedbackSuccess">{success}</div> : null}
 
             {loading && !wallet ? (
-                <div className="walletState">Se incarca portofelul...</div>
+                <div className="walletState">Se incarca portmoneul...</div>
             ) : wallet ? (
                 <>
                     <section className="walletPayPalPanel">
@@ -151,7 +151,7 @@ export default function Wallet({ embedded = false }: WalletProps) {
                         </form>
                     </section>
 
-                    <section className="walletStats" aria-label="Sold portofel">
+                    <section className="walletStats" aria-label="Sold portmoneu">
                         <article className="walletStat walletStatPrimary">
                             <span>Disponibil</span>
                             <strong>{formatMoney(wallet.availableBalance)}</strong>

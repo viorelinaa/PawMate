@@ -456,7 +456,7 @@ export default function Profile() {
                                 onClick={() => selectSection("wallet")}
                                 type="button"
                             >
-                                Portofel
+                                Portmoneu
                             </button>
                             <button
                                 className={`profile-nav-button ${activeSection === "activity" ? "active" : ""}`}

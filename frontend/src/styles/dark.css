@@ -1004,8 +1004,7 @@
 
 .appShell[data-theme="dark"] .modalLabel,
 .appShell[data-theme="dark"] .lostModalLabel,
-.appShell[data-theme="dark"] .modalCheckLabel,
-.appShell[data-theme="dark"] .lostModalCheckLabel {
+.appShell[data-theme="dark"] .modalCheckLabel {
     color: var(--dm-muted);
 }
 
