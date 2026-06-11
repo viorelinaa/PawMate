@@ -253,6 +253,36 @@
     font-family: var(--font-family);
 }
 
+.foundTabBtn {
+    margin-left: 16px;
+    border-color: #6b52a3 !important;
+    color: #6b52a3 !important;
+}
+
+.foundTabBtn.foundTabBtnActive {
+    background: #6b52a3 !important;
+    color: #fff !important;
+}
+
+.appShell[data-theme="dark"] .foundTabBtn {
+    border-color: #cbb0ea !important;
+    color: #cbb0ea !important;
+    background: transparent !important;
+}
+
+.appShell[data-theme="dark"] .foundTabBtn.foundTabBtnActive {
+    background: #7c5cbf !important;
+    color: #f1eaf9 !important;
+    border-color: #7c5cbf !important;
+}
+
+.lostSectionTitle {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 24px 0 8px;
+}
+
 .lostEmpty {
     margin-top: 18px;
     background: var(--color-surface-soft);

@@ -18,6 +18,7 @@ export default function LostPets() {
     const [query, setQuery] = useState("");
     const [species, setSpecies] = useState("ALL");
     const [city, setCity] = useState("ALL");
+    const [activeTab, setActiveTab] = useState<"lost" | "found">("lost");
 
     async function loadAds() {
         try {
@@ -25,6 +26,7 @@ export default function LostPets() {
                 search: query,
                 species,
                 city,
+                isFound: activeTab === "found" ? true : false,
             });
             setAds(data);
             setLoadError(null);
@@ -48,7 +50,7 @@ export default function LostPets() {
 
     useEffect(() => {
         void loadAds();
-    }, [query, species, city]);
+    }, [query, species, city, activeTab]);
     function resetFilters() {
         setQuery("");
         setSpecies("ALL");
@@ -71,14 +73,21 @@ export default function LostPets() {
                 </div>
             </section>
 
-            <UserOnly>
-                <div className="roleActionBar">
+            <div className="roleActionBar">
+                <UserOnly>
                     <AddActionButton
                         label="Adaugă anunț animal pierdut"
                         onClick={() => setShowAddModal(true)}
                     />
-                </div>
-            </UserOnly>
+                </UserOnly>
+                <AppButton
+                    variant={activeTab === "found" ? "primary" : "ghost"}
+                    onClick={() => setActiveTab(activeTab === "found" ? "lost" : "found")}
+                    className={`foundTabBtn${activeTab === "found" ? " foundTabBtnActive" : ""}`}
+                >
+                    Animale găsite
+                </AppButton>
+            </div>
 
             {showAddModal && (
                 <AddLostPetModal onClose={() => setShowAddModal(false)} onAdded={loadAds} />
@@ -126,6 +135,10 @@ export default function LostPets() {
                     <div className="lostEmpty" style={{ color: "red" }}>{loadError}</div>
                 )}
 
+                {activeTab === "found" && (
+                    <h2 className="lostSectionTitle">Animale găsite</h2>
+                )}
+
                 {!loadError && ads.length > 0 ? (
                     <div className="lostCards">
                         {ads.map((a) => (
@@ -133,7 +146,13 @@ export default function LostPets() {
                         ))}
                     </div>
                 ) : (
-                    !loadError && <div className="lostEmpty">Nu există rezultate pentru filtrele selectate.</div>
+                    !loadError && (
+                        <div className="lostEmpty">
+                            {activeTab === "found"
+                                ? "Nu există animale marcate ca găsite momentan."
+                                : "Nu există rezultate pentru filtrele selectate."}
+                        </div>
+                    )
                 )}
             </div>
         </div>
