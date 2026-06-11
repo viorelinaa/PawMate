@@ -29,7 +29,7 @@ import { RequireAdmin } from "../components/RequireAdmin";
 export default function AppRoutes() {
     return (
         <>
-            <main style={{ flex: 1 }}>
+            <main style={{ flex: 1, display: "flex", flexDirection: "column" }}>
                 <Routes>
                     <Route path={paths.home} element={<Home />} />
                     <Route path={paths.adoptie} element={<Adoption />} />
